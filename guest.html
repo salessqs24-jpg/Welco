@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welco - Guest Services</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: sans-serif; background: #f5f5f5; }
+    .header { background: #1a1a2e; color: white; padding: 20px; text-align: center; }
+    .header h1 { font-size: 24px; }
+    .header p { font-size: 14px; opacity: 0.7; margin-top: 4px; }
+    .container { max-width: 480px; margin: 20px auto; padding: 0 16px; }
+    .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .card h2 { font-size: 16px; margin-bottom: 16px; color: #333; }
+    .categories { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    .cat-btn { padding: 14px; border: 2px solid #eee; border-radius: 10px; background: white; cursor: pointer; font-size: 14px; text-align: center; transition: all 0.2s; }
+    .cat-btn.selected { border-color: #1a1a2e; background: #1a1a2e; color: white; }
+    textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; resize: none; height: 100px; }
+    .submit-btn { width: 100%; padding: 16px; background: #1a1a2e; color: white; border: none; border-radius: 10px; font-size: 16px; cursor: pointer; margin-top: 12px; }
+    .success { background: #e8f5e9; color: #2e7d32; padding: 16px; border-radius: 10px; text-align: center; display: none; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🏨 Welco</h1>
+    <p>Room 101 — Hotel Demo</p>
+  </div>
+  <div class="container">
+    <div class="card">
+      <h2>How can we help you?</h2>
+      <div class="categories">
+        <button class="cat-btn" onclick="selectCat(this, 'Housekeeping')">🛏️ Housekeeping</button>
+        <button class="cat-btn" onclick="selectCat(this, 'Room Service')">🍽️ Room Service</button>
+        <button class="cat-btn" onclick="selectCat(this, 'Maintenance')">🔧 Maintenance</button>
+        <button class="cat-btn" onclick="selectCat(this, 'Front Desk')">🛎️ Front Desk</button>
+      </div>
+      <textarea id="message" placeholder="Describe your request..."></textarea>
+      <button class="submit-btn" onclick="submitRequest()">Send Request</button>
+      <div class="success" id="success">✅ Request sent! We'll be right with you.</div>
+    </div>
+  </div>
+  <script>
+    let selectedCategory = '';
+    function selectCat(btn, cat) {
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedCategory = cat;
+    }
+    async function submitRequest() {
+      if (!selectedCategory) return alert('Please select a category!');
+      const message = document.getElementById('message').value;
+      const res = await fetch('http://localhost:3000/requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hotel_id: 'hotel_001', room_number: '101', category: selectedCategory, message })
+      });
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById('success').style.display = 'block';
+        document.getElementById('message').value = '';
+        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
+        selectedCategory = '';
+      }
+    }
+  </script>
+</body>
+</html>

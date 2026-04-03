@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welco - Staff Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: sans-serif; background: #f0f2f5; }
+    .header { background: #1a1a2e; color: white; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; }
+    .header h1 { font-size: 20px; }
+    .badge { background: #e74c3c; color: white; padding: 4px 10px; border-radius: 20px; font-size: 13px; }
+    .container { max-width: 700px; margin: 24px auto; padding: 0 16px; }
+    .section-title { font-size: 14px; color: #888; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+    .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #e74c3c; }
+    .card.done { border-left-color: #2ecc71; opacity: 0.6; }
+    .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .room { font-weight: bold; font-size: 15px; }
+    .category { background: #1a1a2e; color: white; padding: 3px 10px; border-radius: 20px; font-size: 12px; }
+    .message { color: #555; font-size: 14px; margin-bottom: 12px; }
+    .time { color: #aaa; font-size: 12px; margin-bottom: 12px; }
+    .done-btn { padding: 8px 16px; background: #2ecc71; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; }
+    .done-btn:disabled { background: #ccc; cursor: default; }
+    .empty { text-align: center; padding: 40px; color: #aaa; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🏨 Welco Staff</h1>
+    <span class="badge" id="count">0 pending</span>
+  </div>
+  <div class="container">
+    <div class="section-title">Incoming Requests</div>
+    <div id="requests-list"></div>
+  </div>
+  <script>
+    async function loadRequests() {
+      const res = await fetch('http://localhost:3000/requests');
+      const { data } = await res.json();
+      const list = document.getElementById('requests-list');
+      const pending = data.filter(r => r.status === 'pending').length;
+      document.getElementById('count').textContent = pending + ' pending';
+      if (data.length === 0) {
+        list.innerHTML = '<div class="empty">No requests yet 🎉</div>';
+        return;
+      }
+      list.innerHTML = data.map(r => `
+        <div class="card ${r.status === 'done' ? 'done' : ''}" id="card-${r.id}">
+          <div class="card-top">
+            <span class="room">Room ${r.room_number}</span>
+            <span class="category">${r.category}</span>
+          </div>
+          <div class="message">${r.message || 'No message'}</div>
+          <div class="time">${new Date(r.created_at).toLocaleTimeString()}</div>
+          <button class="done-btn" onclick="markDone(${r.id})" ${r.status === 'done' ? 'disabled' : ''}>
+            ${r.status === 'done' ? '✅ Done' : 'Mark as Done'}
+          </button>
+        </div>
+      `).join('');
+    }
+
+    async function markDone(id) {
+      await fetch('http://localhost:3000/requests/' + id, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'done' })
+      });
+      loadRequests();
+    }
+
+    loadRequests();
+    setInterval(loadRequests, 5000);
+  </script>
+</body>
+</html>

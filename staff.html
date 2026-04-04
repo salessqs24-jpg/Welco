@@ -3,73 +3,230 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welco - Staff Dashboard</title>
+  <title>Welco Staff</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: sans-serif; background: #f0f2f5; }
-    .header { background: #1a1a2e; color: white; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; }
-    .header h1 { font-size: 20px; }
-    .badge { background: #e74c3c; color: white; padding: 4px 10px; border-radius: 20px; font-size: 13px; }
-    .container { max-width: 700px; margin: 24px auto; padding: 0 16px; }
-    .section-title { font-size: 14px; color: #888; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
-    .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #e74c3c; }
-    .card.done { border-left-color: #2ecc71; opacity: 0.6; }
-    .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .room { font-weight: bold; font-size: 15px; }
-    .category { background: #1a1a2e; color: white; padding: 3px 10px; border-radius: 20px; font-size: 12px; }
-    .message { color: #555; font-size: 14px; margin-bottom: 12px; }
-    .time { color: #aaa; font-size: 12px; margin-bottom: 12px; }
-    .done-btn { padding: 8px 16px; background: #2ecc71; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; }
-    .done-btn:disabled { background: #ccc; cursor: default; }
-    .empty { text-align: center; padding: 40px; color: #aaa; }
+    body { font-family: sans-serif; background: #f0f2f5; min-height: 100vh; }
+
+    /* LOGIN SCREEN */
+    #login-screen {
+      min-height: 100vh;
+      background: linear-gradient(160deg, #0a9396, #005f73);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 24px;
+    }
+    .hotel-logo { font-size: 48px; margin-bottom: 8px; }
+    .hotel-name { color: white; font-size: 22px; font-weight: bold; margin-bottom: 4px; }
+    .hotel-sub { color: rgba(255,255,255,0.7); font-size: 13px; margin-bottom: 32px; }
+    .login-card {
+      background: white; border-radius: 20px;
+      padding: 28px; width: 100%; max-width: 340px;
+    }
+    .login-card label { font-size: 13px; color: #666; display: block; margin-bottom: 6px; }
+    .login-card input[type="text"] {
+      width: 100%; padding: 12px; border: 1px solid #ddd;
+      border-radius: 10px; font-size: 15px; margin-bottom: 20px;
+    }
+    .pin-label { font-size: 13px; color: #666; margin-bottom: 10px; }
+    .pin-dots {
+      display: flex; gap: 12px; justify-content: center; margin-bottom: 20px;
+    }
+    .pin-dot {
+      width: 14px; height: 14px; border-radius: 50%;
+      background: #ddd; transition: background 0.2s;
+    }
+    .pin-dot.filled { background: #0a9396; }
+    .pin-pad {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 10px; margin-bottom: 20px;
+    }
+    .pin-btn {
+      padding: 16px; border: none; border-radius: 12px;
+      background: #f5f5f5; font-size: 18px; font-weight: bold;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .pin-btn:active { background: #0a9396; color: white; }
+    .pin-clear { background: #ffe0e0; color: #e63946; }
+    .login-btn {
+      width: 100%; padding: 14px; background: #0a9396;
+      color: white; border: none; border-radius: 12px;
+      font-size: 16px; font-weight: bold; cursor: pointer;
+    }
+    .login-error { color: #e63946; font-size: 13px; text-align: center; margin-top: 10px; display: none; }
+
+    /* DASHBOARD SCREEN */
+    #dashboard-screen { display: none; }
+    .dash-header {
+      background: linear-gradient(90deg, #0a9396, #005f73);
+      color: white; padding: 16px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .dash-header h1 { font-size: 16px; }
+    .dash-header .staff-name { font-size: 13px; opacity: 0.8; }
+    .notif-badge {
+      background: #ee9b00; color: white;
+      padding: 4px 10px; border-radius: 20px; font-size: 12px;
+    }
+    .dash-container { padding: 16px; max-width: 500px; margin: 0 auto; }
+    .section-label { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+    .task-card {
+      background: white; border-radius: 14px; padding: 16px;
+      margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      border-left: 4px solid #ee9b00;
+    }
+    .task-card.urgent { border-left-color: #e63946; }
+    .task-card.done { border-left-color: #2ecc71; opacity: 0.5; }
+    .task-top { display: flex; justify-content: space-between; margin-bottom: 6px; }
+    .task-room { font-weight: bold; font-size: 15px; }
+    .task-cat {
+      background: #005f73; color: white;
+      padding: 3px 10px; border-radius: 20px; font-size: 12px;
+    }
+    .task-msg { color: #555; font-size: 14px; margin-bottom: 8px; }
+    .task-sla { font-size: 12px; color: #888; margin-bottom: 10px; }
+    .task-sla span { color: #e63946; font-weight: bold; }
+    .accept-btn {
+      padding: 9px 20px; background: #ee9b00;
+      color: white; border: none; border-radius: 8px;
+      font-size: 13px; font-weight: bold; cursor: pointer;
+    }
+    .accept-btn:disabled { background: #ccc; cursor: default; }
+    .empty-state { text-align: center; padding: 48px 20px; color: #aaa; }
+    .logout-btn {
+      background: none; border: none; color: rgba(255,255,255,0.8);
+      font-size: 13px; cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>🏨 Welco Staff</h1>
-    <span class="badge" id="count">0 pending</span>
+
+  <!-- LOGIN SCREEN -->
+  <div id="login-screen">
+    <div class="hotel-logo">🏨</div>
+    <div class="hotel-name">Taj Mahal Hotel</div>
+    <div class="hotel-sub">Mumbai · Staff Portal</div>
+    <div class="login-card">
+      <label>Your Name</label>
+      <input type="text" id="staff-name" placeholder="e.g. Rahul">
+      <div class="pin-label">Enter PIN</div>
+      <div class="pin-dots">
+        <div class="pin-dot" id="dot-0"></div>
+        <div class="pin-dot" id="dot-1"></div>
+        <div class="pin-dot" id="dot-2"></div>
+        <div class="pin-dot" id="dot-3"></div>
+      </div>
+      <div class="pin-pad">
+        <button class="pin-btn" onclick="addPin('1')">1</button>
+        <button class="pin-btn" onclick="addPin('2')">2</button>
+        <button class="pin-btn" onclick="addPin('3')">3</button>
+        <button class="pin-btn" onclick="addPin('4')">4</button>
+        <button class="pin-btn" onclick="addPin('5')">5</button>
+        <button class="pin-btn" onclick="addPin('6')">6</button>
+        <button class="pin-btn" onclick="addPin('7')">7</button>
+        <button class="pin-btn" onclick="addPin('8')">8</button>
+        <button class="pin-btn" onclick="addPin('9')">9</button>
+        <button class="pin-btn pin-clear" onclick="clearPin()">✕</button>
+        <button class="pin-btn" onclick="addPin('0')">0</button>
+        <button class="pin-btn" onclick="addPin('')">⌫</button>
+      </div>
+      <button class="login-btn" onclick="doLogin()">Login</button>
+      <div class="login-error" id="login-error">Wrong PIN. Try 1234</div>
+    </div>
   </div>
-  <div class="container">
-    <div class="section-title">Incoming Requests</div>
-    <div id="requests-list"></div>
+
+  <!-- DASHBOARD SCREEN -->
+  <div id="dashboard-screen">
+    <div class="dash-header">
+      <div>
+        <div class="dash-header h1" id="dash-hotel">Taj Mahal Hotel</div>
+        <div class="staff-name" id="dash-staff">Staff</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <span class="notif-badge" id="pending-count">0 pending</span>
+        <button class="logout-btn" onclick="doLogout()">Logout</button>
+      </div>
+    </div>
+    <div class="dash-container">
+      <div class="section-label">Live Requests</div>
+      <div id="task-list"></div>
+    </div>
   </div>
+
   <script>
-    async function loadRequests() {
-      const res = await fetch('http://localhost:3000/requests');
+    const CORRECT_PIN = '1234';
+    let pin = '';
+    let loggedInStaff = '';
+
+    function addPin(num) {
+      if (num === '') { pin = pin.slice(0, -1); }
+      else if (pin.length < 4) { pin += num; }
+      updateDots();
+    }
+
+    function clearPin() { pin = ''; updateDots(); }
+
+    function updateDots() {
+      for (let i = 0; i < 4; i++) {
+        document.getElementById('dot-' + i).classList.toggle('filled', i < pin.length);
+      }
+    }
+
+    function doLogin() {
+      const name = document.getElementById('staff-name').value.trim();
+      if (!name) { alert('Please enter your name!'); return; }
+      if (pin !== CORRECT_PIN) {
+        document.getElementById('login-error').style.display = 'block';
+        clearPin(); return;
+      }
+      loggedInStaff = name;
+      document.getElementById('login-error').style.display = 'none';
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('dashboard-screen').style.display = 'block';
+      document.getElementById('dash-staff').textContent = '👋 ' + name;
+      loadTasks();
+      setInterval(loadTasks, 5000);
+    }
+
+    function doLogout() {
+      document.getElementById('login-screen').style.display = 'flex';
+      document.getElementById('dashboard-screen').style.display = 'none';
+      pin = ''; clearPin();
+      document.getElementById('staff-name').value = '';
+    }
+
+    async function loadTasks() {
+      const res = await fetch('/requests');
       const { data } = await res.json();
-      const list = document.getElementById('requests-list');
       const pending = data.filter(r => r.status === 'pending').length;
-      document.getElementById('count').textContent = pending + ' pending';
+      document.getElementById('pending-count').textContent = pending + ' pending';
+      const list = document.getElementById('task-list');
       if (data.length === 0) {
-        list.innerHTML = '<div class="empty">No requests yet 🎉</div>';
+        list.innerHTML = '<div class="empty-state">🎉 No requests right now!</div>';
         return;
       }
       list.innerHTML = data.map(r => `
-        <div class="card ${r.status === 'done' ? 'done' : ''}" id="card-${r.id}">
-          <div class="card-top">
-            <span class="room">Room ${r.room_number}</span>
-            <span class="category">${r.category}</span>
+        <div class="task-card ${r.status === 'done' ? 'done' : ''}">
+          <div class="task-top">
+            <span class="task-room">Room ${r.room_number}</span>
+            <span class="task-cat">${r.category}</span>
           </div>
-          <div class="message">${r.message || 'No message'}</div>
-          <div class="time">${new Date(r.created_at).toLocaleTimeString()}</div>
-          <button class="done-btn" onclick="markDone(${r.id})" ${r.status === 'done' ? 'disabled' : ''}>
-            ${r.status === 'done' ? '✅ Done' : 'Mark as Done'}
+          <div class="task-msg">${r.message || 'No details'}</div>
+          <div class="task-sla">⏱ SLA: <span>15 min</span></div>
+          <button class="accept-btn" onclick="markDone(${r.id})" ${r.status === 'done' ? 'disabled' : ''}>
+            ${r.status === 'done' ? '✅ Done' : 'Accept & Complete'}
           </button>
         </div>
       `).join('');
     }
 
     async function markDone(id) {
-      await fetch('http://localhost:3000/requests/' + id, {
+      await fetch('/requests/' + id, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: 'done' })
       });
-      loadRequests();
+      loadTasks();
     }
-
-    loadRequests();
-    setInterval(loadRequests, 5000);
   </script>
 </body>
 </html>

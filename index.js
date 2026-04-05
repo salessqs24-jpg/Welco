@@ -68,6 +68,65 @@ app.get('/qr/:hotel_id/:room_number', async (req, res) => {
     </body></html>
   `);
 });
+// Claim a request (staff accepts it)
+app.patch('/requests/:id/claim', async (req, res) => {
+  const { id } = req.params;
+  const { claimed_by } = req.body;
+  const { data, error } = await supabase
+    .from('requests')
+    .update({ claimed_by, status: 'claimed' })
+    .eq('id', id)
+    .select();
+  if (error) return res.json({ error: error.message });
+  res.json({ success: true, request: data[0] });
+});
+// Get all rooms
+app.get('/rooms', async (req, res) => {
+  const { data, error } = await supabase.from('rooms').select('*').order('hotel_id');
+  if (error) return res.json({ error: error.message });
+  res.json({ data });
+});
+
+// QR code as image
+app.get('/qr-img/:hotel_id/:room_number', async (req, res) => {
+  const { hotel_id, room_number } = req.params;
+  const url = `https://welco.onrender.com/guest.html?hotel=${hotel_id}&room=${room_number}`;
+  const qr = await QRCode.toDataURL(url);
+  const base64 = qr.replace(/^data:image\/png;base64,/, '');
+  const img = Buffer.from(base64, 'base64');
+  res.writeHead(200, { 'Content-Type': 'image/png' });
+  res.end(img);
+});
+// Submit guest feedback
+app.patch('/requests/:id/feedback', async (req, res) => {
+  const { id } = req.params;
+  const { feedback_rating, feedback_comment } = req.body;
+  const { data, error } = await supabase
+    .from('requests')
+    .update({ feedback_rating, feedback_comment })
+    .eq('id', id)
+    .select();
+  if (error) return res.json({ error: error.message });
+  res.json({ success: true });
+});
+// Get single request
+app.get('/requests/:id', async (req, res) => {
+  const { id } = req.params;
+  const { data, error } = await supabase.from('requests').select('*').eq('id', id).single();
+  if (error) return res.json({ error: error.message });
+  res.json({ data });
+});
+// Get hotel branding
+app.get('/hotels/:hotel_id', async (req, res) => {
+  const { hotel_id } = req.params;
+  const { data, error } = await supabase
+    .from('hotels')
+    .select('*')
+    .eq('hotel_id', hotel_id)
+    .single();
+  if (error) return res.json({ error: error.message });
+  res.json({ data });
+});
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Welco server running on port ${PORT}`);

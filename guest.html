@@ -6,19 +6,108 @@
   <title>Welco - Guest Services</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: sans-serif; background: #f5f5f5; }
-    .header { background: #1a1a2e; color: white; padding: 20px; text-align: center; }
-    .header h1 { font-size: 24px; }
-    .header p { font-size: 14px; opacity: 0.7; margin-top: 4px; }
-    .container { max-width: 480px; margin: 20px auto; padding: 0 16px; }
-    .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-    .card h2 { font-size: 16px; margin-bottom: 16px; color: #333; }
+    body {
+      font-family: sans-serif;
+      min-height: 100vh;
+      background-image: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=80');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      display: flex;
+      flex-direction: column;
+    }
+    .header {
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(8px);
+      color: white;
+      padding: 24px 20px;
+      text-align: center;
+    }
+    .header h1 { font-size: 26px; font-weight: bold; }
+    .header p { font-size: 14px; opacity: 0.85; margin-top: 4px; }
+    .container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 16px;
+    }
+    .card {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      padding: 24px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    }
+    .card h2 { font-size: 17px; margin-bottom: 16px; color: #222; text-align: center; }
     .categories { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-    .cat-btn { padding: 14px; border: 2px solid #eee; border-radius: 10px; background: white; cursor: pointer; font-size: 14px; text-align: center; transition: all 0.2s; }
+    .cat-btn {
+      padding: 14px;
+      border: 2px solid #eee;
+      border-radius: 10px;
+      background: white;
+      cursor: pointer;
+      font-size: 14px;
+      text-align: center;
+      transition: all 0.2s;
+      color: #333;
+    }
     .cat-btn.selected { border-color: #1a1a2e; background: #1a1a2e; color: white; }
-    textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; resize: none; height: 100px; }
-    .submit-btn { width: 100%; padding: 16px; background: #1a1a2e; color: white; border: none; border-radius: 10px; font-size: 16px; cursor: pointer; margin-top: 12px; }
-    .success { background: #e8f5e9; color: #2e7d32; padding: 16px; border-radius: 10px; text-align: center; display: none; }
+    textarea {
+      width: 100%; padding: 12px;
+      border: 1px solid #ddd; border-radius: 8px;
+      font-size: 14px; resize: none; height: 90px;
+      font-family: sans-serif;
+    }
+    .submit-btn {
+      width: 100%; padding: 15px;
+      background: #1a1a2e; color: white;
+      border: none; border-radius: 10px;
+      font-size: 16px; cursor: pointer; margin-top: 12px;
+      font-weight: bold;
+    }
+    .success {
+      background: #e8f5e9; color: #2e7d32;
+      padding: 14px; border-radius: 10px;
+      margin-top: 12px; display: none;
+      font-size: 14px; text-align: center;
+    }
+    .feedback-card {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(12px);
+      border-radius: 16px; padding: 28px;
+      width: 100%; max-width: 420px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      display: none; text-align: center;
+    }
+    .feedback-card h2 { font-size: 20px; margin-bottom: 8px; color: #1a1a2e; }
+    .feedback-card p { color: #666; font-size: 14px; margin-bottom: 16px; }
+    .stars { font-size: 40px; cursor: pointer; margin-bottom: 12px; }
+    .stars span { display: inline-block; transition: transform 0.1s; }
+    .stars span:hover { transform: scale(1.2); }
+    .comment-box {
+      width: 100%; padding: 12px;
+      border: 1px solid #ddd; border-radius: 8px;
+      font-size: 14px; resize: none; height: 80px;
+      margin-bottom: 12px; font-family: sans-serif;
+    }
+    .feedback-btn {
+      width: 100%; padding: 14px;
+      background: #2ecc71; color: white;
+      border: none; border-radius: 10px;
+      font-size: 15px; cursor: pointer; font-weight: bold;
+    }
+    .thankyou {
+      background: rgba(255,255,255,0.95);
+      color: #2e7d32; padding: 28px;
+      border-radius: 16px; text-align: center;
+      display: none; font-size: 18px;
+      width: 100%; max-width: 420px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    }
   </style>
 </head>
 <body>
@@ -26,8 +115,10 @@
     <h1>🏨 Welco</h1>
     <p>Room 101 — Hotel Demo</p>
   </div>
+
   <div class="container">
-    <div class="card">
+    <!-- Request Card -->
+    <div class="card" id="request-card">
       <h2>How can we help you?</h2>
       <div class="categories">
         <button class="cat-btn" onclick="selectCat(this, 'Housekeeping')">🛏️ Housekeeping</button>
@@ -37,31 +128,110 @@
       </div>
       <textarea id="message" placeholder="Describe your request..."></textarea>
       <button class="submit-btn" onclick="submitRequest()">Send Request</button>
-      <div class="success" id="success">✅ Request sent! We'll be right with you.</div>
+      <div class="success" id="success">✅ Request sent! We'll ask for your feedback once completed.</div>
+    </div>
+
+    <!-- Feedback Card -->
+    <div class="feedback-card" id="feedback-card">
+      <h2>How did we do? ⭐</h2>
+      <p>Your request has been completed!<br>Please rate your experience.</p>
+      <div class="stars" id="stars">
+        <span onclick="setRating(1)">⭐</span>
+        <span onclick="setRating(2)">⭐</span>
+        <span onclick="setRating(3)">⭐</span>
+        <span onclick="setRating(4)">⭐</span>
+        <span onclick="setRating(5)">⭐</span>
+      </div>
+      <p id="rating-label" style="margin-bottom:12px;color:#1a1a2e;font-weight:bold;font-size:16px"></p>
+      <textarea class="comment-box" id="comment" placeholder="Any suggestions or comments? (optional)"></textarea>
+      <button class="feedback-btn" onclick="submitFeedback()">Submit Feedback</button>
+    </div>
+
+    <!-- Thank You -->
+    <div class="thankyou" id="thankyou">
+      🙏 Thank you for your feedback!<br>Enjoy your stay.
     </div>
   </div>
+
   <script>
     let selectedCategory = '';
+    let currentRequestId = null;
+    let selectedRating = 0;
+    let pollInterval = null;
+
+    async function loadBranding() {
+      const params = new URLSearchParams(window.location.search);
+      const hotelId = params.get('hotel') || 'hotel_001';
+      const roomNumber = params.get('room') || '101';
+      const res = await fetch('/hotels/' + hotelId);
+      const { data } = await res.json();
+      if (data) {
+        document.querySelector('.header').style.background = 'rgba(0,0,0,0.55)';
+        document.querySelector('.header h1').textContent = data.emoji + ' ' + data.name;
+        document.querySelector('.header p').textContent = 'Room ' + roomNumber + ' — ' + data.city;
+        document.querySelector('.submit-btn').style.background = data.colour;
+        document.querySelector('.cat-btn.selected') && (document.querySelector('.cat-btn.selected').style.background = data.colour);
+      }
+    }
+    loadBranding();
+
     function selectCat(btn, cat) {
       document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
       btn.classList.add('selected');
       selectedCategory = cat;
     }
+
+    function setRating(r) {
+      selectedRating = r;
+      const labels = ['', '😞 Poor', '😐 Fair', '🙂 Good', '😊 Great', '🤩 Excellent!'];
+      document.getElementById('rating-label').textContent = labels[r];
+      document.querySelectorAll('#stars span').forEach((s, i) => {
+        s.style.opacity = i < r ? '1' : '0.3';
+      });
+    }
+
     async function submitRequest() {
       if (!selectedCategory) return alert('Please select a category!');
       const message = document.getElementById('message').value;
-      const res = await fetch('http://localhost:3000/requests', {
+      const params = new URLSearchParams(window.location.search);
+      const hotelId = params.get('hotel') || 'hotel_001';
+      const roomNumber = params.get('room') || '101';
+      const res = await fetch('/requests', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ hotel_id: 'hotel_001', room_number: '101', category: selectedCategory, message })
+        body: JSON.stringify({ hotel_id: hotelId, room_number: roomNumber, category: selectedCategory, message })
       });
       const data = await res.json();
       if (data.success) {
+        currentRequestId = data.request.id;
         document.getElementById('success').style.display = 'block';
         document.getElementById('message').value = '';
         document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
         selectedCategory = '';
+        pollInterval = setInterval(checkIfDone, 5000);
       }
+    }
+
+    async function checkIfDone() {
+      const res = await fetch('/requests/' + currentRequestId);
+      const { data } = await res.json();
+      if (data && data.status === 'done' && !data.feedback_rating) {
+        clearInterval(pollInterval);
+        document.getElementById('request-card').style.display = 'none';
+        document.getElementById('feedback-card').style.display = 'block';
+      }
+    }
+
+    async function submitFeedback() {
+      if (!selectedRating) return alert('Please select a star rating!');
+      const comment = document.getElementById('comment').value;
+      await fetch('/requests/' + currentRequestId + '/feedback', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ feedback_rating: selectedRating, feedback_comment: comment })
+      });
+      document.getElementById('feedback-card').style.display = 'none';
+      document.getElementById('thankyou').style.display = 'block';
     }
   </script>
 </body>

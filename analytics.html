@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welco Analytics</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: sans-serif; background: #f0f2f5; }
+    .header { background: linear-gradient(90deg, #005f73, #0a9396); color: white; padding: 20px 24px; }
+    .header h1 { font-size: 20px; }
+    .header p { font-size: 13px; opacity: 0.7; margin-top: 4px; }
+    .container { max-width: 700px; margin: 24px auto; padding: 0 16px; }
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+    .stat-card { background: white; border-radius: 14px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); text-align: center; }
+    .stat-number { font-size: 36px; font-weight: bold; color: #0a9396; }
+    .stat-label { font-size: 13px; color: #888; margin-top: 4px; }
+    .section-title { font-size: 14px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+    .review-card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .review-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .review-room { font-weight: bold; font-size: 14px; }
+    .review-stars { font-size: 16px; }
+    .review-comment { color: #555; font-size: 14px; font-style: italic; margin-bottom: 6px; }
+    .review-meta { font-size: 12px; color: #aaa; }
+    .rating-bar { margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+    .rating-bar span { font-size: 13px; width: 20px; color: #555; }
+    .bar-bg { flex: 1; background: #eee; border-radius: 4px; height: 8px; }
+    .bar-fill { height: 100%; border-radius: 4px; background: #0a9396; }
+    .bar-count { font-size: 12px; color: #888; width: 24px; text-align: right; }
+    .empty { text-align: center; padding: 32px; color: #aaa; }
+    .hotel-filter { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+    .filter-btn { padding: 8px 16px; border: 2px solid #0a9396; border-radius: 20px; background: white; color: #0a9396; cursor: pointer; font-size: 13px; }
+    .filter-btn.active { background: #0a9396; color: white; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📊 Welco Analytics</h1>
+    <p>Guest feedback & request insights</p>
+  </div>
+  <div class="container">
+    <!-- Hotel Filter -->
+    <div class="hotel-filter" id="hotel-filter"></div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number" id="total-requests">-</div>
+        <div class="stat-label">Total Requests</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="avg-rating">-</div>
+        <div class="stat-label">Avg Rating ⭐</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="completed">-</div>
+        <div class="stat-label">Completed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="pending-count">-</div>
+        <div class="stat-label">Pending</div>
+      </div>
+    </div>
+
+    <!-- Rating Breakdown -->
+    <div class="section-title">Rating Breakdown</div>
+    <div style="background:white;border-radius:14px;padding:20px;margin-bottom:24px;box-shadow:0 2px 8px rgba(0,0,0,0.07)">
+      <div id="rating-bars"></div>
+    </div>
+
+    <!-- Recent Reviews -->
+    <div class="section-title">Recent Reviews</div>
+    <div id="reviews-list"></div>
+  </div>
+
+  <script>
+    let allData = [];
+    let currentHotel = 'all';
+
+    async function loadData() {
+      const res = await fetch('/requests');
+      const { data } = await res.json();
+      allData = data;
+      buildHotelFilter(data);
+      renderDashboard(data);
+    }
+
+    function buildHotelFilter(data) {
+      const hotels = ['all', ...new Set(data.map(r => r.hotel_id))];
+      const filter = document.getElementById('hotel-filter');
+      filter.innerHTML = hotels.map(h => `
+        <button class="filter-btn ${h === 'all' ? 'active' : ''}" onclick="filterHotel('${h}')">
+          ${h === 'all' ? '🌐 All Hotels' : '🏨 ' + h.replace('_', ' ').toUpperCase()}
+        </button>
+      `).join('');
+    }
+
+    function filterHotel(hotel) {
+      currentHotel = hotel;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      const filtered = hotel === 'all' ? allData : allData.filter(r => r.hotel_id === hotel);
+      renderDashboard(filtered);
+    }
+
+    function renderDashboard(data) {
+      const total = data.length;
+      const completed = data.filter(r => r.status === 'done').length;
+      const pending = data.filter(r => r.status === 'pending' || r.status === 'claimed').length;
+      const rated = data.filter(r => r.feedback_rating);
+      const avg = rated.length > 0 ? (rated.reduce((s, r) => s + r.feedback_rating, 0) / rated.length).toFixed(1) : '-';
+
+      document.getElementById('total-requests').textContent = total;
+      document.getElementById('avg-rating').textContent = avg;
+      document.getElementById('completed').textContent = completed;
+      document.getElementById('pending-count').textContent = pending;
+
+      // Rating bars
+      const bars = document.getElementById('rating-bars');
+      if (rated.length === 0) {
+        bars.innerHTML = '<div class="empty">No ratings yet</div>';
+      } else {
+        bars.innerHTML = [5,4,3,2,1].map(star => {
+          const count = rated.filter(r => r.feedback_rating === star).length;
+          const pct = rated.length > 0 ? (count / rated.length * 100) : 0;
+          return `
+            <div class="rating-bar">
+              <span>${star}⭐</span>
+              <div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div>
+              <span class="bar-count">${count}</span>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Reviews
+      const reviews = data.filter(r => r.feedback_rating).sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+      const list = document.getElementById('reviews-list');
+      if (reviews.length === 0) {
+        list.innerHTML = '<div class="empty">No reviews yet</div>';
+      } else {
+        list.innerHTML = reviews.map(r => `
+          <div class="review-card">
+            <div class="review-top">
+              <span class="review-room">Room ${r.room_number} — ${r.category}</span>
+              <span class="review-stars">${'⭐'.repeat(r.feedback_rating)}</span>
+            </div>
+            ${r.feedback_comment ? `<div class="review-comment">"${r.feedback_comment}"</div>` : ''}
+            <div class="review-meta">${r.hotel_id.replace('_',' ').toUpperCase()} · ${new Date(r.created_at).toLocaleDateString()}</div>
+          </div>
+        `).join('');
+      }
+    }
+
+    loadData();
+  </script>
+</body>
+</html>

@@ -85,6 +85,10 @@
     .task-msg { color: #555; font-size: 14px; margin-bottom: 8px; }
     .task-sla { font-size: 12px; color: #888; margin-bottom: 10px; }
     .task-sla span { color: #e63946; font-weight: bold; }
+    .timer-bar { height: 4px; background: #eee; border-radius: 4px; margin-bottom: 10px; }
+.timer-fill { height: 100%; border-radius: 4px; background: #2ecc71; transition: width 0.5s; }
+.timer-fill.warning { background: #ee9b00; }
+.timer-fill.urgent { background: #e63946; }
     .accept-btn {
       padding: 9px 20px; background: #ee9b00;
       color: white; border: none; border-radius: 8px;
@@ -184,7 +188,7 @@
       document.getElementById('dashboard-screen').style.display = 'block';
       document.getElementById('dash-staff').textContent = '👋 ' + name;
       loadTasks();
-      setInterval(loadTasks, 5000);
+    setInterval(loadTasks, 1000);
     }
 
     function doLogout() {
@@ -204,21 +208,45 @@
         list.innerHTML = '<div class="empty-state">🎉 No requests right now!</div>';
         return;
       }
-      list.innerHTML = data.map(r => `
-        <div class="task-card ${r.status === 'done' ? 'done' : ''}">
-          <div class="task-top">
-            <span class="task-room">Room ${r.room_number}</span>
-            <span class="task-cat">${r.category}</span>
-          </div>
-          <div class="task-msg">${r.message || 'No details'}</div>
-          <div class="task-sla">⏱ SLA: <span>15 min</span></div>
-          <button class="accept-btn" onclick="markDone(${r.id})" ${r.status === 'done' ? 'disabled' : ''}>
-            ${r.status === 'done' ? '✅ Done' : 'Accept & Complete'}
-          </button>
-        </div>
-      `).join('');
+      list.innerHTML = data.map(r => {
+  const SLA_MINUTES = 15;
+  const created = new Date(r.created_at).getTime();
+  const now = Date.now();
+  const elapsedMin = (now - created) / 60000;
+  const remaining = Math.max(0, SLA_MINUTES - elapsedMin);
+  const pct = Math.max(0, (remaining / SLA_MINUTES) * 100);
+  const mins = Math.floor(remaining);
+  const secs = Math.floor((remaining - mins) * 60);
+  const timerClass = pct > 50 ? '' : pct > 25 ? 'warning' : 'urgent';
+  const cardClass = r.status === 'done' ? 'done' : pct === 0 ? 'urgent' : '';
+  return `
+    <div class="task-card ${cardClass}" id="card-${r.id}">
+      <div class="task-top">
+        <span class="task-room">Room ${r.room_number}</span>
+        <span class="task-cat">${r.category}</span>
+      </div>
+      <div class="task-msg">${r.message || 'No details'}</div>
+      <div class="task-sla">⏱ SLA: <span>${r.status === 'done' ? 'Completed' : mins + 'm ' + secs + 's remaining'}</span></div>
+      <div class="timer-bar">
+        <div class="timer-fill ${timerClass}" style="width:${r.status === 'done' ? 100 : pct}%"></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+  ${r.status === 'pending' ? `<button class="accept-btn" onclick="claimTask(${r.id})" style="background:#0a9396">👋 Accept Task</button>` : ''}
+  ${r.status === 'claimed' ? `<div style="background:#e8f5e9;padding:8px 14px;border-radius:8px;font-size:13px;color:#2e7d32">✅ Accepted by <b>${r.claimed_by}</b></div><button class="accept-btn" onclick="markDone(${r.id})">Mark Done</button>` : ''}
+  ${r.status === 'done' ? `<button class="accept-btn" disabled style="background:#ccc">✅ Completed</button>` : ''}
+</div>
+    </div>
+  `;
+}).join('');
     }
-
+async function claimTask(id) {
+  await fetch('/requests/' + id + '/claim', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ claimed_by: loggedInStaff })
+  });
+  loadTasks();
+}
     async function markDone(id) {
       await fetch('/requests/' + id, {
         method: 'PATCH',

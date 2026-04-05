@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welco Admin</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: sans-serif; background: #f0f2f5; }
+    .header { background: linear-gradient(90deg, #005f73, #0a9396); color: white; padding: 20px 24px; }
+    .header h1 { font-size: 20px; }
+    .header p { font-size: 13px; opacity: 0.7; margin-top: 4px; }
+    .container { max-width: 700px; margin: 24px auto; padding: 0 16px; }
+    .hotel-section { margin-bottom: 32px; }
+    .hotel-title { font-size: 16px; font-weight: bold; color: #005f73; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #0a9396; }
+    .rooms-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .room-card { background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); text-align: center; }
+    .room-number { font-size: 22px; font-weight: bold; color: #1a1a2e; margin-bottom: 4px; }
+    .room-floor { font-size: 12px; color: #aaa; margin-bottom: 12px; }
+    .qr-btn { width: 100%; padding: 10px; background: #0a9396; color: white; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; }
+    .qr-btn:hover { background: #005f73; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 100; }
+    .modal.open { display: flex; }
+    .modal-box { background: white; border-radius: 20px; padding: 32px; text-align: center; max-width: 320px; width: 90%; }
+    .modal-box h2 { margin-bottom: 4px; }
+    .modal-box p { color: #888; font-size: 13px; margin-bottom: 16px; }
+    .modal-box img { width: 200px; margin-bottom: 16px; }
+    .close-btn { padding: 10px 24px; background: #1a1a2e; color: white; border: none; border-radius: 8px; cursor: pointer; }
+    .loading { color: #aaa; text-align: center; padding: 40px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🏨 Welco Admin</h1>
+    <p>Manage hotels, rooms and QR codes</p>
+  </div>
+  <div class="container" id="content">
+    <div class="loading">Loading rooms...</div>
+  </div>
+
+  <!-- QR Modal -->
+  <div class="modal" id="qr-modal">
+    <div class="modal-box">
+      <h2 id="modal-title">Room QR Code</h2>
+      <p id="modal-sub">Scan to open guest portal</p>
+      <img id="qr-img" src="" alt="QR Code"/>
+      <br>
+      <button class="close-btn" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    async function loadRooms() {
+      const res = await fetch('/rooms');
+      const { data } = await res.json();
+      const hotels = {};
+      data.forEach(r => {
+        if (!hotels[r.hotel_id]) hotels[r.hotel_id] = [];
+        hotels[r.hotel_id].push(r);
+      });
+      const content = document.getElementById('content');
+      content.innerHTML = Object.entries(hotels).map(([hotelId, rooms]) => `
+        <div class="hotel-section">
+          <div class="hotel-title">🏨 ${hotelId.replace('_', ' ').toUpperCase()}</div>
+          <div class="rooms-grid">
+            ${rooms.map(r => `
+              <div class="room-card">
+                <div class="room-number">Room ${r.room_number}</div>
+                <div class="room-floor">Floor ${r.floor}</div>
+                <button class="qr-btn" onclick="showQR('${r.hotel_id}', '${r.room_number}')">
+                  📱 View QR Code
+                </button>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function showQR(hotelId, roomNumber) {
+      document.getElementById('modal-title').textContent = 'Room ' + roomNumber;
+      document.getElementById('modal-sub').textContent = hotelId.replace('_', ' ').toUpperCase();
+      document.getElementById('qr-img').src = '/qr-img/' + hotelId + '/' + roomNumber;
+      document.getElementById('qr-modal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('qr-modal').classList.remove('open');
+    }
+
+    loadRooms();
+  </script>
+</body>
+</html>

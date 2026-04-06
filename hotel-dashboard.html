@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welco — Hotel Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    :root {
+      --teal: #0a9396;
+      --teal-dark: #005f73;
+      --teal-light: #94d2bd;
+      --sand: #f7f3ee;
+      --ink: #0d1b1e;
+      --mist: #e8f4f4;
+      --brand: #0a9396;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; background: #f4f4f4; color: var(--ink); }
+
+    /* TOPBAR */
+    .topbar {
+      background: white; padding: 16px 40px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 10;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 16px; }
+    .hotel-emoji { font-size: 28px; }
+    .hotel-name-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; font-weight: 600; color: var(--ink);
+    }
+    .hotel-name-title span { font-size: 12px; font-weight: 400; color: #999; display: block; font-family: 'DM Sans', sans-serif; }
+    .welco-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px; font-weight: 700; color: var(--teal-dark);
+    }
+    .welco-logo span { color: var(--teal); }
+    .topbar-right { display: flex; gap: 12px; align-items: center; }
+    .btn-sm {
+      padding: 8px 18px; border-radius: 2px; font-size: 12px;
+      font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+      cursor: pointer; border: none; font-family: 'DM Sans', sans-serif;
+      text-decoration: none; display: inline-block;
+    }
+    .btn-outline { background: white; border: 1.5px solid #ddd; color: var(--ink); }
+    .btn-danger { background: #fde8ea; color: #e63946; border: none; }
+
+    /* MAIN */
+    .main { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+
+    /* WELCOME BANNER */
+    .welcome-banner {
+      border-radius: 4px; padding: 32px 36px; margin-bottom: 32px;
+      background: var(--brand); color: white;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .welcome-banner h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px; font-weight: 300; margin-bottom: 6px;
+    }
+    .welcome-banner p { font-size: 13px; opacity: 0.75; font-weight: 300; }
+    .banner-stats { display: flex; gap: 32px; }
+    .banner-stat { text-align: center; }
+    .banner-stat-num { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 700; color: var(--teal-light); }
+    .banner-stat-label { font-size: 11px; opacity: 0.6; letter-spacing: 0.1em; text-transform: uppercase; }
+
+    /* SECTION HEADER */
+    .section-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px; font-weight: 600; color: var(--ink);
+    }
+    .section-sub { font-size: 13px; color: #999; margin-top: 2px; }
+
+    /* CARDS GRID */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 40px; }
+    .room-card {
+      background: white; border-radius: 4px; padding: 20px;
+      border: 1px solid #eee; text-align: center;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .room-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-2px); }
+    .room-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px; font-weight: 700; color: var(--brand); margin-bottom: 4px;
+    }
+    .room-floor { font-size: 11px; color: #999; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 12px; }
+    .qr-box { margin: 0 auto 12px; width: 100px; height: 100px; }
+    .btn-download {
+      display: block; width: 100%; padding: 8px;
+      background: var(--mist); color: var(--teal-dark);
+      border: none; border-radius: 2px; font-size: 11px;
+      font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+      transition: background 0.2s;
+    }
+    .btn-download:hover { background: var(--teal-light); }
+
+    /* STAFF SECTION */
+    .staff-section { background: white; border-radius: 4px; padding: 32px; margin-bottom: 40px; border: 1px solid #eee; }
+    .staff-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-top: 20px; }
+    .staff-card {
+      background: #f9f9f9; border-radius: 2px; padding: 16px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .staff-name { font-size: 14px; font-weight: 500; }
+    .staff-pin {
+      font-family: monospace; font-size: 16px; font-weight: 700;
+      color: var(--brand); letter-spacing: 0.2em;
+      background: var(--mist); padding: 4px 10px; border-radius: 2px;
+    }
+    .add-staff-row { display: flex; gap: 12px; margin-top: 20px; }
+    .add-staff-row input {
+      flex: 1; padding: 12px 14px; border: 1.5px solid #e0ddd8;
+      border-radius: 2px; font-family: 'DM Sans', sans-serif;
+      font-size: 14px; outline: none;
+    }
+    .add-staff-row input:focus { border-color: var(--teal); }
+    .btn-add {
+      padding: 12px 24px; background: var(--teal-dark); color: white;
+      border: none; border-radius: 2px; font-size: 12px; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    /* QUICK LINKS */
+    .quick-links { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 40px; }
+    .quick-card {
+      background: white; border-radius: 4px; padding: 24px;
+      border: 1px solid #eee; text-decoration: none; color: var(--ink);
+      display: flex; align-items: center; gap: 16px;
+      transition: box-shadow 0.2s; cursor: pointer;
+    }
+    .quick-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+    .quick-icon { font-size: 28px; }
+    .quick-label { font-size: 13px; font-weight: 500; }
+    .quick-desc { font-size: 12px; color: #999; margin-top: 2px; }
+
+    .loading { text-align: center; padding: 60px; color: #999; font-size: 14px; }
+  </style>
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="welco-logo">Wel<span>co</span></div>
+      <div style="width:1px;height:24px;background:#eee;margin:0 8px;"></div>
+      <div class="hotel-emoji" id="h-emoji">🏨</div>
+      <div class="hotel-name-title" id="h-name">
+        Loading...
+        <span id="h-city"></span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <a href="staff.html" class="btn-sm btn-outline">Staff View</a>
+      <button class="btn-sm btn-danger" onclick="logout()">Log Out</button>
+    </div>
+  </div>
+
+  <div class="main" id="main-content">
+    <div class="loading">Loading your hotel dashboard...</div>
+  </div>
+
+  <script>
+    let hotel = null;
+    let rooms = [];
+
+    // Load hotel from localStorage
+    window.onload = async () => {
+      const stored = localStorage.getItem('welco_hotel');
+      if (!stored) return window.location.href = '/signup.html';
+      hotel = JSON.parse(stored);
+
+      // Apply brand colour
+      document.documentElement.style.setProperty('--brand', hotel.colour || '#0a9396');
+
+      document.getElementById('h-emoji').textContent = hotel.emoji || '🏨';
+      document.getElementById('h-name').childNodes[0].textContent = hotel.name;
+      document.getElementById('h-city').textContent = hotel.city || '';
+
+      await loadRooms();
+      renderDashboard();
+    };
+
+    async function loadRooms() {
+      try {
+        const res = await fetch('/rooms?hotel_id=' + hotel.hotel_id);
+        rooms = await res.json();
+      } catch(e) { rooms = []; }
+    }
+
+    function renderDashboard() {
+      const main = document.getElementById('main-content');
+      main.innerHTML = `
+        <!-- WELCOME BANNER -->
+        <div class="welcome-banner">
+          <div>
+            <h2>Welcome, ${hotel.name} ${hotel.emoji || '🏨'}</h2>
+            <p>Your hotel is live on Welco. Guests can now scan QR codes and request services instantly.</p>
+          </div>
+          <div class="banner-stats">
+            <div class="banner-stat">
+              <div class="banner-stat-num">${rooms.length}</div>
+              <div class="banner-stat-label">Rooms</div>
+            </div>
+            <div class="banner-stat">
+              <div class="banner-stat-num">✓</div>
+              <div class="banner-stat-label">Live</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- QUICK LINKS -->
+        <div class="quick-links">
+          <a href="staff.html" class="quick-card">
+            <div class="quick-icon">👷</div>
+            <div>
+              <div class="quick-label">Staff Dashboard</div>
+              <div class="quick-desc">View & manage live requests</div>
+            </div>
+          </a>
+          <a href="analytics.html" class="quick-card">
+            <div class="quick-icon">📊</div>
+            <div>
+              <div class="quick-label">Analytics</div>
+              <div class="quick-desc">Feedback & performance data</div>
+            </div>
+          </a>
+          <div class="quick-card" onclick="window.print()">
+            <div class="quick-icon">🖨️</div>
+            <div>
+              <div class="quick-label">Print QR Codes</div>
+              <div class="quick-desc">Print all room QR codes</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ROOMS & QR CODES -->
+        <div class="section-header">
+          <div>
+            <div class="section-title">Room QR Codes</div>
+            <div class="section-sub">Share or print these for each room. Guests scan to request services.</div>
+          </div>
+        </div>
+        <div class="cards-grid" id="rooms-grid">
+          ${rooms.length === 0 ? '<p style="color:#999;font-size:14px;">No rooms found. Contact support.</p>' : ''}
+        </div>
+
+        <!-- STAFF PINs -->
+        <div class="staff-section">
+          <div class="section-header" style="margin-bottom:0">
+            <div>
+              <div class="section-title">Staff PINs</div>
+              <div class="section-sub">Staff use these to log into the dashboard</div>
+            </div>
+          </div>
+          <div class="staff-grid" id="staff-grid">
+            <div class="staff-card">
+              <div class="staff-name">Default Staff</div>
+              <div class="staff-pin">1234</div>
+            </div>
+          </div>
+          <div class="add-staff-row">
+            <input type="text" id="new-staff-name" placeholder="Staff member name">
+            <input type="text" id="new-staff-pin" placeholder="4-digit PIN" maxlength="4" style="max-width:120px">
+            <button class="btn-add" onclick="addStaff()">Add Staff</button>
+          </div>
+        </div>
+      `;
+
+      // Render QR codes
+      setTimeout(() => {
+        rooms.forEach(room => {
+          const grid = document.getElementById('rooms-grid');
+          const card = document.createElement('div');
+          card.className = 'room-card';
+          card.innerHTML = `
+            <div class="room-number">Room ${room.room_number}</div>
+            <div class="room-floor">Floor ${room.floor || 1}</div>
+            <div class="qr-box" id="qr-${room.id}"></div>
+            <button class="btn-download" onclick="downloadQR(${room.id}, '${room.room_number}')">⬇ Download</button>
+          `;
+          grid.appendChild(card);
+
+          const guestUrl = `${window.location.origin}/guest.html?hotel_id=${hotel.hotel_id}&room_id=${room.id}`;
+          new QRCode(document.getElementById('qr-' + room.id), {
+            text: guestUrl,
+            width: 100, height: 100,
+            colorDark: hotel.colour || '#005f73',
+            colorLight: '#ffffff'
+          });
+        });
+      }, 100);
+    }
+
+    function downloadQR(roomId, roomNumber) {
+      const canvas = document.querySelector('#qr-' + roomId + ' canvas');
+      if (!canvas) return alert('QR not ready yet');
+      const link = document.createElement('a');
+      link.download = `welco-room-${roomNumber}.png`;
+      link.href = canvas.toDataURL();
+      link.click();
+    }
+
+    function addStaff() {
+      const name = document.getElementById('new-staff-name').value.trim();
+      const pin = document.getElementById('new-staff-pin').value.trim();
+      if (!name || pin.length !== 4) return alert('Enter a name and a 4-digit PIN');
+
+      const grid = document.getElementById('staff-grid');
+      const card = document.createElement('div');
+      card.className = 'staff-card';
+      card.innerHTML = `<div class="staff-name">${name}</div><div class="staff-pin">${pin}</div>`;
+      grid.appendChild(card);
+
+      document.getElementById('new-staff-name').value = '';
+      document.getElementById('new-staff-pin').value = '';
+    }
+
+    function logout() {
+      localStorage.removeItem('welco_hotel');
+      window.location.href = '/signup.html';
+    }
+  </script>
+</body>
+</html>

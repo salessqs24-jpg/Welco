@@ -6,43 +6,92 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Supabase client
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_ANON_KEY
 );
 
-// Middleware
 app.use(express.json());
-app.use(express.static(__dirname)); // serves index.html, guest.html, staff.html, etc.
+app.use(express.static(__dirname));
 
-// ─────────────────────────────────────────
+// SIGNUP
+app.post('/signup', async (req, res) => {
+  const { hotelName, city, ownerName, roomCount, colour, emoji, email, password } = req.body;
+
+  const { data: existing } = await supabase
+    .from('hotels')
+    .select('id')
+    .eq('owner_email', email)
+    .maybeSingle();
+
+  if (existing) return res.status(400).json({ error: 'Email already exists.' });
+
+  const hotel_id = 'hotel_' + hotelName.toLowerCase().replace(/[^a-z0-9]/g, '').substring(0, 10) + '_' + Date.now().toString().slice(-4);
+
+  const { data: hotel, error: hotelError } = await supabase
+    .from('hotels')
+    .insert([{
+      hotel_id,
+      name: hotelName,
+      city,
+      owner_name: ownerName,
+      colour: colour || '#0a9396',
+      emoji: emoji || '🏨',
+      owner_email: email,
+      owner_password: password
+    }])
+    .select()
+    .single();
+
+  if (hotelError) return res.status(500).json({ error: hotelError.message });
+
+  const roomsToInsert = [];
+  for (let i = 1; i <= roomCount; i++) {
+    roomsToInsert.push({
+      hotel_id: String(hotel_id),
+      room_number: String(i),
+      floor: Math.ceil(i / 10),
+      is_active: true
+    });
+  }
+
+  const { error: roomsError } = await supabase.from('rooms').insert(roomsToInsert);
+  if (roomsError) return res.status(500).json({ error: roomsError.message });
+
+  res.json({ hotel: { ...hotel, hotel_id, city } });
+});
+
+// LOGIN
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  const { data: hotel, error } = await supabase
+    .from('hotels')
+    .select('*')
+    .eq('owner_email', email)
+    .eq('owner_password', password)
+    .maybeSingle();
+
+  if (!hotel) return res.status(401).json({ error: 'Invalid email or password.' });
+
+  res.json({ hotel });
+});
+
 // HOTELS
-// ─────────────────────────────────────────
-
-// Get all hotels
 app.get('/hotels', async (req, res) => {
   const { data, error } = await supabase.from('hotels').select('*');
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
 });
 
-// Get single hotel by id
 app.get('/hotels/:id', async (req, res) => {
   const { data, error } = await supabase
-    .from('hotels')
-    .select('*')
-    .eq('id', req.params.id)
-    .single();
+    .from('hotels').select('*').eq('id', req.params.id).single();
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
 });
 
-// ─────────────────────────────────────────
 // ROOMS
-// ─────────────────────────────────────────
-
-// Get all rooms (optionally filter by hotel)
 app.get('/rooms', async (req, res) => {
   let query = supabase.from('rooms').select('*');
   if (req.query.hotel_id) query = query.eq('hotel_id', req.query.hotel_id);
@@ -51,88 +100,62 @@ app.get('/rooms', async (req, res) => {
   res.json(data);
 });
 
-// ─────────────────────────────────────────
 // REQUESTS
-// ─────────────────────────────────────────
-
-// Get all requests (optionally filter by hotel or room)
 app.get('/requests', async (req, res) => {
   let query = supabase.from('requests').select('*').order('created_at', { ascending: false });
   if (req.query.hotel_id) query = query.eq('hotel_id', req.query.hotel_id);
-  if (req.query.room_id)  query = query.eq('room_id', req.query.room_id);
+  if (req.query.room_id) query = query.eq('room_id', req.query.room_id);
   const { data, error } = await query;
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
 });
 
-// Create a new request (guest submits)
 app.post('/requests', async (req, res) => {
-  const { room_id, hotel_id, type, note } = req.body;
+  const { room_id, hotel_id, category, message } = req.body;
   const { data, error } = await supabase
     .from('requests')
-    .insert([{ room_id, hotel_id, type, note, status: 'pending' }])
-    .select()
-    .single();
+    .insert([{ room_id, hotel_id, category, message, status: 'pending' }])
+    .select().single();
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
 });
 
-// Claim a request (staff picks it up)
 app.post('/requests/:id/claim', async (req, res) => {
-  const { staff_name } = req.body;
+  const { claimed_by } = req.body;
   const { data, error } = await supabase
     .from('requests')
-    .update({ status: 'in_progress', staff_name, claimed_at: new Date().toISOString() })
-    .eq('id', req.params.id)
-    .select()
-    .single();
+    .update({ status: 'in_progress', claimed_by, claimed_at: new Date().toISOString() })
+    .eq('id', req.params.id).select().single();
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
 });
 
-// Complete a request
 app.post('/requests/:id/complete', async (req, res) => {
   const { data, error } = await supabase
     .from('requests')
-    .update({ status: 'completed', completed_at: new Date().toISOString() })
-    .eq('id', req.params.id)
-    .select()
-    .single();
+    .update({ status: 'done', completed_at: new Date().toISOString() })
+    .eq('id', req.params.id).select().single();
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
 });
 
-// Submit feedback for a request
 app.post('/requests/:id/feedback', async (req, res) => {
-  const { rating, comment } = req.body;
+  const { rating, feedback_comments } = req.body;
   const { data, error } = await supabase
     .from('requests')
-    .update({ rating, feedback_comment: comment })
-    .eq('id', req.params.id)
-    .select()
-    .single();
+    .update({ feedback_rating: rating, feedback_comments })
+    .eq('id', req.params.id).select().single();
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
 });
 
-// ─────────────────────────────────────────
-// QR CODES
-// ─────────────────────────────────────────
-
-// Get QR data for a room
+// QR
 app.get('/qr/:room_id', async (req, res) => {
   const { data, error } = await supabase
-    .from('rooms')
-    .select('*, hotels(*)')
-    .eq('id', req.params.room_id)
-    .single();
+    .from('rooms').select('*, hotels(*)').eq('id', req.params.room_id).single();
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
 });
-
-// ─────────────────────────────────────────
-// START SERVER
-// ─────────────────────────────────────────
 
 app.listen(PORT, () => {
   console.log(`✅ Welco server running at http://localhost:${PORT}`);

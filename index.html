@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welco — Hotel Guest Services</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --teal: #0a9396;
+      --teal-dark: #005f73;
+      --teal-light: #94d2bd;
+      --sand: #f7f3ee;
+      --ink: #0d1b1e;
+      --mist: #e8f4f4;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--sand);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      padding: 20px 48px;
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(247,243,238,0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(10,147,150,0.12);
+      transition: all 0.3s ease;
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px; font-weight: 700;
+      color: var(--teal-dark);
+      letter-spacing: 0.02em;
+    }
+    .nav-logo span { color: var(--teal); }
+    .nav-links { display: flex; gap: 36px; align-items: center; }
+    .nav-links a {
+      text-decoration: none; color: var(--ink);
+      font-size: 13px; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      opacity: 0.65; transition: opacity 0.2s;
+    }
+    .nav-links a:hover { opacity: 1; }
+    .nav-cta {
+      background: var(--teal-dark) !important;
+      color: white !important; opacity: 1 !important;
+      padding: 10px 24px; border-radius: 2px;
+      font-size: 12px !important;
+      letter-spacing: 0.12em !important;
+      transition: background 0.2s !important;
+    }
+    .nav-cta:hover { background: var(--teal) !important; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: grid; grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 120px 48px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background: linear-gradient(160deg, var(--sand) 55%, var(--mist) 100%);
+    }
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      right: -100px; top: -100px;
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(10,147,150,0.08) 0%, transparent 70%);
+    }
+    .hero-left { position: relative; z-index: 1; padding-right: 60px; }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 11px; font-weight: 500; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--teal);
+      margin-bottom: 28px;
+    }
+    .hero-eyebrow::before {
+      content: ''; display: block;
+      width: 32px; height: 1px; background: var(--teal);
+    }
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 68px; font-weight: 300; line-height: 1.05;
+      color: var(--ink); margin-bottom: 28px;
+      letter-spacing: -0.01em;
+    }
+    .hero h1 em {
+      font-style: italic; color: var(--teal-dark);
+    }
+    .hero-sub {
+      font-size: 16px; line-height: 1.75;
+      color: rgba(13,27,30,0.6);
+      max-width: 420px; margin-bottom: 48px;
+      font-weight: 300;
+    }
+    .hero-actions { display: flex; gap: 16px; align-items: center; }
+    .btn-primary {
+      background: var(--teal-dark);
+      color: white; text-decoration: none;
+      padding: 16px 36px; border-radius: 2px;
+      font-size: 13px; font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      transition: background 0.2s, transform 0.2s;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: var(--teal); transform: translateY(-1px); }
+    .btn-ghost {
+      color: var(--teal-dark); text-decoration: none;
+      font-size: 13px; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: gap 0.2s;
+    }
+    .btn-ghost:hover { gap: 14px; }
+    .btn-ghost::after { content: '→'; }
+
+    .hero-right {
+      position: relative; z-index: 1;
+      display: flex; justify-content: center; align-items: center;
+    }
+    .hero-card {
+      background: white;
+      border-radius: 4px;
+      box-shadow: 0 32px 80px rgba(0,95,115,0.14), 0 4px 16px rgba(0,0,0,0.06);
+      overflow: hidden; width: 100%; max-width: 380px;
+      animation: floatCard 6s ease-in-out infinite;
+    }
+    @keyframes floatCard {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    .card-header {
+      background: var(--teal-dark);
+      padding: 24px; color: white;
+    }
+    .card-header-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.6; margin-bottom: 6px; }
+    .card-header-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; }
+    .card-header-sub { font-size: 12px; opacity: 0.7; margin-top: 2px; }
+    .card-body { padding: 24px; }
+    .card-request {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 0; border-bottom: 1px solid #f0f0f0;
+    }
+    .card-request:last-child { border-bottom: none; }
+    .req-icon {
+      width: 38px; height: 38px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+    .req-icon.teal { background: var(--mist); }
+    .req-icon.amber { background: #fff8e6; }
+    .req-icon.green { background: #eaf7f0; }
+    .req-info { flex: 1; }
+    .req-name { font-size: 13px; font-weight: 500; color: var(--ink); }
+    .req-room { font-size: 11px; color: rgba(13,27,30,0.45); margin-top: 2px; }
+    .req-badge {
+      font-size: 10px; font-weight: 500; padding: 4px 10px;
+      border-radius: 20px; letter-spacing: 0.06em;
+    }
+    .badge-pending { background: #fff3cd; color: #8a6000; }
+    .badge-progress { background: #cff4fc; color: #0a6070; }
+    .badge-done { background: #d1fae5; color: #065f46; }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      background: var(--teal-dark);
+      padding: 36px 48px;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+    }
+    .stat-item {
+      text-align: center; padding: 0 24px;
+      border-right: 1px solid rgba(255,255,255,0.12);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 48px; font-weight: 700; color: var(--teal-light);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(255,255,255,0.55); margin-top: 8px;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .section { padding: 100px 48px; }
+    .section-label {
+      font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--teal); font-weight: 500; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-label::before { content: ''; display: block; width: 24px; height: 1px; background: var(--teal); }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 48px; font-weight: 300; line-height: 1.1;
+      color: var(--ink); margin-bottom: 64px;
+    }
+
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; }
+    .step { position: relative; }
+    .step-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 80px; font-weight: 700; color: rgba(10,147,150,0.07);
+      line-height: 1; margin-bottom: -20px;
+    }
+    .step-icon {
+      width: 52px; height: 52px; border-radius: 2px;
+      background: var(--teal-dark); color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; margin-bottom: 20px;
+    }
+    .step h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px; font-weight: 600; margin-bottom: 12px; color: var(--ink);
+    }
+    .step p { font-size: 14px; line-height: 1.8; color: rgba(13,27,30,0.6); font-weight: 300; }
+
+    /* ── PORTALS ── */
+    .portals-section { background: var(--ink); padding: 100px 48px; }
+    .portals-section .section-label { color: var(--teal-light); }
+    .portals-section .section-label::before { background: var(--teal-light); }
+    .portals-section .section-title { color: white; }
+    .portals { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .portal-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 4px; padding: 40px 32px;
+      text-decoration: none; color: white;
+      transition: background 0.3s, transform 0.3s, border-color 0.3s;
+      display: block;
+    }
+    .portal-card:hover {
+      background: rgba(10,147,150,0.12);
+      border-color: rgba(10,147,150,0.4);
+      transform: translateY(-4px);
+    }
+    .portal-icon { font-size: 36px; margin-bottom: 20px; display: block; }
+    .portal-card h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px; font-weight: 600; margin-bottom: 10px;
+    }
+    .portal-card p { font-size: 13px; line-height: 1.7; color: rgba(255,255,255,0.5); font-weight: 300; }
+    .portal-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-top: 24px; font-size: 12px; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--teal-light);
+      transition: gap 0.2s;
+    }
+    .portal-card:hover .portal-link { gap: 14px; }
+    .portal-link::after { content: '→'; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink); border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 40px 48px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; font-weight: 700; color: white;
+    }
+    .footer-logo span { color: var(--teal-light); }
+    .footer-copy { font-size: 12px; color: rgba(255,255,255,0.3); }
+    .footer-hotels { font-size: 12px; color: rgba(255,255,255,0.4); text-align: right; }
+
+    /* ── ANIMATIONS ── */
+    .fade-up { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 16px 20px; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; padding: 100px 20px 60px; text-align: center; }
+      .hero h1 { font-size: 42px; }
+      .hero-sub { max-width: 100%; }
+      .hero-actions { justify-content: center; flex-wrap: wrap; }
+      .hero-right { margin-top: 48px; }
+      .stats-bar { grid-template-columns: repeat(2, 1fr); gap: 32px; padding: 48px 20px; }
+      .stat-item { border-right: none; }
+      .section { padding: 60px 20px; }
+      .steps { grid-template-columns: 1fr; gap: 36px; }
+      .portals { grid-template-columns: 1fr; }
+      .portals-section { padding: 60px 20px; }
+      footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 20px; }
+      .footer-hotels { text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">Wel<span>co</span></div>
+    <div class="nav-links">
+      <a href="#how-it-works">How It Works</a>
+      <a href="#portals">Portals</a>
+      <a href="staff.html" class="nav-cta">Staff Login</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-left">
+      <div class="hero-eyebrow">Hotel Guest Services Platform</div>
+      <h1>Hospitality,<br><em>elevated</em><br>instantly.</h1>
+      <p class="hero-sub">Guests scan a QR code. Requests reach staff in seconds. No app downloads, no front desk queues — just seamless service.</p>
+      <div class="hero-actions">
+        <a href="guest.html" class="btn-primary">Guest Portal</a>
+        <a href="staff.html" class="btn-ghost">Staff Login</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-card">
+        <div class="card-header">
+          <div class="card-header-label">Live Requests</div>
+          <div class="card-header-title">DownTown Udaipur</div>
+          <div class="card-header-sub">3 active · 1 pending</div>
+        </div>
+        <div class="card-body">
+          <div class="card-request">
+            <div class="req-icon teal">🛎️</div>
+            <div class="req-info">
+              <div class="req-name">Extra towels</div>
+              <div class="req-room">Room 204 · 2 min ago</div>
+            </div>
+            <span class="req-badge badge-progress">In Progress</span>
+          </div>
+          <div class="card-request">
+            <div class="req-icon amber">🍽️</div>
+            <div class="req-info">
+              <div class="req-name">Room service</div>
+              <div class="req-room">Room 118 · 5 min ago</div>
+            </div>
+            <span class="req-badge badge-pending">Pending</span>
+          </div>
+          <div class="card-request">
+            <div class="req-icon green">🧹</div>
+            <div class="req-info">
+              <div class="req-name">Housekeeping</div>
+              <div class="req-room">Room 301 · 18 min ago</div>
+            </div>
+            <span class="req-badge badge-done">Done ✓</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-number">2</div>
+      <div class="stat-label">Hotels Live</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">&lt;30s</div>
+      <div class="stat-label">Avg Response Time</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">0</div>
+      <div class="stat-label">App Downloads Needed</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">24/7</div>
+      <div class="stat-label">Guest Service</div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section class="section" id="how-it-works">
+    <div class="section-label">How It Works</div>
+    <div class="section-title">Three steps to<br>perfect service</div>
+    <div class="steps">
+      <div class="step fade-up">
+        <div class="step-number">01</div>
+        <div class="step-icon">📱</div>
+        <h3>Guest Scans QR</h3>
+        <p>Each room has a unique QR code. Guests scan it and land instantly on their personalised portal — no login, no download required.</p>
+      </div>
+      <div class="step fade-up" style="transition-delay: 0.15s">
+        <div class="step-number">02</div>
+        <div class="step-icon">⚡</div>
+        <h3>Request Sent Instantly</h3>
+        <p>The request hits the staff dashboard in real time. SLA timers start counting so nothing ever falls through the cracks.</p>
+      </div>
+      <div class="step fade-up" style="transition-delay: 0.3s">
+        <div class="step-number">03</div>
+        <div class="step-icon">⭐</div>
+        <h3>Deliver & Delight</h3>
+        <p>Staff claim and complete requests with one tap. Guests leave feedback instantly. Managers see everything in the analytics dashboard.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTALS -->
+  <section class="portals-section" id="portals">
+    <div class="section-label">Access Portals</div>
+    <div class="section-title" style="color:white">Everything in<br>one platform</div>
+    <div class="portals">
+      <a href="guest.html" class="portal-card fade-up">
+        <span class="portal-icon">🛎️</span>
+        <h3>Guest Portal</h3>
+        <p>Request services, leave feedback, and communicate with staff — all from a browser, no app needed.</p>
+        <div class="portal-link">Enter as Guest</div>
+      </a>
+      <a href="staff.html" class="portal-card fade-up" style="transition-delay: 0.15s">
+        <span class="portal-icon">👷</span>
+        <h3>Staff Dashboard</h3>
+        <p>PIN-protected login. See live requests, claim tasks, track SLA timers, and get notified instantly.</p>
+        <div class="portal-link">Staff Login</div>
+      </a>
+      <a href="admin.html" class="portal-card fade-up" style="transition-delay: 0.3s">
+        <span class="portal-icon">⚙️</span>
+        <h3>Admin Panel</h3>
+        <p>Manage rooms, generate QR codes, configure hotel branding, and view analytics for DownTown & BambooSaa.</p>
+        <div class="portal-link">Admin Access</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Wel<span>co</span></div>
+    <div class="footer-copy">© 2026 Welco · Built for DownTown & BambooSaa</div>
+    <div class="footer-hotels">DownTown, Udaipur &nbsp;·&nbsp; BambooSaa, Pushkar</div>
+  </footer>
+
+  <script>
+    // Scroll animation
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>

@@ -7,8 +7,6 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: sans-serif; background: #f0f2f5; min-height: 100vh; }
-
-    /* LOGIN SCREEN */
     #login-screen {
       min-height: 100vh;
       background: linear-gradient(160deg, #0a9396, #005f73);
@@ -18,88 +16,46 @@
     .hotel-logo { font-size: 48px; margin-bottom: 8px; }
     .hotel-name { color: white; font-size: 22px; font-weight: bold; margin-bottom: 4px; }
     .hotel-sub { color: rgba(255,255,255,0.7); font-size: 13px; margin-bottom: 32px; }
-    .login-card {
-      background: white; border-radius: 20px;
-      padding: 28px; width: 100%; max-width: 340px;
-    }
+    .login-card { background: white; border-radius: 20px; padding: 28px; width: 100%; max-width: 340px; }
     .login-card label { font-size: 13px; color: #666; display: block; margin-bottom: 6px; }
-    .login-card input[type="text"] {
+    .login-card select, .login-card input[type="text"] {
       width: 100%; padding: 12px; border: 1px solid #ddd;
       border-radius: 10px; font-size: 15px; margin-bottom: 20px;
     }
     .pin-label { font-size: 13px; color: #666; margin-bottom: 10px; }
-    .pin-dots {
-      display: flex; gap: 12px; justify-content: center; margin-bottom: 20px;
-    }
-    .pin-dot {
-      width: 14px; height: 14px; border-radius: 50%;
-      background: #ddd; transition: background 0.2s;
-    }
+    .pin-dots { display: flex; gap: 12px; justify-content: center; margin-bottom: 20px; }
+    .pin-dot { width: 14px; height: 14px; border-radius: 50%; background: #ddd; transition: background 0.2s; }
     .pin-dot.filled { background: #0a9396; }
-    .pin-pad {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 10px; margin-bottom: 20px;
-    }
-    .pin-btn {
-      padding: 16px; border: none; border-radius: 12px;
-      background: #f5f5f5; font-size: 18px; font-weight: bold;
-      cursor: pointer; transition: background 0.15s;
-    }
+    .pin-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+    .pin-btn { padding: 16px; border: none; border-radius: 12px; background: #f5f5f5; font-size: 18px; font-weight: bold; cursor: pointer; }
     .pin-btn:active { background: #0a9396; color: white; }
     .pin-clear { background: #ffe0e0; color: #e63946; }
-    .login-btn {
-      width: 100%; padding: 14px; background: #0a9396;
-      color: white; border: none; border-radius: 12px;
-      font-size: 16px; font-weight: bold; cursor: pointer;
-    }
+    .login-btn { width: 100%; padding: 14px; background: #0a9396; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; }
     .login-error { color: #e63946; font-size: 13px; text-align: center; margin-top: 10px; display: none; }
-
-    /* DASHBOARD SCREEN */
     #dashboard-screen { display: none; }
-    .dash-header {
-      background: linear-gradient(90deg, #0a9396, #005f73);
-      color: white; padding: 16px 20px;
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    .dash-header h1 { font-size: 16px; }
-    .dash-header .staff-name { font-size: 13px; opacity: 0.8; }
-    .notif-badge {
-      background: #ee9b00; color: white;
-      padding: 4px 10px; border-radius: 20px; font-size: 12px;
-    }
+    .dash-header { background: linear-gradient(90deg, #0a9396, #005f73); color: white; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .dash-hotel { font-size: 16px; font-weight: bold; }
+    .dash-staff { font-size: 13px; opacity: 0.8; }
+    .notif-badge { background: #ee9b00; color: white; padding: 4px 10px; border-radius: 20px; font-size: 12px; }
     .dash-container { padding: 16px; max-width: 500px; margin: 0 auto; }
     .section-label { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
-    .task-card {
-      background: white; border-radius: 14px; padding: 16px;
-      margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-      border-left: 4px solid #ee9b00;
-    }
+    .task-card { background: white; border-radius: 14px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); border-left: 4px solid #ee9b00; }
     .task-card.urgent { border-left-color: #e63946; }
-    .task-card.done { border-left-color: #2ecc71; opacity: 0.5; }
+    .task-card.done { border-left-color: #2ecc71; opacity: 0.6; }
     .task-top { display: flex; justify-content: space-between; margin-bottom: 6px; }
     .task-room { font-weight: bold; font-size: 15px; }
-    .task-cat {
-      background: #005f73; color: white;
-      padding: 3px 10px; border-radius: 20px; font-size: 12px;
-    }
+    .task-cat { background: #005f73; color: white; padding: 3px 10px; border-radius: 20px; font-size: 12px; }
     .task-msg { color: #555; font-size: 14px; margin-bottom: 8px; }
-    .task-sla { font-size: 12px; color: #888; margin-bottom: 10px; }
+    .task-sla { font-size: 12px; color: #888; margin-bottom: 8px; }
     .task-sla span { color: #e63946; font-weight: bold; }
     .timer-bar { height: 4px; background: #eee; border-radius: 4px; margin-bottom: 10px; }
-.timer-fill { height: 100%; border-radius: 4px; background: #2ecc71; transition: width 0.5s; }
-.timer-fill.warning { background: #ee9b00; }
-.timer-fill.urgent { background: #e63946; }
-    .accept-btn {
-      padding: 9px 20px; background: #ee9b00;
-      color: white; border: none; border-radius: 8px;
-      font-size: 13px; font-weight: bold; cursor: pointer;
-    }
+    .timer-fill { height: 100%; border-radius: 4px; background: #2ecc71; transition: width 0.5s; }
+    .timer-fill.warning { background: #ee9b00; }
+    .timer-fill.urgent { background: #e63946; }
+    .accept-btn { padding: 9px 20px; background: #ee9b00; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; }
     .accept-btn:disabled { background: #ccc; cursor: default; }
     .empty-state { text-align: center; padding: 48px 20px; color: #aaa; }
-    .logout-btn {
-      background: none; border: none; color: rgba(255,255,255,0.8);
-      font-size: 13px; cursor: pointer;
-    }
+    .logout-btn { background: none; border: none; color: rgba(255,255,255,0.8); font-size: 13px; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -107,9 +63,14 @@
   <!-- LOGIN SCREEN -->
   <div id="login-screen">
     <div class="hotel-logo">🏨</div>
-    <div class="hotel-name">Taj Mahal Hotel</div>
-    <div class="hotel-sub">Mumbai · Staff Portal</div>
+    <div class="hotel-name" id="login-hotel-name">Welco</div>
+    <div class="hotel-sub" id="login-hotel-sub">Staff Portal</div>
     <div class="login-card">
+      <label>Your Hotel</label>
+      <select id="hotel-select" onchange="switchHotel(this.value)">
+        <option value="hotel_001">🏰 DownTown — Udaipur</option>
+        <option value="hotel_002">🏯 BambooSaa — Pushkar</option>
+      </select>
       <label>Your Name</label>
       <input type="text" id="staff-name" placeholder="e.g. Rahul">
       <div class="pin-label">Enter PIN</div>
@@ -131,7 +92,7 @@
         <button class="pin-btn" onclick="addPin('9')">9</button>
         <button class="pin-btn pin-clear" onclick="clearPin()">✕</button>
         <button class="pin-btn" onclick="addPin('0')">0</button>
-        <button class="pin-btn" onclick="addPin('')">⌫</button>
+        <button class="pin-btn" onclick="deletePin()">⌫</button>
       </div>
       <button class="login-btn" onclick="doLogin()">Login</button>
       <div class="login-error" id="login-error">Wrong PIN. Try 1234</div>
@@ -140,10 +101,10 @@
 
   <!-- DASHBOARD SCREEN -->
   <div id="dashboard-screen">
-    <div class="dash-header">
+    <div class="dash-header" id="dash-header">
       <div>
-        <div class="dash-header h1" id="dash-hotel">Taj Mahal Hotel</div>
-        <div class="staff-name" id="dash-staff">Staff</div>
+        <div class="dash-hotel" id="dash-hotel">Welco Staff</div>
+        <div class="dash-staff" id="dash-staff">Staff</div>
       </div>
       <div style="display:flex;gap:10px;align-items:center">
         <span class="notif-badge" id="pending-count">0 pending</span>
@@ -160,14 +121,43 @@
     const CORRECT_PIN = '1234';
     let pin = '';
     let loggedInStaff = '';
+    let currentHotelId = 'hotel_001';
+
+    async function loadStaffBranding(hotelId) {
+      try {
+        const res = await fetch('/hotels/' + hotelId);
+        const { data } = await res.json();
+        if (data) {
+          const color = data.colour;
+          const name = data.emoji + ' ' + data.name;
+          const sub = data.city + ' · Staff Portal';
+          document.getElementById('login-hotel-name').textContent = name;
+          document.getElementById('login-hotel-sub').textContent = sub;
+          document.getElementById('login-screen').style.background = `linear-gradient(160deg, ${color}, ${color}cc)`;
+          document.querySelectorAll('.pin-dot.filled').forEach(d => d.style.background = color);
+        }
+      } catch(e) { console.log('Branding error:', e); }
+    }
+
+    function switchHotel(hotelId) {
+      currentHotelId = hotelId;
+      loadStaffBranding(hotelId);
+    }
 
     function addPin(num) {
-      if (num === '') { pin = pin.slice(0, -1); }
-      else if (pin.length < 4) { pin += num; }
+      if (pin.length < 4) { pin += num; }
       updateDots();
     }
 
-    function clearPin() { pin = ''; updateDots(); }
+    function deletePin() {
+      pin = pin.slice(0, -1);
+      updateDots();
+    }
+
+    function clearPin() {
+      pin = '';
+      updateDots();
+    }
 
     function updateDots() {
       for (let i = 0; i < 4; i++) {
@@ -176,19 +166,35 @@
     }
 
     function doLogin() {
+      const hotelId = document.getElementById('hotel-select').value;
       const name = document.getElementById('staff-name').value.trim();
       if (!name) { alert('Please enter your name!'); return; }
       if (pin !== CORRECT_PIN) {
         document.getElementById('login-error').style.display = 'block';
-        clearPin(); return;
+        clearPin();
+        return;
       }
       loggedInStaff = name;
+      currentHotelId = hotelId;
       document.getElementById('login-error').style.display = 'none';
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('dashboard-screen').style.display = 'block';
       document.getElementById('dash-staff').textContent = '👋 ' + name;
+      updateDashBranding(hotelId);
       loadTasks();
-    setInterval(loadTasks, 1000);
+      setInterval(loadTasks, 1000);
+    }
+
+    async function updateDashBranding(hotelId) {
+      try {
+        const res = await fetch('/hotels/' + hotelId);
+        const { data } = await res.json();
+        if (data) {
+          const color = data.colour;
+          document.getElementById('dash-hotel').textContent = data.emoji + ' ' + data.name;
+          document.getElementById('dash-header').style.background = `linear-gradient(90deg, ${color}, ${color}cc)`;
+        }
+      } catch(e) {}
     }
 
     function doLogout() {
@@ -197,56 +203,78 @@
       pin = ''; clearPin();
       document.getElementById('staff-name').value = '';
     }
+let knownRequestIds = null;
 
-    async function loadTasks() {
-      const res = await fetch('/requests');
-      const { data } = await res.json();
-      const pending = data.filter(r => r.status === 'pending').length;
-      document.getElementById('pending-count').textContent = pending + ' pending';
-      const list = document.getElementById('task-list');
-      if (data.length === 0) {
-        list.innerHTML = '<div class="empty-state">🎉 No requests right now!</div>';
-        return;
+function checkNewRequests(data) {
+  const currentIds = data.map(r => r.id).join(',');
+  if (knownRequestIds === null) {
+    knownRequestIds = currentIds;
+    return;
+  }
+  if (currentIds !== knownRequestIds) {
+    const newOnes = data.filter(r => !knownRequestIds.includes(r.id));
+    newOnes.forEach(r => {
+      if (r.status === 'pending' && Notification.permission === 'granted') {
+        new Notification('🔔 New Request — Welco', {
+          body: 'Room ' + r.room_number + ': ' + r.category + (r.message ? ' — ' + r.message : ''),
+          icon: 'https://cdn-icons-png.flaticon.com/512/1257/1257163.png'
+        });
       }
-      list.innerHTML = data.map(r => {
-  const SLA_MINUTES = 15;
-  const created = new Date(r.created_at).getTime();
-  const now = Date.now();
-  const elapsedMin = (now - created) / 60000;
-  const remaining = Math.max(0, SLA_MINUTES - elapsedMin);
-  const pct = Math.max(0, (remaining / SLA_MINUTES) * 100);
-  const mins = Math.floor(remaining);
-  const secs = Math.floor((remaining - mins) * 60);
-  const timerClass = pct > 50 ? '' : pct > 25 ? 'warning' : 'urgent';
-  const cardClass = r.status === 'done' ? 'done' : pct === 0 ? 'urgent' : '';
-  return `
-    <div class="task-card ${cardClass}" id="card-${r.id}">
-      <div class="task-top">
-        <span class="task-room">Room ${r.room_number}</span>
-        <span class="task-cat">${r.category}</span>
-      </div>
-      <div class="task-msg">${r.message || 'No details'}</div>
-      <div class="task-sla">⏱ SLA: <span>${r.status === 'done' ? 'Completed' : mins + 'm ' + secs + 's remaining'}</span></div>
-      <div class="timer-bar">
-        <div class="timer-fill ${timerClass}" style="width:${r.status === 'done' ? 100 : pct}%"></div>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-  ${r.status === 'pending' ? `<button class="accept-btn" onclick="claimTask(${r.id})" style="background:#0a9396">👋 Accept Task</button>` : ''}
-  ${r.status === 'claimed' ? `<div style="background:#e8f5e9;padding:8px 14px;border-radius:8px;font-size:13px;color:#2e7d32">✅ Accepted by <b>${r.claimed_by}</b></div><button class="accept-btn" onclick="markDone(${r.id})">Mark Done</button>` : ''}
-  ${r.status === 'done' ? `<button class="accept-btn" disabled style="background:#ccc">✅ Completed</button>` : ''}
-</div>
-    </div>
-  `;
-}).join('');
-    }
-async function claimTask(id) {
-  await fetch('/requests/' + id + '/claim', {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ claimed_by: loggedInStaff })
-  });
-  loadTasks();
+    });
+    knownRequestIds = currentIds;
+  }
 }
+    async function loadTasks() {
+      try {
+        const res = await fetch('/requests');
+        const { data } = await res.json();
+        const pending = data.filter(r => r.status === 'pending').length;
+document.getElementById('pending-count').textContent = pending + ' pending';
+checkNewRequests(data);
+        const list = document.getElementById('task-list');
+        if (data.length === 0) {
+          list.innerHTML = '<div class="empty-state">🎉 No requests right now!</div>';
+          return;
+        }
+        list.innerHTML = data.map(r => {
+          const SLA = 15;
+          const created = new Date(r.created_at).getTime();
+          const elapsed = (Date.now() - created) / 60000;
+          const remaining = Math.max(0, SLA - elapsed);
+          const pct = Math.max(0, (remaining / SLA) * 100);
+          const mins = Math.floor(remaining);
+          const secs = Math.floor((remaining - mins) * 60);
+          const timerClass = pct > 50 ? '' : pct > 25 ? 'warning' : 'urgent';
+          const cardClass = r.status === 'done' ? 'done' : pct === 0 ? 'urgent' : '';
+          return `
+            <div class="task-card ${cardClass}">
+              <div class="task-top">
+                <span class="task-room">Room ${r.room_number}</span>
+                <span class="task-cat">${r.category}</span>
+              </div>
+              <div class="task-msg">${r.message || 'No details'}</div>
+              <div class="task-sla">⏱ <span>${r.status === 'done' ? 'Completed' : mins + 'm ' + secs + 's remaining'}</span></div>
+              <div class="timer-bar"><div class="timer-fill ${timerClass}" style="width:${r.status === 'done' ? 100 : pct}%"></div></div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                ${r.status === 'pending' ? `<button class="accept-btn" onclick="claimTask(${r.id})" style="background:#0a9396">👋 Accept Task</button>` : ''}
+                ${r.status === 'claimed' ? `<div style="background:#e8f5e9;padding:8px 14px;border-radius:8px;font-size:13px;color:#2e7d32">✅ Accepted by <b>${r.claimed_by}</b></div><button class="accept-btn" onclick="markDone(${r.id})">Mark Done</button>` : ''}
+                ${r.status === 'done' ? `<button class="accept-btn" disabled>✅ Completed</button>` : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch(e) { console.log('Load error:', e); }
+    }
+
+    async function claimTask(id) {
+      await fetch('/requests/' + id + '/claim', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ claimed_by: loggedInStaff })
+      });
+      loadTasks();
+    }
+
     async function markDone(id) {
       await fetch('/requests/' + id, {
         method: 'PATCH',
@@ -255,6 +283,12 @@ async function claimTask(id) {
       });
       loadTasks();
     }
+// Request notification permission
+if ('Notification' in window) {
+  Notification.requestPermission();
+}
+    // Load branding on page load
+    loadStaffBranding('hotel_001');
   </script>
 </body>
 </html>

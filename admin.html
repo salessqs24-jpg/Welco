@@ -4,84 +4,251 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welco Admin</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest-admin.json">
+  <meta name="theme-color" content="#005f73">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Welco Admin">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1257/1257163.png">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: sans-serif; background: #f0f2f5; }
-    .header { background: linear-gradient(90deg, #005f73, #0a9396); color: white; padding: 20px 24px; }
+    body { font-family: sans-serif; background: #f0f2f5; min-height: 100vh; }
+
+    /* INSTALL BANNER */
+    #install-banner {
+      display: none; background: #005f73; color: white;
+      padding: 12px 16px; align-items: center;
+      justify-content: space-between; font-size: 13px;
+    }
+    #install-banner button {
+      background: white; color: #005f73; border: none;
+      border-radius: 8px; padding: 6px 14px;
+      font-weight: bold; cursor: pointer; font-size: 12px;
+    }
+
+    .header {
+      background: linear-gradient(90deg, #005f73, #0a9396);
+      color: white; padding: 20px 24px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
     .header h1 { font-size: 20px; }
     .header p { font-size: 13px; opacity: 0.7; margin-top: 4px; }
-    .container { max-width: 700px; margin: 24px auto; padding: 0 16px; }
+    .header-right { font-size: 12px; opacity: 0.7; text-align: right; }
+
+    .container { max-width: 700px; margin: 24px auto; padding: 0 16px 40px; }
+
     .hotel-section { margin-bottom: 32px; }
-    .hotel-title { font-size: 16px; font-weight: bold; color: #005f73; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #0a9396; }
+    .hotel-header {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 12px; padding-bottom: 8px;
+      border-bottom: 2px solid #0a9396;
+    }
+    .hotel-title { font-size: 16px; font-weight: bold; color: #005f73; flex: 1; }
+    .hotel-badge {
+      font-size: 11px; background: #e8f4f4; color: #005f73;
+      padding: 4px 10px; border-radius: 20px; font-weight: 500;
+    }
+
     .rooms-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .room-card { background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); text-align: center; }
+    @media (min-width: 500px) { .rooms-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .room-card {
+      background: white; border-radius: 12px; padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07); text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .room-card:active { transform: scale(0.97); }
     .room-number { font-size: 22px; font-weight: bold; color: #1a1a2e; margin-bottom: 4px; }
     .room-floor { font-size: 12px; color: #aaa; margin-bottom: 12px; }
-    .qr-btn { width: 100%; padding: 10px; background: #0a9396; color: white; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; }
+    .qr-btn {
+      width: 100%; padding: 10px; background: #0a9396;
+      color: white; border: none; border-radius: 8px;
+      font-size: 13px; cursor: pointer; transition: background 0.2s;
+    }
     .qr-btn:hover { background: #005f73; }
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 100; }
+
+    /* MODAL */
+    .modal {
+      display: none; position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%; background: rgba(0,0,0,0.5);
+      justify-content: center; align-items: center; z-index: 100;
+      padding: 20px;
+    }
     .modal.open { display: flex; }
-    .modal-box { background: white; border-radius: 20px; padding: 32px; text-align: center; max-width: 320px; width: 90%; }
-    .modal-box h2 { margin-bottom: 4px; }
+    .modal-box {
+      background: white; border-radius: 20px; padding: 28px;
+      text-align: center; max-width: 320px; width: 100%;
+    }
+    .modal-box h2 { margin-bottom: 4px; font-size: 20px; }
     .modal-box p { color: #888; font-size: 13px; margin-bottom: 16px; }
-    .modal-box img { width: 200px; margin-bottom: 16px; }
-    .close-btn { padding: 10px 24px; background: #1a1a2e; color: white; border: none; border-radius: 8px; cursor: pointer; }
+    #qr-canvas { margin: 0 auto 16px; width: 200px; height: 200px; }
+    .modal-btns { display: flex; gap: 10px; justify-content: center; }
+    .close-btn {
+      padding: 10px 24px; background: #1a1a2e; color: white;
+      border: none; border-radius: 8px; cursor: pointer; font-size: 14px;
+    }
+    .download-btn {
+      padding: 10px 24px; background: #0a9396; color: white;
+      border: none; border-radius: 8px; cursor: pointer; font-size: 14px;
+    }
+
     .loading { color: #aaa; text-align: center; padding: 40px; }
+    .empty { color: #aaa; text-align: center; padding: 40px; font-size: 14px; }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>🏨 Welco Admin</h1>
-    <p>Manage hotels, rooms and QR codes</p>
+
+  <!-- INSTALL BANNER -->
+  <div id="install-banner">
+    <span>📲 Install Welco Admin as an app</span>
+    <button onclick="installApp()">Install</button>
   </div>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <h1>⚙️ Welco Admin</h1>
+      <p>Manage hotels, rooms and QR codes</p>
+    </div>
+    <div class="header-right" id="hotel-count"></div>
+  </div>
+
+  <!-- CONTENT -->
   <div class="container" id="content">
     <div class="loading">Loading rooms...</div>
   </div>
 
-  <!-- QR Modal -->
+  <!-- QR MODAL -->
   <div class="modal" id="qr-modal">
     <div class="modal-box">
       <h2 id="modal-title">Room QR Code</h2>
       <p id="modal-sub">Scan to open guest portal</p>
-      <img id="qr-img" src="" alt="QR Code"/>
-      <br>
-      <button class="close-btn" onclick="closeModal()">Close</button>
+      <div id="qr-canvas"></div>
+      <div class="modal-btns">
+        <button class="download-btn" onclick="downloadQR()">⬇ Download</button>
+        <button class="close-btn" onclick="closeModal()">Close</button>
+      </div>
     </div>
   </div>
 
   <script>
-    async function loadRooms() {
-      const res = await fetch('/rooms');
-      const { data } = await res.json();
-      const hotels = {};
-      data.forEach(r => {
-        if (!hotels[r.hotel_id]) hotels[r.hotel_id] = [];
-        hotels[r.hotel_id].push(r);
-      });
-      const content = document.getElementById('content');
-      content.innerHTML = Object.entries(hotels).map(([hotelId, rooms]) => `
-        <div class="hotel-section">
-          <div class="hotel-title">🏨 ${hotelId.replace('_', ' ').toUpperCase()}</div>
-          <div class="rooms-grid">
-            ${rooms.map(r => `
-              <div class="room-card">
-                <div class="room-number">Room ${r.room_number}</div>
-                <div class="room-floor">Floor ${r.floor}</div>
-                <button class="qr-btn" onclick="showQR('${r.hotel_id}', '${r.room_number}')">
-                  📱 View QR Code
-                </button>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      `).join('');
+    let deferredPrompt = null;
+    let currentRoomLabel = '';
+
+    // PWA Install
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('install-banner').style.display = 'flex';
+    });
+
+    function installApp() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => {
+          deferredPrompt = null;
+          document.getElementById('install-banner').style.display = 'none';
+        });
+      }
     }
 
-    async function showQR(hotelId, roomNumber) {
+    // Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw-admin.js').catch(e => console.log('SW:', e));
+    }
+
+    // Load all rooms grouped by hotel
+    async function loadRooms() {
+      try {
+        const [roomsRes, hotelsRes] = await Promise.all([
+          fetch('/rooms'),
+          fetch('/hotels')
+        ]);
+        const rooms = await roomsRes.json();
+        const hotels = await hotelsRes.json();
+
+        if (!Array.isArray(rooms) || rooms.length === 0) {
+          document.getElementById('content').innerHTML = '<div class="empty">No rooms found.</div>';
+          return;
+        }
+
+        // Group rooms by hotel_id
+        const grouped = {};
+        rooms.forEach(r => {
+          if (!grouped[r.hotel_id]) grouped[r.hotel_id] = [];
+          grouped[r.hotel_id].push(r);
+        });
+
+        document.getElementById('hotel-count').textContent = Object.keys(grouped).length + ' hotels';
+
+        const content = document.getElementById('content');
+        content.innerHTML = Object.entries(grouped).map(([hotelId, hotelRooms]) => {
+          const hotel = hotels.find(h => h.hotel_id === hotelId);
+          const hotelName = hotel ? (hotel.emoji || '🏨') + ' ' + hotel.name : hotelId;
+          const hotelCity = hotel ? hotel.city : '';
+          const hotelColour = hotel ? hotel.colour : '#0a9396';
+
+          return `
+            <div class="hotel-section">
+              <div class="hotel-header">
+                <div class="hotel-title" style="color:${hotelColour}">${hotelName}</div>
+                <div class="hotel-badge">${hotelCity} · ${hotelRooms.length} rooms</div>
+              </div>
+              <div class="rooms-grid">
+                ${hotelRooms.map(r => `
+                  <div class="room-card">
+                    <div class="room-number">Room ${r.room_number}</div>
+                    <div class="room-floor">Floor ${r.floor || 1}</div>
+                    <button class="qr-btn" style="background:${hotelColour}"
+                      onclick="showQR('${hotelId}', '${r.id}', '${r.room_number}', '${hotelName}', '${hotelColour}')">
+                      📱 View QR
+                    </button>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+      } catch(e) {
+        document.getElementById('content').innerHTML = '<div class="empty">Error loading rooms. Please refresh.</div>';
+      }
+    }
+
+    function showQR(hotelId, roomId, roomNumber, hotelName, colour) {
+      currentRoomLabel = 'Room-' + roomNumber;
       document.getElementById('modal-title').textContent = 'Room ' + roomNumber;
-      document.getElementById('modal-sub').textContent = hotelId.replace('_', ' ').toUpperCase();
-      document.getElementById('qr-img').src = '/qr-img/' + hotelId + '/' + roomNumber;
+      document.getElementById('modal-sub').textContent = hotelName;
+
+      // Clear previous QR
+      const canvas = document.getElementById('qr-canvas');
+      canvas.innerHTML = '';
+
+      // Generate QR code
+      const guestUrl = window.location.origin + '/guest.html?hotel_id=' + hotelId + '&room_id=' + roomId;
+      new QRCode(canvas, {
+        text: guestUrl,
+        width: 200,
+        height: 200,
+        colorDark: colour || '#005f73',
+        colorLight: '#ffffff'
+      });
+
       document.getElementById('qr-modal').classList.add('open');
+    }
+
+    function downloadQR() {
+      const canvas = document.querySelector('#qr-canvas canvas');
+      if (!canvas) return alert('QR not ready');
+      const link = document.createElement('a');
+      link.download = 'welco-' + currentRoomLabel + '.png';
+      link.href = canvas.toDataURL();
+      link.click();
     }
 
     function closeModal() {

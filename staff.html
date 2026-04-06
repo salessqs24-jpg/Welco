@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welco Staff</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0a9396">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Welco Staff">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1257/1257163.png">
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: sans-serif; background: #f0f2f5; min-height: 100vh; }
@@ -56,9 +65,31 @@
     .accept-btn:disabled { background: #ccc; cursor: default; }
     .empty-state { text-align: center; padding: 48px 20px; color: #aaa; }
     .logout-btn { background: none; border: none; color: rgba(255,255,255,0.8); font-size: 13px; cursor: pointer; }
+
+    /* Install banner */
+    #install-banner {
+      display: none;
+      background: #005f73; color: white;
+      padding: 12px 16px;
+      display: none; align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+    }
+    #install-banner button {
+      background: white; color: #005f73;
+      border: none; border-radius: 8px;
+      padding: 6px 14px; font-weight: bold;
+      cursor: pointer; font-size: 12px;
+    }
   </style>
 </head>
 <body>
+
+  <!-- INSTALL BANNER (Android) -->
+  <div id="install-banner">
+    <span>📲 Install Welco Staff as an app</span>
+    <button onclick="installApp()">Install</button>
+  </div>
 
   <!-- LOGIN SCREEN -->
   <div id="login-screen">
@@ -122,21 +153,47 @@
     let pin = '';
     let loggedInStaff = '';
     let currentHotelId = 'hotel_001';
+    let knownRequestIds = null;
+    let deferredPrompt = null;
 
+    // ── PWA Install ──
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('install-banner').style.display = 'flex';
+    });
+
+    function installApp() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => {
+          deferredPrompt = null;
+          document.getElementById('install-banner').style.display = 'none';
+        });
+      }
+    }
+
+    // ── Service Worker ──
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW error:', e));
+    }
+
+    // ── Notifications ──
+    if ('Notification' in window) Notification.requestPermission();
+
+    // ── Branding ──
     async function loadStaffBranding(hotelId) {
       try {
-        const res = await fetch('/hotels/' + hotelId);
-        const { data } = await res.json();
+        const res = await fetch('/hotels');
+        const hotels = await res.json();
+        const data = hotels.find(h => h.hotel_id === hotelId);
         if (data) {
           const color = data.colour;
-          const name = data.emoji + ' ' + data.name;
-          const sub = data.city + ' · Staff Portal';
-          document.getElementById('login-hotel-name').textContent = name;
-          document.getElementById('login-hotel-sub').textContent = sub;
+          document.getElementById('login-hotel-name').textContent = (data.emoji || '🏨') + ' ' + data.name;
+          document.getElementById('login-hotel-sub').textContent = (data.city || '') + ' · Staff Portal';
           document.getElementById('login-screen').style.background = `linear-gradient(160deg, ${color}, ${color}cc)`;
-          document.querySelectorAll('.pin-dot.filled').forEach(d => d.style.background = color);
         }
-      } catch(e) { console.log('Branding error:', e); }
+      } catch(e) {}
     }
 
     function switchHotel(hotelId) {
@@ -144,55 +201,45 @@
       loadStaffBranding(hotelId);
     }
 
+    // ── PIN ──
     function addPin(num) {
-      if (pin.length < 4) { pin += num; }
-      updateDots();
+      if (pin.length < 4) { pin += num; updateDots(); }
     }
-
-    function deletePin() {
-      pin = pin.slice(0, -1);
-      updateDots();
-    }
-
-    function clearPin() {
-      pin = '';
-      updateDots();
-    }
-
+    function deletePin() { pin = pin.slice(0, -1); updateDots(); }
+    function clearPin() { pin = ''; updateDots(); }
     function updateDots() {
       for (let i = 0; i < 4; i++) {
         document.getElementById('dot-' + i).classList.toggle('filled', i < pin.length);
       }
     }
 
+    // ── Login ──
     function doLogin() {
-      const hotelId = document.getElementById('hotel-select').value;
       const name = document.getElementById('staff-name').value.trim();
       if (!name) { alert('Please enter your name!'); return; }
       if (pin !== CORRECT_PIN) {
         document.getElementById('login-error').style.display = 'block';
-        clearPin();
-        return;
+        clearPin(); return;
       }
       loggedInStaff = name;
-      currentHotelId = hotelId;
+      currentHotelId = document.getElementById('hotel-select').value;
       document.getElementById('login-error').style.display = 'none';
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('dashboard-screen').style.display = 'block';
       document.getElementById('dash-staff').textContent = '👋 ' + name;
-      updateDashBranding(hotelId);
+      updateDashBranding(currentHotelId);
       loadTasks();
-      setInterval(loadTasks, 1000);
+      setInterval(loadTasks, 5000);
     }
 
     async function updateDashBranding(hotelId) {
       try {
-        const res = await fetch('/hotels/' + hotelId);
-        const { data } = await res.json();
+        const res = await fetch('/hotels');
+        const hotels = await res.json();
+        const data = hotels.find(h => h.hotel_id === hotelId);
         if (data) {
-          const color = data.colour;
-          document.getElementById('dash-hotel').textContent = data.emoji + ' ' + data.name;
-          document.getElementById('dash-header').style.background = `linear-gradient(90deg, ${color}, ${color}cc)`;
+          document.getElementById('dash-hotel').textContent = (data.emoji || '🏨') + ' ' + data.name;
+          document.getElementById('dash-header').style.background = `linear-gradient(90deg, ${data.colour}, ${data.colour}cc)`;
         }
       } catch(e) {}
     }
@@ -203,61 +250,64 @@
       pin = ''; clearPin();
       document.getElementById('staff-name').value = '';
     }
-let knownRequestIds = null;
 
-function checkNewRequests(data) {
-  const currentIds = data.map(r => r.id).join(',');
-  if (knownRequestIds === null) {
-    knownRequestIds = currentIds;
-    return;
-  }
-  if (currentIds !== knownRequestIds) {
-    const newOnes = data.filter(r => !knownRequestIds.includes(r.id));
-    newOnes.forEach(r => {
-      if (r.status === 'pending' && Notification.permission === 'granted') {
-        new Notification('🔔 New Request — Welco', {
-          body: 'Room ' + r.room_number + ': ' + r.category + (r.message ? ' — ' + r.message : ''),
-          icon: 'https://cdn-icons-png.flaticon.com/512/1257/1257163.png'
+    // ── Notifications check ──
+    function checkNewRequests(data) {
+      const currentIds = data.map(r => r.id).join(',');
+      if (knownRequestIds === null) { knownRequestIds = currentIds; return; }
+      if (currentIds !== knownRequestIds) {
+        data.filter(r => !knownRequestIds.includes(String(r.id))).forEach(r => {
+          if (r.status === 'pending' && Notification.permission === 'granted') {
+            new Notification('🔔 New Request — Welco', {
+              body: 'Room ' + (r.room_number || r.room_id) + ': ' + r.category + (r.message ? ' — ' + r.message : ''),
+              icon: 'https://cdn-icons-png.flaticon.com/512/1257/1257163.png'
+            });
+          }
         });
+        knownRequestIds = currentIds;
       }
-    });
-    knownRequestIds = currentIds;
-  }
-}
+    }
+
+    // ── Load Tasks ──
     async function loadTasks() {
       try {
-        const res = await fetch('/requests');
-        const { data } = await res.json();
+        const res = await fetch('/requests?hotel_id=' + currentHotelId);
+        const data = await res.json();
+        if (!Array.isArray(data)) return;
+
         const pending = data.filter(r => r.status === 'pending').length;
-document.getElementById('pending-count').textContent = pending + ' pending';
-checkNewRequests(data);
+        document.getElementById('pending-count').textContent = pending + ' pending';
+        checkNewRequests(data);
+
         const list = document.getElementById('task-list');
         if (data.length === 0) {
           list.innerHTML = '<div class="empty-state">🎉 No requests right now!</div>';
           return;
         }
+
         list.innerHTML = data.map(r => {
           const SLA = 15;
-          const created = new Date(r.created_at).getTime();
-          const elapsed = (Date.now() - created) / 60000;
+          const elapsed = (Date.now() - new Date(r.created_at).getTime()) / 60000;
           const remaining = Math.max(0, SLA - elapsed);
           const pct = Math.max(0, (remaining / SLA) * 100);
           const mins = Math.floor(remaining);
           const secs = Math.floor((remaining - mins) * 60);
           const timerClass = pct > 50 ? '' : pct > 25 ? 'warning' : 'urgent';
           const cardClass = r.status === 'done' ? 'done' : pct === 0 ? 'urgent' : '';
+          const roomLabel = r.room_number || r.room_id || '—';
+
           return `
             <div class="task-card ${cardClass}">
               <div class="task-top">
-                <span class="task-room">Room ${r.room_number}</span>
-                <span class="task-cat">${r.category}</span>
+                <span class="task-room">Room ${roomLabel}</span>
+                <span class="task-cat">${r.category || 'General'}</span>
               </div>
               <div class="task-msg">${r.message || 'No details'}</div>
               <div class="task-sla">⏱ <span>${r.status === 'done' ? 'Completed' : mins + 'm ' + secs + 's remaining'}</span></div>
               <div class="timer-bar"><div class="timer-fill ${timerClass}" style="width:${r.status === 'done' ? 100 : pct}%"></div></div>
               <div style="display:flex;gap:8px;flex-wrap:wrap">
                 ${r.status === 'pending' ? `<button class="accept-btn" onclick="claimTask(${r.id})" style="background:#0a9396">👋 Accept Task</button>` : ''}
-                ${r.status === 'claimed' ? `<div style="background:#e8f5e9;padding:8px 14px;border-radius:8px;font-size:13px;color:#2e7d32">✅ Accepted by <b>${r.claimed_by}</b></div><button class="accept-btn" onclick="markDone(${r.id})">Mark Done</button>` : ''}
+                ${r.status === 'in_progress' ? `<div style="background:#e8f5e9;padding:8px 14px;border-radius:8px;font-size:13px;color:#2e7d32">✅ Accepted by <b>${r.claimed_by || 'staff'}</b></div><button class="accept-btn" onclick="markDone(${r.id})">Mark Done</button>` : ''}
                 ${r.status === 'done' ? `<button class="accept-btn" disabled>✅ Completed</button>` : ''}
               </div>
             </div>
@@ -268,7 +318,7 @@ checkNewRequests(data);
 
     async function claimTask(id) {
       await fetch('/requests/' + id + '/claim', {
-        method: 'PATCH',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ claimed_by: loggedInStaff })
       });
@@ -276,18 +326,15 @@ checkNewRequests(data);
     }
 
     async function markDone(id) {
-      await fetch('/requests/' + id, {
-        method: 'PATCH',
+      await fetch('/requests/' + id + '/complete', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'done' })
+        body: JSON.stringify({})
       });
       loadTasks();
     }
-// Request notification permission
-if ('Notification' in window) {
-  Notification.requestPermission();
-}
-    // Load branding on page load
+
+    // Init
     loadStaffBranding('hotel_001');
   </script>
 </body>

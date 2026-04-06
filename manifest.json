@@ -1,0 +1,22 @@
+{
+  "name": "Welco Staff",
+  "short_name": "Welco",
+  "description": "Hotel guest services staff dashboard",
+  "start_url": "/staff.html",
+  "display": "standalone",
+  "background_color": "#005f73",
+  "theme_color": "#0a9396",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/1257/1257163.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/1257/1257163.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

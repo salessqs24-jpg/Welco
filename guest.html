@@ -26,23 +26,14 @@
     .header h1 { font-size: 26px; font-weight: bold; }
     .header p { font-size: 14px; opacity: 0.85; margin-top: 4px; }
     .container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 16px;
-  min-height: calc(100vh - 80px);
-}
-.card {
-  width: 100%;
-  max-width: 420px;
-}
-@media (max-width: 480px) {
-  .header h1 { font-size: 22px; }
-  .cat-btn { padding: 16px 10px; font-size: 13px; }
-  .submit-btn { padding: 18px; font-size: 17px; }
-}
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      min-height: calc(100vh - 80px);
+    }
     .card {
       background: rgba(255,255,255,0.95);
       backdrop-filter: blur(12px);
@@ -65,7 +56,7 @@
       transition: all 0.2s;
       color: #333;
     }
-    .cat-btn.selected { border-color: #1a1a2e; background: #1a1a2e; color: white; }
+    .cat-btn.selected { border-color: var(--brand); background: var(--brand); color: white; }
     textarea {
       width: 100%; padding: 12px;
       border: 1px solid #ddd; border-radius: 8px;
@@ -74,7 +65,8 @@
     }
     .submit-btn {
       width: 100%; padding: 15px;
-      background: #1a1a2e; color: white;
+      background: var(--brand);
+      color: white;
       border: none; border-radius: 10px;
       font-size: 16px; cursor: pointer; margin-top: 12px;
       font-weight: bold;
@@ -118,12 +110,26 @@
       width: 100%; max-width: 420px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.25);
     }
+    .error-card {
+      background: rgba(255,255,255,0.95);
+      border-radius: 16px; padding: 28px;
+      width: 100%; max-width: 420px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      display: none;
+    }
+    :root { --brand: #1a1a2e; }
+    @media (max-width: 480px) {
+      .header h1 { font-size: 22px; }
+      .cat-btn { padding: 16px 10px; font-size: 13px; }
+      .submit-btn { padding: 18px; font-size: 17px; }
+    }
   </style>
 </head>
 <body>
   <div class="header">
-    <h1>🏨 Welco</h1>
-    <p>Room 101 — Hotel Demo</p>
+    <h1 id="hotel-name">🏨 Welco</h1>
+    <p id="room-label">Loading...</p>
   </div>
 
   <div class="container">
@@ -161,6 +167,13 @@
     <div class="thankyou" id="thankyou">
       🙏 Thank you for your feedback!<br>Enjoy your stay.
     </div>
+
+    <!-- Error -->
+    <div class="error-card" id="error-card">
+      <div style="font-size:48px;margin-bottom:16px;">😕</div>
+      <h2 style="color:#e63946;margin-bottom:8px;">Room not found</h2>
+      <p style="color:#666;font-size:14px;">Please scan the QR code in your room again.</p>
+    </div>
   </div>
 
   <script>
@@ -168,21 +181,47 @@
     let currentRequestId = null;
     let selectedRating = 0;
     let pollInterval = null;
+    let hotelId = null;
+    let roomId = null;
+    let roomNumber = null;
+
+    // Read URL parameters — supports both old and new format
+    const params = new URLSearchParams(window.location.search);
+    hotelId = params.get('hotel_id') || params.get('hotel') || 'hotel_001';
+    roomId = params.get('room_id') || null;
+    roomNumber = params.get('room') || '101';
 
     async function loadBranding() {
-      const params = new URLSearchParams(window.location.search);
-      const hotelId = params.get('hotel') || 'hotel_001';
-      const roomNumber = params.get('room') || '101';
-      const res = await fetch('/hotels/' + hotelId);
-      const { data } = await res.json();
-      if (data) {
-        document.querySelector('.header').style.background = 'rgba(0,0,0,0.55)';
-        document.querySelector('.header h1').textContent = data.emoji + ' ' + data.name;
-        document.querySelector('.header p').textContent = 'Room ' + roomNumber + ' — ' + data.city;
-        document.querySelector('.submit-btn').style.background = data.colour;
-        document.querySelector('.cat-btn.selected') && (document.querySelector('.cat-btn.selected').style.background = data.colour);
+      try {
+        // If we have a room_id, fetch room details to get room number
+        if (roomId) {
+          const roomRes = await fetch('/rooms?hotel_id=' + hotelId);
+          const rooms = await roomRes.json();
+          const room = rooms.find(r => String(r.id) === String(roomId));
+          if (room) roomNumber = room.room_number;
+        }
+
+        // Fetch hotel details
+        const hotelRes = await fetch('/hotels');
+        const hotels = await hotelRes.json();
+        const hotel = hotels.find(h => h.hotel_id === hotelId);
+
+        if (hotel) {
+          // Apply branding
+          document.documentElement.style.setProperty('--brand', hotel.colour || '#1a1a2e');
+          document.getElementById('hotel-name').textContent = (hotel.emoji || '🏨') + ' ' + hotel.name;
+          document.getElementById('room-label').textContent = 'Room ' + roomNumber + (hotel.city ? ' — ' + hotel.city : '');
+          document.title = 'Welco — ' + hotel.name;
+        } else {
+          document.getElementById('hotel-name').textContent = '🏨 Welco';
+          document.getElementById('room-label').textContent = 'Room ' + roomNumber;
+        }
+      } catch(e) {
+        document.getElementById('hotel-name').textContent = '🏨 Welco';
+        document.getElementById('room-label').textContent = 'Room ' + roomNumber;
       }
     }
+
     loadBranding();
 
     function selectCat(btn, cat) {
@@ -203,42 +242,55 @@
     async function submitRequest() {
       if (!selectedCategory) return alert('Please select a category!');
       const message = document.getElementById('message').value;
-      const params = new URLSearchParams(window.location.search);
-      const hotelId = params.get('hotel') || 'hotel_001';
-      const roomNumber = params.get('room') || '101';
-      const res = await fetch('/requests', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ hotel_id: hotelId, room_number: roomNumber, category: selectedCategory, message })
-      });
-      const data = await res.json();
-      if (data.success) {
-        currentRequestId = data.request.id;
-        document.getElementById('success').style.display = 'block';
-        document.getElementById('message').value = '';
-        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
-        selectedCategory = '';
-        pollInterval = setInterval(checkIfDone, 5000);
+
+      try {
+        const res = await fetch('/requests', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            hotel_id: hotelId,
+            room_id: roomId,
+            category: selectedCategory,
+            message
+          })
+        });
+        const data = await res.json();
+
+        if (data && data.id) {
+          currentRequestId = data.id;
+          document.getElementById('success').style.display = 'block';
+          document.getElementById('message').value = '';
+          document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
+          selectedCategory = '';
+          pollInterval = setInterval(checkIfDone, 5000);
+        } else {
+          alert('Something went wrong. Please try again.');
+        }
+      } catch(e) {
+        alert('Could not send request. Please try again.');
       }
     }
 
     async function checkIfDone() {
-      const res = await fetch('/requests/' + currentRequestId);
-      const { data } = await res.json();
-      if (data && data.status === 'done' && !data.feedback_rating) {
-        clearInterval(pollInterval);
-        document.getElementById('request-card').style.display = 'none';
-        document.getElementById('feedback-card').style.display = 'block';
-      }
+      try {
+        const res = await fetch('/requests?hotel_id=' + hotelId);
+        const requests = await res.json();
+        const req = requests.find(r => r.id === currentRequestId);
+        if (req && req.status === 'done' && !req.feedback_rating) {
+          clearInterval(pollInterval);
+          document.getElementById('request-card').style.display = 'none';
+          document.getElementById('feedback-card').style.display = 'block';
+        }
+      } catch(e) {}
     }
 
     async function submitFeedback() {
       if (!selectedRating) return alert('Please select a star rating!');
       const comment = document.getElementById('comment').value;
       await fetch('/requests/' + currentRequestId + '/feedback', {
-        method: 'PATCH',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ feedback_rating: selectedRating, feedback_comment: comment })
+        body: JSON.stringify({ rating: selectedRating, feedback_comments: comment })
       });
       document.getElementById('feedback-card').style.display = 'none';
       document.getElementById('thankyou').style.display = 'block';

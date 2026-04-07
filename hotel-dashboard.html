@@ -288,7 +288,7 @@
           `;
           grid.appendChild(card);
 
-          const guestUrl = `${window.location.origin}/guest.html?hotel_id=${hotel.hotel_id}&room_id=${room.id}`;
+          const guestUrl = `https://welco.onrender.com/guest.html?hotel_id=${hotel.hotel_id}&room_id=${room.id}`;
           new QRCode(document.getElementById('qr-' + room.id), {
             text: guestUrl,
             width: 100, height: 100,

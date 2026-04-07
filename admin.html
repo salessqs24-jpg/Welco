@@ -453,7 +453,7 @@
     document.getElementById('qr-sub').textContent = hotel.name;
     const output = document.getElementById('qr-output');
     output.innerHTML = '';
-    new QRCode(output, { text: window.location.origin + '/guest.html?hotel_id=' + hotelId + '&room_id=' + roomId, width: 180, height: 180, colorDark: hotel.colour || '#005f73', colorLight: '#ffffff' });
+    new QRCode(output, { text: 'https://welco.onrender.com' + '/guest.html?hotel_id=...
     document.getElementById('qr-modal').classList.add('open');
   }
 

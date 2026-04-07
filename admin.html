@@ -27,7 +27,7 @@
     .login-signup { text-align: center; margin-top: 16px; font-size: 13px; color: #888; }
     .login-signup a { color: #0a9396; text-decoration: none; font-weight: 500; }
     #app-screen { display: none; }
-    .topbar { background: linear-gradient(90deg, #005f73, #0a9396); color: white; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; }
+    .topbar { background: linear-gradient(90deg, var(--brand), var(--brand2)); color: white; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; }
     .topbar-left { display: flex; align-items: center; gap: 10px; }
     .topbar-name { font-size: 16px; font-weight: bold; }
     .topbar-city { font-size: 11px; opacity: 0.75; }
@@ -54,9 +54,11 @@
     .btn-del { padding: 6px 10px; background: #fde8ea; color: #e63946; border: none; border-radius: 6px; font-size: 11px; cursor: pointer; }
     .add-row { display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
     .add-row input { flex: 1; min-width: 80px; padding: 10px 12px; border: 1.5px solid #e0ddd8; border-radius: 8px; font-size: 14px; outline: none; }
+    .add-row input:focus { border-color: var(--brand2); }
     .btn-add { padding: 10px 18px; background: var(--brand); color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; }
     .staff-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
     .staff-row:last-child { border-bottom: none; }
+    .staff-name-txt { font-size: 14px; font-weight: 500; }
     .staff-pin { font-family: monospace; font-size: 16px; font-weight: bold; color: var(--brand2); background: #e8f4f4; padding: 4px 10px; border-radius: 6px; }
     .btn-remove { background: #fde8ea; color: #e63946; border: none; border-radius: 6px; padding: 4px 10px; font-size: 11px; cursor: pointer; }
     .request-row { padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
@@ -82,8 +84,6 @@
     .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
     .modal.open { display: flex; }
     .modal-box { background: white; border-radius: 20px; padding: 28px; text-align: center; max-width: 300px; width: 100%; }
-    .modal-box h3 { margin-bottom: 4px; }
-    .modal-box p { color: #888; font-size: 13px; margin-bottom: 16px; }
     #qr-output { margin: 0 auto 16px; width: 180px; height: 180px; }
     .modal-btns { display: flex; gap: 10px; justify-content: center; }
     .btn-dl { padding: 10px 20px; background: var(--brand2); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; }
@@ -165,17 +165,18 @@
     <div class="tab-panel" id="panel-staff">
       <div class="card">
         <div class="card-title">Add Staff Member</div>
-        <div class="card-sub">They will use this PIN to log into the staff app</div>
+        <div class="card-sub">Only added staff can login to the staff app</div>
         <div class="add-row">
-          <input type="text" id="new-staff-name" placeholder="Staff name">
-          <input type="text" id="new-staff-pin" placeholder="4-digit PIN" maxlength="4" style="max-width:100px">
+          <input type="text" id="new-staff-name" placeholder="Full name e.g. Rahul">
+          <input type="text" id="new-staff-pin" placeholder="4-digit PIN" maxlength="4" style="max-width:110px">
           <button class="btn-add" onclick="addStaff()">+ Add</button>
         </div>
+        <div class="msg-box" id="staff-msg"></div>
       </div>
       <div class="card">
         <div class="card-title">Staff Members</div>
-        <div class="card-sub">Staff PINs for your hotel</div>
-        <div id="staff-list"><div class="empty">No staff added yet</div></div>
+        <div class="card-sub">These are the only people who can access your staff dashboard</div>
+        <div id="staff-list"><div class="loading">Loading...</div></div>
       </div>
     </div>
 
@@ -229,55 +230,39 @@
 <div class="modal" id="qr-modal">
   <div class="modal-box">
     <h3 id="qr-title">Room QR</h3>
-    <p id="qr-sub">Scan to open guest portal</p>
+    <p id="qr-sub" style="color:#888;font-size:13px;margin-bottom:16px">Scan to open guest portal</p>
     <div id="qr-output"></div>
     <div class="modal-btns">
       <button class="btn-dl" onclick="downloadQR()">Save QR</button>
-      <button class="btn-close" onclick="closeQR()">Close</button>
+      <button class="btn-close" onclick="document.getElementById('qr-modal').classList.remove('open')">Close</button>
     </div>
   </div>
 </div>
 
 <script>
 var hotel = null;
-var staffList = [];
 var currentQRRoom = '';
 var LIVE_URL = 'https://welco.onrender.com';
 
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw-admin.js').catch(function() {});
-}
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw-admin.js').catch(function(){});
 
 function doLogin() {
   var email = document.getElementById('l-email').value.trim();
   var password = document.getElementById('l-password').value;
-  if (!email || !password) {
-    showErr('Please enter email and password.');
-    return;
-  }
-  fetch('/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: email, password: password })
-  }).then(function(res) {
-    return res.json().then(function(data) {
-      if (!res.ok) {
-        showErr(data.error || 'Login failed.');
-        return;
-      }
-      hotel = data.hotel;
+  if (!email || !password) { showErr('Please enter email and password.'); return; }
+  fetch('/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:email,password:password}) })
+    .then(function(r){ return r.json().then(function(d){ return {ok:r.ok,d:d}; }); })
+    .then(function(res){
+      if (!res.ok) { showErr(res.d.error || 'Login failed.'); return; }
+      hotel = res.d.hotel;
       localStorage.setItem('welco_admin_hotel', JSON.stringify(hotel));
       startApp();
-    });
-  }).catch(function() {
-    showErr('Connection error. Try again.');
-  });
+    }).catch(function(){ showErr('Connection error.'); });
 }
 
 function showErr(msg) {
   var el = document.getElementById('login-err');
-  el.textContent = msg;
-  el.style.display = 'block';
+  el.textContent = msg; el.style.display = 'block';
 }
 
 function doLogout() {
@@ -295,194 +280,151 @@ function startApp() {
   document.getElementById('t-city').textContent = hotel.city || '';
   document.documentElement.style.setProperty('--brand', hotel.colour || '#005f73');
   document.documentElement.style.setProperty('--brand2', hotel.colour || '#0a9396');
-  staffList = JSON.parse(localStorage.getItem('welco_staff_' + hotel.hotel_id) || '[]');
   document.getElementById('set-name').value = hotel.name || '';
   document.getElementById('set-city').value = hotel.city || '';
   document.getElementById('set-colortext').value = hotel.colour || '#0a9396';
   document.getElementById('set-colorpicker').value = hotel.colour || '#0a9396';
   document.getElementById('set-emoji').value = hotel.emoji || '🏨';
-  loadOverview();
-  loadRooms();
-  renderStaff();
+  loadOverview(); loadRooms(); loadStaff();
 }
 
 function showTab(name) {
   var names = ['overview','rooms','staff','reports','settings'];
-  var tabs = document.querySelectorAll('.tab');
-  var panels = document.querySelectorAll('.tab-panel');
-  for (var i = 0; i < names.length; i++) {
-    tabs[i].classList.toggle('active', names[i] === name);
-    panels[i].classList.toggle('active', names[i] === name);
-  }
-  if (name === 'reports') loadReports();
-  if (name === 'rooms') loadRooms();
+  document.querySelectorAll('.tab').forEach(function(t,i){ t.classList.toggle('active', names[i]===name); });
+  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.getElementById('panel-'+name).classList.add('active');
+  if (name==='reports') loadReports();
+  if (name==='rooms') loadRooms();
+  if (name==='staff') loadStaff();
 }
 
 function loadOverview() {
   Promise.all([
-    fetch('/rooms?hotel_id=' + hotel.hotel_id).then(function(r) { return r.json(); }),
-    fetch('/requests?hotel_id=' + hotel.hotel_id).then(function(r) { return r.json(); })
-  ]).then(function(results) {
-    var rooms = results[0];
-    var reqs = results[1];
-    document.getElementById('s-rooms').textContent = Array.isArray(rooms) ? rooms.length : 0;
+    fetch('/rooms?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}),
+    fetch('/requests?hotel_id='+hotel.hotel_id).then(function(r){return r.json();})
+  ]).then(function(res){
+    var rooms=res[0], reqs=res[1];
+    document.getElementById('s-rooms').textContent = Array.isArray(rooms)?rooms.length:0;
     if (Array.isArray(reqs)) {
-      document.getElementById('s-pending').textContent = reqs.filter(function(r) { return r.status === 'pending'; }).length;
-      document.getElementById('s-done').textContent = reqs.filter(function(r) { return r.status === 'done'; }).length;
-      var rated = reqs.filter(function(r) { return r.feedback_rating; });
-      if (rated.length) {
-        var avg = rated.reduce(function(a, r) { return a + r.feedback_rating; }, 0) / rated.length;
-        document.getElementById('s-rating').textContent = avg.toFixed(1) + ' ⭐';
-      } else {
-        document.getElementById('s-rating').textContent = 'N/A';
-      }
-      var recent = reqs.slice(0, 10);
-      document.getElementById('recent-list').innerHTML = recent.length ? recent.map(reqRow).join('') : '<div class="empty">No requests yet</div>';
+      document.getElementById('s-pending').textContent = reqs.filter(function(r){return r.status==='pending';}).length;
+      document.getElementById('s-done').textContent = reqs.filter(function(r){return r.status==='done';}).length;
+      var rated = reqs.filter(function(r){return r.feedback_rating;});
+      document.getElementById('s-rating').textContent = rated.length ? (rated.reduce(function(a,r){return a+r.feedback_rating;},0)/rated.length).toFixed(1)+'⭐' : 'N/A';
+      document.getElementById('recent-list').innerHTML = reqs.slice(0,10).length ? reqs.slice(0,10).map(reqRow).join('') : '<div class="empty">No requests yet</div>';
     }
-  }).catch(function() {});
+  }).catch(function(){});
 }
 
 function loadRooms() {
-  fetch('/rooms?hotel_id=' + hotel.hotel_id).then(function(r) { return r.json(); }).then(function(rooms) {
+  fetch('/rooms?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(rooms){
     if (!Array.isArray(rooms)) return;
-    document.getElementById('rooms-count').textContent = rooms.length + ' rooms total';
-    if (rooms.length === 0) {
-      document.getElementById('rooms-grid').innerHTML = '<div class="empty" style="grid-column:1/-1">No rooms yet. Add one above!</div>';
-      return;
-    }
-    document.getElementById('rooms-grid').innerHTML = rooms.map(function(r) {
-      return '<div class="room-card"><div class="room-num">Room ' + r.room_number + '</div><div class="room-floor">Floor ' + (r.floor || 1) + '</div><div class="room-actions"><button class="btn-qr" onclick="showQR(\'' + hotel.hotel_id + '\',\'' + r.id + '\',\'' + r.room_number + '\')">QR</button><button class="btn-del" onclick="deleteRoom(' + r.id + ')">✕</button></div></div>';
-    }).join('');
-  }).catch(function() {});
+    document.getElementById('rooms-count').textContent = rooms.length+' rooms total';
+    document.getElementById('rooms-grid').innerHTML = rooms.length===0 ? '<div class="empty" style="grid-column:1/-1">No rooms yet</div>'
+      : rooms.map(function(r){ return '<div class="room-card"><div class="room-num">Room '+r.room_number+'</div><div class="room-floor">Floor '+(r.floor||1)+'</div><div class="room-actions"><button class="btn-qr" onclick="showQR(\''+hotel.hotel_id+'\',\''+r.id+'\',\''+r.room_number+'\')">QR</button><button class="btn-del" onclick="deleteRoom('+r.id+')">✕</button></div></div>'; }).join('');
+  }).catch(function(){});
 }
 
 function addRoom() {
   var num = document.getElementById('new-room-num').value.trim();
   var floor = document.getElementById('new-room-floor').value || 1;
   if (!num) { alert('Enter a room number!'); return; }
-  fetch('/rooms', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ hotel_id: hotel.hotel_id, room_number: num, floor: parseInt(floor), is_active: true })
-  }).then(function() {
-    document.getElementById('new-room-num').value = '';
-    document.getElementById('new-room-floor').value = '';
-    loadRooms();
-    loadOverview();
-  });
+  fetch('/rooms', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hotel.hotel_id,room_number:num,floor:parseInt(floor),is_active:true})})
+    .then(function(){ document.getElementById('new-room-num').value=''; document.getElementById('new-room-floor').value=''; loadRooms(); loadOverview(); });
 }
 
 function deleteRoom(id) {
   if (!confirm('Delete this room?')) return;
-  fetch('/rooms/' + id, { method: 'DELETE' }).then(function() {
-    loadRooms();
-    loadOverview();
-  });
+  fetch('/rooms/'+id,{method:'DELETE'}).then(function(){ loadRooms(); loadOverview(); });
 }
 
-function renderStaff() {
-  var list = document.getElementById('staff-list');
-  if (staffList.length === 0) {
-    list.innerHTML = '<div class="empty">No staff added yet</div>';
-    return;
-  }
-  list.innerHTML = staffList.map(function(s, i) {
-    return '<div class="staff-row"><div class="staff-name">' + s.name + '</div><div style="display:flex;gap:8px;align-items:center"><div class="staff-pin">' + s.pin + '</div><button class="btn-remove" onclick="removeStaff(' + i + ')">Remove</button></div></div>';
-  }).join('');
+function loadStaff() {
+  fetch('/staff?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(staff){
+    if (!Array.isArray(staff)) return;
+    var list = document.getElementById('staff-list');
+    list.innerHTML = staff.length===0 ? '<div class="empty">No staff added yet.<br><small>Add staff above so they can login.</small></div>'
+      : staff.map(function(s){ return '<div class="staff-row"><div><div class="staff-name-txt">'+s.name+'</div></div><div style="display:flex;gap:8px;align-items:center"><div class="staff-pin">PIN: '+s.pin+'</div><button class="btn-remove" onclick="removeStaff('+s.id+')">Remove</button></div></div>'; }).join('');
+  }).catch(function(){});
 }
 
 function addStaff() {
   var name = document.getElementById('new-staff-name').value.trim();
   var pin = document.getElementById('new-staff-pin').value.trim();
-  if (!name || pin.length !== 4) { alert('Enter a name and 4-digit PIN'); return; }
-  staffList.push({ name: name, pin: pin });
-  localStorage.setItem('welco_staff_' + hotel.hotel_id, JSON.stringify(staffList));
-  document.getElementById('new-staff-name').value = '';
-  document.getElementById('new-staff-pin').value = '';
-  renderStaff();
+  if (!name || pin.length !== 4) { alert('Enter a full name and exactly 4-digit PIN'); return; }
+  fetch('/staff', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hotel.hotel_id,name:name,pin:pin})})
+    .then(function(r){return r.json();}).then(function(data){
+      if (data.error) { alert(data.error); return; }
+      document.getElementById('new-staff-name').value='';
+      document.getElementById('new-staff-pin').value='';
+      var msg = document.getElementById('staff-msg');
+      msg.textContent = '✅ '+name+' added! They can now login with PIN: '+pin;
+      msg.className = 'msg-box msg-success';
+      setTimeout(function(){ msg.className='msg-box'; }, 4000);
+      loadStaff();
+    });
 }
 
-function removeStaff(i) {
-  if (!confirm('Remove this staff member?')) return;
-  staffList.splice(i, 1);
-  localStorage.setItem('welco_staff_' + hotel.hotel_id, JSON.stringify(staffList));
-  renderStaff();
+function removeStaff(id) {
+  if (!confirm('Remove this staff member? They will no longer be able to login.')) return;
+  fetch('/staff/'+id,{method:'DELETE'}).then(function(){ loadStaff(); });
 }
 
 function loadReports() {
-  fetch('/requests?hotel_id=' + hotel.hotel_id).then(function(r) { return r.json(); }).then(function(reqs) {
+  fetch('/requests?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(reqs){
     if (!Array.isArray(reqs)) return;
-    var status = document.getElementById('filter-status').value;
-    var cat = document.getElementById('filter-cat').value;
-    if (status) reqs = reqs.filter(function(r) { return r.status === status; });
-    if (cat) reqs = reqs.filter(function(r) { return r.category === cat; });
+    var status=document.getElementById('filter-status').value;
+    var cat=document.getElementById('filter-cat').value;
+    if (status) reqs=reqs.filter(function(r){return r.status===status;});
+    if (cat) reqs=reqs.filter(function(r){return r.category===cat;});
     document.getElementById('reports-list').innerHTML = reqs.length ? reqs.map(reqRow).join('') : '<div class="empty">No requests found</div>';
-  }).catch(function() {});
+  }).catch(function(){});
 }
 
 function reqRow(r) {
-  var bc = r.status === 'done' ? 'badge-done' : r.status === 'in_progress' ? 'badge-progress' : 'badge-pending';
-  var bt = r.status === 'done' ? 'Done' : r.status === 'in_progress' ? 'In Progress' : 'Pending';
-  var time = new Date(r.created_at).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-  return '<div class="request-row"><div class="req-top"><span class="req-room">Room ' + (r.room_number || r.room_id || '-') + '</span><span class="req-cat">' + (r.category || 'General') + '</span></div><div class="req-msg">' + (r.message || 'No details') + '</div><div class="req-meta"><span class="badge ' + bc + '">' + bt + '</span>' + (r.claimed_by ? '<span>👷 ' + r.claimed_by + '</span>' : '') + (r.feedback_rating ? '<span>⭐ ' + r.feedback_rating + '/5</span>' : '') + '<span>' + time + '</span></div></div>';
+  var bc=r.status==='done'?'badge-done':r.status==='in_progress'?'badge-progress':'badge-pending';
+  var bt=r.status==='done'?'Done':r.status==='in_progress'?'In Progress':'Pending';
+  var time=new Date(r.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+  return '<div class="request-row"><div class="req-top"><span class="req-room">Room '+(r.room_number||'-')+'</span><span class="req-cat">'+(r.category||'General')+'</span></div><div class="req-msg">'+(r.message||'No details')+'</div><div class="req-meta"><span class="badge '+bc+'">'+bt+'</span>'+(r.claimed_by?'<span>👷 '+r.claimed_by+'</span>':'')+(r.feedback_rating?'<span>⭐ '+r.feedback_rating+'/5</span>':'')+'<span>'+time+'</span></div></div>';
 }
 
 function saveSettings() {
-  var name = document.getElementById('set-name').value.trim();
-  var city = document.getElementById('set-city').value.trim();
-  var colour = document.getElementById('set-colortext').value.trim();
-  var emoji = document.getElementById('set-emoji').value.trim();
+  var name=document.getElementById('set-name').value.trim();
+  var city=document.getElementById('set-city').value.trim();
+  var colour=document.getElementById('set-colortext').value.trim();
+  var emoji=document.getElementById('set-emoji').value.trim();
   if (!name) return;
-  fetch('/hotels/' + hotel.hotel_id + '/update', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name: name, city: city, colour: colour, emoji: emoji })
-  }).then(function(res) {
-    if (res.ok) {
-      hotel = Object.assign({}, hotel, { name: name, city: city, colour: colour, emoji: emoji });
-      localStorage.setItem('welco_admin_hotel', JSON.stringify(hotel));
-      document.getElementById('t-name').textContent = name;
-      document.getElementById('t-city').textContent = city;
-      document.getElementById('t-emoji').textContent = emoji;
-      document.documentElement.style.setProperty('--brand', colour);
-      var msg = document.getElementById('settings-msg');
-      msg.textContent = 'Settings saved!';
-      msg.className = 'msg-box msg-success';
-      setTimeout(function() { msg.className = 'msg-box'; }, 3000);
-    }
-  }).catch(function() {});
+  fetch('/hotels/'+hotel.hotel_id+'/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name,city:city,colour:colour,emoji:emoji})})
+    .then(function(r){
+      if (r.ok) {
+        hotel=Object.assign({},hotel,{name:name,city:city,colour:colour,emoji:emoji});
+        localStorage.setItem('welco_admin_hotel',JSON.stringify(hotel));
+        document.getElementById('t-name').textContent=name;
+        document.getElementById('t-city').textContent=city;
+        document.getElementById('t-emoji').textContent=emoji;
+        document.documentElement.style.setProperty('--brand',colour);
+        var msg=document.getElementById('settings-msg');
+        msg.textContent='✅ Settings saved!'; msg.className='msg-box msg-success';
+        setTimeout(function(){msg.className='msg-box';},3000);
+      }
+    });
 }
 
-function showQR(hotelId, roomId, roomNum) {
-  currentQRRoom = 'Room-' + roomNum;
-  document.getElementById('qr-title').textContent = 'Room ' + roomNum;
-  document.getElementById('qr-sub').textContent = hotel.name;
-  var output = document.getElementById('qr-output');
-  output.innerHTML = '';
-  var url = LIVE_URL + '/guest.html?hotel_id=' + hotelId + '&room_id=' + roomId;
-  new QRCode(output, { text: url, width: 180, height: 180, colorDark: hotel.colour || '#005f73', colorLight: '#ffffff' });
+function showQR(hotelId,roomId,roomNum) {
+  currentQRRoom='Room-'+roomNum;
+  document.getElementById('qr-title').textContent='Room '+roomNum;
+  document.getElementById('qr-sub').textContent=hotel.name;
+  var output=document.getElementById('qr-output'); output.innerHTML='';
+  new QRCode(output,{text:LIVE_URL+'/guest.html?hotel_id='+hotelId+'&room_id='+roomId,width:180,height:180,colorDark:hotel.colour||'#005f73',colorLight:'#ffffff'});
   document.getElementById('qr-modal').classList.add('open');
 }
 
 function downloadQR() {
-  var canvas = document.querySelector('#qr-output canvas');
-  if (!canvas) return;
-  var link = document.createElement('a');
-  link.download = 'welco-' + currentQRRoom + '.png';
-  link.href = canvas.toDataURL();
-  link.click();
+  var canvas=document.querySelector('#qr-output canvas'); if(!canvas) return;
+  var link=document.createElement('a'); link.download='welco-'+currentQRRoom+'.png'; link.href=canvas.toDataURL(); link.click();
 }
 
-function closeQR() {
-  document.getElementById('qr-modal').classList.remove('open');
-}
-
-window.onload = function() {
-  var stored = localStorage.getItem('welco_admin_hotel');
-  if (stored) {
-    hotel = JSON.parse(stored);
-    startApp();
-  }
+window.onload=function(){
+  var stored=localStorage.getItem('welco_admin_hotel');
+  if (stored) { hotel=JSON.parse(stored); startApp(); }
 };
 </script>
 </body>

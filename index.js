@@ -156,7 +156,31 @@ app.get('/qr/:room_id', async (req, res) => {
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
 });
+// Add room
+app.post('/rooms', async (req, res) => {
+  const { hotel_id, room_number, floor, is_active } = req.body;
+  const { data, error } = await supabase.from('rooms')
+    .insert([{ hotel_id, room_number, floor, is_active }]).select().single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+});
 
+// Delete room
+app.delete('/rooms/:id', async (req, res) => {
+  const { error } = await supabase.from('rooms').delete().eq('id', req.params.id);
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ success: true });
+});
+
+// Update hotel settings
+app.post('/hotels/:hotel_id/update', async (req, res) => {
+  const { name, city, colour, emoji } = req.body;
+  const { data, error } = await supabase.from('hotels')
+    .update({ name, city, colour, emoji })
+    .eq('hotel_id', req.params.hotel_id).select().single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+});
 app.listen(PORT, () => {
   console.log(`✅ Welco server running at http://localhost:${PORT}`);
 });

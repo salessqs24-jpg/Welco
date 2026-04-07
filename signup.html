@@ -364,7 +364,7 @@
         // Save to localStorage and redirect
         localStorage.setItem('welco_hotel', JSON.stringify(data.hotel));
         showMsg('Account created! Redirecting to your dashboard...', 'success');
-        setTimeout(() => window.location.href = '/hotel-dashboard.html', 1500);
+        setTimeout(() => window.location.href = '/admin.html', 1500);
       } catch (err) {
         showMsg(err.message, 'error');
         btn.disabled = false;

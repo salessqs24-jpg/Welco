@@ -10,7 +10,7 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY
 );
 
-app.use(express.json());
+app.use(express.json({ limit: '5mb' })); // ← increased limit for base64 logo images
 app.use(express.static(__dirname));
 
 // ─────────────────────────────────────────
@@ -67,10 +67,11 @@ app.get('/hotels/:id', async (req, res) => {
   res.json(data);
 });
 
+// ← UPDATED: now also saves logo_url
 app.post('/hotels/:hotel_id/update', async (req, res) => {
-  const { name, city, colour, emoji } = req.body;
+  const { name, city, colour, emoji, logo_url } = req.body;
   const { data, error } = await supabase.from('hotels')
-    .update({ name, city, colour, emoji }).eq('hotel_id', req.params.hotel_id).select().single();
+    .update({ name, city, colour, emoji, logo_url }).eq('hotel_id', req.params.hotel_id).select().single();
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
 });

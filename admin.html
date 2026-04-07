@@ -32,6 +32,11 @@
     .topbar-name { font-size: 16px; font-weight: bold; }
     .topbar-city { font-size: 11px; opacity: 0.75; }
     .logout-btn { background: rgba(255,255,255,0.15); border: none; color: white; padding: 6px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; }
+
+    /* ── Topbar logo ── */
+    #topbar-logo-img { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; border: 2px solid rgba(255,255,255,0.4); display: none; }
+    #topbar-logo-emoji { font-size: 24px; }
+
     .tabs { display: flex; background: white; border-bottom: 1px solid #eee; overflow-x: auto; }
     .tab { padding: 14px 16px; font-size: 13px; font-weight: 500; color: #999; cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; }
     .tab.active { color: var(--brand); border-bottom-color: var(--brand); }
@@ -73,10 +78,11 @@
     .badge-progress { background: #cff4fc; color: #0a6070; }
     .badge-done { background: #d1fae5; color: #065f46; }
     .settings-form label { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 6px; }
-    .settings-form input { width: 100%; padding: 12px 14px; border: 1.5px solid #e0ddd8; border-radius: 10px; font-size: 14px; margin-bottom: 14px; outline: none; }
+    .settings-form input[type="text"],
+    .settings-form input[type="email"] { width: 100%; padding: 12px 14px; border: 1.5px solid #e0ddd8; border-radius: 10px; font-size: 14px; margin-bottom: 14px; outline: none; }
     .color-row { display: flex; gap: 8px; align-items: center; margin-bottom: 14px; }
     .color-row input[type="color"] { width: 48px; height: 44px; border-radius: 8px; border: 1.5px solid #e0ddd8; padding: 3px; cursor: pointer; }
-    .color-row input[type="text"] { flex: 1; padding: 12px 14px; border: 1.5px solid #e0ddd8; border-radius: 10px; font-size: 14px; outline: none; }
+    .color-row input[type="text"] { flex: 1; padding: 12px 14px; border: 1.5px solid #e0ddd8; border-radius: 10px; font-size: 14px; outline: none; margin-bottom: 0; }
     .save-btn { width: 100%; padding: 14px; background: var(--brand); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer; }
     .msg-box { padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 14px; display: none; }
     .msg-success { background: #d1fae5; color: #065f46; display: block; }
@@ -91,6 +97,65 @@
     .empty { text-align: center; padding: 40px; color: #aaa; font-size: 14px; }
     .loading { text-align: center; padding: 40px; color: #aaa; }
     select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; outline: none; background: white; }
+
+    /* ── Logo upload UI ── */
+    .logo-upload-area {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      border: 2px dashed #e0ddd8;
+      border-radius: 12px;
+      margin-bottom: 14px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .logo-upload-area:hover { border-color: var(--brand2); }
+    .logo-preview-wrap {
+      width: 64px;
+      height: 64px;
+      border-radius: 12px;
+      background: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 1px solid #e0e0e0;
+    }
+    .logo-preview-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .logo-upload-text { flex: 1; }
+    .logo-upload-text strong { display: block; font-size: 13px; color: #333; margin-bottom: 4px; }
+    .logo-upload-text span { font-size: 11px; color: #aaa; }
+    .logo-upload-btn {
+      padding: 8px 14px;
+      background: var(--brand);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .logo-remove-btn {
+      padding: 6px 10px;
+      background: #fde8ea;
+      color: #e63946;
+      border: none;
+      border-radius: 8px;
+      font-size: 11px;
+      cursor: pointer;
+      margin-top: 6px;
+      display: none;
+    }
+    #logo-file-input { display: none; }
+    .logo-size-note { font-size: 11px; color: #aaa; margin-top: -8px; margin-bottom: 14px; }
   </style>
 </head>
 <body>
@@ -113,7 +178,9 @@
 <div id="app-screen">
   <div class="topbar">
     <div class="topbar-left">
-      <div id="t-emoji" style="font-size:24px">🏨</div>
+      <!-- Shows logo image if uploaded, otherwise emoji -->
+      <img id="topbar-logo-img" src="" alt="Hotel Logo">
+      <div id="topbar-logo-emoji">🏨</div>
       <div>
         <div class="topbar-name" id="t-name">Hotel</div>
         <div class="topbar-city" id="t-city">Admin Panel</div>
@@ -203,27 +270,57 @@
       </div>
     </div>
 
+    <!-- ═══════════════════════════════ SETTINGS TAB ═══════════════════════════════ -->
     <div class="tab-panel" id="panel-settings">
       <div class="card">
         <div class="card-title">Hotel Settings</div>
         <div class="card-sub">Update your hotel information</div>
         <div class="msg-box" id="settings-msg"></div>
         <div class="settings-form">
+
           <label>Hotel Name</label>
           <input type="text" id="set-name" placeholder="Hotel name">
+
           <label>City</label>
           <input type="text" id="set-city" placeholder="City">
+
           <label>Brand Colour</label>
           <div class="color-row">
             <input type="color" id="set-colorpicker" oninput="document.getElementById('set-colortext').value=this.value">
             <input type="text" id="set-colortext" placeholder="#0a9396">
           </div>
-          <label>Hotel Emoji</label>
-          <input type="text" id="set-emoji" placeholder="🏨" maxlength="2">
+
+          <!-- ── NEW: Hotel Logo Upload ── -->
+          <label style="margin-top:6px">Hotel Logo</label>
+          <div class="logo-upload-area" onclick="document.getElementById('logo-file-input').click()">
+            <div class="logo-preview-wrap" id="logo-preview-wrap">
+              <img id="logo-preview-img" src="" alt="" style="display:none">
+              <span id="logo-preview-emoji">🏨</span>
+            </div>
+            <div class="logo-upload-text">
+              <strong>Upload your hotel logo</strong>
+              <span>JPG, PNG or WebP · Max 1 MB<br>Replaces the emoji in your header</span>
+            </div>
+            <button class="logo-upload-btn" type="button" onclick="event.stopPropagation();document.getElementById('logo-file-input').click()">Choose</button>
+          </div>
+          <button class="logo-remove-btn" id="logo-remove-btn" onclick="removeLogo()">✕ Remove logo — use emoji instead</button>
+          <p class="logo-size-note" id="logo-size-note"></p>
+
+          <!-- Hidden file input -->
+          <input type="file" id="logo-file-input" accept="image/jpeg,image/png,image/webp" onchange="handleLogoUpload(event)">
+
+          <!-- Emoji fallback (only shown when no logo) -->
+          <div id="emoji-row">
+            <label>Hotel Emoji <span style="font-weight:400;text-transform:none;font-size:11px">(used when no logo is set)</span></label>
+            <input type="text" id="set-emoji" placeholder="🏨" maxlength="2">
+          </div>
+
           <button class="save-btn" onclick="saveSettings()">Save Changes</button>
         </div>
       </div>
     </div>
+    <!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
   </div>
 </div>
 
@@ -243,9 +340,11 @@
 var hotel = null;
 var currentQRRoom = '';
 var LIVE_URL = 'https://welco.onrender.com';
+var pendingLogoBase64 = null; // holds newly selected logo before save
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw-admin.js').catch(function(){});
 
+/* ─── Login / Logout ─── */
 function doLogin() {
   var email = document.getElementById('l-email').value.trim();
   var password = document.getElementById('l-password').value;
@@ -272,22 +371,96 @@ function doLogout() {
   document.getElementById('login-screen').style.display = 'flex';
 }
 
+/* ─── Start app after login ─── */
 function startApp() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app-screen').style.display = 'block';
-  document.getElementById('t-emoji').textContent = hotel.emoji || '🏨';
   document.getElementById('t-name').textContent = hotel.name;
   document.getElementById('t-city').textContent = hotel.city || '';
   document.documentElement.style.setProperty('--brand', hotel.colour || '#005f73');
   document.documentElement.style.setProperty('--brand2', hotel.colour || '#0a9396');
+
+  // Populate settings form
   document.getElementById('set-name').value = hotel.name || '';
   document.getElementById('set-city').value = hotel.city || '';
   document.getElementById('set-colortext').value = hotel.colour || '#0a9396';
   document.getElementById('set-colorpicker').value = hotel.colour || '#0a9396';
   document.getElementById('set-emoji').value = hotel.emoji || '🏨';
+
+  // Apply logo or emoji everywhere
+  applyLogoOrEmoji(hotel.logo_url, hotel.emoji);
+
   loadOverview(); loadRooms(); loadStaff();
 }
 
+/* ─── Logo helpers ─── */
+function applyLogoOrEmoji(logoUrl, emoji) {
+  var imgEl  = document.getElementById('topbar-logo-img');
+  var emojiEl = document.getElementById('topbar-logo-emoji');
+  var previewImg   = document.getElementById('logo-preview-img');
+  var previewEmoji = document.getElementById('logo-preview-emoji');
+  var removeBtn    = document.getElementById('logo-remove-btn');
+  var emojiRow     = document.getElementById('emoji-row');
+
+  if (logoUrl) {
+    // Topbar: show image, hide emoji
+    imgEl.src = logoUrl;
+    imgEl.style.display = 'block';
+    emojiEl.style.display = 'none';
+    // Settings preview
+    previewImg.src = logoUrl;
+    previewImg.style.display = 'block';
+    previewEmoji.style.display = 'none';
+    // Show remove button, hide emoji input
+    removeBtn.style.display = 'block';
+    emojiRow.style.display = 'none';
+  } else {
+    // Topbar: show emoji, hide image
+    imgEl.style.display = 'none';
+    emojiEl.textContent = emoji || '🏨';
+    emojiEl.style.display = 'block';
+    // Settings preview
+    previewImg.style.display = 'none';
+    previewEmoji.textContent = emoji || '🏨';
+    previewEmoji.style.display = 'block';
+    // Hide remove button, show emoji input
+    removeBtn.style.display = 'none';
+    emojiRow.style.display = 'block';
+  }
+}
+
+function handleLogoUpload(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+
+  // Size check — warn if > 1 MB
+  var note = document.getElementById('logo-size-note');
+  if (file.size > 1024 * 1024) {
+    note.textContent = '⚠️ Image is large (' + (file.size/1024/1024).toFixed(1) + ' MB). It will still work but may slow loading. Recommended: under 1 MB.';
+    note.style.color = '#e67e00';
+  } else {
+    note.textContent = '✅ ' + file.name + ' ready — click Save Changes to apply.';
+    note.style.color = '#065f46';
+  }
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    pendingLogoBase64 = e.target.result; // full base64 data URL
+    // Show preview immediately
+    applyLogoOrEmoji(pendingLogoBase64, hotel.emoji);
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeLogo() {
+  pendingLogoBase64 = ''; // empty string = remove
+  applyLogoOrEmoji(null, document.getElementById('set-emoji').value || hotel.emoji || '🏨');
+  document.getElementById('logo-size-note').textContent = 'Logo will be removed when you click Save Changes.';
+  document.getElementById('logo-size-note').style.color = '#888';
+  document.getElementById('logo-file-input').value = '';
+}
+
+/* ─── Tabs ─── */
 function showTab(name) {
   var names = ['overview','rooms','staff','reports','settings'];
   document.querySelectorAll('.tab').forEach(function(t,i){ t.classList.toggle('active', names[i]===name); });
@@ -298,6 +471,7 @@ function showTab(name) {
   if (name==='staff') loadStaff();
 }
 
+/* ─── Overview ─── */
 function loadOverview() {
   Promise.all([
     fetch('/rooms?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}),
@@ -315,6 +489,7 @@ function loadOverview() {
   }).catch(function(){});
 }
 
+/* ─── Rooms ─── */
 function loadRooms() {
   fetch('/rooms?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(rooms){
     if (!Array.isArray(rooms)) return;
@@ -337,6 +512,7 @@ function deleteRoom(id) {
   fetch('/rooms/'+id,{method:'DELETE'}).then(function(){ loadRooms(); loadOverview(); });
 }
 
+/* ─── Staff ─── */
 function loadStaff() {
   fetch('/staff?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(staff){
     if (!Array.isArray(staff)) return;
@@ -368,6 +544,7 @@ function removeStaff(id) {
   fetch('/staff/'+id,{method:'DELETE'}).then(function(){ loadStaff(); });
 }
 
+/* ─── Reports ─── */
 function loadReports() {
   fetch('/requests?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(reqs){
     if (!Array.isArray(reqs)) return;
@@ -386,28 +563,49 @@ function reqRow(r) {
   return '<div class="request-row"><div class="req-top"><span class="req-room">Room '+(r.room_number||'-')+'</span><span class="req-cat">'+(r.category||'General')+'</span></div><div class="req-msg">'+(r.message||'No details')+'</div><div class="req-meta"><span class="badge '+bc+'">'+bt+'</span>'+(r.claimed_by?'<span>👷 '+r.claimed_by+'</span>':'')+(r.feedback_rating?'<span>⭐ '+r.feedback_rating+'/5</span>':'')+'<span>'+time+'</span></div></div>';
 }
 
+/* ─── Save Settings (now includes logo) ─── */
 function saveSettings() {
-  var name=document.getElementById('set-name').value.trim();
-  var city=document.getElementById('set-city').value.trim();
-  var colour=document.getElementById('set-colortext').value.trim();
-  var emoji=document.getElementById('set-emoji').value.trim();
+  var name   = document.getElementById('set-name').value.trim();
+  var city   = document.getElementById('set-city').value.trim();
+  var colour = document.getElementById('set-colortext').value.trim();
+  var emoji  = document.getElementById('set-emoji').value.trim();
   if (!name) return;
-  fetch('/hotels/'+hotel.hotel_id+'/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name,city:city,colour:colour,emoji:emoji})})
-    .then(function(r){
-      if (r.ok) {
-        hotel=Object.assign({},hotel,{name:name,city:city,colour:colour,emoji:emoji});
-        localStorage.setItem('welco_admin_hotel',JSON.stringify(hotel));
-        document.getElementById('t-name').textContent=name;
-        document.getElementById('t-city').textContent=city;
-        document.getElementById('t-emoji').textContent=emoji;
-        document.documentElement.style.setProperty('--brand',colour);
-        var msg=document.getElementById('settings-msg');
-        msg.textContent='✅ Settings saved!'; msg.className='msg-box msg-success';
-        setTimeout(function(){msg.className='msg-box';},3000);
-      }
-    });
+
+  // Build payload — include logo only if it changed
+  var payload = { name:name, city:city, colour:colour, emoji:emoji };
+  if (pendingLogoBase64 !== null) {
+    // null = unchanged; '' = remove logo; 'data:...' = new logo
+    payload.logo_url = pendingLogoBase64;
+  }
+
+  fetch('/hotels/'+hotel.hotel_id+'/update', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  }).then(function(r){
+    if (r.ok) {
+      var newLogo = pendingLogoBase64 !== null ? pendingLogoBase64 : hotel.logo_url;
+      hotel = Object.assign({}, hotel, { name:name, city:city, colour:colour, emoji:emoji, logo_url: newLogo });
+      localStorage.setItem('welco_admin_hotel', JSON.stringify(hotel));
+
+      // Update topbar
+      document.getElementById('t-name').textContent = name;
+      document.getElementById('t-city').textContent = city;
+      document.documentElement.style.setProperty('--brand', colour);
+      applyLogoOrEmoji(hotel.logo_url, emoji);
+
+      pendingLogoBase64 = null; // reset pending
+
+      var msg = document.getElementById('settings-msg');
+      msg.textContent = '✅ Settings saved!';
+      msg.className = 'msg-box msg-success';
+      setTimeout(function(){ msg.className='msg-box'; }, 3000);
+      document.getElementById('logo-size-note').textContent = '';
+    }
+  });
 }
 
+/* ─── QR ─── */
 function showQR(hotelId,roomId,roomNum) {
   currentQRRoom='Room-'+roomNum;
   document.getElementById('qr-title').textContent='Room '+roomNum;
@@ -422,6 +620,7 @@ function downloadQR() {
   var link=document.createElement('a'); link.download='welco-'+currentQRRoom+'.png'; link.href=canvas.toDataURL(); link.click();
 }
 
+/* ─── Auto-login from localStorage ─── */
 window.onload=function(){
   var stored=localStorage.getItem('welco_admin_hotel');
   if (stored) { hotel=JSON.parse(stored); startApp(); }

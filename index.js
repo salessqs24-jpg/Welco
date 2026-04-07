@@ -111,10 +111,10 @@ app.get('/requests', async (req, res) => {
 });
 
 app.post('/requests', async (req, res) => {
-  const { room_id, hotel_id, category, message } = req.body;
+  const { room_id, hotel_id, category, message, room_number } = req.body;
   const { data, error } = await supabase
     .from('requests')
-    .insert([{ room_id, hotel_id, category, message, status: 'pending' }])
+    .insert([{ room_id, hotel_id, room_number, category, message, status: 'pending' }])
     .select().single();
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);

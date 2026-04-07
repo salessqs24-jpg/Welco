@@ -5,135 +5,174 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welco - Guest Services</title>
   <style>
+    :root { --brand: #1a1a2e; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: sans-serif;
-      min-height: 100vh;
+      font-family: sans-serif; min-height: 100vh;
       background-image: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=80');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      display: flex;
-      flex-direction: column;
+      background-size: cover; background-position: center;
+      background-attachment: fixed; display: flex; flex-direction: column;
     }
+
+    /* HEADER */
     .header {
-      background: rgba(0,0,0,0.55);
-      backdrop-filter: blur(8px);
-      color: white;
-      padding: 24px 20px;
-      text-align: center;
+      background: rgba(0,0,0,0.6); backdrop-filter: blur(10px);
+      color: white; padding: 20px; text-align: center;
     }
-    .header h1 { font-size: 26px; font-weight: bold; }
-    .header p { font-size: 14px; opacity: 0.85; margin-top: 4px; }
+    .header h1 { font-size: 24px; font-weight: bold; }
+    .header p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+    .welcome-msg {
+      font-size: 12px; margin-top: 8px;
+      background: rgba(255,255,255,0.15); border-radius: 20px;
+      padding: 4px 14px; display: inline-block;
+    }
+
     .container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 16px;
-      min-height: calc(100vh - 80px);
+      flex: 1; display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      padding: 16px; min-height: calc(100vh - 90px);
     }
+
+    /* CARD */
     .card {
-      background: rgba(255,255,255,0.95);
-      backdrop-filter: blur(12px);
-      border-radius: 16px;
-      padding: 24px;
-      width: 100%;
-      max-width: 420px;
+      background: rgba(255,255,255,0.96); backdrop-filter: blur(12px);
+      border-radius: 20px; padding: 24px; width: 100%; max-width: 420px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.25);
     }
     .card h2 { font-size: 17px; margin-bottom: 16px; color: #222; text-align: center; }
+
+    /* CATEGORIES */
     .categories { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
     .cat-btn {
-      padding: 14px;
-      border: 2px solid #eee;
-      border-radius: 10px;
-      background: white;
-      cursor: pointer;
-      font-size: 14px;
-      text-align: center;
-      transition: all 0.2s;
-      color: #333;
+      padding: 14px 10px; border: 2px solid #eee; border-radius: 12px;
+      background: white; cursor: pointer; font-size: 14px;
+      text-align: center; transition: all 0.2s; color: #333;
     }
     .cat-btn.selected { border-color: var(--brand); background: var(--brand); color: white; }
+
+    /* QUICK REQUESTS */
+    .quick-section { margin-bottom: 14px; display: none; }
+    .quick-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+    .quick-items { display: flex; flex-wrap: wrap; gap: 8px; }
+    .quick-item {
+      padding: 7px 14px; background: #f0f9f9; border: 1.5px solid #e0f0f0;
+      border-radius: 20px; font-size: 13px; cursor: pointer;
+      color: #005f73; transition: all 0.2s; white-space: nowrap;
+    }
+    .quick-item:hover { background: var(--brand); color: white; border-color: var(--brand); }
+    .quick-item.selected { background: var(--brand); color: white; border-color: var(--brand); }
+
+    /* ETA BADGE */
+    .eta-badge {
+      display: none; background: #fff8e6; border: 1px solid #ffd166;
+      border-radius: 8px; padding: 8px 12px; margin-bottom: 12px;
+      font-size: 13px; color: #8a6000; text-align: center;
+    }
+
     textarea {
-      width: 100%; padding: 12px;
-      border: 1px solid #ddd; border-radius: 8px;
-      font-size: 14px; resize: none; height: 90px;
-      font-family: sans-serif;
+      width: 100%; padding: 12px; border: 1.5px solid #ddd; border-radius: 10px;
+      font-size: 14px; resize: none; height: 80px; font-family: sans-serif;
+      transition: border-color 0.2s;
     }
+    textarea:focus { outline: none; border-color: var(--brand); }
+
     .submit-btn {
-      width: 100%; padding: 15px;
-      background: var(--brand);
-      color: white;
-      border: none; border-radius: 10px;
-      font-size: 16px; cursor: pointer; margin-top: 12px;
-      font-weight: bold;
+      width: 100%; padding: 15px; background: var(--brand); color: white;
+      border: none; border-radius: 12px; font-size: 16px; cursor: pointer;
+      margin-top: 12px; font-weight: bold; transition: opacity 0.2s;
     }
+    .submit-btn:active { opacity: 0.85; }
+
+    /* SUCCESS + TRACKING */
     .success {
-      background: #e8f5e9; color: #2e7d32;
-      padding: 14px; border-radius: 10px;
-      margin-top: 12px; display: none;
-      font-size: 14px; text-align: center;
+      background: #e8f5e9; color: #2e7d32; padding: 14px; border-radius: 10px;
+      margin-top: 12px; display: none; font-size: 14px; text-align: center;
     }
+
+    /* TRACKING CARD */
+    .tracking-card {
+      background: rgba(255,255,255,0.96); border-radius: 20px; padding: 28px;
+      width: 100%; max-width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      display: none; text-align: center;
+    }
+    .tracking-icon { font-size: 52px; margin-bottom: 12px; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+    .tracking-title { font-size: 20px; font-weight: bold; color: #1a1a2e; margin-bottom: 6px; }
+    .tracking-sub { font-size: 14px; color: #666; margin-bottom: 20px; line-height: 1.5; }
+    .tracking-status {
+      display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;
+    }
+    .status-step {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px; border-radius: 10px; background: #f5f5f5;
+      font-size: 14px; transition: all 0.4s;
+    }
+    .status-step.active { background: #e8f4f4; color: #005f73; font-weight: bold; }
+    .status-step.done { background: #e8f5e9; color: #2e7d32; }
+    .step-icon { font-size: 20px; width: 30px; text-align: center; }
+    .step-text { flex: 1; text-align: left; }
+    .step-check { font-size: 16px; }
+
+    .eta-bar {
+      background: #f0f0f0; border-radius: 20px; height: 8px;
+      margin-bottom: 8px; overflow: hidden;
+    }
+    .eta-fill {
+      height: 100%; border-radius: 20px; background: var(--brand);
+      width: 10%; transition: width 30s linear;
+    }
+    .eta-text { font-size: 12px; color: #999; margin-bottom: 20px; }
+
+    .new-request-btn {
+      padding: 12px 28px; background: white; color: var(--brand);
+      border: 2px solid var(--brand); border-radius: 12px;
+      font-size: 14px; font-weight: bold; cursor: pointer;
+    }
+
+    /* FEEDBACK */
     .feedback-card {
-      background: rgba(255,255,255,0.95);
-      backdrop-filter: blur(12px);
-      border-radius: 16px; padding: 28px;
-      width: 100%; max-width: 420px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      background: rgba(255,255,255,0.96); border-radius: 20px; padding: 28px;
+      width: 100%; max-width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.25);
       display: none; text-align: center;
     }
     .feedback-card h2 { font-size: 20px; margin-bottom: 8px; color: #1a1a2e; }
     .feedback-card p { color: #666; font-size: 14px; margin-bottom: 16px; }
-    .stars { font-size: 40px; cursor: pointer; margin-bottom: 12px; }
+    .stars { font-size: 42px; cursor: pointer; margin-bottom: 12px; }
     .stars span { display: inline-block; transition: transform 0.1s; }
     .stars span:hover { transform: scale(1.2); }
     .comment-box {
-      width: 100%; padding: 12px;
-      border: 1px solid #ddd; border-radius: 8px;
-      font-size: 14px; resize: none; height: 80px;
-      margin-bottom: 12px; font-family: sans-serif;
+      width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px;
+      font-size: 14px; resize: none; height: 80px; margin-bottom: 12px; font-family: sans-serif;
     }
     .feedback-btn {
-      width: 100%; padding: 14px;
-      background: #2ecc71; color: white;
-      border: none; border-radius: 10px;
-      font-size: 15px; cursor: pointer; font-weight: bold;
+      width: 100%; padding: 14px; background: #2ecc71; color: white;
+      border: none; border-radius: 12px; font-size: 15px; cursor: pointer; font-weight: bold;
     }
+
     .thankyou {
-      background: rgba(255,255,255,0.95);
-      color: #2e7d32; padding: 28px;
-      border-radius: 16px; text-align: center;
-      display: none; font-size: 18px;
-      width: 100%; max-width: 420px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      background: rgba(255,255,255,0.96); color: #2e7d32; padding: 32px;
+      border-radius: 20px; text-align: center; display: none; font-size: 18px;
+      width: 100%; max-width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      line-height: 1.6;
     }
-    .error-card {
-      background: rgba(255,255,255,0.95);
-      border-radius: 16px; padding: 28px;
-      width: 100%; max-width: 420px;
-      text-align: center;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-      display: none;
-    }
-    :root { --brand: #1a1a2e; }
+
     @media (max-width: 480px) {
       .header h1 { font-size: 22px; }
-      .cat-btn { padding: 16px 10px; font-size: 13px; }
-      .submit-btn { padding: 18px; font-size: 17px; }
+      .cat-btn { font-size: 13px; }
     }
   </style>
 </head>
 <body>
+
   <div class="header">
     <h1 id="hotel-name">🏨 Welco</h1>
     <p id="room-label">Loading...</p>
+    <div class="welcome-msg" id="welcome-msg" style="display:none">👋 Welcome! We're here to help.</div>
   </div>
 
   <div class="container">
-    <!-- Request Card -->
+
+    <!-- REQUEST CARD -->
     <div class="card" id="request-card">
       <h2>How can we help you?</h2>
       <div class="categories">
@@ -142,15 +181,55 @@
         <button class="cat-btn" onclick="selectCat(this, 'Maintenance')">🔧 Maintenance</button>
         <button class="cat-btn" onclick="selectCat(this, 'Front Desk')">🛎️ Front Desk</button>
       </div>
-      <textarea id="message" placeholder="Describe your request..."></textarea>
-      <button class="submit-btn" onclick="submitRequest()">Send Request</button>
-      <div class="success" id="success">✅ Request sent! We'll ask for your feedback once completed.</div>
+
+      <!-- QUICK REQUESTS -->
+      <div class="quick-section" id="quick-section">
+        <div class="quick-label">Quick Requests — tap to add</div>
+        <div class="quick-items" id="quick-items"></div>
+      </div>
+
+      <!-- ETA BADGE -->
+      <div class="eta-badge" id="eta-badge">⏱ Usually ready in <strong id="eta-time">10 mins</strong></div>
+
+      <textarea id="message" placeholder="Describe your request... (optional)"></textarea>
+      <button class="submit-btn" onclick="submitRequest()">Send Request 🚀</button>
+      <div class="success" id="success">✅ Request sent! Tracking your request below...</div>
     </div>
 
-    <!-- Feedback Card -->
+    <!-- TRACKING CARD -->
+    <div class="tracking-card" id="tracking-card">
+      <div class="tracking-icon" id="tracking-icon">📋</div>
+      <div class="tracking-title" id="tracking-title">Request Received!</div>
+      <div class="tracking-sub" id="tracking-sub">Your request has been sent to our staff. We'll be with you shortly.</div>
+
+      <div class="tracking-status">
+        <div class="status-step active" id="step-1">
+          <div class="step-icon">📋</div>
+          <div class="step-text">Request received</div>
+          <div class="step-check">✓</div>
+        </div>
+        <div class="status-step" id="step-2">
+          <div class="step-icon">👷</div>
+          <div class="step-text">Staff assigned</div>
+          <div class="step-check" id="check-2">⏳</div>
+        </div>
+        <div class="status-step" id="step-3">
+          <div class="step-icon">✅</div>
+          <div class="step-text">Completed</div>
+          <div class="step-check" id="check-3">⏳</div>
+        </div>
+      </div>
+
+      <div class="eta-bar"><div class="eta-fill" id="eta-fill"></div></div>
+      <div class="eta-text" id="eta-track-text">Estimated: ~10 minutes</div>
+
+      <button class="new-request-btn" onclick="newRequest()">+ New Request</button>
+    </div>
+
+    <!-- FEEDBACK CARD -->
     <div class="feedback-card" id="feedback-card">
       <h2>How did we do? ⭐</h2>
-      <p>Your request has been completed!<br>Please rate your experience.</p>
+      <p>Your request has been completed!<br>We'd love your feedback.</p>
       <div class="stars" id="stars">
         <span onclick="setRating(1)">⭐</span>
         <span onclick="setRating(2)">⭐</span>
@@ -159,59 +238,71 @@
         <span onclick="setRating(5)">⭐</span>
       </div>
       <p id="rating-label" style="margin-bottom:12px;color:#1a1a2e;font-weight:bold;font-size:16px"></p>
-      <textarea class="comment-box" id="comment" placeholder="Any suggestions or comments? (optional)"></textarea>
+      <textarea class="comment-box" id="comment" placeholder="Any suggestions? (optional)"></textarea>
       <button class="feedback-btn" onclick="submitFeedback()">Submit Feedback</button>
     </div>
 
-    <!-- Thank You -->
+    <!-- THANK YOU -->
     <div class="thankyou" id="thankyou">
-      🙏 Thank you for your feedback!<br>Enjoy your stay.
+      🙏 Thank you for your feedback!<br><br>
+      <span style="font-size:14px;color:#555">Enjoy your stay at <span id="hotel-name-ty"></span></span>
     </div>
 
-    <!-- Error -->
-    <div class="error-card" id="error-card">
-      <div style="font-size:48px;margin-bottom:16px;">😕</div>
-      <h2 style="color:#e63946;margin-bottom:8px;">Room not found</h2>
-      <p style="color:#666;font-size:14px;">Please scan the QR code in your room again.</p>
-    </div>
   </div>
 
   <script>
-    let selectedCategory = '';
-    let currentRequestId = null;
-    let selectedRating = 0;
-    let pollInterval = null;
-    let hotelId = null;
-    let roomId = null;
-    let roomNumber = null;
+    var selectedCategory = '';
+    var currentRequestId = null;
+    var selectedRating = 0;
+    var pollInterval = null;
+    var hotelId = null;
+    var roomId = null;
+    var roomNumber = null;
+    var selectedQuick = '';
+    var hotelData = null;
 
-    // Read URL parameters — supports both old and new format
-    const params = new URLSearchParams(window.location.search);
+    var params = new URLSearchParams(window.location.search);
     hotelId = params.get('hotel_id') || params.get('hotel') || 'hotel_001';
     roomId = params.get('room_id') || null;
     roomNumber = params.get('room') || '101';
 
+    // Quick request options per category
+    var quickOptions = {
+      'Housekeeping': ['Extra Towels 🛁', 'Extra Pillow 🛏️', 'Water Bottles 💧', 'Clean Room 🧹', 'Extra Blanket 🛌', 'Toiletries 🧴'],
+      'Room Service': ['Breakfast 🍳', 'Coffee ☕', 'Tea 🍵', 'Water 💧', 'Snacks 🍪', 'Ice Bucket 🧊'],
+      'Maintenance': ['AC Issue ❄️', 'Hot Water ♨️', 'Light Bulb 💡', 'TV Issue 📺', 'WiFi Help 📶', 'Door Lock 🔑'],
+      'Front Desk': ['Wake Up Call ⏰', 'Taxi Booking 🚕', 'Luggage Help 🧳', 'Checkout Info 🏁', 'City Guide 🗺️', 'Medical Help 🏥']
+    };
+
+    // ETA per category (minutes)
+    var etaMap = {
+      'Housekeeping': '10–15 mins',
+      'Room Service': '15–20 mins',
+      'Maintenance': '10–20 mins',
+      'Front Desk': '5–10 mins'
+    };
+
     async function loadBranding() {
       try {
-        // If we have a room_id, fetch room details to get room number
         if (roomId) {
-          const roomRes = await fetch('/rooms?hotel_id=' + hotelId);
-          const rooms = await roomRes.json();
-          const room = rooms.find(r => String(r.id) === String(roomId));
+          var roomRes = await fetch('/rooms?hotel_id=' + hotelId);
+          var rooms = await roomRes.json();
+          var room = rooms.find(function(r) { return String(r.id) === String(roomId); });
           if (room) roomNumber = room.room_number;
         }
 
-        // Fetch hotel details
-        const hotelRes = await fetch('/hotels');
-        const hotels = await hotelRes.json();
-        const hotel = hotels.find(h => h.hotel_id === hotelId);
+        var hotelRes = await fetch('/hotels');
+        var hotels = await hotelRes.json();
+        var hotel = hotels.find(function(h) { return h.hotel_id === hotelId; });
 
         if (hotel) {
-          // Apply branding
+          hotelData = hotel;
           document.documentElement.style.setProperty('--brand', hotel.colour || '#1a1a2e');
           document.getElementById('hotel-name').textContent = (hotel.emoji || '🏨') + ' ' + hotel.name;
           document.getElementById('room-label').textContent = 'Room ' + roomNumber + (hotel.city ? ' — ' + hotel.city : '');
+          document.getElementById('hotel-name-ty').textContent = hotel.name;
           document.title = 'Welco — ' + hotel.name;
+          document.getElementById('welcome-msg').style.display = 'inline-block';
         } else {
           document.getElementById('hotel-name').textContent = '🏨 Welco';
           document.getElementById('room-label').textContent = 'Room ' + roomNumber;
@@ -225,26 +316,51 @@
     loadBranding();
 
     function selectCat(btn, cat) {
-      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
+      document.querySelectorAll('.cat-btn').forEach(function(b) { b.classList.remove('selected'); });
       btn.classList.add('selected');
       selectedCategory = cat;
+      selectedQuick = '';
+
+      // Show quick requests
+      var quickSection = document.getElementById('quick-section');
+      var quickItemsEl = document.getElementById('quick-items');
+      quickSection.style.display = 'block';
+      quickItemsEl.innerHTML = '';
+
+      quickOptions[cat].forEach(function(item) {
+        var el = document.createElement('button');
+        el.className = 'quick-item';
+        el.textContent = item;
+        el.onclick = function() {
+          document.querySelectorAll('.quick-item').forEach(function(q) { q.classList.remove('selected'); });
+          el.classList.add('selected');
+          selectedQuick = item.replace(/[^\w\s]/gi, '').trim();
+          document.getElementById('message').value = selectedQuick;
+        };
+        quickItemsEl.appendChild(el);
+      });
+
+      // Show ETA
+      var etaBadge = document.getElementById('eta-badge');
+      document.getElementById('eta-time').textContent = etaMap[cat] || '10 mins';
+      etaBadge.style.display = 'block';
     }
 
     function setRating(r) {
       selectedRating = r;
-      const labels = ['', '😞 Poor', '😐 Fair', '🙂 Good', '😊 Great', '🤩 Excellent!'];
+      var labels = ['', '😞 Poor', '😐 Fair', '🙂 Good', '😊 Great', '🤩 Excellent!'];
       document.getElementById('rating-label').textContent = labels[r];
-      document.querySelectorAll('#stars span').forEach((s, i) => {
+      document.querySelectorAll('#stars span').forEach(function(s, i) {
         s.style.opacity = i < r ? '1' : '0.3';
       });
     }
 
     async function submitRequest() {
-      if (!selectedCategory) return alert('Please select a category!');
-      const message = document.getElementById('message').value;
+      if (!selectedCategory) return alert('Please select a category first!');
+      var message = document.getElementById('message').value || selectedQuick;
 
       try {
-        const res = await fetch('/requests', {
+        var res = await fetch('/requests', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -252,17 +368,27 @@
             room_id: roomId,
             room_number: roomNumber,
             category: selectedCategory,
-            message
+            message: message
           })
         });
-        const data = await res.json();
+        var data = await res.json();
 
         if (data && data.id) {
           currentRequestId = data.id;
+
+          // Show success then switch to tracking
           document.getElementById('success').style.display = 'block';
+          setTimeout(function() {
+            document.getElementById('request-card').style.display = 'none';
+            showTracking(selectedCategory, message);
+          }, 1500);
+
           document.getElementById('message').value = '';
-          document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
+          document.querySelectorAll('.cat-btn').forEach(function(b) { b.classList.remove('selected'); });
+          document.querySelectorAll('.quick-item').forEach(function(q) { q.classList.remove('selected'); });
           selectedCategory = '';
+          selectedQuick = '';
+
           pollInterval = setInterval(checkIfDone, 5000);
         } else {
           alert('Something went wrong. Please try again.');
@@ -272,22 +398,76 @@
       }
     }
 
+    function showTracking(category, message) {
+      var icons = { 'Housekeeping': '🛏️', 'Room Service': '🍽️', 'Maintenance': '🔧', 'Front Desk': '🛎️' };
+      var trackingCard = document.getElementById('tracking-card');
+      document.getElementById('tracking-icon').textContent = icons[category] || '📋';
+      document.getElementById('tracking-title').textContent = category + ' Request Sent!';
+      document.getElementById('tracking-sub').textContent = message ? '"' + message + '"' : 'Your request has been sent to our team.';
+      document.getElementById('eta-track-text').textContent = 'Estimated: ' + (etaMap[category] || '10–15 mins');
+
+      trackingCard.style.display = 'block';
+
+      // Animate progress bar
+      setTimeout(function() {
+        document.getElementById('eta-fill').style.width = '60%';
+      }, 500);
+    }
+
+    function updateTrackingStatus(status) {
+      if (status === 'in_progress') {
+        var step2 = document.getElementById('step-2');
+        step2.classList.add('active');
+        document.getElementById('check-2').textContent = '✓';
+        document.getElementById('tracking-title').textContent = 'Staff On The Way! 👷';
+        document.getElementById('tracking-sub').textContent = 'A staff member has accepted your request and is coming to help.';
+        document.getElementById('eta-fill').style.width = '80%';
+      } else if (status === 'done') {
+        var step3 = document.getElementById('step-3');
+        step3.classList.add('active', 'done');
+        document.getElementById('check-3').textContent = '✓';
+        document.getElementById('tracking-title').textContent = 'Completed! ✅';
+        document.getElementById('tracking-sub').textContent = 'Your request has been completed. How was the service?';
+        document.getElementById('eta-fill').style.width = '100%';
+      }
+    }
+
     async function checkIfDone() {
       try {
-        const res = await fetch('/requests?hotel_id=' + hotelId);
-        const requests = await res.json();
-        const req = requests.find(r => r.id === currentRequestId);
-        if (req && req.status === 'done' && !req.feedback_rating) {
-          clearInterval(pollInterval);
-          document.getElementById('request-card').style.display = 'none';
-          document.getElementById('feedback-card').style.display = 'block';
+        var res = await fetch('/requests?hotel_id=' + hotelId);
+        var requests = await res.json();
+        var req = requests.find(function(r) { return r.id === currentRequestId; });
+        if (req) {
+          updateTrackingStatus(req.status);
+          if (req.status === 'done' && !req.feedback_rating) {
+            clearInterval(pollInterval);
+            setTimeout(function() {
+              document.getElementById('tracking-card').style.display = 'none';
+              document.getElementById('feedback-card').style.display = 'block';
+            }, 2000);
+          }
         }
       } catch(e) {}
     }
 
+    function newRequest() {
+      clearInterval(pollInterval);
+      document.getElementById('tracking-card').style.display = 'none';
+      document.getElementById('request-card').style.display = 'block';
+      document.getElementById('success').style.display = 'none';
+      document.getElementById('quick-section').style.display = 'none';
+      document.getElementById('eta-badge').style.display = 'none';
+      document.getElementById('eta-fill').style.width = '10%';
+      document.getElementById('step-2').classList.remove('active');
+      document.getElementById('step-3').classList.remove('active','done');
+      document.getElementById('check-2').textContent = '⏳';
+      document.getElementById('check-3').textContent = '⏳';
+      currentRequestId = null;
+    }
+
     async function submitFeedback() {
       if (!selectedRating) return alert('Please select a star rating!');
-      const comment = document.getElementById('comment').value;
+      var comment = document.getElementById('comment').value;
       await fetch('/requests/' + currentRequestId + '/feedback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

@@ -10,7 +10,7 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY
 );
 
-app.use(express.json({ limit: '5mb' })); // ← increased limit for base64 logo images
+app.use(express.json({ limit: '5mb' }));
 app.use(express.static(__dirname));
 
 // ─────────────────────────────────────────
@@ -67,7 +67,6 @@ app.get('/hotels/:id', async (req, res) => {
   res.json(data);
 });
 
-// ← UPDATED: now also saves logo_url
 app.post('/hotels/:hotel_id/update', async (req, res) => {
   const { name, city, colour, emoji, logo_url } = req.body;
   const { data, error } = await supabase.from('hotels')
@@ -174,6 +173,50 @@ app.post('/requests/:id/feedback', async (req, res) => {
   const { rating, feedback_comments } = req.body;
   const { data, error } = await supabase.from('requests')
     .update({ feedback_rating: rating, feedback_comments })
+    .eq('id', req.params.id).select().single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+});
+
+// ─────────────────────────────────────────
+// ANNOUNCEMENTS
+// ─────────────────────────────────────────
+app.get('/announcements', async (req, res) => {
+  let query = supabase.from('announcements')
+    .select('*')
+    .order('created_at', { ascending: false });
+  if (req.query.hotel_id) query = query.eq('hotel_id', req.query.hotel_id);
+  const { data, error } = await query;
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+});
+
+app.post('/announcements', async (req, res) => {
+  const { hotel_id, message } = req.body;
+  if (!hotel_id || !message) return res.status(400).json({ error: 'hotel_id and message required.' });
+
+  // Deactivate all previous announcements for this hotel first
+  await supabase.from('announcements')
+    .update({ is_active: false })
+    .eq('hotel_id', hotel_id);
+
+  const { data, error } = await supabase.from('announcements')
+    .insert([{ hotel_id, message, is_active: true }])
+    .select().single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+});
+
+app.delete('/announcements/:id', async (req, res) => {
+  const { error } = await supabase.from('announcements').delete().eq('id', req.params.id);
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ success: true });
+});
+
+app.post('/announcements/:id/toggle', async (req, res) => {
+  const { is_active } = req.body;
+  const { data, error } = await supabase.from('announcements')
+    .update({ is_active })
     .eq('id', req.params.id).select().single();
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);

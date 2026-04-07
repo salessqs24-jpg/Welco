@@ -32,11 +32,8 @@
     .topbar-name { font-size: 16px; font-weight: bold; }
     .topbar-city { font-size: 11px; opacity: 0.75; }
     .logout-btn { background: rgba(255,255,255,0.15); border: none; color: white; padding: 6px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; }
-
-    /* ── Topbar logo ── */
     #topbar-logo-img { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; border: 2px solid rgba(255,255,255,0.4); display: none; }
     #topbar-logo-emoji { font-size: 24px; }
-
     .tabs { display: flex; background: white; border-bottom: 1px solid #eee; overflow-x: auto; }
     .tab { padding: 14px 16px; font-size: 13px; font-weight: 500; color: #999; cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; }
     .tab.active { color: var(--brand); border-bottom-color: var(--brand); }
@@ -78,8 +75,7 @@
     .badge-progress { background: #cff4fc; color: #0a6070; }
     .badge-done { background: #d1fae5; color: #065f46; }
     .settings-form label { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 6px; }
-    .settings-form input[type="text"],
-    .settings-form input[type="email"] { width: 100%; padding: 12px 14px; border: 1.5px solid #e0ddd8; border-radius: 10px; font-size: 14px; margin-bottom: 14px; outline: none; }
+    .settings-form input[type="text"], .settings-form input[type="email"] { width: 100%; padding: 12px 14px; border: 1.5px solid #e0ddd8; border-radius: 10px; font-size: 14px; margin-bottom: 14px; outline: none; }
     .color-row { display: flex; gap: 8px; align-items: center; margin-bottom: 14px; }
     .color-row input[type="color"] { width: 48px; height: 44px; border-radius: 8px; border: 1.5px solid #e0ddd8; padding: 3px; cursor: pointer; }
     .color-row input[type="text"] { flex: 1; padding: 12px 14px; border: 1.5px solid #e0ddd8; border-radius: 10px; font-size: 14px; outline: none; margin-bottom: 0; }
@@ -98,64 +94,36 @@
     .loading { text-align: center; padding: 40px; color: #aaa; }
     select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; outline: none; background: white; }
 
-    /* ── Logo upload UI ── */
-    .logo-upload-area {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 16px;
-      border: 2px dashed #e0ddd8;
-      border-radius: 12px;
-      margin-bottom: 14px;
-      cursor: pointer;
-      transition: border-color 0.2s;
-    }
+    /* Logo upload */
+    .logo-upload-area { display: flex; align-items: center; gap: 16px; padding: 16px; border: 2px dashed #e0ddd8; border-radius: 12px; margin-bottom: 14px; cursor: pointer; transition: border-color 0.2s; }
     .logo-upload-area:hover { border-color: var(--brand2); }
-    .logo-preview-wrap {
-      width: 64px;
-      height: 64px;
-      border-radius: 12px;
-      background: #f0f0f0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 30px;
-      overflow: hidden;
-      flex-shrink: 0;
-      border: 1px solid #e0e0e0;
-    }
-    .logo-preview-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .logo-preview-wrap { width: 64px; height: 64px; border-radius: 12px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 30px; overflow: hidden; flex-shrink: 0; border: 1px solid #e0e0e0; }
+    .logo-preview-wrap img { width: 100%; height: 100%; object-fit: cover; }
     .logo-upload-text { flex: 1; }
     .logo-upload-text strong { display: block; font-size: 13px; color: #333; margin-bottom: 4px; }
     .logo-upload-text span { font-size: 11px; color: #aaa; }
-    .logo-upload-btn {
-      padding: 8px 14px;
-      background: var(--brand);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: bold;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .logo-remove-btn {
-      padding: 6px 10px;
-      background: #fde8ea;
-      color: #e63946;
-      border: none;
-      border-radius: 8px;
-      font-size: 11px;
-      cursor: pointer;
-      margin-top: 6px;
-      display: none;
-    }
+    .logo-upload-btn { padding: 8px 14px; background: var(--brand); color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; white-space: nowrap; }
+    .logo-remove-btn { padding: 6px 10px; background: #fde8ea; color: #e63946; border: none; border-radius: 8px; font-size: 11px; cursor: pointer; margin-top: 6px; display: none; }
     #logo-file-input { display: none; }
     .logo-size-note { font-size: 11px; color: #aaa; margin-top: -8px; margin-bottom: 14px; }
+
+    /* ── Announcement styles ── */
+    .ann-compose { display: flex; gap: 8px; flex-direction: column; }
+    .ann-compose textarea { width: 100%; padding: 12px 14px; border: 1.5px solid #e0ddd8; border-radius: 10px; font-size: 14px; resize: none; height: 80px; font-family: sans-serif; outline: none; }
+    .ann-compose textarea:focus { border-color: var(--brand2); }
+    .ann-compose-row { display: flex; gap: 8px; }
+    .btn-post { flex: 1; padding: 12px; background: #ee9b00; color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; }
+    .ann-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid #f0f0f0; gap: 10px; }
+    .ann-row:last-child { border-bottom: none; }
+    .ann-msg { font-size: 14px; color: #333; line-height: 1.5; flex: 1; }
+    .ann-meta { font-size: 11px; color: #aaa; margin-top: 4px; }
+    .ann-active-badge { display: inline-block; background: #d1fae5; color: #065f46; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 500; }
+    .ann-inactive-badge { display: inline-block; background: #f0f0f0; color: #999; padding: 2px 8px; border-radius: 10px; font-size: 11px; }
+    .ann-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .btn-toggle-on { padding: 5px 10px; background: #d1fae5; color: #065f46; border: none; border-radius: 6px; font-size: 11px; cursor: pointer; }
+    .btn-toggle-off { padding: 5px 10px; background: #fff3cd; color: #8a6000; border: none; border-radius: 6px; font-size: 11px; cursor: pointer; }
+    .preview-banner { display: flex; align-items: center; gap: 10px; background: linear-gradient(90deg,#ee9b00,#ca6702); color: white; padding: 12px 16px; border-radius: 10px; font-size: 13px; margin-bottom: 16px; }
+    .preview-banner .prev-icon { font-size: 18px; }
   </style>
 </head>
 <body>
@@ -178,7 +146,6 @@
 <div id="app-screen">
   <div class="topbar">
     <div class="topbar-left">
-      <!-- Shows logo image if uploaded, otherwise emoji -->
       <img id="topbar-logo-img" src="" alt="Hotel Logo">
       <div id="topbar-logo-emoji">🏨</div>
       <div>
@@ -193,11 +160,14 @@
     <div class="tab active" onclick="showTab('overview')">📊 Overview</div>
     <div class="tab" onclick="showTab('rooms')">🚪 Rooms</div>
     <div class="tab" onclick="showTab('staff')">👷 Staff</div>
+    <div class="tab" onclick="showTab('announce')">📢 Announce</div>
     <div class="tab" onclick="showTab('reports')">📋 Reports</div>
     <div class="tab" onclick="showTab('settings')">⚙️ Settings</div>
   </div>
 
   <div class="content">
+
+    <!-- OVERVIEW -->
     <div class="tab-panel active" id="panel-overview">
       <div class="stat-grid">
         <div class="stat-box"><div class="stat-num" id="s-rooms">-</div><div class="stat-label">Rooms</div></div>
@@ -212,6 +182,7 @@
       </div>
     </div>
 
+    <!-- ROOMS -->
     <div class="tab-panel" id="panel-rooms">
       <div class="card">
         <div class="card-title">Add New Room</div>
@@ -229,6 +200,7 @@
       </div>
     </div>
 
+    <!-- STAFF -->
     <div class="tab-panel" id="panel-staff">
       <div class="card">
         <div class="card-title">Add Staff Member</div>
@@ -247,6 +219,36 @@
       </div>
     </div>
 
+    <!-- ═══════════ ANNOUNCEMENTS TAB ═══════════ -->
+    <div class="tab-panel" id="panel-announce">
+      <div class="card">
+        <div class="card-title">Post Announcement</div>
+        <div class="card-sub">Guests will see this banner when they scan any room QR code</div>
+        <div class="msg-box" id="ann-msg"></div>
+
+        <!-- Live preview -->
+        <div class="preview-banner" id="ann-preview" style="display:none">
+          <span class="prev-icon">📢</span>
+          <span id="ann-preview-text" style="flex:1"></span>
+        </div>
+
+        <div class="ann-compose">
+          <textarea id="ann-input" placeholder="e.g. Pool closed for maintenance today. Sorry for the inconvenience!" oninput="previewAnn(this.value)"></textarea>
+          <div class="ann-compose-row">
+            <button class="btn-post" onclick="postAnnouncement()">📢 Post to All Guests</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Active & Past Announcements</div>
+        <div class="card-sub">Only one announcement can be active at a time</div>
+        <div id="ann-list"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+    <!-- ══════════════════════════════════════════ -->
+
+    <!-- REPORTS -->
     <div class="tab-panel" id="panel-reports">
       <div class="card">
         <div class="card-title">All Requests</div>
@@ -270,27 +272,22 @@
       </div>
     </div>
 
-    <!-- ═══════════════════════════════ SETTINGS TAB ═══════════════════════════════ -->
+    <!-- SETTINGS -->
     <div class="tab-panel" id="panel-settings">
       <div class="card">
         <div class="card-title">Hotel Settings</div>
         <div class="card-sub">Update your hotel information</div>
         <div class="msg-box" id="settings-msg"></div>
         <div class="settings-form">
-
           <label>Hotel Name</label>
           <input type="text" id="set-name" placeholder="Hotel name">
-
           <label>City</label>
           <input type="text" id="set-city" placeholder="City">
-
           <label>Brand Colour</label>
           <div class="color-row">
             <input type="color" id="set-colorpicker" oninput="document.getElementById('set-colortext').value=this.value">
             <input type="text" id="set-colortext" placeholder="#0a9396">
           </div>
-
-          <!-- ── NEW: Hotel Logo Upload ── -->
           <label style="margin-top:6px">Hotel Logo</label>
           <div class="logo-upload-area" onclick="document.getElementById('logo-file-input').click()">
             <div class="logo-preview-wrap" id="logo-preview-wrap">
@@ -305,21 +302,15 @@
           </div>
           <button class="logo-remove-btn" id="logo-remove-btn" onclick="removeLogo()">✕ Remove logo — use emoji instead</button>
           <p class="logo-size-note" id="logo-size-note"></p>
-
-          <!-- Hidden file input -->
           <input type="file" id="logo-file-input" accept="image/jpeg,image/png,image/webp" onchange="handleLogoUpload(event)">
-
-          <!-- Emoji fallback (only shown when no logo) -->
           <div id="emoji-row">
             <label>Hotel Emoji <span style="font-weight:400;text-transform:none;font-size:11px">(used when no logo is set)</span></label>
             <input type="text" id="set-emoji" placeholder="🏨" maxlength="2">
           </div>
-
           <button class="save-btn" onclick="saveSettings()">Save Changes</button>
         </div>
       </div>
     </div>
-    <!-- ═══════════════════════════════════════════════════════════════════════════ -->
 
   </div>
 </div>
@@ -340,11 +331,10 @@
 var hotel = null;
 var currentQRRoom = '';
 var LIVE_URL = 'https://welco.onrender.com';
-var pendingLogoBase64 = null; // holds newly selected logo before save
+var pendingLogoBase64 = null;
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw-admin.js').catch(function(){});
 
-/* ─── Login / Logout ─── */
 function doLogin() {
   var email = document.getElementById('l-email').value.trim();
   var password = document.getElementById('l-password').value;
@@ -371,7 +361,6 @@ function doLogout() {
   document.getElementById('login-screen').style.display = 'flex';
 }
 
-/* ─── Start app after login ─── */
 function startApp() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app-screen').style.display = 'block';
@@ -379,99 +368,62 @@ function startApp() {
   document.getElementById('t-city').textContent = hotel.city || '';
   document.documentElement.style.setProperty('--brand', hotel.colour || '#005f73');
   document.documentElement.style.setProperty('--brand2', hotel.colour || '#0a9396');
-
-  // Populate settings form
   document.getElementById('set-name').value = hotel.name || '';
   document.getElementById('set-city').value = hotel.city || '';
   document.getElementById('set-colortext').value = hotel.colour || '#0a9396';
   document.getElementById('set-colorpicker').value = hotel.colour || '#0a9396';
   document.getElementById('set-emoji').value = hotel.emoji || '🏨';
-
-  // Apply logo or emoji everywhere
   applyLogoOrEmoji(hotel.logo_url, hotel.emoji);
-
   loadOverview(); loadRooms(); loadStaff();
 }
 
-/* ─── Logo helpers ─── */
 function applyLogoOrEmoji(logoUrl, emoji) {
-  var imgEl  = document.getElementById('topbar-logo-img');
+  var imgEl = document.getElementById('topbar-logo-img');
   var emojiEl = document.getElementById('topbar-logo-emoji');
-  var previewImg   = document.getElementById('logo-preview-img');
+  var previewImg = document.getElementById('logo-preview-img');
   var previewEmoji = document.getElementById('logo-preview-emoji');
-  var removeBtn    = document.getElementById('logo-remove-btn');
-  var emojiRow     = document.getElementById('emoji-row');
-
+  var removeBtn = document.getElementById('logo-remove-btn');
+  var emojiRow = document.getElementById('emoji-row');
   if (logoUrl) {
-    // Topbar: show image, hide emoji
-    imgEl.src = logoUrl;
-    imgEl.style.display = 'block';
-    emojiEl.style.display = 'none';
-    // Settings preview
-    previewImg.src = logoUrl;
-    previewImg.style.display = 'block';
-    previewEmoji.style.display = 'none';
-    // Show remove button, hide emoji input
-    removeBtn.style.display = 'block';
-    emojiRow.style.display = 'none';
+    imgEl.src = logoUrl; imgEl.style.display = 'block'; emojiEl.style.display = 'none';
+    previewImg.src = logoUrl; previewImg.style.display = 'block'; previewEmoji.style.display = 'none';
+    removeBtn.style.display = 'block'; emojiRow.style.display = 'none';
   } else {
-    // Topbar: show emoji, hide image
-    imgEl.style.display = 'none';
-    emojiEl.textContent = emoji || '🏨';
-    emojiEl.style.display = 'block';
-    // Settings preview
-    previewImg.style.display = 'none';
-    previewEmoji.textContent = emoji || '🏨';
-    previewEmoji.style.display = 'block';
-    // Hide remove button, show emoji input
-    removeBtn.style.display = 'none';
-    emojiRow.style.display = 'block';
+    imgEl.style.display = 'none'; emojiEl.textContent = emoji || '🏨'; emojiEl.style.display = 'block';
+    previewImg.style.display = 'none'; previewEmoji.textContent = emoji || '🏨'; previewEmoji.style.display = 'block';
+    removeBtn.style.display = 'none'; emojiRow.style.display = 'block';
   }
 }
 
 function handleLogoUpload(event) {
-  var file = event.target.files[0];
-  if (!file) return;
-
-  // Size check — warn if > 1 MB
+  var file = event.target.files[0]; if (!file) return;
   var note = document.getElementById('logo-size-note');
-  if (file.size > 1024 * 1024) {
-    note.textContent = '⚠️ Image is large (' + (file.size/1024/1024).toFixed(1) + ' MB). It will still work but may slow loading. Recommended: under 1 MB.';
-    note.style.color = '#e67e00';
-  } else {
-    note.textContent = '✅ ' + file.name + ' ready — click Save Changes to apply.';
-    note.style.color = '#065f46';
-  }
-
+  if (file.size > 1024*1024) { note.textContent = '⚠️ Image is large ('+( file.size/1024/1024).toFixed(1)+' MB). Recommended: under 1 MB.'; note.style.color='#e67e00'; }
+  else { note.textContent = '✅ '+file.name+' ready — click Save Changes to apply.'; note.style.color='#065f46'; }
   var reader = new FileReader();
-  reader.onload = function(e) {
-    pendingLogoBase64 = e.target.result; // full base64 data URL
-    // Show preview immediately
-    applyLogoOrEmoji(pendingLogoBase64, hotel.emoji);
-  };
+  reader.onload = function(e) { pendingLogoBase64 = e.target.result; applyLogoOrEmoji(pendingLogoBase64, hotel.emoji); };
   reader.readAsDataURL(file);
 }
 
 function removeLogo() {
-  pendingLogoBase64 = ''; // empty string = remove
+  pendingLogoBase64 = '';
   applyLogoOrEmoji(null, document.getElementById('set-emoji').value || hotel.emoji || '🏨');
   document.getElementById('logo-size-note').textContent = 'Logo will be removed when you click Save Changes.';
   document.getElementById('logo-size-note').style.color = '#888';
   document.getElementById('logo-file-input').value = '';
 }
 
-/* ─── Tabs ─── */
 function showTab(name) {
-  var names = ['overview','rooms','staff','reports','settings'];
+  var names = ['overview','rooms','staff','announce','reports','settings'];
   document.querySelectorAll('.tab').forEach(function(t,i){ t.classList.toggle('active', names[i]===name); });
   document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
   document.getElementById('panel-'+name).classList.add('active');
   if (name==='reports') loadReports();
   if (name==='rooms') loadRooms();
   if (name==='staff') loadStaff();
+  if (name==='announce') loadAnnouncements();
 }
 
-/* ─── Overview ─── */
 function loadOverview() {
   Promise.all([
     fetch('/rooms?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}),
@@ -489,7 +441,6 @@ function loadOverview() {
   }).catch(function(){});
 }
 
-/* ─── Rooms ─── */
 function loadRooms() {
   fetch('/rooms?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(rooms){
     if (!Array.isArray(rooms)) return;
@@ -512,12 +463,10 @@ function deleteRoom(id) {
   fetch('/rooms/'+id,{method:'DELETE'}).then(function(){ loadRooms(); loadOverview(); });
 }
 
-/* ─── Staff ─── */
 function loadStaff() {
   fetch('/staff?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(staff){
     if (!Array.isArray(staff)) return;
-    var list = document.getElementById('staff-list');
-    list.innerHTML = staff.length===0 ? '<div class="empty">No staff added yet.<br><small>Add staff above so they can login.</small></div>'
+    document.getElementById('staff-list').innerHTML = staff.length===0 ? '<div class="empty">No staff added yet.<br><small>Add staff above so they can login.</small></div>'
       : staff.map(function(s){ return '<div class="staff-row"><div><div class="staff-name-txt">'+s.name+'</div></div><div style="display:flex;gap:8px;align-items:center"><div class="staff-pin">PIN: '+s.pin+'</div><button class="btn-remove" onclick="removeStaff('+s.id+')">Remove</button></div></div>'; }).join('');
   }).catch(function(){});
 }
@@ -529,8 +478,7 @@ function addStaff() {
   fetch('/staff', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hotel.hotel_id,name:name,pin:pin})})
     .then(function(r){return r.json();}).then(function(data){
       if (data.error) { alert(data.error); return; }
-      document.getElementById('new-staff-name').value='';
-      document.getElementById('new-staff-pin').value='';
+      document.getElementById('new-staff-name').value=''; document.getElementById('new-staff-pin').value='';
       var msg = document.getElementById('staff-msg');
       msg.textContent = '✅ '+name+' added! They can now login with PIN: '+pin;
       msg.className = 'msg-box msg-success';
@@ -544,7 +492,54 @@ function removeStaff(id) {
   fetch('/staff/'+id,{method:'DELETE'}).then(function(){ loadStaff(); });
 }
 
-/* ─── Reports ─── */
+/* ─── ANNOUNCEMENTS ─── */
+function previewAnn(val) {
+  var prev = document.getElementById('ann-preview');
+  if (val.trim()) { document.getElementById('ann-preview-text').textContent = val; prev.style.display='flex'; }
+  else { prev.style.display='none'; }
+}
+
+function postAnnouncement() {
+  var msg = document.getElementById('ann-input').value.trim();
+  if (!msg) { alert('Please type an announcement first.'); return; }
+  fetch('/announcements', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hotel.hotel_id,message:msg})})
+    .then(function(r){return r.json();}).then(function(data){
+      if (data.error) { alert(data.error); return; }
+      document.getElementById('ann-input').value='';
+      document.getElementById('ann-preview').style.display='none';
+      var m = document.getElementById('ann-msg');
+      m.textContent='✅ Announcement posted! Guests will see it now.';
+      m.className='msg-box msg-success';
+      setTimeout(function(){m.className='msg-box';},4000);
+      loadAnnouncements();
+    });
+}
+
+function loadAnnouncements() {
+  fetch('/announcements?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(list){
+    var el = document.getElementById('ann-list');
+    if (!Array.isArray(list) || list.length===0) { el.innerHTML='<div class="empty">No announcements yet</div>'; return; }
+    el.innerHTML = list.map(function(a){
+      var time = new Date(a.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+      var badge = a.is_active ? '<span class="ann-active-badge">🟢 Live</span>' : '<span class="ann-inactive-badge">Off</span>';
+      var toggleBtn = a.is_active
+        ? '<button class="btn-toggle-off" onclick="toggleAnn('+a.id+',false)">Turn Off</button>'
+        : '<button class="btn-toggle-on" onclick="toggleAnn('+a.id+',true)">Turn On</button>';
+      return '<div class="ann-row"><div><div class="ann-msg">'+a.message+'</div><div class="ann-meta">'+badge+' &nbsp;'+time+'</div></div><div class="ann-actions">'+toggleBtn+'<button class="btn-del" onclick="deleteAnn('+a.id+')">✕</button></div></div>';
+    }).join('');
+  }).catch(function(){ document.getElementById('ann-list').innerHTML='<div class="empty">Could not load</div>'; });
+}
+
+function toggleAnn(id, active) {
+  fetch('/announcements/'+id+'/toggle',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({is_active:active})})
+    .then(function(){ loadAnnouncements(); });
+}
+
+function deleteAnn(id) {
+  if (!confirm('Delete this announcement?')) return;
+  fetch('/announcements/'+id,{method:'DELETE'}).then(function(){ loadAnnouncements(); });
+}
+
 function loadReports() {
   fetch('/requests?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(reqs){
     if (!Array.isArray(reqs)) return;
@@ -563,49 +558,33 @@ function reqRow(r) {
   return '<div class="request-row"><div class="req-top"><span class="req-room">Room '+(r.room_number||'-')+'</span><span class="req-cat">'+(r.category||'General')+'</span></div><div class="req-msg">'+(r.message||'No details')+'</div><div class="req-meta"><span class="badge '+bc+'">'+bt+'</span>'+(r.claimed_by?'<span>👷 '+r.claimed_by+'</span>':'')+(r.feedback_rating?'<span>⭐ '+r.feedback_rating+'/5</span>':'')+'<span>'+time+'</span></div></div>';
 }
 
-/* ─── Save Settings (now includes logo) ─── */
 function saveSettings() {
-  var name   = document.getElementById('set-name').value.trim();
-  var city   = document.getElementById('set-city').value.trim();
-  var colour = document.getElementById('set-colortext').value.trim();
-  var emoji  = document.getElementById('set-emoji').value.trim();
+  var name=document.getElementById('set-name').value.trim();
+  var city=document.getElementById('set-city').value.trim();
+  var colour=document.getElementById('set-colortext').value.trim();
+  var emoji=document.getElementById('set-emoji').value.trim();
   if (!name) return;
-
-  // Build payload — include logo only if it changed
   var payload = { name:name, city:city, colour:colour, emoji:emoji };
-  if (pendingLogoBase64 !== null) {
-    // null = unchanged; '' = remove logo; 'data:...' = new logo
-    payload.logo_url = pendingLogoBase64;
-  }
-
-  fetch('/hotels/'+hotel.hotel_id+'/update', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify(payload)
-  }).then(function(r){
-    if (r.ok) {
-      var newLogo = pendingLogoBase64 !== null ? pendingLogoBase64 : hotel.logo_url;
-      hotel = Object.assign({}, hotel, { name:name, city:city, colour:colour, emoji:emoji, logo_url: newLogo });
-      localStorage.setItem('welco_admin_hotel', JSON.stringify(hotel));
-
-      // Update topbar
-      document.getElementById('t-name').textContent = name;
-      document.getElementById('t-city').textContent = city;
-      document.documentElement.style.setProperty('--brand', colour);
-      applyLogoOrEmoji(hotel.logo_url, emoji);
-
-      pendingLogoBase64 = null; // reset pending
-
-      var msg = document.getElementById('settings-msg');
-      msg.textContent = '✅ Settings saved!';
-      msg.className = 'msg-box msg-success';
-      setTimeout(function(){ msg.className='msg-box'; }, 3000);
-      document.getElementById('logo-size-note').textContent = '';
-    }
-  });
+  if (pendingLogoBase64 !== null) payload.logo_url = pendingLogoBase64;
+  fetch('/hotels/'+hotel.hotel_id+'/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+    .then(function(r){
+      if (r.ok) {
+        var newLogo = pendingLogoBase64 !== null ? pendingLogoBase64 : hotel.logo_url;
+        hotel=Object.assign({},hotel,{name:name,city:city,colour:colour,emoji:emoji,logo_url:newLogo});
+        localStorage.setItem('welco_admin_hotel',JSON.stringify(hotel));
+        document.getElementById('t-name').textContent=name;
+        document.getElementById('t-city').textContent=city;
+        document.documentElement.style.setProperty('--brand',colour);
+        applyLogoOrEmoji(hotel.logo_url,emoji);
+        pendingLogoBase64=null;
+        var msg=document.getElementById('settings-msg');
+        msg.textContent='✅ Settings saved!'; msg.className='msg-box msg-success';
+        setTimeout(function(){msg.className='msg-box';},3000);
+        document.getElementById('logo-size-note').textContent='';
+      }
+    });
 }
 
-/* ─── QR ─── */
 function showQR(hotelId,roomId,roomNum) {
   currentQRRoom='Room-'+roomNum;
   document.getElementById('qr-title').textContent='Room '+roomNum;
@@ -620,7 +599,6 @@ function downloadQR() {
   var link=document.createElement('a'); link.download='welco-'+currentQRRoom+'.png'; link.href=canvas.toDataURL(); link.click();
 }
 
-/* ─── Auto-login from localStorage ─── */
 window.onload=function(){
   var stored=localStorage.getItem('welco_admin_hotel');
   if (stored) { hotel=JSON.parse(stored); startApp(); }

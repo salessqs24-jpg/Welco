@@ -19,6 +19,13 @@
       background: rgba(0,0,0,0.6); backdrop-filter: blur(10px);
       color: white; padding: 20px; text-align: center;
     }
+    .header-logo-wrap {
+      display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 4px;
+    }
+    .header-logo-img {
+      width: 48px; height: 48px; border-radius: 10px; object-fit: cover;
+      border: 2px solid rgba(255,255,255,0.4); display: none;
+    }
     .header h1 { font-size: 24px; font-weight: bold; }
     .header p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
     .welcome-msg {
@@ -26,6 +33,27 @@
       background: rgba(255,255,255,0.15); border-radius: 20px;
       padding: 4px 14px; display: inline-block;
     }
+
+    /* ── ANNOUNCEMENT BANNER ── */
+    .announcement-banner {
+      display: none;
+      margin: 0;
+      background: linear-gradient(90deg, #ee9b00, #ca6702);
+      color: white;
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      text-align: center;
+      line-height: 1.5;
+      animation: slideDown 0.4s ease;
+    }
+    .announcement-banner .ann-icon { font-size: 15px; margin-right: 6px; }
+    .announcement-banner .ann-dismiss {
+      background: rgba(255,255,255,0.25); border: none; color: white;
+      border-radius: 20px; padding: 2px 10px; font-size: 11px;
+      cursor: pointer; margin-left: 10px; vertical-align: middle;
+    }
+    @keyframes slideDown { from { opacity:0; transform: translateY(-10px); } to { opacity:1; transform: translateY(0); } }
 
     .container {
       flex: 1; display: flex; flex-direction: column;
@@ -99,9 +127,7 @@
     @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
     .tracking-title { font-size: 20px; font-weight: bold; color: #1a1a2e; margin-bottom: 6px; }
     .tracking-sub { font-size: 14px; color: #666; margin-bottom: 20px; line-height: 1.5; }
-    .tracking-status {
-      display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;
-    }
+    .tracking-status { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
     .status-step {
       display: flex; align-items: center; gap: 12px;
       padding: 12px 16px; border-radius: 10px; background: #f5f5f5;
@@ -113,14 +139,8 @@
     .step-text { flex: 1; text-align: left; }
     .step-check { font-size: 16px; }
 
-    .eta-bar {
-      background: #f0f0f0; border-radius: 20px; height: 8px;
-      margin-bottom: 8px; overflow: hidden;
-    }
-    .eta-fill {
-      height: 100%; border-radius: 20px; background: var(--brand);
-      width: 10%; transition: width 30s linear;
-    }
+    .eta-bar { background: #f0f0f0; border-radius: 20px; height: 8px; margin-bottom: 8px; overflow: hidden; }
+    .eta-fill { height: 100%; border-radius: 20px; background: var(--brand); width: 10%; transition: width 30s linear; }
     .eta-text { font-size: 12px; color: #999; margin-bottom: 20px; }
 
     .new-request-btn {
@@ -165,9 +185,19 @@
 <body>
 
   <div class="header">
-    <h1 id="hotel-name">🏨 Welco</h1>
+    <div class="header-logo-wrap">
+      <img class="header-logo-img" id="header-logo-img" src="" alt="Hotel Logo">
+      <h1 id="hotel-name">🏨 Welco</h1>
+    </div>
     <p id="room-label">Loading...</p>
     <div class="welcome-msg" id="welcome-msg" style="display:none">👋 Welcome! We're here to help.</div>
+  </div>
+
+  <!-- ANNOUNCEMENT BANNER -->
+  <div class="announcement-banner" id="announcement-banner">
+    <span class="ann-icon">📢</span>
+    <span id="announcement-text"></span>
+    <button class="ann-dismiss" onclick="document.getElementById('announcement-banner').style.display='none'">✕ Dismiss</button>
   </div>
 
   <div class="container">
@@ -182,13 +212,11 @@
         <button class="cat-btn" onclick="selectCat(this, 'Front Desk')">🛎️ Front Desk</button>
       </div>
 
-      <!-- QUICK REQUESTS -->
       <div class="quick-section" id="quick-section">
         <div class="quick-label">Quick Requests — tap to add</div>
         <div class="quick-items" id="quick-items"></div>
       </div>
 
-      <!-- ETA BADGE -->
       <div class="eta-badge" id="eta-badge">⏱ Usually ready in <strong id="eta-time">10 mins</strong></div>
 
       <textarea id="message" placeholder="Describe your request... (optional)"></textarea>
@@ -201,7 +229,6 @@
       <div class="tracking-icon" id="tracking-icon">📋</div>
       <div class="tracking-title" id="tracking-title">Request Received!</div>
       <div class="tracking-sub" id="tracking-sub">Your request has been sent to our staff. We'll be with you shortly.</div>
-
       <div class="tracking-status">
         <div class="status-step active" id="step-1">
           <div class="step-icon">📋</div>
@@ -219,10 +246,8 @@
           <div class="step-check" id="check-3">⏳</div>
         </div>
       </div>
-
       <div class="eta-bar"><div class="eta-fill" id="eta-fill"></div></div>
       <div class="eta-text" id="eta-track-text">Estimated: ~10 minutes</div>
-
       <button class="new-request-btn" onclick="newRequest()">+ New Request</button>
     </div>
 
@@ -266,7 +291,6 @@
     roomId = params.get('room_id') || null;
     roomNumber = params.get('room') || '101';
 
-    // Quick request options per category
     var quickOptions = {
       'Housekeeping': ['Extra Towels 🛁', 'Extra Pillow 🛏️', 'Water Bottles 💧', 'Clean Room 🧹', 'Extra Blanket 🛌', 'Toiletries 🧴'],
       'Room Service': ['Breakfast 🍳', 'Coffee ☕', 'Tea 🍵', 'Water 💧', 'Snacks 🍪', 'Ice Bucket 🧊'],
@@ -274,7 +298,6 @@
       'Front Desk': ['Wake Up Call ⏰', 'Taxi Booking 🚕', 'Luggage Help 🧳', 'Checkout Info 🏁', 'City Guide 🗺️', 'Medical Help 🏥']
     };
 
-    // ETA per category (minutes)
     var etaMap = {
       'Housekeeping': '10–15 mins',
       'Room Service': '15–20 mins',
@@ -298,11 +321,24 @@
         if (hotel) {
           hotelData = hotel;
           document.documentElement.style.setProperty('--brand', hotel.colour || '#1a1a2e');
-          document.getElementById('hotel-name').textContent = (hotel.emoji || '🏨') + ' ' + hotel.name;
+
+          // Logo or emoji in header
+          if (hotel.logo_url) {
+            var logoImg = document.getElementById('header-logo-img');
+            logoImg.src = hotel.logo_url;
+            logoImg.style.display = 'block';
+            document.getElementById('hotel-name').textContent = hotel.name;
+          } else {
+            document.getElementById('hotel-name').textContent = (hotel.emoji || '🏨') + ' ' + hotel.name;
+          }
+
           document.getElementById('room-label').textContent = 'Room ' + roomNumber + (hotel.city ? ' — ' + hotel.city : '');
           document.getElementById('hotel-name-ty').textContent = hotel.name;
           document.title = 'Welco — ' + hotel.name;
           document.getElementById('welcome-msg').style.display = 'inline-block';
+
+          // Load announcement if any
+          loadAnnouncement();
         } else {
           document.getElementById('hotel-name').textContent = '🏨 Welco';
           document.getElementById('room-label').textContent = 'Room ' + roomNumber;
@@ -313,6 +349,21 @@
       }
     }
 
+    async function loadAnnouncement() {
+      try {
+        var res = await fetch('/announcements?hotel_id=' + hotelId);
+        var data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          // Show the most recent active announcement
+          var active = data.find(function(a) { return a.is_active; });
+          if (active) {
+            document.getElementById('announcement-text').textContent = active.message;
+            document.getElementById('announcement-banner').style.display = 'block';
+          }
+        }
+      } catch(e) {}
+    }
+
     loadBranding();
 
     function selectCat(btn, cat) {
@@ -321,7 +372,6 @@
       selectedCategory = cat;
       selectedQuick = '';
 
-      // Show quick requests
       var quickSection = document.getElementById('quick-section');
       var quickItemsEl = document.getElementById('quick-items');
       quickSection.style.display = 'block';
@@ -340,7 +390,6 @@
         quickItemsEl.appendChild(el);
       });
 
-      // Show ETA
       var etaBadge = document.getElementById('eta-badge');
       document.getElementById('eta-time').textContent = etaMap[cat] || '10 mins';
       etaBadge.style.display = 'block';
@@ -358,73 +407,48 @@
     async function submitRequest() {
       if (!selectedCategory) return alert('Please select a category first!');
       var message = document.getElementById('message').value || selectedQuick;
-
       try {
         var res = await fetch('/requests', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            hotel_id: hotelId,
-            room_id: roomId,
-            room_number: roomNumber,
-            category: selectedCategory,
-            message: message
-          })
+          body: JSON.stringify({ hotel_id: hotelId, room_id: roomId, room_number: roomNumber, category: selectedCategory, message: message })
         });
         var data = await res.json();
-
         if (data && data.id) {
           currentRequestId = data.id;
-
-          // Show success then switch to tracking
           document.getElementById('success').style.display = 'block';
           setTimeout(function() {
             document.getElementById('request-card').style.display = 'none';
             showTracking(selectedCategory, message);
           }, 1500);
-
           document.getElementById('message').value = '';
           document.querySelectorAll('.cat-btn').forEach(function(b) { b.classList.remove('selected'); });
           document.querySelectorAll('.quick-item').forEach(function(q) { q.classList.remove('selected'); });
-          selectedCategory = '';
-          selectedQuick = '';
-
+          selectedCategory = ''; selectedQuick = '';
           pollInterval = setInterval(checkIfDone, 5000);
-        } else {
-          alert('Something went wrong. Please try again.');
-        }
-      } catch(e) {
-        alert('Could not send request. Please try again.');
-      }
+        } else { alert('Something went wrong. Please try again.'); }
+      } catch(e) { alert('Could not send request. Please try again.'); }
     }
 
     function showTracking(category, message) {
       var icons = { 'Housekeeping': '🛏️', 'Room Service': '🍽️', 'Maintenance': '🔧', 'Front Desk': '🛎️' };
-      var trackingCard = document.getElementById('tracking-card');
       document.getElementById('tracking-icon').textContent = icons[category] || '📋';
       document.getElementById('tracking-title').textContent = category + ' Request Sent!';
       document.getElementById('tracking-sub').textContent = message ? '"' + message + '"' : 'Your request has been sent to our team.';
       document.getElementById('eta-track-text').textContent = 'Estimated: ' + (etaMap[category] || '10–15 mins');
-
-      trackingCard.style.display = 'block';
-
-      // Animate progress bar
-      setTimeout(function() {
-        document.getElementById('eta-fill').style.width = '60%';
-      }, 500);
+      document.getElementById('tracking-card').style.display = 'block';
+      setTimeout(function() { document.getElementById('eta-fill').style.width = '60%'; }, 500);
     }
 
     function updateTrackingStatus(status) {
       if (status === 'in_progress') {
-        var step2 = document.getElementById('step-2');
-        step2.classList.add('active');
+        document.getElementById('step-2').classList.add('active');
         document.getElementById('check-2').textContent = '✓';
         document.getElementById('tracking-title').textContent = 'Staff On The Way! 👷';
         document.getElementById('tracking-sub').textContent = 'A staff member has accepted your request and is coming to help.';
         document.getElementById('eta-fill').style.width = '80%';
       } else if (status === 'done') {
-        var step3 = document.getElementById('step-3');
-        step3.classList.add('active', 'done');
+        document.getElementById('step-3').classList.add('active', 'done');
         document.getElementById('check-3').textContent = '✓';
         document.getElementById('tracking-title').textContent = 'Completed! ✅';
         document.getElementById('tracking-sub').textContent = 'Your request has been completed. How was the service?';
@@ -469,8 +493,7 @@
       if (!selectedRating) return alert('Please select a star rating!');
       var comment = document.getElementById('comment').value;
       await fetch('/requests/' + currentRequestId + '/feedback', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ rating: selectedRating, feedback_comments: comment })
       });
       document.getElementById('feedback-card').style.display = 'none';

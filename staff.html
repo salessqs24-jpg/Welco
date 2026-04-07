@@ -15,7 +15,9 @@
     body { font-family: sans-serif; background: #f0f2f5; min-height: 100vh; }
 
     #login-screen { min-height: 100vh; background: linear-gradient(160deg, #005f73, #0a9396); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
-    .hotel-logo { font-size: 52px; margin-bottom: 8px; text-align: center; }
+    .hotel-logo-wrap { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 8px; }
+    .hotel-logo-img { width: 56px; height: 56px; border-radius: 12px; object-fit: cover; border: 2px solid rgba(255,255,255,0.5); display: none; }
+    .hotel-logo { font-size: 52px; text-align: center; }
     .hotel-name { color: white; font-size: 24px; font-weight: bold; margin-bottom: 4px; text-align: center; }
     .hotel-sub { color: rgba(255,255,255,0.7); font-size: 13px; margin-bottom: 32px; text-align: center; }
     .login-card { background: white; border-radius: 20px; padding: 28px; width: 100%; max-width: 340px; }
@@ -34,13 +36,24 @@
     .login-error { color: #e63946; font-size: 13px; text-align: center; margin-top: 10px; display: none; line-height: 1.5; }
 
     #dashboard-screen { display: none; }
-    .dash-header { background: linear-gradient(90deg, #005f73, #0a9396); color: white; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; }
+    .dash-header { background: linear-gradient(90deg, #005f73, #0a9396); color: white; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; }
+    .dash-header-left { display: flex; align-items: center; gap: 10px; }
+    .dash-header-logo { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; border: 2px solid rgba(255,255,255,0.4); display: none; }
+    .dash-header-emoji { font-size: 22px; }
     .dash-hotel { font-size: 17px; font-weight: bold; }
     .dash-staff { font-size: 12px; opacity: 0.8; margin-top: 2px; }
     .header-right { display: flex; gap: 10px; align-items: center; }
     .notif-badge { background: #ee9b00; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
     .notif-badge.zero { background: rgba(255,255,255,0.2); }
     .logout-btn { background: rgba(255,255,255,0.15); border: none; color: white; padding: 6px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; }
+
+    /* ── ANNOUNCEMENT BAR on staff dashboard ── */
+    .staff-announcement {
+      display: none; background: linear-gradient(90deg, #ee9b00, #ca6702);
+      color: white; padding: 10px 16px; font-size: 13px; font-weight: 500;
+      text-align: center; line-height: 1.5;
+    }
+    .staff-announcement .ann-icon { margin-right: 6px; }
 
     .filter-tabs { display: flex; background: white; border-bottom: 1px solid #eee; overflow-x: auto; }
     .filter-tab { padding: 12px 16px; font-size: 13px; font-weight: 500; color: #999; cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; }
@@ -78,7 +91,10 @@
 <body>
 
 <div id="login-screen">
-  <div class="hotel-logo" id="login-emoji">🏨</div>
+  <div class="hotel-logo-wrap">
+    <img class="hotel-logo-img" id="login-logo-img" src="" alt="Hotel Logo">
+    <div class="hotel-logo" id="login-emoji">🏨</div>
+  </div>
   <div class="hotel-name" id="login-hotel-name">Welco Staff</div>
   <div class="hotel-sub" id="login-hotel-sub">Loading hotels...</div>
   <div class="login-card">
@@ -116,14 +132,24 @@
 
 <div id="dashboard-screen">
   <div class="dash-header" id="dash-header">
-    <div>
-      <div class="dash-hotel" id="dash-hotel">Welco Staff</div>
-      <div class="dash-staff" id="dash-staff">Staff</div>
+    <div class="dash-header-left">
+      <img class="dash-header-logo" id="dash-header-logo" src="" alt="">
+      <span class="dash-header-emoji" id="dash-header-emoji"></span>
+      <div>
+        <div class="dash-hotel" id="dash-hotel">Welco Staff</div>
+        <div class="dash-staff" id="dash-staff">Staff</div>
+      </div>
     </div>
     <div class="header-right">
       <span class="notif-badge" id="pending-count">0 pending</span>
       <button class="logout-btn" onclick="doLogout()">Logout</button>
     </div>
+  </div>
+
+  <!-- Announcement visible to staff too -->
+  <div class="staff-announcement" id="staff-announcement">
+    <span class="ann-icon">📢</span>
+    <span id="staff-announcement-text"></span>
   </div>
 
   <div class="filter-tabs">
@@ -142,6 +168,7 @@
   </div>
 </div>
 
+<!-- Hidden audio for notification sound (Web Audio API — no file needed) -->
 <script>
 var pin = '';
 var loggedInStaff = '';
@@ -150,9 +177,32 @@ var currentFilter = 'all';
 var knownRequestIds = null;
 var allHotels = [];
 var refreshInterval = null;
+var audioCtx = null;
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(function(){});
 if ('Notification' in window) Notification.requestPermission();
+
+// Create a pleasant chime sound using Web Audio API (no MP3 file needed)
+function playNotificationSound() {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    var notes = [523, 659, 784]; // C5, E5, G5 — pleasant chord
+    notes.forEach(function(freq, i) {
+      var osc = audioCtx.createOscillator();
+      var gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      var t = audioCtx.currentTime + i * 0.15;
+      gain.gain.setValueAtTime(0, t);
+      gain.gain.linearRampToValueAtTime(0.3, t + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+      osc.start(t);
+      osc.stop(t + 0.6);
+    });
+  } catch(e) {}
+}
 
 function loadAllHotels() {
   fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
@@ -169,7 +219,19 @@ function loadAllHotels() {
 
 function applyBranding(hotel) {
   var color = hotel.colour || '#0a9396';
-  document.getElementById('login-emoji').textContent = hotel.emoji || '🏨';
+
+  // Login screen logo or emoji
+  if (hotel.logo_url) {
+    var img = document.getElementById('login-logo-img');
+    img.src = hotel.logo_url;
+    img.style.display = 'block';
+    document.getElementById('login-emoji').style.display = 'none';
+  } else {
+    document.getElementById('login-logo-img').style.display = 'none';
+    document.getElementById('login-emoji').style.display = 'block';
+    document.getElementById('login-emoji').textContent = hotel.emoji || '🏨';
+  }
+
   document.getElementById('login-hotel-name').textContent = hotel.name;
   document.getElementById('login-hotel-sub').textContent = (hotel.city||'') + ' · Staff Portal';
   document.getElementById('login-screen').style.background = 'linear-gradient(160deg, '+color+'dd, '+color+'88)';
@@ -212,12 +274,33 @@ function doLogin() {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('dashboard-screen').style.display = 'block';
     document.getElementById('dash-staff').textContent = '👋 ' + name;
+
     var hotel = allHotels.find(function(h){return h.hotel_id===currentHotelId;});
     if (hotel) {
       var color = hotel.colour || '#0a9396';
-      document.getElementById('dash-hotel').textContent = (hotel.emoji||'🏨')+' '+hotel.name;
       document.getElementById('dash-header').style.background = 'linear-gradient(90deg, '+color+'dd, '+color+'88)';
+
+      // Dashboard header: logo or emoji
+      if (hotel.logo_url) {
+        var dLogo = document.getElementById('dash-header-logo');
+        dLogo.src = hotel.logo_url;
+        dLogo.style.display = 'block';
+        document.getElementById('dash-header-emoji').style.display = 'none';
+        document.getElementById('dash-hotel').textContent = hotel.name;
+      } else {
+        document.getElementById('dash-header-logo').style.display = 'none';
+        document.getElementById('dash-header-emoji').style.display = 'inline';
+        document.getElementById('dash-header-emoji').textContent = hotel.emoji || '🏨';
+        document.getElementById('dash-hotel').textContent = hotel.name;
+      }
+
+      // Load announcement for staff
+      loadStaffAnnouncement();
     }
+
+    // Initialise audio context on user gesture
+    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+
     loadTasks();
     refreshInterval = setInterval(loadTasks, 5000);
   }).catch(function(){
@@ -225,6 +308,18 @@ function doLogin() {
     btn.disabled = false;
     showLoginErr('Connection error. Try again.');
   });
+}
+
+function loadStaffAnnouncement() {
+  fetch('/announcements?hotel_id=' + currentHotelId).then(function(r){return r.json();}).then(function(data){
+    if (Array.isArray(data) && data.length > 0) {
+      var active = data.find(function(a){ return a.is_active; });
+      if (active) {
+        document.getElementById('staff-announcement-text').textContent = active.message;
+        document.getElementById('staff-announcement').style.display = 'block';
+      }
+    }
+  }).catch(function(){});
 }
 
 function showLoginErr(msg) {
@@ -253,14 +348,22 @@ function checkNewRequests(data) {
   var currentIds = data.map(function(r){return r.id;}).join(',');
   if (knownRequestIds === null) { knownRequestIds = currentIds; return; }
   if (currentIds !== knownRequestIds) {
-    data.forEach(function(r){
-      if (r.status==='pending' && !knownRequestIds.includes(String(r.id)) && Notification.permission==='granted') {
-        new Notification('🔔 New Request', {
-          body: 'Room '+(r.room_number||'?')+': '+(r.category||'')+' — '+(r.message||''),
-          icon: 'https://cdn-icons-png.flaticon.com/512/1257/1257163.png'
-        });
-      }
+    var newOnes = data.filter(function(r){
+      return r.status==='pending' && !knownRequestIds.includes(String(r.id));
     });
+    if (newOnes.length > 0) {
+      // Play chime sound
+      playNotificationSound();
+      // Browser notification
+      newOnes.forEach(function(r){
+        if (Notification.permission==='granted') {
+          new Notification('🔔 New Request', {
+            body: 'Room '+(r.room_number||'?')+': '+(r.category||'')+' — '+(r.message||''),
+            icon: 'https://cdn-icons-png.flaticon.com/512/1257/1257163.png'
+          });
+        }
+      });
+    }
     knownRequestIds = currentIds;
   }
 }

@@ -4,338 +4,425 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welco Staff</title>
-
-  <!-- PWA -->
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#0a9396">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Welco Staff">
   <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1257/1257163.png">
-
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: sans-serif; background: #f0f2f5; min-height: 100vh; }
+
+    /* LOGIN */
     #login-screen {
       min-height: 100vh;
-      background: linear-gradient(160deg, #0a9396, #005f73);
+      background: linear-gradient(160deg, #005f73, #0a9396);
       display: flex; flex-direction: column;
       align-items: center; justify-content: center; padding: 24px;
     }
-    .hotel-logo { font-size: 48px; margin-bottom: 8px; }
-    .hotel-name { color: white; font-size: 22px; font-weight: bold; margin-bottom: 4px; }
-    .hotel-sub { color: rgba(255,255,255,0.7); font-size: 13px; margin-bottom: 32px; }
+    .hotel-logo { font-size: 52px; margin-bottom: 8px; text-align: center; }
+    .hotel-name { color: white; font-size: 24px; font-weight: bold; margin-bottom: 4px; text-align: center; }
+    .hotel-sub { color: rgba(255,255,255,0.7); font-size: 13px; margin-bottom: 32px; text-align: center; }
     .login-card { background: white; border-radius: 20px; padding: 28px; width: 100%; max-width: 340px; }
-    .login-card label { font-size: 13px; color: #666; display: block; margin-bottom: 6px; }
+    .login-card label { font-size: 12px; color: #888; display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.08em; }
     .login-card select, .login-card input[type="text"] {
-      width: 100%; padding: 12px; border: 1px solid #ddd;
+      width: 100%; padding: 12px 14px; border: 1.5px solid #e0ddd8;
       border-radius: 10px; font-size: 15px; margin-bottom: 20px;
+      outline: none; background: white;
     }
-    .pin-label { font-size: 13px; color: #666; margin-bottom: 10px; }
+    .login-card select:focus, .login-card input:focus { border-color: #0a9396; }
+    .pin-label { font-size: 12px; color: #888; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.08em; }
     .pin-dots { display: flex; gap: 12px; justify-content: center; margin-bottom: 20px; }
     .pin-dot { width: 14px; height: 14px; border-radius: 50%; background: #ddd; transition: background 0.2s; }
     .pin-dot.filled { background: #0a9396; }
     .pin-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-    .pin-btn { padding: 16px; border: none; border-radius: 12px; background: #f5f5f5; font-size: 18px; font-weight: bold; cursor: pointer; }
-    .pin-btn:active { background: #0a9396; color: white; }
-    .pin-clear { background: #ffe0e0; color: #e63946; }
-    .login-btn { width: 100%; padding: 14px; background: #0a9396; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; }
+    .pin-btn {
+      padding: 16px; border: none; border-radius: 12px;
+      background: #f5f5f5; font-size: 20px; font-weight: bold;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .pin-btn:active { background: #0a9396; color: white; transform: scale(0.95); }
+    .pin-clear { background: #fde8ea; color: #e63946; }
+    .login-btn {
+      width: 100%; padding: 14px; background: #005f73; color: white;
+      border: none; border-radius: 12px; font-size: 16px;
+      font-weight: bold; cursor: pointer; transition: background 0.2s;
+    }
+    .login-btn:hover { background: #0a9396; }
     .login-error { color: #e63946; font-size: 13px; text-align: center; margin-top: 10px; display: none; }
+
+    /* DASHBOARD */
     #dashboard-screen { display: none; }
-    .dash-header { background: linear-gradient(90deg, #0a9396, #005f73); color: white; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
-    .dash-hotel { font-size: 16px; font-weight: bold; }
-    .dash-staff { font-size: 13px; opacity: 0.8; }
-    .notif-badge { background: #ee9b00; color: white; padding: 4px 10px; border-radius: 20px; font-size: 12px; }
-    .dash-container { padding: 16px; max-width: 500px; margin: 0 auto; }
-    .section-label { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
-    .task-card { background: white; border-radius: 14px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); border-left: 4px solid #ee9b00; }
+    .dash-header {
+      background: linear-gradient(90deg, #005f73, #0a9396);
+      color: white; padding: 16px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+      position: sticky; top: 0; z-index: 50;
+    }
+    .dash-hotel { font-size: 17px; font-weight: bold; }
+    .dash-staff { font-size: 12px; opacity: 0.8; margin-top: 2px; }
+    .header-right { display: flex; gap: 10px; align-items: center; }
+    .notif-badge {
+      background: #ee9b00; color: white;
+      padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;
+    }
+    .notif-badge.zero { background: rgba(255,255,255,0.2); }
+    .logout-btn { background: rgba(255,255,255,0.15); border: none; color: white; padding: 6px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; }
+
+    /* FILTER TABS */
+    .filter-tabs { display: flex; background: white; border-bottom: 1px solid #eee; overflow-x: auto; }
+    .filter-tab { padding: 12px 16px; font-size: 13px; font-weight: 500; color: #999; cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; transition: all 0.2s; }
+    .filter-tab.active { color: #005f73; border-bottom-color: #005f73; }
+
+    /* TASK LIST */
+    .dash-container { padding: 14px; max-width: 600px; margin: 0 auto; }
+    .section-label { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; font-weight: 600; }
+
+    .task-card {
+      background: white; border-radius: 14px; padding: 16px;
+      margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      border-left: 4px solid #ee9b00; transition: transform 0.2s;
+    }
+    .task-card:active { transform: scale(0.99); }
     .task-card.urgent { border-left-color: #e63946; }
+    .task-card.in-progress { border-left-color: #0a9396; }
     .task-card.done { border-left-color: #2ecc71; opacity: 0.6; }
-    .task-top { display: flex; justify-content: space-between; margin-bottom: 6px; }
-    .task-room { font-weight: bold; font-size: 15px; }
-    .task-cat { background: #005f73; color: white; padding: 3px 10px; border-radius: 20px; font-size: 12px; }
-    .task-msg { color: #555; font-size: 14px; margin-bottom: 8px; }
-    .task-sla { font-size: 12px; color: #888; margin-bottom: 8px; }
-    .task-sla span { color: #e63946; font-weight: bold; }
-    .timer-bar { height: 4px; background: #eee; border-radius: 4px; margin-bottom: 10px; }
-    .timer-fill { height: 100%; border-radius: 4px; background: #2ecc71; transition: width 0.5s; }
+
+    .task-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .task-room { font-weight: bold; font-size: 16px; color: #1a1a2e; }
+    .task-cat { background: #005f73; color: white; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+    .task-cat.housekeeping { background: #2ecc71; }
+    .task-cat.room-service { background: #e67e22; }
+    .task-cat.maintenance { background: #e74c3c; }
+    .task-cat.front-desk { background: #9b59b6; }
+
+    .task-msg { color: #555; font-size: 14px; margin-bottom: 8px; line-height: 1.4; }
+    .task-time { font-size: 11px; color: #aaa; margin-bottom: 8px; }
+    .timer-bar { height: 4px; background: #eee; border-radius: 4px; margin-bottom: 10px; overflow: hidden; }
+    .timer-fill { height: 100%; border-radius: 4px; background: #2ecc71; transition: width 1s linear; }
     .timer-fill.warning { background: #ee9b00; }
     .timer-fill.urgent { background: #e63946; }
-    .accept-btn { padding: 9px 20px; background: #ee9b00; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; }
-    .accept-btn:disabled { background: #ccc; cursor: default; }
-    .empty-state { text-align: center; padding: 48px 20px; color: #aaa; }
-    .logout-btn { background: none; border: none; color: rgba(255,255,255,0.8); font-size: 13px; cursor: pointer; }
+    .task-sla { font-size: 12px; color: #888; margin-bottom: 10px; }
+    .task-sla.urgent-text { color: #e63946; font-weight: bold; }
 
-    /* Install banner */
+    .task-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn-accept { padding: 9px 18px; background: #0a9396; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; }
+    .btn-done { padding: 9px 18px; background: #2ecc71; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; }
+    .btn-done:disabled, .btn-accept:disabled { background: #ccc; cursor: default; }
+    .claimed-badge { background: #e8f4f4; color: #005f73; padding: 8px 14px; border-radius: 8px; font-size: 13px; }
+
+    .empty-state { text-align: center; padding: 60px 20px; color: #aaa; }
+    .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+    .empty-state p { font-size: 14px; }
+
+    .loading { text-align: center; padding: 40px; color: #aaa; font-size: 14px; }
+
+    /* INSTALL BANNER */
     #install-banner {
-      display: none;
       background: #005f73; color: white;
-      padding: 12px 16px;
-      display: none; align-items: center;
-      justify-content: space-between;
-      font-size: 13px;
+      padding: 10px 16px; display: none;
+      align-items: center; justify-content: space-between; font-size: 13px;
     }
     #install-banner button {
-      background: white; color: #005f73;
-      border: none; border-radius: 8px;
-      padding: 6px 14px; font-weight: bold;
-      cursor: pointer; font-size: 12px;
+      background: white; color: #005f73; border: none;
+      border-radius: 8px; padding: 5px 12px; font-weight: bold; cursor: pointer; font-size: 12px;
     }
+
+    /* REFRESH BTN */
+    .refresh-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .refresh-btn { background: #f0f2f5; border: none; border-radius: 8px; padding: 6px 12px; font-size: 12px; color: #666; cursor: pointer; }
   </style>
 </head>
 <body>
 
-  <!-- INSTALL BANNER (Android) -->
-  <div id="install-banner">
-    <span>📲 Install Welco Staff as an app</span>
-    <button onclick="installApp()">Install</button>
-  </div>
+<!-- INSTALL BANNER -->
+<div id="install-banner">
+  <span>📲 Install Welco Staff as an app</span>
+  <button onclick="installApp()">Install</button>
+</div>
 
-  <!-- LOGIN SCREEN -->
-  <div id="login-screen">
-    <div class="hotel-logo">🏨</div>
-    <div class="hotel-name" id="login-hotel-name">Welco</div>
-    <div class="hotel-sub" id="login-hotel-sub">Staff Portal</div>
-    <div class="login-card">
-      <label>Your Hotel</label>
-      <select id="hotel-select" onchange="switchHotel(this.value)">
-        <option value="hotel_001">🏰 DownTown — Udaipur</option>
-        <option value="hotel_002">🏯 BambooSaa — Pushkar</option>
-      </select>
-      <label>Your Name</label>
-      <input type="text" id="staff-name" placeholder="e.g. Rahul">
-      <div class="pin-label">Enter PIN</div>
-      <div class="pin-dots">
-        <div class="pin-dot" id="dot-0"></div>
-        <div class="pin-dot" id="dot-1"></div>
-        <div class="pin-dot" id="dot-2"></div>
-        <div class="pin-dot" id="dot-3"></div>
-      </div>
-      <div class="pin-pad">
-        <button class="pin-btn" onclick="addPin('1')">1</button>
-        <button class="pin-btn" onclick="addPin('2')">2</button>
-        <button class="pin-btn" onclick="addPin('3')">3</button>
-        <button class="pin-btn" onclick="addPin('4')">4</button>
-        <button class="pin-btn" onclick="addPin('5')">5</button>
-        <button class="pin-btn" onclick="addPin('6')">6</button>
-        <button class="pin-btn" onclick="addPin('7')">7</button>
-        <button class="pin-btn" onclick="addPin('8')">8</button>
-        <button class="pin-btn" onclick="addPin('9')">9</button>
-        <button class="pin-btn pin-clear" onclick="clearPin()">✕</button>
-        <button class="pin-btn" onclick="addPin('0')">0</button>
-        <button class="pin-btn" onclick="deletePin()">⌫</button>
-      </div>
-      <button class="login-btn" onclick="doLogin()">Login</button>
-      <div class="login-error" id="login-error">Wrong PIN. Try 1234</div>
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="hotel-logo" id="login-emoji">🏨</div>
+  <div class="hotel-name" id="login-hotel-name">Welco Staff</div>
+  <div class="hotel-sub" id="login-hotel-sub">Loading hotels...</div>
+  <div class="login-card">
+    <label>Select Hotel</label>
+    <select id="hotel-select" onchange="switchHotel(this.value)">
+      <option value="">Loading...</option>
+    </select>
+    <label>Your Name</label>
+    <input type="text" id="staff-name" placeholder="e.g. Rahul">
+    <div class="pin-label">Enter PIN</div>
+    <div class="pin-dots">
+      <div class="pin-dot" id="dot-0"></div>
+      <div class="pin-dot" id="dot-1"></div>
+      <div class="pin-dot" id="dot-2"></div>
+      <div class="pin-dot" id="dot-3"></div>
+    </div>
+    <div class="pin-pad">
+      <button class="pin-btn" onclick="addPin('1')">1</button>
+      <button class="pin-btn" onclick="addPin('2')">2</button>
+      <button class="pin-btn" onclick="addPin('3')">3</button>
+      <button class="pin-btn" onclick="addPin('4')">4</button>
+      <button class="pin-btn" onclick="addPin('5')">5</button>
+      <button class="pin-btn" onclick="addPin('6')">6</button>
+      <button class="pin-btn" onclick="addPin('7')">7</button>
+      <button class="pin-btn" onclick="addPin('8')">8</button>
+      <button class="pin-btn" onclick="addPin('9')">9</button>
+      <button class="pin-btn pin-clear" onclick="clearPin()">✕</button>
+      <button class="pin-btn" onclick="addPin('0')">0</button>
+      <button class="pin-btn" onclick="deletePin()">⌫</button>
+    </div>
+    <button class="login-btn" onclick="doLogin()">Login to Dashboard</button>
+    <div class="login-error" id="login-error">Wrong PIN. Default is 1234</div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard-screen">
+  <div class="dash-header" id="dash-header">
+    <div>
+      <div class="dash-hotel" id="dash-hotel">Welco Staff</div>
+      <div class="dash-staff" id="dash-staff">Staff</div>
+    </div>
+    <div class="header-right">
+      <span class="notif-badge" id="pending-count">0 pending</span>
+      <button class="logout-btn" onclick="doLogout()">Logout</button>
     </div>
   </div>
 
-  <!-- DASHBOARD SCREEN -->
-  <div id="dashboard-screen">
-    <div class="dash-header" id="dash-header">
-      <div>
-        <div class="dash-hotel" id="dash-hotel">Welco Staff</div>
-        <div class="dash-staff" id="dash-staff">Staff</div>
-      </div>
-      <div style="display:flex;gap:10px;align-items:center">
-        <span class="notif-badge" id="pending-count">0 pending</span>
-        <button class="logout-btn" onclick="doLogout()">Logout</button>
-      </div>
-    </div>
-    <div class="dash-container">
+  <div class="filter-tabs">
+    <div class="filter-tab active" onclick="setFilter('all')">All</div>
+    <div class="filter-tab" onclick="setFilter('pending')">⏳ Pending</div>
+    <div class="filter-tab" onclick="setFilter('in_progress')">🔄 In Progress</div>
+    <div class="filter-tab" onclick="setFilter('done')">✅ Done</div>
+  </div>
+
+  <div class="dash-container">
+    <div class="refresh-row">
       <div class="section-label">Live Requests</div>
-      <div id="task-list"></div>
+      <button class="refresh-btn" onclick="loadTasks()">🔄 Refresh</button>
     </div>
+    <div id="task-list"><div class="loading">Loading requests...</div></div>
   </div>
+</div>
 
-  <script>
-    const CORRECT_PIN = '1234';
-    let pin = '';
-    let loggedInStaff = '';
-    let currentHotelId = 'hotel_001';
-    let knownRequestIds = null;
-    let deferredPrompt = null;
+<script>
+  var CORRECT_PIN = '1234';
+  var pin = '';
+  var loggedInStaff = '';
+  var currentHotelId = '';
+  var currentFilter = 'all';
+  var knownRequestIds = null;
+  var deferredPrompt = null;
+  var allHotels = [];
+  var refreshInterval = null;
 
-    // ── PWA Install ──
-    window.addEventListener('beforeinstallprompt', e => {
-      e.preventDefault();
-      deferredPrompt = e;
-      document.getElementById('install-banner').style.display = 'flex';
+  // PWA
+  window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    document.getElementById('install-banner').style.display = 'flex';
+  });
+
+  function installApp() {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(function() {
+        deferredPrompt = null;
+        document.getElementById('install-banner').style.display = 'none';
+      });
+    }
+  }
+
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(function() {});
+  if ('Notification' in window) Notification.requestPermission();
+
+  // Load all hotels dynamically
+  function loadAllHotels() {
+    fetch('/hotels').then(function(r) { return r.json(); }).then(function(hotels) {
+      allHotels = hotels;
+      var select = document.getElementById('hotel-select');
+      select.innerHTML = hotels.map(function(h) {
+        return '<option value="' + h.hotel_id + '">' + (h.emoji || '🏨') + ' ' + h.name + ' — ' + (h.city || '') + '</option>';
+      }).join('');
+      if (hotels.length > 0) {
+        currentHotelId = hotels[0].hotel_id;
+        applyBranding(hotels[0]);
+      }
+    }).catch(function() {
+      document.getElementById('login-hotel-sub').textContent = 'Staff Portal';
     });
+  }
 
-    function installApp() {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(() => {
-          deferredPrompt = null;
-          document.getElementById('install-banner').style.display = 'none';
-        });
-      }
+  function applyBranding(hotel) {
+    var color = hotel.colour || '#0a9396';
+    document.getElementById('login-emoji').textContent = hotel.emoji || '🏨';
+    document.getElementById('login-hotel-name').textContent = hotel.name;
+    document.getElementById('login-hotel-sub').textContent = (hotel.city || '') + ' · Staff Portal';
+    document.getElementById('login-screen').style.background = 'linear-gradient(160deg, ' + color + 'dd, ' + color + '99)';
+    document.querySelectorAll('.pin-dot.filled').forEach(function(d) { d.style.background = color; });
+  }
+
+  function switchHotel(hotelId) {
+    currentHotelId = hotelId;
+    var hotel = allHotels.find(function(h) { return h.hotel_id === hotelId; });
+    if (hotel) applyBranding(hotel);
+  }
+
+  // PIN
+  function addPin(num) {
+    if (pin.length < 4) { pin += num; updateDots(); }
+  }
+  function deletePin() { pin = pin.slice(0, -1); updateDots(); }
+  function clearPin() { pin = ''; updateDots(); }
+  function updateDots() {
+    for (var i = 0; i < 4; i++) {
+      document.getElementById('dot-' + i).classList.toggle('filled', i < pin.length);
+    }
+  }
+
+  // Login
+  function doLogin() {
+    var name = document.getElementById('staff-name').value.trim();
+    if (!name) { alert('Please enter your name!'); return; }
+    if (!currentHotelId) { alert('Please select a hotel!'); return; }
+    if (pin !== CORRECT_PIN) {
+      document.getElementById('login-error').style.display = 'block';
+      clearPin(); return;
+    }
+    loggedInStaff = name;
+    document.getElementById('login-error').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('dashboard-screen').style.display = 'block';
+    document.getElementById('dash-staff').textContent = '👋 ' + name;
+
+    var hotel = allHotels.find(function(h) { return h.hotel_id === currentHotelId; });
+    if (hotel) {
+      var color = hotel.colour || '#0a9396';
+      document.getElementById('dash-hotel').textContent = (hotel.emoji || '🏨') + ' ' + hotel.name;
+      document.getElementById('dash-header').style.background = 'linear-gradient(90deg, ' + color + 'dd, ' + color + '99)';
     }
 
-    // ── Service Worker ──
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW error:', e));
-    }
+    loadTasks();
+    refreshInterval = setInterval(loadTasks, 5000);
+  }
 
-    // ── Notifications ──
-    if ('Notification' in window) Notification.requestPermission();
+  function doLogout() {
+    clearInterval(refreshInterval);
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('dashboard-screen').style.display = 'none';
+    pin = ''; clearPin();
+    document.getElementById('staff-name').value = '';
+    knownRequestIds = null;
+  }
 
-    // ── Branding ──
-    async function loadStaffBranding(hotelId) {
-      try {
-        const res = await fetch('/hotels');
-        const hotels = await res.json();
-        const data = hotels.find(h => h.hotel_id === hotelId);
-        if (data) {
-          const color = data.colour;
-          document.getElementById('login-hotel-name').textContent = (data.emoji || '🏨') + ' ' + data.name;
-          document.getElementById('login-hotel-sub').textContent = (data.city || '') + ' · Staff Portal';
-          document.getElementById('login-screen').style.background = `linear-gradient(160deg, ${color}, ${color}cc)`;
+  function setFilter(f) {
+    currentFilter = f;
+    document.querySelectorAll('.filter-tab').forEach(function(t, i) {
+      t.classList.toggle('active', ['all','pending','in_progress','done'][i] === f);
+    });
+    loadTasks();
+  }
+
+  // Notifications
+  function checkNewRequests(data) {
+    var currentIds = data.map(function(r) { return r.id; }).join(',');
+    if (knownRequestIds === null) { knownRequestIds = currentIds; return; }
+    if (currentIds !== knownRequestIds) {
+      data.forEach(function(r) {
+        if (r.status === 'pending' && !knownRequestIds.includes(String(r.id)) && Notification.permission === 'granted') {
+          new Notification('🔔 New Request — ' + (r.hotel_id || 'Welco'), {
+            body: 'Room ' + (r.room_number || '?') + ': ' + (r.category || '') + (r.message ? ' — ' + r.message : ''),
+            icon: 'https://cdn-icons-png.flaticon.com/512/1257/1257163.png'
+          });
         }
-      } catch(e) {}
-    }
-
-    function switchHotel(hotelId) {
-      currentHotelId = hotelId;
-      loadStaffBranding(hotelId);
-    }
-
-    // ── PIN ──
-    function addPin(num) {
-      if (pin.length < 4) { pin += num; updateDots(); }
-    }
-    function deletePin() { pin = pin.slice(0, -1); updateDots(); }
-    function clearPin() { pin = ''; updateDots(); }
-    function updateDots() {
-      for (let i = 0; i < 4; i++) {
-        document.getElementById('dot-' + i).classList.toggle('filled', i < pin.length);
-      }
-    }
-
-    // ── Login ──
-    function doLogin() {
-      const name = document.getElementById('staff-name').value.trim();
-      if (!name) { alert('Please enter your name!'); return; }
-      if (pin !== CORRECT_PIN) {
-        document.getElementById('login-error').style.display = 'block';
-        clearPin(); return;
-      }
-      loggedInStaff = name;
-      currentHotelId = document.getElementById('hotel-select').value;
-      document.getElementById('login-error').style.display = 'none';
-      document.getElementById('login-screen').style.display = 'none';
-      document.getElementById('dashboard-screen').style.display = 'block';
-      document.getElementById('dash-staff').textContent = '👋 ' + name;
-      updateDashBranding(currentHotelId);
-      loadTasks();
-      setInterval(loadTasks, 5000);
-    }
-
-    async function updateDashBranding(hotelId) {
-      try {
-        const res = await fetch('/hotels');
-        const hotels = await res.json();
-        const data = hotels.find(h => h.hotel_id === hotelId);
-        if (data) {
-          document.getElementById('dash-hotel').textContent = (data.emoji || '🏨') + ' ' + data.name;
-          document.getElementById('dash-header').style.background = `linear-gradient(90deg, ${data.colour}, ${data.colour}cc)`;
-        }
-      } catch(e) {}
-    }
-
-    function doLogout() {
-      document.getElementById('login-screen').style.display = 'flex';
-      document.getElementById('dashboard-screen').style.display = 'none';
-      pin = ''; clearPin();
-      document.getElementById('staff-name').value = '';
-    }
-
-    // ── Notifications check ──
-    function checkNewRequests(data) {
-      const currentIds = data.map(r => r.id).join(',');
-      if (knownRequestIds === null) { knownRequestIds = currentIds; return; }
-      if (currentIds !== knownRequestIds) {
-        data.filter(r => !knownRequestIds.includes(String(r.id))).forEach(r => {
-          if (r.status === 'pending' && Notification.permission === 'granted') {
-            new Notification('🔔 New Request — Welco', {
-              body: 'Room ' + (r.room_number || r.room_id) + ': ' + r.category + (r.message ? ' — ' + r.message : ''),
-              icon: 'https://cdn-icons-png.flaticon.com/512/1257/1257163.png'
-            });
-          }
-        });
-        knownRequestIds = currentIds;
-      }
-    }
-
-    // ── Load Tasks ──
-    async function loadTasks() {
-      try {
-        const res = await fetch('/requests?hotel_id=' + currentHotelId);
-        const data = await res.json();
-        if (!Array.isArray(data)) return;
-
-        const pending = data.filter(r => r.status === 'pending').length;
-        document.getElementById('pending-count').textContent = pending + ' pending';
-        checkNewRequests(data);
-
-        const list = document.getElementById('task-list');
-        if (data.length === 0) {
-          list.innerHTML = '<div class="empty-state">🎉 No requests right now!</div>';
-          return;
-        }
-
-        list.innerHTML = data.map(r => {
-          const SLA = 15;
-          const elapsed = (Date.now() - new Date(r.created_at).getTime()) / 60000;
-          const remaining = Math.max(0, SLA - elapsed);
-          const pct = Math.max(0, (remaining / SLA) * 100);
-          const mins = Math.floor(remaining);
-          const secs = Math.floor((remaining - mins) * 60);
-          const timerClass = pct > 50 ? '' : pct > 25 ? 'warning' : 'urgent';
-          const cardClass = r.status === 'done' ? 'done' : pct === 0 ? 'urgent' : '';
-          const roomLabel = r.room_number || r.room_id || '—';
-
-          return `
-            <div class="task-card ${cardClass}">
-              <div class="task-top">
-                <span class="task-room">Room ${roomLabel}</span>
-                <span class="task-cat">${r.category || 'General'}</span>
-              </div>
-              <div class="task-msg">${r.message || 'No details'}</div>
-              <div class="task-sla">⏱ <span>${r.status === 'done' ? 'Completed' : mins + 'm ' + secs + 's remaining'}</span></div>
-              <div class="timer-bar"><div class="timer-fill ${timerClass}" style="width:${r.status === 'done' ? 100 : pct}%"></div></div>
-              <div style="display:flex;gap:8px;flex-wrap:wrap">
-                ${r.status === 'pending' ? `<button class="accept-btn" onclick="claimTask(${r.id})" style="background:#0a9396">👋 Accept Task</button>` : ''}
-                ${r.status === 'in_progress' ? `<div style="background:#e8f5e9;padding:8px 14px;border-radius:8px;font-size:13px;color:#2e7d32">✅ Accepted by <b>${r.claimed_by || 'staff'}</b></div><button class="accept-btn" onclick="markDone(${r.id})">Mark Done</button>` : ''}
-                ${r.status === 'done' ? `<button class="accept-btn" disabled>✅ Completed</button>` : ''}
-              </div>
-            </div>
-          `;
-        }).join('');
-      } catch(e) { console.log('Load error:', e); }
-    }
-
-    async function claimTask(id) {
-      await fetch('/requests/' + id + '/claim', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ claimed_by: loggedInStaff })
       });
-      loadTasks();
+      knownRequestIds = currentIds;
     }
+  }
 
-    async function markDone(id) {
-      await fetch('/requests/' + id + '/complete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({})
-      });
-      loadTasks();
-    }
+  // Load tasks
+  function loadTasks() {
+    fetch('/requests?hotel_id=' + currentHotelId).then(function(r) { return r.json(); }).then(function(data) {
+      if (!Array.isArray(data)) return;
 
-    // Init
-    loadStaffBranding('hotel_001');
-  </script>
+      var pending = data.filter(function(r) { return r.status === 'pending'; }).length;
+      var badge = document.getElementById('pending-count');
+      badge.textContent = pending + ' pending';
+      badge.className = 'notif-badge' + (pending === 0 ? ' zero' : '');
+
+      checkNewRequests(data);
+
+      // Filter
+      var filtered = data;
+      if (currentFilter !== 'all') {
+        filtered = data.filter(function(r) { return r.status === currentFilter; });
+      }
+
+      var list = document.getElementById('task-list');
+      if (filtered.length === 0) {
+        list.innerHTML = '<div class="empty-state"><div class="icon">🎉</div><p>' + (currentFilter === 'all' ? 'No requests yet!' : 'No ' + currentFilter + ' requests') + '</p></div>';
+        return;
+      }
+
+      list.innerHTML = filtered.map(function(r) {
+        var SLA = 15;
+        var elapsed = (Date.now() - new Date(r.created_at).getTime()) / 60000;
+        var remaining = Math.max(0, SLA - elapsed);
+        var pct = Math.max(0, (remaining / SLA) * 100);
+        var mins = Math.floor(remaining);
+        var secs = Math.floor((remaining - mins) * 60);
+        var timerClass = pct > 50 ? '' : pct > 25 ? 'warning' : 'urgent';
+        var cardClass = r.status === 'done' ? 'done' : r.status === 'in_progress' ? 'in-progress' : pct === 0 ? 'urgent' : '';
+        var catClass = (r.category || '').toLowerCase().replace(' ', '-');
+        var timeAgo = Math.floor(elapsed) > 0 ? Math.floor(elapsed) + 'm ago' : 'Just now';
+
+        var actionsHtml = '';
+        if (r.status === 'pending') {
+          actionsHtml = '<button class="btn-accept" onclick="claimTask(' + r.id + ')">👋 Accept</button>';
+        } else if (r.status === 'in_progress') {
+          actionsHtml = '<span class="claimed-badge">✅ ' + (r.claimed_by || 'Someone') + '</span><button class="btn-done" onclick="markDone(' + r.id + ')">Mark Done ✓</button>';
+        } else {
+          actionsHtml = '<button class="btn-done" disabled>✅ Completed</button>';
+        }
+
+        return '<div class="task-card ' + cardClass + '">' +
+          '<div class="task-top">' +
+          '<span class="task-room">Room ' + (r.room_number || '?') + '</span>' +
+          '<span class="task-cat ' + catClass + '">' + (r.category || 'General') + '</span>' +
+          '</div>' +
+          '<div class="task-msg">' + (r.message || 'No details provided') + '</div>' +
+          '<div class="task-time">🕐 ' + timeAgo + '</div>' +
+          (r.status !== 'done' ? '<div class="task-sla ' + (pct < 25 ? 'urgent-text' : '') + '">⏱ ' + mins + 'm ' + secs + 's remaining</div>' +
+          '<div class="timer-bar"><div class="timer-fill ' + timerClass + '" style="width:' + pct + '%"></div></div>' : '') +
+          '<div class="task-actions">' + actionsHtml + '</div>' +
+          '</div>';
+      }).join('');
+    }).catch(function() {});
+  }
+
+  function claimTask(id) {
+    fetch('/requests/' + id + '/claim', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ claimed_by: loggedInStaff })
+    }).then(function() { loadTasks(); });
+  }
+
+  function markDone(id) {
+    fetch('/requests/' + id + '/complete', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({})
+    }).then(function() { loadTasks(); });
+  }
+
+  // Init
+  loadAllHotels();
+</script>
 </body>
 </html>

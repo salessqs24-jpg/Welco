@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welco HOD</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root { --brand: #005f73; --brand2: #0a9396; --light: #94d2bd; --sand: #f7f3ee; --ink: #0d1b1e; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100vh; }
+
+    /* ── LOGIN ── */
+    #login-screen { min-height: 100vh; background: linear-gradient(160deg, #005f73, #0a9396); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
+    .login-card { background: white; border-radius: 20px; padding: 32px; width: 100%; max-width: 360px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+    .login-logo { font-size: 44px; text-align: center; margin-bottom: 8px; }
+    .login-title { color: white; font-size: 22px; font-weight: 700; text-align: center; margin-bottom: 4px; }
+    .login-sub { color: rgba(255,255,255,0.7); font-size: 13px; text-align: center; margin-bottom: 28px; }
+    .lbl { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 6px; font-weight: 600; }
+    .login-card input, .login-card select { width: 100%; padding: 12px 14px; border: 1.5px solid #e0ddd8; border-radius: 10px; font-size: 14px; margin-bottom: 14px; outline: none; background: white; }
+    .login-card input:focus, .login-card select:focus { border-color: var(--brand2); }
+    .login-btn { width: 100%; padding: 14px; background: var(--brand); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+    .login-btn:hover { background: var(--brand2); }
+    .login-err { color: #e63946; font-size: 13px; text-align: center; margin-top: 10px; display: none; }
+
+    /* ── APP ── */
+    #app-screen { display: none; }
+    .topbar { background: linear-gradient(90deg, var(--brand), var(--brand2)); color: white; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; }
+    .topbar-left { display: flex; align-items: center; gap: 12px; }
+    .topbar-logo { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; border: 2px solid rgba(255,255,255,0.4); display: none; }
+    .topbar-emoji { font-size: 22px; }
+    .topbar-name { font-size: 16px; font-weight: 700; }
+    .topbar-sub { font-size: 11px; opacity: 0.75; margin-top: 1px; }
+    .topbar-right { display: flex; align-items: center; gap: 10px; }
+    .dept-badge { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .logout-btn { background: rgba(255,255,255,0.15); border: none; color: white; padding: 6px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; }
+
+    /* ── ALERT BAR ── */
+    .alert-bar { background: #e63946; color: white; padding: 10px 20px; font-size: 13px; font-weight: 600; text-align: center; display: none; animation: pulse-bg 2s infinite; }
+    @keyframes pulse-bg { 0%,100%{background:#e63946} 50%{background:#c1121f} }
+
+    /* ── TABS ── */
+    .tabs { display: flex; background: white; border-bottom: 1px solid #eee; overflow-x: auto; }
+    .tab { padding: 13px 18px; font-size: 13px; font-weight: 500; color: #999; cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; transition: all 0.2s; }
+    .tab.active { color: var(--brand); border-bottom-color: var(--brand); }
+
+    /* ── CONTENT ── */
+    .content { padding: 16px; max-width: 900px; margin: 0 auto; padding-bottom: 40px; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── CARDS ── */
+    .card { background: white; border-radius: 14px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .card-title { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+    .card-sub { font-size: 12px; color: #999; margin-bottom: 16px; }
+
+    /* ── STAT ROW ── */
+    .stat-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 16px; }
+    .stat-box { background: white; border-radius: 12px; padding: 16px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .stat-num { font-size: 32px; font-weight: 700; color: var(--brand2); }
+    .stat-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+
+    /* ── REQUESTS ── */
+    .request-row { padding: 14px 0; border-bottom: 1px solid #f0f0f0; }
+    .request-row:last-child { border-bottom: none; }
+    .req-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .req-room { font-weight: 700; font-size: 14px; color: var(--ink); }
+    .req-cat { color: white; padding: 2px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+    .req-msg { color: #666; font-size: 13px; margin-bottom: 6px; line-height: 1.4; }
+    .req-meta { font-size: 11px; color: #aaa; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .badge { padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+    .badge-pending { background: #fff3cd; color: #8a6000; }
+    .badge-progress { background: #cff4fc; color: #0a6070; }
+    .badge-done { background: #d1fae5; color: #065f46; }
+
+    /* ── SLA warning ── */
+    .sla-warn { background: #fde8ea; color: #e63946; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+    .sla-ok { background: #d1fae5; color: #065f46; padding: 2px 8px; border-radius: 6px; font-size: 11px; }
+
+    /* ── ROOMS ── */
+    .rooms-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
+    .room-card { background: #f9f9f9; border-radius: 10px; padding: 14px; text-align: center; border: 1px solid #eee; }
+    .room-num { font-size: 20px; font-weight: 700; color: var(--brand); }
+    .room-floor { font-size: 11px; color: #aaa; margin-bottom: 8px; }
+    .room-actions { display: flex; gap: 6px; justify-content: center; }
+    .btn-del { padding: 6px 10px; background: #fde8ea; color: #e63946; border: none; border-radius: 6px; font-size: 11px; cursor: pointer; }
+    .add-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .add-row input { flex: 1; min-width: 80px; padding: 10px 12px; border: 1.5px solid #e0ddd8; border-radius: 8px; font-size: 14px; outline: none; }
+    .add-row input:focus { border-color: var(--brand2); }
+    .btn-add { padding: 10px 18px; background: var(--brand); color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; }
+
+    /* ── STAFF ── */
+    .staff-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+    .staff-row:last-child { border-bottom: none; }
+    .staff-name-txt { font-size: 14px; font-weight: 500; }
+    .staff-pin { font-family: monospace; font-size: 15px; font-weight: 700; color: var(--brand2); background: #e8f4f4; padding: 4px 10px; border-radius: 6px; }
+    .btn-remove { background: #fde8ea; color: #e63946; border: none; border-radius: 6px; padding: 4px 10px; font-size: 11px; cursor: pointer; }
+
+    /* ── MSG BOX ── */
+    .msg-box { padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 12px; display: none; }
+    .msg-success { background: #d1fae5; color: #065f46; display: block; }
+
+    /* ── FILTER ── */
+    .filter-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+    select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; outline: none; background: white; }
+
+    /* ── CHART ── */
+    .chart-wrap { height: 220px; margin-bottom: 16px; }
+    .donut-wrap { position: relative; height: 180px; }
+    .donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; pointer-events: none; }
+    .donut-center .big { font-size: 24px; font-weight: 700; color: var(--ink); }
+    .donut-center .small { font-size: 10px; color: #aaa; }
+    .legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; justify-content: center; }
+    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #555; }
+    .legend-dot { width: 9px; height: 9px; border-radius: 50%; }
+
+    .empty { text-align: center; padding: 32px; color: #aaa; font-size: 14px; }
+    .loading { text-align: center; padding: 24px; color: #aaa; }
+
+    @media (max-width: 600px) {
+      .stat-row { grid-template-columns: 1fr 1fr; }
+      .rooms-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════ LOGIN ═══════════ -->
+<div id="login-screen">
+  <div class="login-logo">🏨</div>
+  <div class="login-title">Welco HOD Portal</div>
+  <div class="login-sub">Head of Department Access</div>
+  <div class="login-card">
+    <label class="lbl">Select Hotel</label>
+    <select id="l-hotel"></select>
+    <label class="lbl">Your Name</label>
+    <input type="text" id="l-name" placeholder="e.g. Rahul">
+    <label class="lbl">Department</label>
+    <select id="l-dept">
+      <option value="Housekeeping">🛏️ Housekeeping</option>
+      <option value="Room Service">🍽️ Room Service</option>
+      <option value="Maintenance">🔧 Maintenance</option>
+      <option value="Front Desk">🛎️ Front Desk</option>
+    </select>
+    <label class="lbl">PIN</label>
+    <input type="password" id="l-pin" placeholder="4-digit PIN" maxlength="4">
+    <button class="login-btn" onclick="doLogin()">Login as HOD</button>
+    <div class="login-err" id="login-err"></div>
+  </div>
+</div>
+
+<!-- ═══════════ APP ═══════════ -->
+<div id="app-screen">
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <img class="topbar-logo" id="t-logo" src="" alt="">
+      <span class="topbar-emoji" id="t-emoji">🏨</span>
+      <div>
+        <div class="topbar-name" id="t-name">Hotel</div>
+        <div class="topbar-sub" id="t-sub">HOD Portal</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="dept-badge" id="t-dept-badge">Housekeeping</span>
+      <button class="logout-btn" onclick="doLogout()">Logout</button>
+    </div>
+  </div>
+
+  <!-- SLA Alert Bar -->
+  <div class="alert-bar" id="alert-bar">⚠️ <span id="alert-msg"></span></div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('overview')">📊 Overview</div>
+    <div class="tab" onclick="showTab('requests')">📋 Requests</div>
+    <div class="tab" onclick="showTab('rooms')">🚪 Rooms</div>
+    <div class="tab" onclick="showTab('staff')">👷 Staff</div>
+    <div class="tab" onclick="showTab('analytics')">📈 Analytics</div>
+  </div>
+
+  <div class="content">
+
+    <!-- ── OVERVIEW ── -->
+    <div class="tab-panel active" id="panel-overview">
+      <div class="stat-row">
+        <div class="stat-box"><div class="stat-num" id="ov-total">-</div><div class="stat-label">Total</div></div>
+        <div class="stat-box"><div class="stat-num" id="ov-pending" style="color:#ee9b00">-</div><div class="stat-label">Pending</div></div>
+        <div class="stat-box"><div class="stat-num" id="ov-progress" style="color:#0a9396">-</div><div class="stat-label">In Progress</div></div>
+        <div class="stat-box"><div class="stat-num" id="ov-done" style="color:#2ecc71">-</div><div class="stat-label">Done</div></div>
+      </div>
+
+      <!-- Overdue requests alert -->
+      <div class="card" id="overdue-card" style="display:none;border-left:4px solid #e63946">
+        <div class="card-title" style="color:#e63946">⚠️ Overdue Requests</div>
+        <div class="card-sub">These requests have exceeded the SLA time limit</div>
+        <div id="overdue-list"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Recent Activity</div>
+        <div class="card-sub">Latest requests in your department</div>
+        <div id="ov-recent"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- ── REQUESTS ── -->
+    <div class="tab-panel" id="panel-requests">
+      <div class="card">
+        <div class="card-title">All Requests — <span id="req-dept-title"></span></div>
+        <div class="card-sub">Monitor all requests in your department</div>
+        <div class="filter-row">
+          <select id="filter-status" onchange="loadRequests()">
+            <option value="">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="in_progress">In Progress</option>
+            <option value="done">Done</option>
+          </select>
+        </div>
+        <div id="req-list"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- ── ROOMS ── -->
+    <div class="tab-panel" id="panel-rooms">
+      <div class="card">
+        <div class="card-title">Add New Room</div>
+        <div class="card-sub">Add a room to the hotel</div>
+        <div class="add-row">
+          <input type="text" id="new-room-num" placeholder="Room number e.g. 305">
+          <input type="number" id="new-room-floor" placeholder="Floor" min="1" style="max-width:80px">
+          <button class="btn-add" onclick="addRoom()">+ Add</button>
+        </div>
+        <div class="msg-box" id="room-msg"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">All Rooms</div>
+        <div class="card-sub" id="rooms-count">Loading...</div>
+        <div class="rooms-grid" id="rooms-grid"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- ── STAFF ── -->
+    <div class="tab-panel" id="panel-staff">
+      <div class="card">
+        <div class="card-title">Add Staff Member</div>
+        <div class="card-sub">Add staff to your hotel</div>
+        <div class="add-row">
+          <input type="text" id="new-staff-name" placeholder="Full name e.g. Rahul">
+          <input type="text" id="new-staff-pin" placeholder="4-digit PIN" maxlength="4" style="max-width:110px">
+          <button class="btn-add" onclick="addStaff()">+ Add</button>
+        </div>
+        <div class="msg-box" id="staff-msg"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Staff Members</div>
+        <div class="card-sub">All staff who can access the staff dashboard</div>
+        <div id="staff-list"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- ── ANALYTICS ── -->
+    <div class="tab-panel" id="panel-analytics">
+      <div class="stat-row">
+        <div class="stat-box"><div class="stat-num" id="an-total">-</div><div class="stat-label">Total</div></div>
+        <div class="stat-box"><div class="stat-num" id="an-done">-</div><div class="stat-label">Completed</div></div>
+        <div class="stat-box"><div class="stat-num" id="an-rating">-</div><div class="stat-label">Avg Rating</div></div>
+        <div class="stat-box"><div class="stat-num" id="an-pending">-</div><div class="stat-label">Pending</div></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+        <div class="card">
+          <div class="card-title">Request Status</div>
+          <div class="card-sub">Your department breakdown</div>
+          <div class="donut-wrap">
+            <canvas id="chart-status"></canvas>
+            <div class="donut-center"><div class="big" id="donut-num">0</div><div class="small">Total</div></div>
+          </div>
+          <div class="legend" id="legend-status"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Star Ratings</div>
+          <div class="card-sub">Guest feedback for your dept</div>
+          <div style="height:180px">
+            <canvas id="chart-ratings"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Requests Over Time</div>
+        <div class="card-sub">Last 14 days — your department only</div>
+        <div class="chart-wrap">
+          <canvas id="chart-line"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+var hodData = null;
+var allHotels = [];
+var deptRequests = [];
+var refreshInterval = null;
+var charts = {};
+
+var deptColors = {
+  'Housekeeping': '#4361EE',
+  'Room Service': '#F77F00',
+  'Maintenance':  '#E63946',
+  'Front Desk':   '#9B5DE5'
+};
+var deptEmojis = {
+  'Housekeeping': '🛏️',
+  'Room Service': '🍽️',
+  'Maintenance':  '🔧',
+  'Front Desk':   '🛎️'
+};
+var SLA_MINUTES = { 'Housekeeping': 5, 'Room Service': 30, 'Maintenance': 5, 'Front Desk': 5 };
+
+// Load hotels on page load
+fetch('/hotels').then(function(r){ return r.json(); }).then(function(hotels){
+  allHotels = hotels;
+  var sel = document.getElementById('l-hotel');
+  sel.innerHTML = hotels.map(function(h){
+    return '<option value="'+h.hotel_id+'">'+(h.emoji||'🏨')+' '+h.name+'</option>';
+  }).join('');
+}).catch(function(){});
+
+function doLogin() {
+  var hotel_id = document.getElementById('l-hotel').value;
+  var name = document.getElementById('l-name').value.trim();
+  var dept = document.getElementById('l-dept').value;
+  var pin = document.getElementById('l-pin').value.trim();
+  if (!name || pin.length !== 4) { showErr('Enter your name and 4-digit PIN.'); return; }
+
+  // Verify against staff table
+  fetch('/staff/verify', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ hotel_id: hotel_id, name: name, pin: pin })
+  }).then(function(r){ return r.json().then(function(d){ return {ok:r.ok,d:d}; }); })
+  .then(function(res){
+    if (!res.ok) { showErr(res.d.error || 'Invalid name or PIN.'); return; }
+    var hotel = allHotels.find(function(h){ return h.hotel_id === hotel_id; });
+    hodData = { hotel_id: hotel_id, hotel: hotel, name: name, dept: dept };
+    localStorage.setItem('welco_hod', JSON.stringify(hodData));
+    startApp();
+  }).catch(function(){ showErr('Connection error.'); });
+}
+
+function showErr(msg) {
+  var el = document.getElementById('login-err');
+  el.textContent = msg; el.style.display = 'block';
+}
+
+function doLogout() {
+  clearInterval(refreshInterval);
+  localStorage.removeItem('welco_hod');
+  hodData = null;
+  document.getElementById('app-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+}
+
+function startApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app-screen').style.display = 'block';
+  var h = hodData.hotel;
+  var color = (h && h.colour) || '#005f73';
+
+  // Topbar
+  if (h && h.logo_url) {
+    document.getElementById('t-logo').src = h.logo_url;
+    document.getElementById('t-logo').style.display = 'block';
+    document.getElementById('t-emoji').style.display = 'none';
+  } else {
+    document.getElementById('t-emoji').textContent = (h && h.emoji) || '🏨';
+  }
+  document.getElementById('t-name').textContent = (h && h.name) || 'Hotel';
+  document.getElementById('t-sub').textContent = hodData.name + ' · HOD';
+  document.getElementById('t-dept-badge').textContent = deptEmojis[hodData.dept] + ' ' + hodData.dept;
+  document.getElementById('req-dept-title').textContent = hodData.dept;
+  document.querySelector('.topbar').style.background = 'linear-gradient(90deg, '+color+'dd, '+color+'88)';
+
+  loadAll();
+  refreshInterval = setInterval(loadAll, 10000);
+}
+
+function loadAll() {
+  fetch('/requests?hotel_id=' + hodData.hotel_id)
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if (!Array.isArray(data)) return;
+      deptRequests = data.filter(function(r){ return r.category === hodData.dept; });
+      checkSLAAlerts(deptRequests);
+      renderOverview(deptRequests);
+      renderRequests(deptRequests);
+      renderAnalytics(deptRequests);
+    }).catch(function(){});
+}
+
+function checkSLAAlerts(reqs) {
+  var sla = SLA_MINUTES[hodData.dept] || 15;
+  var overdue = reqs.filter(function(r){
+    if (r.status === 'done') return false;
+    var elapsed = (Date.now() - new Date(r.created_at).getTime()) / 60000;
+    return elapsed > sla;
+  });
+  var bar = document.getElementById('alert-bar');
+  var card = document.getElementById('overdue-card');
+  if (overdue.length > 0) {
+    bar.style.display = 'block';
+    document.getElementById('alert-msg').textContent = overdue.length + ' request(s) in ' + hodData.dept + ' have exceeded SLA time! Immediate attention required.';
+    card.style.display = 'block';
+    document.getElementById('overdue-list').innerHTML = overdue.map(function(r){
+      var elapsed = Math.floor((Date.now() - new Date(r.created_at).getTime()) / 60000);
+      return '<div class="request-row"><div class="req-top"><span class="req-room">Room '+(r.room_number||'?')+'</span><span class="sla-warn">'+elapsed+'m overdue</span></div><div class="req-msg">'+(r.message||'No details')+'</div></div>';
+    }).join('');
+  } else {
+    bar.style.display = 'none';
+    card.style.display = 'none';
+  }
+}
+
+function renderOverview(reqs) {
+  document.getElementById('ov-total').textContent = reqs.length;
+  document.getElementById('ov-pending').textContent = reqs.filter(function(r){ return r.status==='pending'; }).length;
+  document.getElementById('ov-progress').textContent = reqs.filter(function(r){ return r.status==='in_progress'; }).length;
+  document.getElementById('ov-done').textContent = reqs.filter(function(r){ return r.status==='done'; }).length;
+
+  var recent = reqs.slice(0, 8);
+  var el = document.getElementById('ov-recent');
+  el.innerHTML = recent.length ? recent.map(reqRow).join('') : '<div class="empty">No requests yet</div>';
+}
+
+function renderRequests(reqs) {
+  var status = document.getElementById('filter-status').value;
+  var filtered = status ? reqs.filter(function(r){ return r.status===status; }) : reqs;
+  document.getElementById('req-list').innerHTML = filtered.length ? filtered.map(reqRow).join('') : '<div class="empty">No requests found</div>';
+}
+
+function loadRequests() { renderRequests(deptRequests); }
+
+function reqRow(r) {
+  var sla = SLA_MINUTES[hodData.dept] || 15;
+  var elapsed = (Date.now() - new Date(r.created_at).getTime()) / 60000;
+  var remaining = Math.max(0, sla - elapsed);
+  var isOverdue = elapsed > sla && r.status !== 'done';
+  var bc = r.status==='done'?'badge-done':r.status==='in_progress'?'badge-progress':'badge-pending';
+  var bt = r.status==='done'?'Done':r.status==='in_progress'?'In Progress':'Pending';
+  var time = new Date(r.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+  var catColor = deptColors[r.category] || '#005f73';
+  var slaHtml = r.status !== 'done'
+    ? (isOverdue ? '<span class="sla-warn">⚠️ '+Math.floor(elapsed)+'m overdue</span>' : '<span class="sla-ok">⏱ '+Math.floor(remaining)+'m left</span>')
+    : '';
+  return '<div class="request-row">'+
+    '<div class="req-top"><span class="req-room">Room '+(r.room_number||'?')+'</span><span class="req-cat" style="background:'+catColor+'">'+(r.category||'General')+'</span></div>'+
+    '<div class="req-msg">'+(r.message||'No details')+'</div>'+
+    '<div class="req-meta"><span class="badge '+bc+'">'+bt+'</span>'+slaHtml+(r.claimed_by?'<span>👷 '+r.claimed_by+'</span>':'')+(r.feedback_rating?'<span>⭐ '+r.feedback_rating+'/5</span>':'')+'<span>'+time+'</span></div>'+
+  '</div>';
+}
+
+// ── ROOMS ──
+function loadRooms() {
+  fetch('/rooms?hotel_id='+hodData.hotel_id).then(function(r){return r.json();}).then(function(rooms){
+    if (!Array.isArray(rooms)) return;
+    document.getElementById('rooms-count').textContent = rooms.length + ' rooms total';
+    document.getElementById('rooms-grid').innerHTML = rooms.length === 0
+      ? '<div class="empty" style="grid-column:1/-1">No rooms yet</div>'
+      : rooms.map(function(r){
+          return '<div class="room-card"><div class="room-num">Room '+r.room_number+'</div><div class="room-floor">Floor '+(r.floor||1)+'</div><div class="room-actions"><button class="btn-del" onclick="deleteRoom('+r.id+')">✕ Delete</button></div></div>';
+        }).join('');
+  }).catch(function(){});
+}
+
+function addRoom() {
+  var num = document.getElementById('new-room-num').value.trim();
+  var floor = document.getElementById('new-room-floor').value || 1;
+  if (!num) { alert('Enter a room number!'); return; }
+  fetch('/rooms', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hodData.hotel_id,room_number:num,floor:parseInt(floor),is_active:true})})
+    .then(function(){
+      document.getElementById('new-room-num').value = '';
+      document.getElementById('new-room-floor').value = '';
+      var msg = document.getElementById('room-msg');
+      msg.textContent = '✅ Room '+num+' added!';
+      msg.className = 'msg-box msg-success';
+      setTimeout(function(){ msg.className='msg-box'; }, 3000);
+      loadRooms();
+    });
+}
+
+function deleteRoom(id) {
+  if (!confirm('Delete this room?')) return;
+  fetch('/rooms/'+id,{method:'DELETE'}).then(function(){ loadRooms(); });
+}
+
+// ── STAFF ──
+function loadStaff() {
+  fetch('/staff?hotel_id='+hodData.hotel_id).then(function(r){return r.json();}).then(function(staff){
+    if (!Array.isArray(staff)) return;
+    document.getElementById('staff-list').innerHTML = staff.length === 0
+      ? '<div class="empty">No staff added yet.</div>'
+      : staff.map(function(s){
+          return '<div class="staff-row"><div><div class="staff-name-txt">'+s.name+'</div></div><div style="display:flex;gap:8px;align-items:center"><div class="staff-pin">PIN: '+s.pin+'</div><button class="btn-remove" onclick="removeStaff('+s.id+')">Remove</button></div></div>';
+        }).join('');
+  }).catch(function(){});
+}
+
+function addStaff() {
+  var name = document.getElementById('new-staff-name').value.trim();
+  var pin = document.getElementById('new-staff-pin').value.trim();
+  if (!name || pin.length !== 4) { alert('Enter full name and exactly 4-digit PIN'); return; }
+  fetch('/staff', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hodData.hotel_id,name:name,pin:pin})})
+    .then(function(r){return r.json();}).then(function(data){
+      if (data.error) { alert(data.error); return; }
+      document.getElementById('new-staff-name').value = '';
+      document.getElementById('new-staff-pin').value = '';
+      var msg = document.getElementById('staff-msg');
+      msg.textContent = '✅ '+name+' added with PIN: '+pin;
+      msg.className = 'msg-box msg-success';
+      setTimeout(function(){ msg.className='msg-box'; }, 4000);
+      loadStaff();
+    });
+}
+
+function removeStaff(id) {
+  if (!confirm('Remove this staff member?')) return;
+  fetch('/staff/'+id,{method:'DELETE'}).then(function(){ loadStaff(); });
+}
+
+// ── ANALYTICS ──
+function renderAnalytics(reqs) {
+  var pending = reqs.filter(function(r){ return r.status==='pending'; }).length;
+  var inprog = reqs.filter(function(r){ return r.status==='in_progress'; }).length;
+  var done = reqs.filter(function(r){ return r.status==='done'; }).length;
+  var rated = reqs.filter(function(r){ return r.feedback_rating; });
+  var avg = rated.length ? (rated.reduce(function(s,r){ return s+r.feedback_rating; },0)/rated.length).toFixed(1) : '-';
+
+  document.getElementById('an-total').textContent = reqs.length;
+  document.getElementById('an-done').textContent = done;
+  document.getElementById('an-rating').textContent = avg === '-' ? '-' : avg+'⭐';
+  document.getElementById('an-pending').textContent = pending;
+  document.getElementById('donut-num').textContent = reqs.length;
+
+  // Status donut
+  if (charts.status) charts.status.destroy();
+  charts.status = new Chart(document.getElementById('chart-status').getContext('2d'), {
+    type: 'doughnut',
+    data: { labels:['Pending','In Progress','Done'], datasets:[{ data:[pending,inprog,done], backgroundColor:['#EE9B00','#0A9396','#2ECC71'], borderWidth:0, hoverOffset:6 }] },
+    options: { responsive:true, maintainAspectRatio:false, cutout:'70%', plugins:{legend:{display:false}} }
+  });
+  document.getElementById('legend-status').innerHTML = ['Pending','In Progress','Done'].map(function(l,i){
+    return '<div class="legend-item"><div class="legend-dot" style="background:'+['#EE9B00','#0A9396','#2ECC71'][i]+'"></div>'+l+' ('+[pending,inprog,done][i]+')</div>';
+  }).join('');
+
+  // Rating bar
+  var rCounts = [5,4,3,2,1].map(function(s){ return rated.filter(function(r){ return r.feedback_rating===s; }).length; });
+  if (charts.ratings) charts.ratings.destroy();
+  charts.ratings = new Chart(document.getElementById('chart-ratings').getContext('2d'), {
+    type: 'bar',
+    data: { labels:['5⭐','4⭐','3⭐','2⭐','1⭐'], datasets:[{ data:rCounts, backgroundColor:['#2ECC71','#0A9396','#EE9B00','#F77F00','#E63946'], borderRadius:6, borderWidth:0 }] },
+    options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ x:{grid:{display:false},ticks:{font:{size:10}}}, y:{beginAtZero:true,ticks:{stepSize:1,font:{size:10}},grid:{color:'#f0f0f0'}} } }
+  });
+
+  // Line chart — last 14 days
+  var days=[], counts=[];
+  for (var i=13;i>=0;i--) {
+    var d=new Date(); d.setDate(d.getDate()-i);
+    days.push(d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}));
+    var ds=d.toDateString();
+    counts.push(reqs.filter(function(r){ return new Date(r.created_at).toDateString()===ds; }).length);
+  }
+  if (charts.line) charts.line.destroy();
+  var deptColor = deptColors[hodData.dept] || '#0A9396';
+  charts.line = new Chart(document.getElementById('chart-line').getContext('2d'), {
+    type: 'line',
+    data: { labels:days, datasets:[{ label:'Requests', data:counts, borderColor:deptColor, backgroundColor:deptColor+'18', borderWidth:2.5, pointBackgroundColor:deptColor, pointRadius:4, fill:true, tension:0.4 }] },
+    options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ x:{grid:{display:false},ticks:{font:{size:10},color:'#aaa'}}, y:{beginAtZero:true,ticks:{stepSize:1,font:{size:10},color:'#aaa'},grid:{color:'#f0f0f0'}} } }
+  });
+}
+
+function showTab(name) {
+  var names = ['overview','requests','rooms','staff','analytics'];
+  document.querySelectorAll('.tab').forEach(function(t,i){ t.classList.toggle('active', names[i]===name); });
+  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.getElementById('panel-'+name).classList.add('active');
+  if (name==='rooms') loadRooms();
+  if (name==='staff') loadStaff();
+}
+
+// Auto-login from localStorage
+window.onload = function() {
+  var stored = localStorage.getItem('welco_hod');
+  if (stored) {
+    fetch('/hotels').then(function(r){ return r.json(); }).then(function(hotels){
+      allHotels = hotels;
+      hodData = JSON.parse(stored);
+      hodData.hotel = hotels.find(function(h){ return h.hotel_id === hodData.hotel_id; }) || {};
+      startApp();
+    }).catch(function(){});
+  }
+};
+</script>
+</body>
+</html>

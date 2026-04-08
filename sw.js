@@ -1,35 +1,39 @@
-const CACHE_NAME = 'welco-v3';
+const CACHE_NAME = 'welco-v4';
+
 const OFFLINE_ASSETS = [
   '/staff.html',
   '/guest.html',
   '/hod.html',
   '/admin.html',
+  '/index.html',
   '/manifest.json',
-  '/manifest-admin.json',
-  'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js',
-  'https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js'
+  '/manifest-admin.json'
 ];
 
-// Install — cache all key assets
+// Install — pre-cache all key pages
 self.addEventListener('install', function(e) {
   e.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
-      return cache.addAll(OFFLINE_ASSETS.filter(function(url) {
-        return !url.includes('onesignal'); // skip external that may block
-      }));
+      return Promise.allSettled(
+        OFFLINE_ASSETS.map(function(url) {
+          return cache.add(url).catch(function(err) {
+            console.log('Failed to cache:', url, err);
+          });
+        })
+      );
     }).then(function() {
       return self.skipWaiting();
     })
   );
 });
 
-// Activate — clean old caches
+// Activate — delete old caches
 self.addEventListener('activate', function(e) {
   e.waitUntil(
     caches.keys().then(function(keys) {
       return Promise.all(
-        keys.filter(function(k){ return k !== CACHE_NAME; })
-          .map(function(k){ return caches.delete(k); })
+        keys.filter(function(k) { return k !== CACHE_NAME; })
+            .map(function(k) { return caches.delete(k); })
       );
     }).then(function() {
       return self.clients.claim();
@@ -37,107 +41,93 @@ self.addEventListener('activate', function(e) {
   );
 });
 
-// Fetch strategy:
-// - HTML pages: Network first, fallback to cache (so staff always get fresh data if online)
-// - API requests: Network only (no caching live data)
-// - Static assets: Cache first (fast loading)
+// Fetch — smart caching strategy
 self.addEventListener('fetch', function(e) {
   var url = e.request.url;
 
-  // Skip non-GET requests
+  // Only handle GET requests
   if (e.request.method !== 'GET') return;
 
-  // Skip API calls — always need live data
-  if (url.includes('/requests') || url.includes('/staff') || url.includes('/hotels') ||
-      url.includes('/rooms') || url.includes('/announcements') || url.includes('/hod') ||
-      url.includes('/maintenance')) {
+  // Skip cross-origin except CDN
+  if (!url.startsWith(self.location.origin) && !url.includes('cdn.jsdelivr') && !url.includes('fonts.googleapis')) return;
+
+  // API calls — network only, return empty array if offline
+  var apiPaths = ['/requests', '/staff', '/hotels', '/rooms', '/announcements', '/hod', '/maintenance'];
+  var isApi = apiPaths.some(function(p) { return url.includes(p); });
+  if (isApi) {
     e.respondWith(
       fetch(e.request).catch(function() {
-        // Return empty array for API calls when offline
-        return new Response(JSON.stringify([]), {
-          headers: { 'Content-Type': 'application/json' }
-        });
+        return new Response('[]', { headers: { 'Content-Type': 'application/json' } });
       })
     );
     return;
   }
 
-  // HTML pages — Network first, fallback to cache
+  // HTML pages — Network first, cache fallback
   if (url.includes('.html') || url.endsWith('/')) {
     e.respondWith(
       fetch(e.request)
         .then(function(response) {
-          // Cache the fresh version
-          var clone = response.clone();
-          caches.open(CACHE_NAME).then(function(cache) {
-            cache.put(e.request, clone);
-          });
+          if (response && response.status === 200) {
+            var clone = response.clone();
+            caches.open(CACHE_NAME).then(function(cache) { cache.put(e.request, clone); });
+          }
           return response;
         })
         .catch(function() {
-          // Offline — serve from cache
           return caches.match(e.request).then(function(cached) {
             if (cached) return cached;
-            // Return offline page
-            return new Response(getOfflinePage(), {
-              headers: { 'Content-Type': 'text/html' }
-            });
+            // Show Welco offline page
+            return new Response(OFFLINE_HTML, { headers: { 'Content-Type': 'text/html' } });
           });
         })
     );
     return;
   }
 
-  // Static assets (JS, CSS, images) — Cache first
+  // Everything else — Cache first, network fallback
   e.respondWith(
     caches.match(e.request).then(function(cached) {
       if (cached) return cached;
       return fetch(e.request).then(function(response) {
-        var clone = response.clone();
-        caches.open(CACHE_NAME).then(function(cache) {
-          cache.put(e.request, clone);
-        });
+        if (response && response.status === 200) {
+          var clone = response.clone();
+          caches.open(CACHE_NAME).then(function(cache) { cache.put(e.request, clone); });
+        }
         return response;
       }).catch(function() {
-        return new Response('', { status: 404 });
+        return new Response('', { status: 408 });
       });
     })
   );
 });
 
-// Push notification handler (OneSignal)
+// Push notification
 self.addEventListener('push', function(e) {
-  var data = {};
-  try { data = e.data.json(); } catch(err) { data = { title: '🔔 New Request', body: 'A guest needs help!' }; }
+  var data = { title: '🔔 New Request', body: 'A guest needs help!' };
+  try { data = e.data.json(); } catch(err) {}
   e.waitUntil(
-    self.registration.showNotification(data.title || '🔔 New Request', {
-      body: data.body || 'A guest needs help!',
+    self.registration.showNotification(data.title, {
+      body: data.body,
       icon: '/favicon.ico',
-      badge: '/favicon.ico',
       vibrate: [200, 100, 200],
       tag: 'welco-request',
-      renotify: true,
-      data: { url: '/staff.html' }
+      renotify: true
     })
   );
 });
 
-// Notification click — open staff dashboard
+// Notification click
 self.addEventListener('notificationclick', function(e) {
   e.notification.close();
   e.waitUntil(
-    clients.matchAll({ type: 'window' }).then(function(clientList) {
-      for (var i = 0; i < clientList.length; i++) {
-        var client = clientList[i];
-        if (client.url.includes('staff.html') && 'focus' in client) {
-          return client.focus();
-        }
+    clients.matchAll({ type: 'window' }).then(function(list) {
+      for (var i = 0; i < list.length; i++) {
+        if (list[i].url.includes('staff.html') && 'focus' in list[i]) return list[i].focus();
       }
       if (clients.openWindow) return clients.openWindow('/staff.html');
     })
   );
 });
 
-function getOfflinePage() {
-  return '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Welco — Offline</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:sans-serif;min-height:100vh;background:linear-gradient(160deg,#005f73,#0a9396);display:flex;align-items:center;justify-content:center;color:white;text-align:center;padding:24px}.wrap{max-width:320px}.icon{font-size:64px;margin-bottom:16px}.title{font-size:24px;font-weight:700;margin-bottom:8px}.sub{font-size:14px;opacity:.7;line-height:1.6;margin-bottom:24px}.btn{padding:14px 28px;background:white;color:#005f73;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer}';
-  }
+var OFFLINE_HTML = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Welco \u2014 Offline</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:sans-serif;min-height:100vh;background:linear-gradient(160deg,#005f73,#0a9396);display:flex;align-items:center;justify-content:center;color:white;text-align:center;padding:24px}.wrap{max-width:320px}.icon{font-size:64px;margin-bottom:20px}.title{font-size:26px;font-weight:700;margin-bottom:10px}.sub{font-size:14px;opacity:.75;line-height:1.7;margin-bottom:28px}.btn{padding:14px 32px;background:white;color:#005f73;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s}.btn:hover{opacity:.9}.note{font-size:12px;opacity:.55;margin-top:20px}</style></head><body><div class="wrap"><div class="icon">📶</div><h1 class="title">You\'re offline</h1><p class="sub">No internet connection. Please check your WiFi or mobile data and try again.</p><button class="btn" onclick="window.location.reload()">Try Again</button><p class="note">Welco \u00b7 Hotel Guest Services</p></div></body></html>';

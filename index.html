@@ -178,7 +178,7 @@
     .portals-section .section-label { color: var(--teal-light); }
     .portals-section .section-label::before { background: var(--teal-light); }
     .portals-section .section-title { color: white; }
-    .portals { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .portals { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
     .portal-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 4px; padding: 40px 32px; text-decoration: none; color: white; transition: background 0.3s, transform 0.3s, border-color 0.3s; display: block; }
     .portal-card:hover { background: rgba(10,147,150,0.12); border-color: rgba(10,147,150,0.4); transform: translateY(-4px); }
     .portal-icon { font-size: 36px; margin-bottom: 20px; display: block; }
@@ -225,7 +225,7 @@
       .stats-bar { grid-template-columns: repeat(2, 1fr); gap: 32px; padding: 48px 20px; }
       .stat-item { border-right: none; }
       .section, .features-section, .owners-section, .guest-section, .categories-section, .testimonial-section, .faq-section, .portals-section, .cta-section { padding: 60px 20px; }
-      .steps, .features-grid, .portals, .categories-grid { grid-template-columns: 1fr; }
+      .steps, .features-grid, .categories-grid { grid-template-columns: 1fr; } .portals { grid-template-columns: 1fr 1fr; }
       .owners-grid { grid-template-columns: 1fr; gap: 40px; }
       .metric-cards { grid-template-columns: 1fr 1fr; }
       .guest-flow { grid-template-columns: 1fr 1fr; gap: 32px; }
@@ -594,6 +594,12 @@
         <h3>Admin Panel</h3>
         <p>Manage rooms, staff and QR codes. Post announcements. Upload your hotel logo. View full analytics.</p>
         <div class="portal-link">Admin Access</div>
+      </a>
+      <a href="hod.html" class="portal-card fade-up" style="transition-delay: 0.45s">
+        <span class="portal-icon">🎯</span>
+        <h3>HOD Portal</h3>
+        <p>Head of Department dashboard. Monitor your team, get SLA alerts, manage staff and rooms — department only.</p>
+        <div class="portal-link">HOD Login</div>
       </a>
     </div>
   </section>

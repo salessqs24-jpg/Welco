@@ -18,26 +18,19 @@ app.use(express.static(__dirname));
 // ─────────────────────────────────────────
 app.post('/signup', async (req, res) => {
   const { hotelName, city, ownerName, roomCount, colour, emoji, email, password } = req.body;
-
-  const { data: existing } = await supabase
-    .from('hotels').select('id').eq('owner_email', email).maybeSingle();
+  const { data: existing } = await supabase.from('hotels').select('id').eq('owner_email', email).maybeSingle();
   if (existing) return res.status(400).json({ error: 'Email already exists.' });
-
   const hotel_id = 'hotel_' + hotelName.toLowerCase().replace(/[^a-z0-9]/g, '').substring(0, 10) + '_' + Date.now().toString().slice(-4);
-
-  const { data: hotel, error: hotelError } = await supabase
-    .from('hotels')
+  const { data: hotel, error: hotelError } = await supabase.from('hotels')
     .insert([{ hotel_id, name: hotelName, city, owner_name: ownerName, colour: colour || '#0a9396', emoji: emoji || '🏨', owner_email: email, owner_password: password }])
     .select().single();
   if (hotelError) return res.status(500).json({ error: hotelError.message });
-
   const roomsToInsert = [];
   for (let i = 1; i <= roomCount; i++) {
     roomsToInsert.push({ hotel_id: String(hotel_id), room_number: String(i), floor: Math.ceil(i / 10), is_active: true });
   }
   const { error: roomsError } = await supabase.from('rooms').insert(roomsToInsert);
   if (roomsError) return res.status(500).json({ error: roomsError.message });
-
   res.json({ hotel: { ...hotel, hotel_id, city } });
 });
 
@@ -46,8 +39,7 @@ app.post('/signup', async (req, res) => {
 // ─────────────────────────────────────────
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
-  const { data: hotel } = await supabase
-    .from('hotels').select('*').eq('owner_email', email).eq('owner_password', password).maybeSingle();
+  const { data: hotel } = await supabase.from('hotels').select('*').eq('owner_email', email).eq('owner_password', password).maybeSingle();
   if (!hotel) return res.status(401).json({ error: 'Invalid email or password.' });
   res.json({ hotel });
 });
@@ -132,6 +124,41 @@ app.post('/staff/verify', async (req, res) => {
 });
 
 // ─────────────────────────────────────────
+// HOD
+// ─────────────────────────────────────────
+app.get('/hod', async (req, res) => {
+  const { data, error } = await supabase.from('hod').select('*').eq('hotel_id', req.query.hotel_id);
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+});
+
+app.post('/hod', async (req, res) => {
+  const { hotel_id, name, department, pin } = req.body;
+  if (!hotel_id || !name || !department || !pin) return res.status(400).json({ error: 'All fields required.' });
+  const { data: existing } = await supabase.from('hod').select('id')
+    .eq('hotel_id', hotel_id).eq('department', department).eq('is_active', true).maybeSingle();
+  if (existing) return res.status(400).json({ error: 'An HOD already exists for ' + department + '. Remove them first.' });
+  const { data, error } = await supabase.from('hod')
+    .insert([{ hotel_id, name, department, pin, is_active: true }]).select().single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+});
+
+app.delete('/hod/:id', async (req, res) => {
+  const { error } = await supabase.from('hod').delete().eq('id', req.params.id);
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ success: true });
+});
+
+app.post('/hod/verify', async (req, res) => {
+  const { hotel_id, name, pin } = req.body;
+  const { data } = await supabase.from('hod').select('*')
+    .eq('hotel_id', hotel_id).eq('name', name).eq('pin', pin).eq('is_active', true).maybeSingle();
+  if (!data) return res.status(401).json({ error: 'Invalid name or PIN.' });
+  res.json({ success: true, hod: data });
+});
+
+// ─────────────────────────────────────────
 // REQUESTS
 // ─────────────────────────────────────────
 app.get('/requests', async (req, res) => {
@@ -182,9 +209,7 @@ app.post('/requests/:id/feedback', async (req, res) => {
 // ANNOUNCEMENTS
 // ─────────────────────────────────────────
 app.get('/announcements', async (req, res) => {
-  let query = supabase.from('announcements')
-    .select('*')
-    .order('created_at', { ascending: false });
+  let query = supabase.from('announcements').select('*').order('created_at', { ascending: false });
   if (req.query.hotel_id) query = query.eq('hotel_id', req.query.hotel_id);
   const { data, error } = await query;
   if (error) return res.status(500).json({ error: error.message });
@@ -194,15 +219,9 @@ app.get('/announcements', async (req, res) => {
 app.post('/announcements', async (req, res) => {
   const { hotel_id, message } = req.body;
   if (!hotel_id || !message) return res.status(400).json({ error: 'hotel_id and message required.' });
-
-  // Deactivate all previous announcements for this hotel first
-  await supabase.from('announcements')
-    .update({ is_active: false })
-    .eq('hotel_id', hotel_id);
-
+  await supabase.from('announcements').update({ is_active: false }).eq('hotel_id', hotel_id);
   const { data, error } = await supabase.from('announcements')
-    .insert([{ hotel_id, message, is_active: true }])
-    .select().single();
+    .insert([{ hotel_id, message, is_active: true }]).select().single();
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
 });
@@ -216,8 +235,7 @@ app.delete('/announcements/:id', async (req, res) => {
 app.post('/announcements/:id/toggle', async (req, res) => {
   const { is_active } = req.body;
   const { data, error } = await supabase.from('announcements')
-    .update({ is_active })
-    .eq('id', req.params.id).select().single();
+    .update({ is_active }).eq('id', req.params.id).select().single();
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
 });

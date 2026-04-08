@@ -476,7 +476,7 @@ function loadTasks() {
       return;
     }
     list.innerHTML = filtered.map(function(r){
-      var SLA=15;
+      var SLA = r.category==='Room Service' ? 30 : 5;
       var elapsed=(Date.now()-new Date(r.created_at).getTime())/60000;
       var remaining=Math.max(0,SLA-elapsed);
       var pct=Math.max(0,(remaining/SLA)*100);

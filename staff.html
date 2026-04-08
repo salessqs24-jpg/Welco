@@ -18,7 +18,7 @@
     OneSignalDeferred.push(async function(OneSignal) {
       await OneSignal.init({
         appId: "20e9e447-6ecd-488d-bdf2-c9c2e81bdee9",
-        notifyButton: { enable: false }, // we use our own UI
+        notifyButton: { enable: false },
         allowLocalhostAsSecureOrigin: true,
       });
     });
@@ -49,11 +49,8 @@
     .login-btn { width: 100%; padding: 14px; background: #005f73; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; }
     .login-error { color: #e63946; font-size: 13px; text-align: center; margin-top: 10px; display: none; line-height: 1.5; }
 
-    /* ── Notification permission prompt ── */
-    .notif-prompt {
-      background: #e8f4f4; border: 1.5px solid #0a9396; border-radius: 12px;
-      padding: 14px; margin-bottom: 16px; display: none;
-    }
+    /* Notification permission prompt */
+    .notif-prompt { background: #e8f4f4; border: 1.5px solid #0a9396; border-radius: 12px; padding: 14px; margin-bottom: 16px; display: none; }
     .notif-prompt p { font-size: 13px; color: #005f73; margin-bottom: 10px; line-height: 1.5; }
     .notif-prompt-btns { display: flex; gap: 8px; }
     .btn-allow { flex: 1; padding: 10px; background: #0a9396; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; }
@@ -71,16 +68,11 @@
     .notif-badge.zero { background: rgba(255,255,255,0.2); }
     .logout-btn { background: rgba(255,255,255,0.15); border: none; color: white; padding: 6px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; }
 
-    /* ── Notification status bar ── */
-    .notif-status-bar {
-      display: none; background: #fff3cd; border-bottom: 1px solid #ffd166;
-      padding: 8px 16px; font-size: 12px; color: #8a6000;
-      text-align: center; cursor: pointer;
-    }
+    /* Notification status bar */
+    .notif-status-bar { display: none; background: #fff3cd; border-bottom: 1px solid #ffd166; padding: 10px 16px; font-size: 12px; color: #8a6000; text-align: center; cursor: pointer; }
     .notif-status-bar.granted { background: #d1fae5; color: #065f46; border-color: #6ee7b7; cursor: default; }
 
     .staff-announcement { display: none; background: linear-gradient(90deg, #ee9b00, #ca6702); color: white; padding: 10px 16px; font-size: 13px; font-weight: 500; text-align: center; line-height: 1.5; }
-    .staff-announcement .ann-icon { margin-right: 6px; }
 
     .filter-tabs { display: flex; background: white; border-bottom: 1px solid #eee; overflow-x: auto; }
     .filter-tab { padding: 12px 16px; font-size: 13px; font-weight: 500; color: #999; cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; }
@@ -88,7 +80,6 @@
 
     .dash-container { padding: 14px; max-width: 600px; margin: 0 auto; }
     .section-label { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; font-weight: 600; }
-
     .task-card { background: white; border-radius: 14px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); border-left: 4px solid #ee9b00; }
     .task-card.urgent { border-left-color: #e63946; }
     .task-card.in-progress { border-left-color: #0a9396; }
@@ -153,12 +144,12 @@
       <button class="pin-btn" onclick="deletePin()">⌫</button>
     </div>
 
-    <!-- Notification permission prompt shown before login -->
+    <!-- Push notification permission prompt -->
     <div class="notif-prompt" id="notif-prompt">
       <p>🔔 Enable push notifications to get alerted for new guest requests — even when this app is closed!</p>
       <div class="notif-prompt-btns">
-        <button class="btn-allow" onclick="enablePushNotifications()">🔔 Allow Notifications</button>
-        <button class="btn-skip" onclick="skipNotifications()">Skip</button>
+        <button class="btn-allow" onclick="enablePush()">🔔 Allow Notifications</button>
+        <button class="btn-skip" onclick="skipPush()">Skip</button>
       </div>
     </div>
 
@@ -183,15 +174,12 @@
     </div>
   </div>
 
-  <!-- Notification status bar -->
-  <div class="notif-status-bar" id="notif-status-bar" onclick="enablePushNotifications()">
+  <div class="notif-status-bar" id="notif-status-bar" onclick="enablePush()">
     🔕 Tap here to enable push notifications for new requests
   </div>
 
-  <!-- Announcement -->
   <div class="staff-announcement" id="staff-announcement">
-    <span class="ann-icon">📢</span>
-    <span id="staff-announcement-text"></span>
+    <span>📢 </span><span id="staff-announcement-text"></span>
   </div>
 
   <div class="filter-tabs">
@@ -222,36 +210,33 @@ var audioCtx = null;
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(function(){});
 
-// ── Show notification prompt on page load ──
+// Show notification prompt on load if not yet decided
 window.addEventListener('load', function() {
   if ('Notification' in window && Notification.permission === 'default') {
     document.getElementById('notif-prompt').style.display = 'block';
   }
 });
 
-function enablePushNotifications() {
+function enablePush() {
   document.getElementById('notif-prompt').style.display = 'none';
-  // Use OneSignal to request permission
   window.OneSignalDeferred = window.OneSignalDeferred || [];
   OneSignalDeferred.push(async function(OneSignal) {
     try {
       await OneSignal.Notifications.requestPermission();
       var granted = OneSignal.Notifications.permission;
-      updateNotifStatusBar(granted);
-    } catch(e) {
-      console.log('Push permission error:', e);
-    }
+      showNotifBar(granted);
+    } catch(e) {}
   });
 }
 
-function skipNotifications() {
+function skipPush() {
   document.getElementById('notif-prompt').style.display = 'none';
 }
 
-function updateNotifStatusBar(granted) {
+function showNotifBar(granted) {
   var bar = document.getElementById('notif-status-bar');
   if (granted) {
-    bar.textContent = '🔔 Push notifications enabled — you\'ll be alerted for new requests!';
+    bar.textContent = '🔔 Push notifications ON — you\'ll be alerted for new requests!';
     bar.className = 'notif-status-bar granted';
     bar.style.display = 'block';
     setTimeout(function(){ bar.style.display='none'; }, 4000);
@@ -262,18 +247,14 @@ function updateNotifStatusBar(granted) {
   }
 }
 
-// ── Chime sound (Web Audio — no file needed) ──
 function playChime() {
   try {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    var notes = [523, 659, 784];
-    notes.forEach(function(freq, i) {
+    [523, 659, 784].forEach(function(freq, i) {
       var osc = audioCtx.createOscillator();
       var gain = audioCtx.createGain();
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.type = 'sine';
-      osc.frequency.value = freq;
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.type = 'sine'; osc.frequency.value = freq;
       var t = audioCtx.currentTime + i * 0.15;
       gain.gain.setValueAtTime(0, t);
       gain.gain.linearRampToValueAtTime(0.35, t + 0.05);
@@ -283,24 +264,18 @@ function playChime() {
   } catch(e) {}
 }
 
-// ── Send push via OneSignal ──
-function sendPushNotification(title, body) {
+function sendPush(title, body) {
   OneSignalDeferred.push(async function(OneSignal) {
     try {
-      var hasPermission = OneSignal.Notifications.permission;
-      if (!hasPermission) return;
-      // Show local notification via service worker
-      if ('serviceWorker' in navigator) {
-        var reg = await navigator.serviceWorker.ready;
-        reg.showNotification(title, {
-          body: body,
-          icon: '/favicon.ico',
-          badge: '/favicon.ico',
-          vibrate: [200, 100, 200],
-          tag: 'welco-request',
-          renotify: true,
-        });
-      }
+      if (!OneSignal.Notifications.permission) return;
+      var reg = await navigator.serviceWorker.ready;
+      reg.showNotification(title, {
+        body: body,
+        icon: '/favicon.ico',
+        vibrate: [200, 100, 200],
+        tag: 'welco-request',
+        renotify: true,
+      });
     } catch(e) {}
   });
 }
@@ -313,9 +288,7 @@ function loadAllHotels() {
       return '<option value="'+h.hotel_id+'">'+(h.emoji||'🏨')+' '+h.name+' — '+(h.city||'')+'</option>';
     }).join('');
     if (hotels.length > 0) { currentHotelId = hotels[0].hotel_id; applyBranding(hotels[0]); }
-  }).catch(function(){
-    document.getElementById('login-hotel-sub').textContent = 'Staff Portal';
-  });
+  }).catch(function(){ document.getElementById('login-hotel-sub').textContent = 'Staff Portal'; });
 }
 
 function applyBranding(hotel) {
@@ -352,13 +325,10 @@ function doLogin() {
   if (!name) { showLoginErr('Please enter your name.'); return; }
   if (!currentHotelId) { showLoginErr('Please select a hotel.'); return; }
   if (pin.length !== 4) { showLoginErr('Please enter your 4-digit PIN.'); return; }
-
   var btn = document.querySelector('.login-btn');
   btn.textContent = 'Verifying...'; btn.disabled = true;
-
   fetch('/staff/verify', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
+    method: 'POST', headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({hotel_id: currentHotelId, name: name, pin: pin})
   }).then(function(r){return r.json().then(function(d){return {ok:r.ok,d:d};});})
   .then(function(res){
@@ -369,14 +339,13 @@ function doLogin() {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('dashboard-screen').style.display = 'block';
     document.getElementById('dash-staff').textContent = '👋 ' + name;
-
     var hotel = allHotels.find(function(h){return h.hotel_id===currentHotelId;});
     if (hotel) {
       var color = hotel.colour || '#0a9396';
       document.getElementById('dash-header').style.background = 'linear-gradient(90deg, '+color+'dd, '+color+'88)';
       if (hotel.logo_url) {
-        var dLogo = document.getElementById('dash-header-logo');
-        dLogo.src = hotel.logo_url; dLogo.style.display = 'block';
+        document.getElementById('dash-header-logo').src = hotel.logo_url;
+        document.getElementById('dash-header-logo').style.display = 'block';
         document.getElementById('dash-header-emoji').style.display = 'none';
         document.getElementById('dash-hotel').textContent = hotel.name;
       } else {
@@ -387,16 +356,13 @@ function doLogin() {
       }
       loadStaffAnnouncement();
     }
-
     // Init audio on user gesture
     try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
-
-    // Check notification status and show bar if needed
+    // Show notification status
     OneSignalDeferred.push(async function(OneSignal) {
       var granted = OneSignal.Notifications.permission;
-      if (!granted) updateNotifStatusBar(false);
+      if (!granted) showNotifBar(false);
     });
-
     loadTasks();
     refreshInterval = setInterval(loadTasks, 5000);
   }).catch(function(){
@@ -407,7 +373,7 @@ function doLogin() {
 
 function loadStaffAnnouncement() {
   fetch('/announcements?hotel_id='+currentHotelId).then(function(r){return r.json();}).then(function(data){
-    if (Array.isArray(data) && data.length > 0) {
+    if (Array.isArray(data)) {
       var active = data.find(function(a){ return a.is_active; });
       if (active) {
         document.getElementById('staff-announcement-text').textContent = active.message;
@@ -448,13 +414,12 @@ function checkNewRequests(data) {
       return r.status==='pending' && !knownRequestIds.includes(String(r.id));
     });
     if (newOnes.length > 0) {
-      // 1. Play chime
       playChime();
-      // 2. Send push notification via OneSignal service worker
       newOnes.forEach(function(r){
-        var title = '🔔 New Request — Room ' + (r.room_number||'?');
-        var body = (r.category||'General') + ': ' + (r.message||'No details');
-        sendPushNotification(title, body);
+        sendPush(
+          '🔔 New Request — Room ' + (r.room_number||'?'),
+          (r.category||'General') + ': ' + (r.message||'No details')
+        );
       });
     }
     knownRequestIds = currentIds;
@@ -476,22 +441,18 @@ function loadTasks() {
       return;
     }
     list.innerHTML = filtered.map(function(r){
-      var SLA = r.category==='Room Service' ? 30 : 5;
-      var elapsed=(Date.now()-new Date(r.created_at).getTime())/60000;
-      var remaining=Math.max(0,SLA-elapsed);
-      var pct=Math.max(0,(remaining/SLA)*100);
-      var mins=Math.floor(remaining);
-      var secs=Math.floor((remaining-mins)*60);
+      var SLA=15, elapsed=(Date.now()-new Date(r.created_at).getTime())/60000;
+      var remaining=Math.max(0,SLA-elapsed), pct=Math.max(0,(remaining/SLA)*100);
+      var mins=Math.floor(remaining), secs=Math.floor((remaining-mins)*60);
       var timerClass=pct>50?'':pct>25?'warning':'urgent';
-      var catColor = r.category==='Front Desk'?'#9b5de5':r.category==='Housekeeping'?'#4361ee':r.category==='Room Service'?'#f77f00':r.category==='Maintenance'?'#e63946':'#0a9396';
-var cardClass=r.status==='done'?'done':r.status==='in_progress'?'in-progress':pct===0?'urgent':'';
+      var cardClass=r.status==='done'?'done':r.status==='in_progress'?'in-progress':pct===0?'urgent':'';
       var timeAgo=Math.floor(elapsed)>0?Math.floor(elapsed)+'m ago':'Just now';
       var actionsHtml='';
       if (r.status==='pending') actionsHtml='<button class="btn-accept" onclick="claimTask('+r.id+')">👋 Accept</button>';
       else if (r.status==='in_progress') actionsHtml='<span class="claimed-badge">✅ '+(r.claimed_by||'Staff')+'</span><button class="btn-done" onclick="markDone('+r.id+')">Mark Done ✓</button>';
       else actionsHtml='<button class="btn-done" disabled>✅ Completed</button>';
-      return '<div class="task-card '+cardClass+'" style="border-left-color:'+catColor+'">'+
-        '<div class="task-top"><span class="task-room">Room '+(r.room_number||'?')+'</span>'<span class="task-cat" style="background:'+catColor+'">'+(r.category||'General')+'</span>'+
+      return '<div class="task-card '+cardClass+'">'+
+        '<div class="task-top"><span class="task-room">Room '+(r.room_number||'?')+'</span><span class="task-cat">'+(r.category||'General')+'</span></div>'+
         '<div class="task-msg">'+(r.message||'No details')+'</div>'+
         '<div class="task-time">🕐 '+timeAgo+'</div>'+
         (r.status!=='done'?'<div class="task-sla'+(pct<25?' urgent-text':'')+'">⏱ '+mins+'m '+secs+'s remaining</div>'+

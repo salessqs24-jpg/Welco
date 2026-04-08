@@ -14,17 +14,9 @@
       --ink: #0d1b1e;
       --mist: #e8f4f4;
     }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--sand);
-      color: var(--ink);
-      overflow-x: hidden;
-    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--sand); color: var(--ink); overflow-x: hidden; }
 
     /* ── NAV ── */
     nav {
@@ -36,29 +28,12 @@
       border-bottom: 1px solid rgba(10,147,150,0.12);
       transition: all 0.3s ease;
     }
-    .nav-logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 28px; font-weight: 700;
-      color: var(--teal-dark);
-      letter-spacing: 0.02em;
-    }
+    .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 700; color: var(--teal-dark); letter-spacing: 0.02em; }
     .nav-logo span { color: var(--teal); }
     .nav-links { display: flex; gap: 36px; align-items: center; }
-    .nav-links a {
-      text-decoration: none; color: var(--ink);
-      font-size: 13px; font-weight: 500;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      opacity: 0.65; transition: opacity 0.2s;
-    }
+    .nav-links a { text-decoration: none; color: var(--ink); font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.65; transition: opacity 0.2s; }
     .nav-links a:hover { opacity: 1; }
-    .nav-cta {
-      background: var(--teal-dark) !important;
-      color: white !important; opacity: 1 !important;
-      padding: 10px 24px; border-radius: 2px;
-      font-size: 12px !important;
-      letter-spacing: 0.12em !important;
-      transition: background 0.2s !important;
-    }
+    .nav-cta { background: var(--teal-dark) !important; color: white !important; opacity: 1 !important; padding: 10px 24px; border-radius: 2px; font-size: 12px !important; letter-spacing: 0.12em !important; transition: background 0.2s !important; }
     .nav-cta:hover { background: var(--teal) !important; }
 
     /* ── HERO ── */
@@ -67,169 +42,136 @@
       display: grid; grid-template-columns: 1fr 1fr;
       align-items: center;
       padding: 120px 48px 80px;
-      position: relative;
-      overflow: hidden;
+      position: relative; overflow: hidden;
     }
-    .hero-bg {
-      position: absolute; inset: 0; z-index: 0;
-      background: linear-gradient(160deg, var(--sand) 55%, var(--mist) 100%);
-    }
-    .hero-bg::after {
-      content: '';
-      position: absolute;
-      right: -100px; top: -100px;
-      width: 700px; height: 700px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(10,147,150,0.08) 0%, transparent 70%);
-    }
+    .hero-bg { position: absolute; inset: 0; z-index: 0; background: linear-gradient(160deg, var(--sand) 55%, var(--mist) 100%); }
+    .hero-bg::after { content: ''; position: absolute; right: -100px; top: -100px; width: 700px; height: 700px; border-radius: 50%; background: radial-gradient(circle, rgba(10,147,150,0.08) 0%, transparent 70%); }
     .hero-left { position: relative; z-index: 1; padding-right: 60px; }
-    .hero-eyebrow {
-      display: inline-flex; align-items: center; gap: 10px;
-      font-size: 11px; font-weight: 500; letter-spacing: 0.18em;
-      text-transform: uppercase; color: var(--teal);
-      margin-bottom: 28px;
-    }
-    .hero-eyebrow::before {
-      content: ''; display: block;
-      width: 32px; height: 1px; background: var(--teal);
-    }
-    .hero h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 68px; font-weight: 300; line-height: 1.05;
-      color: var(--ink); margin-bottom: 28px;
-      letter-spacing: -0.01em;
-    }
-    .hero h1 em {
-      font-style: italic; color: var(--teal-dark);
-    }
-    .hero-sub {
-      font-size: 16px; line-height: 1.75;
-      color: rgba(13,27,30,0.6);
-      max-width: 420px; margin-bottom: 48px;
-      font-weight: 300;
-    }
+    .hero-eyebrow { display: inline-flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--teal); margin-bottom: 28px; }
+    .hero-eyebrow::before { content: ''; display: block; width: 32px; height: 1px; background: var(--teal); }
+    .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: 68px; font-weight: 300; line-height: 1.05; color: var(--ink); margin-bottom: 28px; letter-spacing: -0.01em; }
+    .hero h1 em { font-style: italic; color: var(--teal-dark); }
+    .hero-sub { font-size: 16px; line-height: 1.75; color: rgba(13,27,30,0.6); max-width: 420px; margin-bottom: 48px; font-weight: 300; }
     .hero-actions { display: flex; gap: 16px; align-items: center; }
-    .btn-primary {
-      background: var(--teal-dark);
-      color: white; text-decoration: none;
-      padding: 16px 36px; border-radius: 2px;
-      font-size: 13px; font-weight: 500;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      transition: background 0.2s, transform 0.2s;
-      display: inline-block;
-    }
+    .btn-primary { background: var(--teal-dark); color: white; text-decoration: none; padding: 16px 36px; border-radius: 2px; font-size: 13px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; transition: background 0.2s, transform 0.2s; display: inline-block; }
     .btn-primary:hover { background: var(--teal); transform: translateY(-1px); }
-    .btn-ghost {
-      color: var(--teal-dark); text-decoration: none;
-      font-size: 13px; font-weight: 500;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      display: inline-flex; align-items: center; gap: 8px;
-      transition: gap 0.2s;
-    }
+    .btn-ghost { color: var(--teal-dark); text-decoration: none; font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; transition: gap 0.2s; }
     .btn-ghost:hover { gap: 14px; }
     .btn-ghost::after { content: '→'; }
-
-    .hero-right {
-      position: relative; z-index: 1;
-      display: flex; justify-content: center; align-items: center;
-    }
-    .hero-card {
-      background: white;
-      border-radius: 4px;
-      box-shadow: 0 32px 80px rgba(0,95,115,0.14), 0 4px 16px rgba(0,0,0,0.06);
-      overflow: hidden; width: 100%; max-width: 380px;
-      animation: floatCard 6s ease-in-out infinite;
-    }
-    @keyframes floatCard {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-    }
-    .card-header {
-      background: var(--teal-dark);
-      padding: 24px; color: white;
-    }
+    .hero-right { position: relative; z-index: 1; display: flex; justify-content: center; align-items: center; }
+    .hero-card { background: white; border-radius: 4px; box-shadow: 0 32px 80px rgba(0,95,115,0.14), 0 4px 16px rgba(0,0,0,0.06); overflow: hidden; width: 100%; max-width: 380px; animation: floatCard 6s ease-in-out infinite; }
+    @keyframes floatCard { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+    .card-header { background: var(--teal-dark); padding: 24px; color: white; }
     .card-header-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.6; margin-bottom: 6px; }
     .card-header-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; }
     .card-header-sub { font-size: 12px; opacity: 0.7; margin-top: 2px; }
     .card-body { padding: 24px; }
-    .card-request {
-      display: flex; align-items: center; gap: 14px;
-      padding: 14px 0; border-bottom: 1px solid #f0f0f0;
-    }
+    .card-request { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid #f0f0f0; }
     .card-request:last-child { border-bottom: none; }
-    .req-icon {
-      width: 38px; height: 38px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px; flex-shrink: 0;
-    }
+    .req-icon { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
     .req-icon.teal { background: var(--mist); }
     .req-icon.amber { background: #fff8e6; }
     .req-icon.green { background: #eaf7f0; }
     .req-info { flex: 1; }
     .req-name { font-size: 13px; font-weight: 500; color: var(--ink); }
     .req-room { font-size: 11px; color: rgba(13,27,30,0.45); margin-top: 2px; }
-    .req-badge {
-      font-size: 10px; font-weight: 500; padding: 4px 10px;
-      border-radius: 20px; letter-spacing: 0.06em;
-    }
+    .req-badge { font-size: 10px; font-weight: 500; padding: 4px 10px; border-radius: 20px; letter-spacing: 0.06em; }
     .badge-pending { background: #fff3cd; color: #8a6000; }
     .badge-progress { background: #cff4fc; color: #0a6070; }
     .badge-done { background: #d1fae5; color: #065f46; }
 
     /* ── STATS BAR ── */
-    .stats-bar {
-      background: var(--teal-dark);
-      padding: 36px 48px;
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      gap: 0;
-    }
-    .stat-item {
-      text-align: center; padding: 0 24px;
-      border-right: 1px solid rgba(255,255,255,0.12);
-    }
+    .stats-bar { background: var(--teal-dark); padding: 36px 48px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+    .stat-item { text-align: center; padding: 0 24px; border-right: 1px solid rgba(255,255,255,0.12); }
     .stat-item:last-child { border-right: none; }
-    .stat-number {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 48px; font-weight: 700; color: var(--teal-light);
-      line-height: 1;
-    }
-    .stat-label {
-      font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
-      color: rgba(255,255,255,0.55); margin-top: 8px;
-    }
+    .stat-number { font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 700; color: var(--teal-light); line-height: 1; }
+    .stat-label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.55); margin-top: 8px; }
+
+    /* ── SECTION BASE ── */
+    .section { padding: 100px 48px; }
+    .section-label { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--teal); font-weight: 500; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+    .section-label::before { content: ''; display: block; width: 24px; height: 1px; background: var(--teal); }
+    .section-title { font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 300; line-height: 1.1; color: var(--ink); margin-bottom: 64px; }
 
     /* ── HOW IT WORKS ── */
-    .section { padding: 100px 48px; }
-    .section-label {
-      font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
-      color: var(--teal); font-weight: 500; margin-bottom: 16px;
-      display: flex; align-items: center; gap: 10px;
-    }
-    .section-label::before { content: ''; display: block; width: 24px; height: 1px; background: var(--teal); }
-    .section-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 48px; font-weight: 300; line-height: 1.1;
-      color: var(--ink); margin-bottom: 64px;
-    }
-
     .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; }
     .step { position: relative; }
-    .step-number {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 80px; font-weight: 700; color: rgba(10,147,150,0.07);
-      line-height: 1; margin-bottom: -20px;
-    }
-    .step-icon {
-      width: 52px; height: 52px; border-radius: 2px;
-      background: var(--teal-dark); color: white;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px; margin-bottom: 20px;
-    }
-    .step h3 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 24px; font-weight: 600; margin-bottom: 12px; color: var(--ink);
-    }
+    .step-number { font-family: 'Cormorant Garamond', serif; font-size: 80px; font-weight: 700; color: rgba(10,147,150,0.07); line-height: 1; margin-bottom: -20px; }
+    .step-icon { width: 52px; height: 52px; border-radius: 2px; background: var(--teal-dark); color: white; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 20px; }
+    .step h3 { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 600; margin-bottom: 12px; color: var(--ink); }
     .step p { font-size: 14px; line-height: 1.8; color: rgba(13,27,30,0.6); font-weight: 300; }
+
+    /* ── FEATURES GRID ── */
+    .features-section { background: white; padding: 100px 48px; }
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #f0ece6; }
+    .feature-item { background: white; padding: 40px 36px; transition: background 0.3s; }
+    .feature-item:hover { background: var(--mist); }
+    .feature-emoji { font-size: 32px; margin-bottom: 16px; display: block; }
+    .feature-item h3 { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; margin-bottom: 10px; color: var(--ink); }
+    .feature-item p { font-size: 13px; line-height: 1.8; color: rgba(13,27,30,0.55); font-weight: 300; }
+
+    /* ── FOR HOTEL OWNERS ── */
+    .owners-section { padding: 100px 48px; background: var(--sand); }
+    .owners-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .owners-left { }
+    .owners-left .section-title { margin-bottom: 24px; }
+    .owners-left .lead { font-size: 16px; line-height: 1.8; color: rgba(13,27,30,0.6); font-weight: 300; margin-bottom: 40px; }
+    .benefit-list { display: flex; flex-direction: column; gap: 20px; }
+    .benefit-item { display: flex; gap: 16px; align-items: flex-start; }
+    .benefit-check { width: 28px; height: 28px; border-radius: 50%; background: var(--mist); color: var(--teal-dark); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; margin-top: 2px; font-weight: bold; }
+    .benefit-text h4 { font-size: 15px; font-weight: 500; color: var(--ink); margin-bottom: 4px; }
+    .benefit-text p { font-size: 13px; color: rgba(13,27,30,0.55); line-height: 1.6; font-weight: 300; }
+    .owners-right { }
+    .metric-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .metric-card { background: white; border-radius: 4px; padding: 28px 24px; box-shadow: 0 4px 20px rgba(0,95,115,0.08); text-align: center; }
+    .metric-card .metric-num { font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 700; color: var(--teal-dark); line-height: 1; }
+    .metric-card .metric-unit { font-size: 13px; color: var(--teal); font-weight: 500; margin-top: 4px; }
+    .metric-card .metric-desc { font-size: 12px; color: rgba(13,27,30,0.45); margin-top: 8px; line-height: 1.5; }
+    .metric-card.accent { background: var(--teal-dark); }
+    .metric-card.accent .metric-num { color: var(--teal-light); }
+    .metric-card.accent .metric-unit { color: rgba(255,255,255,0.6); }
+    .metric-card.accent .metric-desc { color: rgba(255,255,255,0.4); }
+
+    /* ── WHAT GUESTS SEE ── */
+    .guest-section { background: var(--ink); padding: 100px 48px; }
+    .guest-section .section-label { color: var(--teal-light); }
+    .guest-section .section-label::before { background: var(--teal-light); }
+    .guest-section .section-title { color: white; }
+    .guest-flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; }
+    .guest-flow::before { content: ''; position: absolute; top: 36px; left: 12%; right: 12%; height: 1px; background: rgba(148,210,189,0.2); z-index: 0; }
+    .guest-step { text-align: center; padding: 0 20px; position: relative; z-index: 1; }
+    .guest-step-icon { width: 72px; height: 72px; border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px solid rgba(148,210,189,0.2); display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 20px; }
+    .guest-step h4 { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: white; font-weight: 600; margin-bottom: 10px; }
+    .guest-step p { font-size: 12px; color: rgba(255,255,255,0.4); line-height: 1.7; font-weight: 300; }
+
+    /* ── CATEGORIES ── */
+    .categories-section { padding: 100px 48px; background: white; }
+    .categories-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .cat-card { border: 1px solid #eee; border-radius: 4px; padding: 32px 24px; text-align: center; transition: all 0.3s; cursor: default; }
+    .cat-card:hover { border-color: var(--teal); background: var(--mist); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,95,115,0.1); }
+    .cat-card .cat-emoji { font-size: 36px; margin-bottom: 16px; display: block; }
+    .cat-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+    .cat-card p { font-size: 12px; color: rgba(13,27,30,0.5); line-height: 1.6; }
+    .cat-examples { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
+    .cat-tag { font-size: 10px; background: #f5f5f5; color: #666; padding: 3px 8px; border-radius: 20px; }
+
+    /* ── TESTIMONIAL ── */
+    .testimonial-section { background: var(--mist); padding: 80px 48px; }
+    .testimonial-inner { max-width: 800px; margin: 0 auto; text-align: center; }
+    .testimonial-quote { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; line-height: 1.4; color: var(--ink); margin-bottom: 32px; font-style: italic; }
+    .testimonial-quote::before { content: '"'; color: var(--teal); font-size: 60px; line-height: 0; vertical-align: -20px; margin-right: 8px; }
+    .testimonial-author { display: flex; align-items: center; justify-content: center; gap: 16px; }
+    .author-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--teal-dark); color: white; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 700; }
+    .author-info .author-name { font-size: 14px; font-weight: 500; color: var(--ink); }
+    .author-info .author-role { font-size: 12px; color: rgba(13,27,30,0.5); }
+    .stars-row { color: #ee9b00; font-size: 18px; margin-bottom: 28px; }
+
+    /* ── FAQ ── */
+    .faq-section { padding: 100px 48px; background: var(--sand); }
+    .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; max-width: 900px; }
+    .faq-item { border-bottom: 1px solid rgba(10,147,150,0.15); padding-bottom: 28px; }
+    .faq-item h4 { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--ink); margin-bottom: 12px; }
+    .faq-item p { font-size: 13px; line-height: 1.8; color: rgba(13,27,30,0.55); font-weight: 300; }
 
     /* ── PORTALS ── */
     .portals-section { background: var(--ink); padding: 100px 48px; }
@@ -237,44 +179,32 @@
     .portals-section .section-label::before { background: var(--teal-light); }
     .portals-section .section-title { color: white; }
     .portals { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-    .portal-card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 4px; padding: 40px 32px;
-      text-decoration: none; color: white;
-      transition: background 0.3s, transform 0.3s, border-color 0.3s;
-      display: block;
-    }
-    .portal-card:hover {
-      background: rgba(10,147,150,0.12);
-      border-color: rgba(10,147,150,0.4);
-      transform: translateY(-4px);
-    }
+    .portal-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 4px; padding: 40px 32px; text-decoration: none; color: white; transition: background 0.3s, transform 0.3s, border-color 0.3s; display: block; }
+    .portal-card:hover { background: rgba(10,147,150,0.12); border-color: rgba(10,147,150,0.4); transform: translateY(-4px); }
     .portal-icon { font-size: 36px; margin-bottom: 20px; display: block; }
-    .portal-card h3 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 26px; font-weight: 600; margin-bottom: 10px;
-    }
+    .portal-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; margin-bottom: 10px; }
     .portal-card p { font-size: 13px; line-height: 1.7; color: rgba(255,255,255,0.5); font-weight: 300; }
-    .portal-link {
-      display: inline-flex; align-items: center; gap: 8px;
-      margin-top: 24px; font-size: 12px; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--teal-light);
-      transition: gap 0.2s;
-    }
+    .portal-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 24px; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal-light); transition: gap 0.2s; }
     .portal-card:hover .portal-link { gap: 14px; }
     .portal-link::after { content: '→'; }
 
+    /* ── CTA BANNER ── */
+    .cta-section { padding: 100px 48px; background: var(--teal-dark); text-align: center; position: relative; overflow: hidden; }
+    .cta-section::before { content: ''; position: absolute; top: -200px; left: 50%; transform: translateX(-50%); width: 800px; height: 800px; border-radius: 50%; background: radial-gradient(circle, rgba(148,210,189,0.1) 0%, transparent 70%); }
+    .cta-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--teal-light); font-weight: 500; margin-bottom: 20px; }
+    .cta-title { font-family: 'Cormorant Garamond', serif; font-size: 56px; font-weight: 300; color: white; margin-bottom: 20px; line-height: 1.1; }
+    .cta-title em { font-style: italic; color: var(--teal-light); }
+    .cta-sub { font-size: 15px; color: rgba(255,255,255,0.55); max-width: 500px; margin: 0 auto 48px; line-height: 1.7; font-weight: 300; }
+    .cta-actions { display: flex; gap: 16px; justify-content: center; align-items: center; }
+    .btn-white { background: white; color: var(--teal-dark); text-decoration: none; padding: 16px 40px; border-radius: 2px; font-size: 13px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; transition: background 0.2s, transform 0.2s; display: inline-block; }
+    .btn-white:hover { background: var(--teal-light); transform: translateY(-1px); }
+    .btn-ghost-white { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; transition: gap 0.2s, color 0.2s; }
+    .btn-ghost-white:hover { gap: 14px; color: white; }
+    .btn-ghost-white::after { content: '→'; }
+
     /* ── FOOTER ── */
-    footer {
-      background: var(--ink); border-top: 1px solid rgba(255,255,255,0.06);
-      padding: 40px 48px;
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    .footer-logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 22px; font-weight: 700; color: white;
-    }
+    footer { background: var(--ink); border-top: 1px solid rgba(255,255,255,0.06); padding: 40px 48px; display: flex; justify-content: space-between; align-items: center; }
+    .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 700; color: white; }
     .footer-logo span { color: var(--teal-light); }
     .footer-copy { font-size: 12px; color: rgba(255,255,255,0.3); }
     .footer-hotels { font-size: 12px; color: rgba(255,255,255,0.4); text-align: right; }
@@ -294,10 +224,16 @@
       .hero-right { margin-top: 48px; }
       .stats-bar { grid-template-columns: repeat(2, 1fr); gap: 32px; padding: 48px 20px; }
       .stat-item { border-right: none; }
-      .section { padding: 60px 20px; }
-      .steps { grid-template-columns: 1fr; gap: 36px; }
-      .portals { grid-template-columns: 1fr; }
-      .portals-section { padding: 60px 20px; }
+      .section, .features-section, .owners-section, .guest-section, .categories-section, .testimonial-section, .faq-section, .portals-section, .cta-section { padding: 60px 20px; }
+      .steps, .features-grid, .portals, .categories-grid { grid-template-columns: 1fr; }
+      .owners-grid { grid-template-columns: 1fr; gap: 40px; }
+      .metric-cards { grid-template-columns: 1fr 1fr; }
+      .guest-flow { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .guest-flow::before { display: none; }
+      .faq-grid { grid-template-columns: 1fr; gap: 28px; }
+      .section-title { font-size: 36px; }
+      .cta-title { font-size: 36px; }
+      .cta-actions { flex-direction: column; }
       footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 20px; }
       .footer-hotels { text-align: center; }
     }
@@ -310,9 +246,10 @@
     <div class="nav-logo">Wel<span>co</span></div>
     <div class="nav-links">
       <a href="#how-it-works">How It Works</a>
+      <a href="#features">Features</a>
       <a href="#portals">Portals</a>
       <a href="signup.html">Get Started</a>
-<a href="staff.html" class="nav-cta">Staff Login</a>
+      <a href="staff.html" class="nav-cta">Staff Login</a>
     </div>
   </nav>
 
@@ -338,26 +275,17 @@
         <div class="card-body">
           <div class="card-request">
             <div class="req-icon teal">🛎️</div>
-            <div class="req-info">
-              <div class="req-name">Extra towels</div>
-              <div class="req-room">Room 204 · 2 min ago</div>
-            </div>
+            <div class="req-info"><div class="req-name">Extra towels</div><div class="req-room">Room 204 · 2 min ago</div></div>
             <span class="req-badge badge-progress">In Progress</span>
           </div>
           <div class="card-request">
             <div class="req-icon amber">🍽️</div>
-            <div class="req-info">
-              <div class="req-name">Room service</div>
-              <div class="req-room">Room 118 · 5 min ago</div>
-            </div>
+            <div class="req-info"><div class="req-name">Room service</div><div class="req-room">Room 118 · 5 min ago</div></div>
             <span class="req-badge badge-pending">Pending</span>
           </div>
           <div class="card-request">
             <div class="req-icon green">🧹</div>
-            <div class="req-info">
-              <div class="req-name">Housekeeping</div>
-              <div class="req-room">Room 301 · 18 min ago</div>
-            </div>
+            <div class="req-info"><div class="req-name">Housekeeping</div><div class="req-room">Room 301 · 18 min ago</div></div>
             <span class="req-badge badge-done">Done ✓</span>
           </div>
         </div>
@@ -367,22 +295,10 @@
 
   <!-- STATS -->
   <div class="stats-bar">
-    <div class="stat-item">
-      <div class="stat-number">2</div>
-      <div class="stat-label">Hotels Live</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-number">&lt;30s</div>
-      <div class="stat-label">Avg Response Time</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-number">0</div>
-      <div class="stat-label">App Downloads Needed</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-number">24/7</div>
-      <div class="stat-label">Guest Service</div>
-    </div>
+    <div class="stat-item"><div class="stat-number">2</div><div class="stat-label">Hotels Live</div></div>
+    <div class="stat-item"><div class="stat-number">&lt;30s</div><div class="stat-label">Avg Response Time</div></div>
+    <div class="stat-item"><div class="stat-number">0</div><div class="stat-label">App Downloads Needed</div></div>
+    <div class="stat-item"><div class="stat-number">24/7</div><div class="stat-label">Guest Service</div></div>
   </div>
 
   <!-- HOW IT WORKS -->
@@ -394,19 +310,264 @@
         <div class="step-number">01</div>
         <div class="step-icon">📱</div>
         <h3>Guest Scans QR</h3>
-        <p>Each room has a unique QR code. Guests scan it and land instantly on their personalised portal — no login, no download required.</p>
+        <p>Each room has a unique QR code printed and placed in the room. Guests scan it and land instantly on their personalised service portal — no login, no download, no friction.</p>
       </div>
       <div class="step fade-up" style="transition-delay: 0.15s">
         <div class="step-number">02</div>
         <div class="step-icon">⚡</div>
         <h3>Request Sent Instantly</h3>
-        <p>The request hits the staff dashboard in real time. SLA timers start counting so nothing ever falls through the cracks.</p>
+        <p>The request hits the staff dashboard in real time with a sound alert and push notification. SLA timers start counting automatically so nothing ever falls through the cracks.</p>
       </div>
       <div class="step fade-up" style="transition-delay: 0.3s">
         <div class="step-number">03</div>
         <div class="step-icon">⭐</div>
         <h3>Deliver & Delight</h3>
-        <p>Staff claim and complete requests with one tap. Guests leave feedback instantly. Managers see everything in the analytics dashboard.</p>
+        <p>Staff claim and complete requests with one tap. Guests leave star ratings instantly. Managers see full analytics, response times, and staff performance in the admin dashboard.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features-section" id="features">
+    <div class="section-label">Features</div>
+    <div class="section-title">Everything your hotel<br>needs, nothing it doesn't</div>
+    <div class="features-grid">
+      <div class="feature-item fade-up">
+        <span class="feature-emoji">📲</span>
+        <h3>No App Download</h3>
+        <p>Guests open a browser link from the QR code. Nothing to install, nothing to sign up for. Works on every smartphone instantly.</p>
+      </div>
+      <div class="feature-item fade-up" style="transition-delay:0.1s">
+        <span class="feature-emoji">🔔</span>
+        <h3>Real-Time Alerts</h3>
+        <p>Staff receive push notifications and a chime sound the moment a guest submits a request — even if their phone screen is off.</p>
+      </div>
+      <div class="feature-item fade-up" style="transition-delay:0.2s">
+        <span class="feature-emoji">⏱️</span>
+        <h3>SLA Timers</h3>
+        <p>Every request has a live countdown timer. Cards turn amber then red as time passes, keeping your team accountable automatically.</p>
+      </div>
+      <div class="feature-item fade-up" style="transition-delay:0.3s">
+        <span class="feature-emoji">🏨</span>
+        <h3>Multi-Hotel Branding</h3>
+        <p>Each hotel gets its own colour, logo, and emoji. DownTown looks like DownTown. BambooSaa looks like BambooSaa. Fully white-labelled.</p>
+      </div>
+      <div class="feature-item fade-up" style="transition-delay:0.4s">
+        <span class="feature-emoji">🔐</span>
+        <h3>PIN-Based Staff Login</h3>
+        <p>No passwords to forget. Staff enter their name and a 4-digit PIN assigned by the manager. Secure, simple, and works on any phone.</p>
+      </div>
+      <div class="feature-item fade-up" style="transition-delay:0.5s">
+        <span class="feature-emoji">📊</span>
+        <h3>Analytics Dashboard</h3>
+        <p>See average ratings, request volumes, peak hours, and staff performance. Know exactly how your hotel is running at all times.</p>
+      </div>
+      <div class="feature-item fade-up" style="transition-delay:0.6s">
+        <span class="feature-emoji">📢</span>
+        <h3>Announcements</h3>
+        <p>Post a notice that guests see the moment they scan their QR code. Pool closed? Special dinner tonight? One tap and every guest knows.</p>
+      </div>
+      <div class="feature-item fade-up" style="transition-delay:0.7s">
+        <span class="feature-emoji">⭐</span>
+        <h3>Guest Feedback</h3>
+        <p>After every completed request, guests rate the service with stars and optional comments. Collect real data to improve your team.</p>
+      </div>
+      <div class="feature-item fade-up" style="transition-delay:0.8s">
+        <span class="feature-emoji">🖨️</span>
+        <h3>QR Code Generator</h3>
+        <p>Generate a unique branded QR code for every room in seconds. Download as PNG, print and place in the room. Done in minutes.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOR HOTEL OWNERS -->
+  <section class="owners-section">
+    <div class="owners-grid">
+      <div class="owners-left fade-up">
+        <div class="section-label">For Hotel Owners</div>
+        <div class="section-title">Run a tighter,<br>happier hotel</div>
+        <p class="lead">Welco gives you visibility and control you never had before — without adding complexity for your staff or your guests.</p>
+        <div class="benefit-list">
+          <div class="benefit-item">
+            <div class="benefit-check">✓</div>
+            <div class="benefit-text">
+              <h4>Never miss a guest request again</h4>
+              <p>Every request is logged, timestamped, and tracked. Nothing gets lost in WhatsApp messages or verbal handoffs.</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-check">✓</div>
+            <div class="benefit-text">
+              <h4>See your hotel in real time</h4>
+              <p>Live overview of pending requests, staff activity, and guest ratings — from your phone, anywhere.</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-check">✓</div>
+            <div class="benefit-text">
+              <h4>Improve guest reviews automatically</h4>
+              <p>Faster service = happier guests = better Google and TripAdvisor reviews. Welco creates that chain reaction.</p>
+            </div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-check">✓</div>
+            <div class="benefit-text">
+              <h4>Setup takes under 30 minutes</h4>
+              <p>Add your hotel, add rooms, print QR codes, add staff. That's it. No IT team, no installation, no training required.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="owners-right fade-up" style="transition-delay:0.2s">
+        <div class="metric-cards">
+          <div class="metric-card">
+            <div class="metric-num">3×</div>
+            <div class="metric-unit">Faster Service</div>
+            <div class="metric-desc">Average request response time drops from 15 min to under 5 min</div>
+          </div>
+          <div class="metric-card accent">
+            <div class="metric-num">0</div>
+            <div class="metric-unit">Missed Requests</div>
+            <div class="metric-desc">Every request is tracked and timestamped with SLA timers</div>
+          </div>
+          <div class="metric-card accent">
+            <div class="metric-num">100%</div>
+            <div class="metric-unit">Browser-Based</div>
+            <div class="metric-desc">No app installs for guests or staff — works on any device</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-num">30m</div>
+            <div class="metric-unit">To Go Live</div>
+            <div class="metric-desc">From signup to your first QR code printed in the room</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT GUESTS EXPERIENCE -->
+  <section class="guest-section">
+    <div class="section-label">Guest Experience</div>
+    <div class="section-title">What your guests<br>actually experience</div>
+    <div class="guest-flow">
+      <div class="guest-step fade-up">
+        <div class="guest-step-icon">📷</div>
+        <h4>Scan QR Code</h4>
+        <p>Guest points their camera at the code on the room desk or door card. Opens instantly in browser.</p>
+      </div>
+      <div class="guest-step fade-up" style="transition-delay:0.15s">
+        <div class="guest-step-icon">👆</div>
+        <h4>Tap a Category</h4>
+        <p>Housekeeping, Room Service, Maintenance or Front Desk. Quick items to tap or a free-text box.</p>
+      </div>
+      <div class="guest-step fade-up" style="transition-delay:0.3s">
+        <div class="guest-step-icon">📍</div>
+        <h4>Track Live Status</h4>
+        <p>A live tracker shows them when staff accepted the request and when it's completed. No waiting in the dark.</p>
+      </div>
+      <div class="guest-step fade-up" style="transition-delay:0.45s">
+        <div class="guest-step-icon">⭐</div>
+        <h4>Leave Feedback</h4>
+        <p>After completion, a simple star rating screen appears. One tap and done. No account needed.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICE CATEGORIES -->
+  <section class="categories-section">
+    <div class="section-label">Service Categories</div>
+    <div class="section-title">Every guest need,<br>covered</div>
+    <div class="categories-grid">
+      <div class="cat-card fade-up">
+        <span class="cat-emoji">🛏️</span>
+        <h3>Housekeeping</h3>
+        <p>Room cleaning, extra linen, towels, toiletries and more</p>
+        <div class="cat-examples">
+          <span class="cat-tag">Extra Towels</span>
+          <span class="cat-tag">Clean Room</span>
+          <span class="cat-tag">Extra Pillow</span>
+          <span class="cat-tag">Blanket</span>
+        </div>
+      </div>
+      <div class="cat-card fade-up" style="transition-delay:0.1s">
+        <span class="cat-emoji">🍽️</span>
+        <h3>Room Service</h3>
+        <p>Food, drinks, coffee, snacks delivered to the room</p>
+        <div class="cat-examples">
+          <span class="cat-tag">Breakfast</span>
+          <span class="cat-tag">Coffee</span>
+          <span class="cat-tag">Water</span>
+          <span class="cat-tag">Ice Bucket</span>
+        </div>
+      </div>
+      <div class="cat-card fade-up" style="transition-delay:0.2s">
+        <span class="cat-emoji">🔧</span>
+        <h3>Maintenance</h3>
+        <p>AC, plumbing, electrical, WiFi and any room issue</p>
+        <div class="cat-examples">
+          <span class="cat-tag">AC Issue</span>
+          <span class="cat-tag">Hot Water</span>
+          <span class="cat-tag">WiFi Help</span>
+          <span class="cat-tag">Door Lock</span>
+        </div>
+      </div>
+      <div class="cat-card fade-up" style="transition-delay:0.3s">
+        <span class="cat-emoji">🛎️</span>
+        <h3>Front Desk</h3>
+        <p>Taxi, wake-up calls, luggage, checkout and concierge</p>
+        <div class="cat-examples">
+          <span class="cat-tag">Taxi Booking</span>
+          <span class="cat-tag">Wake Up Call</span>
+          <span class="cat-tag">Checkout</span>
+          <span class="cat-tag">City Guide</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL -->
+  <section class="testimonial-section">
+    <div class="testimonial-inner fade-up">
+      <div class="stars-row">★★★★★</div>
+      <div class="testimonial-quote">Our guests stopped calling the front desk for everything. They just scan and request. Staff response time dropped dramatically and our review scores went up.</div>
+      <div class="testimonial-author">
+        <div class="author-avatar">P</div>
+        <div class="author-info">
+          <div class="author-name">Prajjval Singh Rathore</div>
+          <div class="author-role">Owner, DownTown Udaipur & BambooSaa Pushkar</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq-section">
+    <div class="section-label">FAQ</div>
+    <div class="section-title">Common questions</div>
+    <div class="faq-grid">
+      <div class="faq-item fade-up">
+        <h4>Do guests need to download anything?</h4>
+        <p>No. Guests scan the QR code with their phone camera and the portal opens instantly in their browser. No app, no account, no password.</p>
+      </div>
+      <div class="faq-item fade-up" style="transition-delay:0.1s">
+        <h4>How do staff receive notifications?</h4>
+        <p>Staff get a push notification and a chime sound on their Android phone — even when the browser is in the background or the screen is locked.</p>
+      </div>
+      <div class="faq-item fade-up" style="transition-delay:0.2s">
+        <h4>Can I use it for multiple hotels?</h4>
+        <p>Yes. Each hotel has its own account, branding, rooms, staff and data. DownTown and BambooSaa are completely separate on the platform.</p>
+      </div>
+      <div class="faq-item fade-up" style="transition-delay:0.3s">
+        <h4>How long does setup take?</h4>
+        <p>Under 30 minutes. Sign up, add your rooms, download QR codes, add your staff PINs, and you're live. No IT support needed.</p>
+      </div>
+      <div class="faq-item fade-up" style="transition-delay:0.4s">
+        <h4>What if a guest's request is urgent?</h4>
+        <p>The SLA timer turns red after 15 minutes and staff see it highlighted urgently. Push notifications fire immediately when a request is submitted.</p>
+      </div>
+      <div class="faq-item fade-up" style="transition-delay:0.5s">
+        <h4>Can I post notices to all guests?</h4>
+        <p>Yes. The Announcements feature lets you post a message that guests see as a banner the moment they open their room portal.</p>
       </div>
     </div>
   </section>
@@ -419,21 +580,32 @@
       <a href="guest.html" class="portal-card fade-up">
         <span class="portal-icon">🛎️</span>
         <h3>Guest Portal</h3>
-        <p>Request services, leave feedback, and communicate with staff — all from a browser, no app needed.</p>
+        <p>Request services, track status live, leave feedback — all from a browser. No app needed, works on every phone.</p>
         <div class="portal-link">Enter as Guest</div>
       </a>
       <a href="staff.html" class="portal-card fade-up" style="transition-delay: 0.15s">
         <span class="portal-icon">👷</span>
         <h3>Staff Dashboard</h3>
-        <p>PIN-protected login. See live requests, claim tasks, track SLA timers, and get notified instantly.</p>
+        <p>PIN-protected login. See live requests, claim tasks, track SLA timers, and get push notifications instantly.</p>
         <div class="portal-link">Staff Login</div>
       </a>
       <a href="admin.html" class="portal-card fade-up" style="transition-delay: 0.3s">
         <span class="portal-icon">⚙️</span>
         <h3>Admin Panel</h3>
-        <p>Manage rooms, generate QR codes, configure hotel branding, and view analytics for DownTown & BambooSaa.</p>
+        <p>Manage rooms, staff and QR codes. Post announcements. Upload your hotel logo. View full analytics.</p>
         <div class="portal-link">Admin Access</div>
       </a>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta-eyebrow">Get Started Today</div>
+    <div class="cta-title fade-up">Your guests deserve<br><em>better service</em></div>
+    <p class="cta-sub fade-up">Join DownTown and BambooSaa. Set up your hotel in 30 minutes. Free to start.</p>
+    <div class="cta-actions fade-up">
+      <a href="signup.html" class="btn-white">Create Your Hotel Free</a>
+      <a href="admin.html" class="btn-ghost-white">Admin Login</a>
     </div>
   </section>
 
@@ -445,10 +617,9 @@
   </footer>
 
   <script>
-    // Scroll animation
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-    }, { threshold: 0.15 });
+    }, { threshold: 0.1 });
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
   </script>
 

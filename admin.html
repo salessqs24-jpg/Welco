@@ -159,7 +159,6 @@
   <div class="tabs">
     <div class="tab active" onclick="showTab('overview')">📊 Overview</div>
     <div class="tab" onclick="showTab('rooms')">🚪 Rooms</div>
-    <div class="tab" onclick="showTab('staff')">👷 Staff</div>
     <div class="tab" onclick="showTab('hod')">🎯 HOD</div>
     <div class="tab" onclick="showTab('announce')">📢 Announce</div>
     <div class="tab" onclick="showTab('reports')">📋 Reports</div>
@@ -200,19 +199,6 @@
         <div class="rooms-grid" id="rooms-grid"><div class="loading">Loading...</div></div>
       </div>
     </div>
-
-    <!-- STAFF -->
-    <div class="tab-panel" id="panel-staff">
-      <div class="card">
-        <div class="card-title">Add Staff Member</div>
-        <div class="card-sub">Only added staff can login to the staff app</div>
-        <div class="add-row">
-          <input type="text" id="new-staff-name" placeholder="Full name e.g. Rahul">
-          <input type="text" id="new-staff-pin" placeholder="4-digit PIN" maxlength="4" style="max-width:110px">
-          <button class="btn-add" onclick="addStaff()">+ Add</button>
-        </div>
-        <div class="msg-box" id="staff-msg"></div>
-      </div>
       <div class="card">
         <div class="card-title">Staff Members</div>
         <div class="card-sub">These are the only people who can access your staff dashboard</div>
@@ -441,13 +427,12 @@ function removeLogo() {
 }
 
 function showTab(name) {
-  var names = ['overview','rooms','staff','hod','announce','reports','settings'];
+  var names = ['overview','rooms','hod','announce','reports','settings'];
   document.querySelectorAll('.tab').forEach(function(t,i){ t.classList.toggle('active', names[i]===name); });
   document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
   document.getElementById('panel-'+name).classList.add('active');
   if (name==='reports') loadReports();
   if (name==='rooms') loadRooms();
-  if (name==='staff') loadStaff();
   if (name==='announce') loadAnnouncements();
   if (name==='hod') loadHOD();
 }

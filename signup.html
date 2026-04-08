@@ -6,401 +6,527 @@
   <title>Welco — Get Started</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --teal: #0a9396;
-      --teal-dark: #005f73;
-      --teal-light: #94d2bd;
-      --sand: #f7f3ee;
-      --ink: #0d1b1e;
-      --mist: #e8f4f4;
-      --error: #e63946;
-    }
+    :root { --brand: #005f73; --brand2: #0a9396; --light: #94d2bd; --sand: #f7f3ee; --ink: #0d1b1e; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--sand);
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-    }
+    body { font-family: 'DM Sans', sans-serif; min-height: 100vh; background: linear-gradient(160deg, #005f73, #0a9396); display: flex; align-items: center; justify-content: center; padding: 20px; }
 
-    /* LEFT PANEL */
-    .left-panel {
-      background: var(--teal-dark);
-      padding: 60px 48px;
-      display: flex; flex-direction: column;
-      justify-content: space-between;
-      position: relative; overflow: hidden;
-    }
-    .left-panel::before {
-      content: '';
-      position: absolute; bottom: -100px; right: -100px;
-      width: 400px; height: 400px; border-radius: 50%;
-      background: rgba(148,210,189,0.12);
-    }
-    .left-logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 32px; font-weight: 700; color: white;
-    }
-    .left-logo span { color: var(--teal-light); }
-    .left-content { position: relative; z-index: 1; }
-    .left-content h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 48px; font-weight: 300; color: white;
-      line-height: 1.1; margin-bottom: 20px;
-    }
-    .left-content h2 em { font-style: italic; color: var(--teal-light); }
-    .left-content p {
-      font-size: 15px; color: rgba(255,255,255,0.6);
-      line-height: 1.8; font-weight: 300; margin-bottom: 40px;
-    }
-    .feature-list { list-style: none; }
-    .feature-list li {
-      display: flex; align-items: center; gap: 12px;
-      color: rgba(255,255,255,0.75); font-size: 14px;
-      padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-    .feature-list li:last-child { border-bottom: none; }
-    .feature-list li::before {
-      content: '✓'; color: var(--teal-light);
-      font-weight: bold; font-size: 12px;
-      width: 20px; height: 20px; border-radius: 50%;
-      background: rgba(148,210,189,0.15);
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
-    .left-footer {
-      font-size: 12px; color: rgba(255,255,255,0.35);
-    }
+    .wizard-wrap { width: 100%; max-width: 560px; }
 
-    /* RIGHT PANEL */
-    .right-panel {
-      padding: 60px 48px;
-      display: flex; flex-direction: column;
-      justify-content: center; overflow-y: auto;
-    }
-    .form-header { margin-bottom: 40px; }
-    .form-header h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 36px; font-weight: 600; color: var(--ink);
-      margin-bottom: 8px;
-    }
-    .form-header p {
-      font-size: 14px; color: rgba(13,27,30,0.5); font-weight: 300;
-    }
-    .form-header p a {
-      color: var(--teal); text-decoration: none; font-weight: 500;
-    }
+    /* HEADER */
+    .wizard-header { text-align: center; margin-bottom: 28px; }
+    .wizard-logo { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 700; color: white; letter-spacing: 0.02em; margin-bottom: 6px; }
+    .wizard-logo span { color: var(--light); }
+    .wizard-tagline { font-size: 13px; color: rgba(255,255,255,0.65); }
 
-    /* TABS */
-    .tabs {
-      display: flex; gap: 0; margin-bottom: 36px;
-      border-bottom: 2px solid #eee;
-    }
-    .tab {
-      padding: 12px 28px; font-size: 13px; font-weight: 500;
-      letter-spacing: 0.06em; text-transform: uppercase;
-      cursor: pointer; color: rgba(13,27,30,0.4);
-      border-bottom: 2px solid transparent; margin-bottom: -2px;
-      transition: all 0.2s;
-    }
-    .tab.active { color: var(--teal-dark); border-bottom-color: var(--teal-dark); }
+    /* PROGRESS BAR */
+    .progress-wrap { margin-bottom: 24px; }
+    .progress-steps { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .progress-step { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
+    .step-circle { width: 32px; height: 32px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.5); transition: all 0.3s; background: transparent; }
+    .step-circle.active { border-color: white; color: white; background: rgba(255,255,255,0.2); }
+    .step-circle.done { border-color: var(--light); background: var(--light); color: var(--brand); }
+    .step-label { font-size: 10px; color: rgba(255,255,255,0.5); text-align: center; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; }
+    .step-label.active { color: white; }
+    .step-label.done { color: var(--light); }
+    .progress-bar-bg { height: 3px; background: rgba(255,255,255,0.2); border-radius: 2px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: var(--light); border-radius: 2px; transition: width 0.4s ease; }
+
+    /* CARD */
+    .wizard-card { background: white; border-radius: 20px; padding: 32px; box-shadow: 0 24px 60px rgba(0,0,0,0.2); }
+    .step-panel { display: none; }
+    .step-panel.active { display: block; }
+    .step-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+    .step-sub { font-size: 13px; color: #888; margin-bottom: 24px; line-height: 1.5; }
 
     /* FORM */
-    .form-section { display: none; }
-    .form-section.active { display: block; }
-
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .form-group { margin-bottom: 20px; }
-    .form-group label {
-      display: block; font-size: 11px; font-weight: 500;
-      letter-spacing: 0.12em; text-transform: uppercase;
-      color: rgba(13,27,30,0.5); margin-bottom: 8px;
-    }
-    .form-group input, .form-group select {
-      width: 100%; padding: 14px 16px;
-      border: 1.5px solid #e0ddd8; border-radius: 2px;
-      font-family: 'DM Sans', sans-serif; font-size: 14px;
-      color: var(--ink); background: white;
-      transition: border-color 0.2s;
-      outline: none;
-    }
-    .form-group input:focus, .form-group select:focus {
-      border-color: var(--teal);
-    }
-    .form-group input.error { border-color: var(--error); }
-
-    .color-row { display: flex; gap: 10px; align-items: center; }
-    .color-row input[type="color"] {
-      width: 48px; height: 48px; padding: 4px;
-      border-radius: 2px; cursor: pointer;
-    }
+    .field { margin-bottom: 16px; }
+    .field label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 6px; font-weight: 600; }
+    .field input, .field select, .field textarea { width: 100%; padding: 12px 14px; border: 1.5px solid #e0ddd8; border-radius: 10px; font-size: 14px; outline: none; font-family: 'DM Sans', sans-serif; background: white; transition: border-color 0.2s; }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--brand2); }
+    .field-row { display: flex; gap: 12px; }
+    .field-row .field { flex: 1; }
+    .color-row { display: flex; gap: 8px; align-items: center; }
+    .color-row input[type="color"] { width: 48px; height: 44px; border-radius: 8px; border: 1.5px solid #e0ddd8; padding: 3px; cursor: pointer; }
     .color-row input[type="text"] { flex: 1; }
+    .hint { font-size: 11px; color: #aaa; margin-top: 4px; line-height: 1.4; }
 
-    .emoji-grid {
-      display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;
-    }
-    .emoji-btn {
-      width: 40px; height: 40px; border: 1.5px solid #e0ddd8;
-      border-radius: 2px; font-size: 20px; cursor: pointer;
-      background: white; display: flex; align-items: center;
-      justify-content: center; transition: border-color 0.2s;
-    }
-    .emoji-btn.selected { border-color: var(--teal); background: var(--mist); }
+    /* COLOR PRESETS */
+    .color-presets { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+    .color-preset { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; }
+    .color-preset:hover, .color-preset.selected { border-color: var(--ink); transform: scale(1.15); }
 
-    .btn-submit {
-      width: 100%; padding: 16px;
-      background: var(--teal-dark); color: white;
-      border: none; border-radius: 2px; cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px; font-weight: 500;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      transition: background 0.2s; margin-top: 8px;
-    }
-    .btn-submit:hover { background: var(--teal); }
-    .btn-submit:disabled { background: #ccc; cursor: not-allowed; }
+    /* EMOJI PICKER */
+    .emoji-picker { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    .emoji-opt { width: 40px; height: 40px; border: 1.5px solid #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; transition: all 0.2s; }
+    .emoji-opt:hover, .emoji-opt.selected { border-color: var(--brand2); background: var(--mist); }
 
-    .msg {
-      padding: 12px 16px; border-radius: 2px;
-      font-size: 13px; margin-bottom: 20px; display: none;
-    }
-    .msg.error { background: #fde8ea; color: var(--error); display: block; }
-    .msg.success { background: #d1fae5; color: #065f46; display: block; }
+    /* ROOM COUNT SELECTOR */
+    .room-selector { display: flex; align-items: center; gap: 16px; }
+    .room-btn { width: 40px; height: 40px; border: 1.5px solid #ddd; border-radius: 8px; background: white; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .room-btn:hover { border-color: var(--brand2); background: #e8f4f4; }
+    .room-count-display { font-size: 28px; font-weight: 700; color: var(--brand); min-width: 50px; text-align: center; }
 
-    .divider {
-      text-align: center; font-size: 12px;
-      color: rgba(13,27,30,0.3); margin: 20px 0;
-      position: relative;
-    }
-    .divider::before, .divider::after {
-      content: ''; position: absolute; top: 50%;
-      width: 40%; height: 1px; background: #e0ddd8;
-    }
-    .divider::before { left: 0; }
-    .divider::after { right: 0; }
+    /* PREVIEW CARD */
+    .hotel-preview { background: linear-gradient(135deg, var(--brand), var(--brand2)); border-radius: 14px; padding: 20px; margin-bottom: 20px; color: white; display: flex; align-items: center; gap: 14px; }
+    .preview-emoji { font-size: 36px; }
+    .preview-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; }
+    .preview-city { font-size: 12px; opacity: 0.7; margin-top: 2px; }
 
-    @media (max-width: 768px) {
-      body { grid-template-columns: 1fr; }
-      .left-panel { display: none; }
-      .right-panel { padding: 40px 24px; }
-      .form-row { grid-template-columns: 1fr; }
+    /* BUTTONS */
+    .btn-next { width: 100%; padding: 14px; background: var(--brand); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-next:hover { background: var(--brand2); transform: translateY(-1px); }
+    .btn-next:disabled { background: #ccc; cursor: default; transform: none; }
+    .btn-back { background: none; border: none; color: #aaa; font-size: 13px; cursor: pointer; padding: 8px 0; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; gap: 4px; margin-bottom: 16px; }
+    .btn-back:hover { color: var(--brand); }
+
+    /* SUCCESS */
+    .success-wrap { text-align: center; padding: 10px 0; }
+    .success-icon { font-size: 64px; margin-bottom: 16px; animation: bounce 0.6s ease; }
+    @keyframes bounce { 0%{transform:scale(0)} 60%{transform:scale(1.2)} 100%{transform:scale(1)} }
+    .success-title { font-family: 'Cormorant Garamond', serif; font-size: 30px; color: var(--ink); margin-bottom: 8px; }
+    .success-sub { font-size: 14px; color: #888; line-height: 1.6; margin-bottom: 24px; }
+    .success-links { display: flex; flex-direction: column; gap: 10px; }
+    .link-card { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 1.5px solid #eee; border-radius: 12px; text-decoration: none; color: var(--ink); transition: all 0.2s; }
+    .link-card:hover { border-color: var(--brand2); background: #e8f4f4; }
+    .link-icon { font-size: 24px; }
+    .link-label { font-size: 14px; font-weight: 500; }
+    .link-desc { font-size: 11px; color: #888; }
+    .link-arrow { margin-left: auto; color: #aaa; font-size: 16px; }
+
+    /* ERROR */
+    .err-msg { background: #fde8ea; color: #e63946; padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 14px; display: none; }
+
+    /* CHECKLIST */
+    .checklist { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .check-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1.5px solid #eee; border-radius: 10px; font-size: 13px; color: #555; }
+    .check-item.done { border-color: #2ecc71; background: #eaf7f0; color: #065f46; }
+    .check-dot { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #ddd; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+    .check-item.done .check-dot { border-color: #2ecc71; background: #2ecc71; color: white; }
+
+    @media (max-width: 480px) {
+      .wizard-card { padding: 24px 20px; }
+      .field-row { flex-direction: column; gap: 0; }
     }
   </style>
 </head>
 <body>
 
-  <!-- LEFT -->
-  <div class="left-panel">
-    <div class="left-logo">Wel<span>co</span></div>
-    <div class="left-content">
-      <h2>Your hotel,<br><em>fully connected</em><br>in minutes.</h2>
-      <p>Join the platform that lets guests request services instantly — no app, no front desk, no friction.</p>
-      <ul class="feature-list">
-        <li>QR codes generated for every room automatically</li>
-        <li>Staff dashboard with real-time requests & SLA timers</li>
-        <li>Guest feedback & analytics built in</li>
-        <li>Your hotel branding, your colours</li>
-        <li>Works on any phone, no download needed</li>
-      </ul>
-    </div>
-    <div class="left-footer">© 2026 Welco · Powering DownTown & BambooSaa</div>
+<div class="wizard-wrap">
+  <!-- Header -->
+  <div class="wizard-header">
+    <div class="wizard-logo">Wel<span>co</span></div>
+    <div class="wizard-tagline">Set up your hotel in under 5 minutes</div>
   </div>
 
-  <!-- RIGHT -->
-  <div class="right-panel">
-    <div class="form-header">
-      <h1 id="form-title">Create your account</h1>
-      <p id="form-sub">Already have an account? <a href="#" onclick="switchTab('login')">Sign in</a></p>
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <div class="progress-steps">
+      <div class="progress-step">
+        <div class="step-circle active" id="sc-1">1</div>
+        <div class="step-label active" id="sl-1">Account</div>
+      </div>
+      <div class="progress-step">
+        <div class="step-circle" id="sc-2">2</div>
+        <div class="step-label" id="sl-2">Hotel Info</div>
+      </div>
+      <div class="progress-step">
+        <div class="step-circle" id="sc-3">3</div>
+        <div class="step-label" id="sl-3">Branding</div>
+      </div>
+      <div class="progress-step">
+        <div class="step-circle" id="sc-4">4</div>
+        <div class="step-label" id="sl-4">Rooms</div>
+      </div>
+      <div class="progress-step">
+        <div class="step-circle" id="sc-5">5</div>
+        <div class="step-label" id="sl-5">Review</div>
+      </div>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progress-fill" style="width:20%"></div>
+    </div>
+  </div>
+
+  <!-- Card -->
+  <div class="wizard-card">
+    <div class="err-msg" id="err-msg"></div>
+
+    <!-- ── STEP 1: Account ── -->
+    <div class="step-panel active" id="step-1">
+      <div class="step-title">Create your account</div>
+      <div class="step-sub">Your login credentials for the admin panel</div>
+      <div class="field">
+        <label>Your Name</label>
+        <input type="text" id="s1-owner" placeholder="e.g. Prajjval Singh">
+      </div>
+      <div class="field">
+        <label>Email Address</label>
+        <input type="email" id="s1-email" placeholder="you@hotel.com">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="s1-password" placeholder="At least 6 characters">
+      </div>
+      <button class="btn-next" onclick="goStep(2)">Continue →</button>
+      <div style="text-align:center;margin-top:14px;font-size:13px;color:#888">
+        Already have an account? <a href="admin.html" style="color:var(--brand2);font-weight:500">Login</a>
+      </div>
     </div>
 
-    <!-- TABS -->
-    <div class="tabs">
-      <div class="tab active" id="tab-signup" onclick="switchTab('signup')">Sign Up</div>
-      <div class="tab" id="tab-login" onclick="switchTab('login')">Log In</div>
+    <!-- ── STEP 2: Hotel Info ── -->
+    <div class="step-panel" id="step-2">
+      <button class="btn-back" onclick="goStep(1)">← Back</button>
+      <div class="step-title">Tell us about your hotel</div>
+      <div class="step-sub">Basic information about your property</div>
+      <div class="field">
+        <label>Hotel Name</label>
+        <input type="text" id="s2-name" placeholder="e.g. The Grand Palace" oninput="updatePreview()">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>City</label>
+          <input type="text" id="s2-city" placeholder="e.g. Udaipur" oninput="updatePreview()">
+        </div>
+        <div class="field">
+          <label>State</label>
+          <input type="text" id="s2-state" placeholder="e.g. Rajasthan">
+        </div>
+      </div>
+      <div class="field">
+        <label>Hotel Type</label>
+        <select id="s2-type">
+          <option value="Boutique Hotel">🏨 Boutique Hotel</option>
+          <option value="Heritage Property">🏯 Heritage Property</option>
+          <option value="Resort">🌴 Resort</option>
+          <option value="Business Hotel">💼 Business Hotel</option>
+          <option value="Guest House">🏡 Guest House</option>
+          <option value="Hostel">🛏️ Hostel</option>
+        </select>
+      </div>
+      <button class="btn-next" onclick="goStep(3)">Continue →</button>
     </div>
 
-    <div id="msg" class="msg"></div>
+    <!-- ── STEP 3: Branding ── -->
+    <div class="step-panel" id="step-3">
+      <button class="btn-back" onclick="goStep(2)">← Back</button>
+      <div class="step-title">Brand your hotel</div>
+      <div class="step-sub">Choose colours and an icon that represent your hotel</div>
 
-    <!-- SIGNUP FORM -->
-    <div class="form-section active" id="section-signup">
-      <div class="form-row">
-        <div class="form-group">
-          <label>Hotel Name</label>
-          <input type="text" id="s-hotelname" placeholder="e.g. The Grand Palace">
-        </div>
-        <div class="form-group">
-          <label>City / Location</label>
-          <input type="text" id="s-city" placeholder="e.g. Udaipur">
+      <div class="hotel-preview" id="hotel-preview">
+        <div class="preview-emoji" id="preview-emoji">🏨</div>
+        <div>
+          <div class="preview-name" id="preview-name">Your Hotel</div>
+          <div class="preview-city" id="preview-city">Your City</div>
         </div>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Your Name</label>
-          <input type="text" id="s-ownername" placeholder="Full name">
-        </div>
-        <div class="form-group">
-          <label>Number of Rooms</label>
-          <input type="number" id="s-rooms" placeholder="e.g. 20" min="1" max="500">
-        </div>
-      </div>
-      <div class="form-group">
+
+      <div class="field">
         <label>Brand Colour</label>
+        <div class="color-presets" id="color-presets">
+          <div class="color-preset selected" style="background:#005f73" onclick="selectColor('#005f73',this)"></div>
+          <div class="color-preset" style="background:#e11c0e" onclick="selectColor('#e11c0e',this)"></div>
+          <div class="color-preset" style="background:#7c3aed" onclick="selectColor('#7c3aed',this)"></div>
+          <div class="color-preset" style="background:#0369a1" onclick="selectColor('#0369a1',this)"></div>
+          <div class="color-preset" style="background:#15803d" onclick="selectColor('#15803d',this)"></div>
+          <div class="color-preset" style="background:#b45309" onclick="selectColor('#b45309',this)"></div>
+          <div class="color-preset" style="background:#be123c" onclick="selectColor('#be123c',this)"></div>
+          <div class="color-preset" style="background:#1e293b" onclick="selectColor('#1e293b',this)"></div>
+        </div>
         <div class="color-row">
-          <input type="color" id="s-colorpicker" value="#0a9396" oninput="syncColor(this.value)">
-          <input type="text" id="s-colortext" value="#0a9396" placeholder="#0a9396" oninput="syncColorText(this.value)">
+          <input type="color" id="s3-colorpicker" value="#005f73" oninput="colorPickerChanged(this.value)">
+          <input type="text" id="s3-colortext" value="#005f73" oninput="colorTextChanged(this.value)" placeholder="#005f73">
         </div>
       </div>
-      <div class="form-group">
-        <label>Hotel Emoji</label>
-        <div class="emoji-grid" id="emoji-grid"></div>
+
+      <div class="field">
+        <label>Hotel Icon</label>
+        <div class="hint" style="margin-bottom:8px">Choose an emoji that represents your hotel</div>
+        <div class="emoji-picker" id="emoji-picker">
+          <div class="emoji-opt selected" onclick="selectEmoji('🏨',this)">🏨</div>
+          <div class="emoji-opt" onclick="selectEmoji('🏯',this)">🏯</div>
+          <div class="emoji-opt" onclick="selectEmoji('🌴',this)">🌴</div>
+          <div class="emoji-opt" onclick="selectEmoji('🏰',this)">🏰</div>
+          <div class="emoji-opt" onclick="selectEmoji('⛩️',this)">⛩️</div>
+          <div class="emoji-opt" onclick="selectEmoji('🌺',this)">🌺</div>
+          <div class="emoji-opt" onclick="selectEmoji('🦚',this)">🦚</div>
+          <div class="emoji-opt" onclick="selectEmoji('🌊',this)">🌊</div>
+          <div class="emoji-opt" onclick="selectEmoji('🏔️',this)">🏔️</div>
+          <div class="emoji-opt" onclick="selectEmoji('🌸',this)">🌸</div>
+        </div>
+        <input type="text" id="s3-emoji" value="🏨" maxlength="2" placeholder="Or type your own" style="margin-top:10px;width:100%;padding:10px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:20px;outline:none" oninput="customEmoji(this.value)">
       </div>
-      <div class="form-group">
-        <label>Email Address</label>
-        <input type="email" id="s-email" placeholder="you@yourhotel.com">
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="s-password" placeholder="Minimum 6 characters">
-      </div>
-      <button class="btn-submit" id="btn-signup" onclick="handleSignup()">Create Hotel Account</button>
+      <button class="btn-next" onclick="goStep(4)">Continue →</button>
     </div>
 
-    <!-- LOGIN FORM -->
-    <div class="form-section" id="section-login">
-      <div class="form-group">
-        <label>Email Address</label>
-        <input type="email" id="l-email" placeholder="you@yourhotel.com">
+    <!-- ── STEP 4: Rooms ── -->
+    <div class="step-panel" id="step-4">
+      <button class="btn-back" onclick="goStep(3)">← Back</button>
+      <div class="step-title">How many rooms?</div>
+      <div class="step-sub">We'll generate QR codes for each room automatically. You can add or remove rooms later.</div>
+
+      <div style="text-align:center;padding:20px 0 28px">
+        <div style="font-size:13px;color:#888;margin-bottom:16px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600">Number of Rooms</div>
+        <div class="room-selector" style="justify-content:center">
+          <button class="room-btn" onclick="changeRooms(-10)">−10</button>
+          <button class="room-btn" onclick="changeRooms(-1)">−</button>
+          <div class="room-count-display" id="room-display">10</div>
+          <button class="room-btn" onclick="changeRooms(1)">+</button>
+          <button class="room-btn" onclick="changeRooms(10)">+10</button>
+        </div>
+        <div style="font-size:12px;color:#aaa;margin-top:12px">Rooms will be numbered 1 to <span id="room-count-label">10</span></div>
       </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="l-password" placeholder="Your password">
+
+      <div style="background:#f8f8f8;border-radius:10px;padding:14px 16px;font-size:13px;color:#666;line-height:1.6;margin-bottom:20px">
+        💡 <strong>Tip:</strong> You can always add more rooms from the Admin panel. Start with your current room count.
       </div>
-      <button class="btn-submit" id="btn-login" onclick="handleLogin()">Sign In to Dashboard</button>
+      <button class="btn-next" onclick="goStep(5)">Continue →</button>
     </div>
+
+    <!-- ── STEP 5: Review & Create ── -->
+    <div class="step-panel" id="step-5">
+      <button class="btn-back" onclick="goStep(4)">← Back</button>
+      <div class="step-title">Review & launch 🚀</div>
+      <div class="step-sub">Everything looks good? Click Create Hotel to go live!</div>
+
+      <div class="hotel-preview" id="review-preview" style="margin-bottom:20px">
+        <div class="preview-emoji" id="review-emoji">🏨</div>
+        <div>
+          <div class="preview-name" id="review-name">Hotel Name</div>
+          <div class="preview-city" id="review-city">City</div>
+        </div>
+      </div>
+
+      <div class="checklist">
+        <div class="check-item done" id="chk-account">
+          <div class="check-dot">✓</div>
+          <div><strong>Account</strong> — <span id="chk-email-val">-</span></div>
+        </div>
+        <div class="check-item done" id="chk-hotel">
+          <div class="check-dot">✓</div>
+          <div><strong>Hotel</strong> — <span id="chk-hotel-val">-</span></div>
+        </div>
+        <div class="check-item done" id="chk-brand">
+          <div class="check-dot">✓</div>
+          <div><strong>Branding</strong> — <span id="chk-brand-val">-</span></div>
+        </div>
+        <div class="check-item done" id="chk-rooms">
+          <div class="check-dot">✓</div>
+          <div><strong>Rooms</strong> — <span id="chk-rooms-val">-</span> rooms will be created</div>
+        </div>
+      </div>
+
+      <button class="btn-next" id="create-btn" onclick="createHotel()">🚀 Create My Hotel</button>
+    </div>
+
+    <!-- ── STEP 6: Success ── -->
+    <div class="step-panel" id="step-6">
+      <div class="success-wrap">
+        <div class="success-icon">🎉</div>
+        <div class="success-title">Your hotel is live!</div>
+        <div class="success-sub" id="success-msg">Welcome to Welco! Your hotel has been set up successfully. Here's what to do next:</div>
+        <div class="success-links">
+          <a href="admin.html" class="link-card">
+            <span class="link-icon">⚙️</span>
+            <div><div class="link-label">Open Admin Panel</div><div class="link-desc">Manage rooms, staff, QR codes and settings</div></div>
+            <span class="link-arrow">→</span>
+          </a>
+          <a href="staff.html" class="link-card">
+            <span class="link-icon">👷</span>
+            <div><div class="link-label">Staff Dashboard</div><div class="link-desc">Share this link with your staff</div></div>
+            <span class="link-arrow">→</span>
+          </a>
+          <a href="hod.html" class="link-card">
+            <span class="link-icon">🎯</span>
+            <div><div class="link-label">HOD Portal</div><div class="link-desc">Set up your department heads</div></div>
+            <span class="link-arrow">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
   </div>
+</div>
 
-  <script>
-    // Emoji options
-    const emojis = ['🏨','🏩','🏪','🌴','🎋','🏔️','🌊','🌅','🏛️','🎪','🌺','🍃'];
-    let selectedEmoji = '🏨';
+<script>
+var currentStep = 1;
+var totalSteps = 5;
+var roomCount = 10;
+var selectedColor = '#005f73';
+var selectedEmoji = '🏨';
 
-    const grid = document.getElementById('emoji-grid');
-    emojis.forEach(e => {
-      const btn = document.createElement('button');
-      btn.className = 'emoji-btn' + (e === selectedEmoji ? ' selected' : '');
-      btn.textContent = e;
-      btn.onclick = () => {
-        document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-        selectedEmoji = e;
-      };
-      grid.appendChild(btn);
+function goStep(n) {
+  // Validate before going forward
+  if (n > currentStep) {
+    var err = validateStep(currentStep);
+    if (err) { showErr(err); return; }
+  }
+  hideErr();
+
+  // Update circles
+  document.querySelectorAll('[id^="sc-"]').forEach(function(el, i) {
+    var step = i + 1;
+    el.className = 'step-circle' + (step < n ? ' done' : step === n ? ' active' : '');
+    el.textContent = step < n ? '✓' : step;
+  });
+  document.querySelectorAll('[id^="sl-"]').forEach(function(el, i) {
+    var step = i + 1;
+    el.className = 'step-label' + (step < n ? ' done' : step === n ? ' active' : '');
+  });
+
+  // Progress bar
+  document.getElementById('progress-fill').style.width = (n / totalSteps * 100) + '%';
+
+  // Show panel
+  document.querySelectorAll('.step-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.getElementById('step-'+n).classList.add('active');
+
+  // If going to review step, populate it
+  if (n === 5) populateReview();
+
+  currentStep = n;
+  window.scrollTo(0, 0);
+}
+
+function validateStep(step) {
+  if (step === 1) {
+    if (!document.getElementById('s1-owner').value.trim()) return 'Please enter your name.';
+    if (!document.getElementById('s1-email').value.trim()) return 'Please enter your email.';
+    if (!document.getElementById('s1-password').value || document.getElementById('s1-password').value.length < 6) return 'Password must be at least 6 characters.';
+  }
+  if (step === 2) {
+    if (!document.getElementById('s2-name').value.trim()) return 'Please enter your hotel name.';
+    if (!document.getElementById('s2-city').value.trim()) return 'Please enter your city.';
+  }
+  return null;
+}
+
+function showErr(msg) {
+  var el = document.getElementById('err-msg');
+  el.textContent = msg; el.style.display = 'block';
+}
+function hideErr() {
+  document.getElementById('err-msg').style.display = 'none';
+}
+
+function updatePreview() {
+  var name = document.getElementById('s2-name').value || 'Your Hotel';
+  var city = document.getElementById('s2-city').value || 'Your City';
+  document.getElementById('preview-name').textContent = name;
+  document.getElementById('preview-city').textContent = city;
+  document.getElementById('hotel-preview').style.background = 'linear-gradient(135deg, ' + selectedColor + ', ' + selectedColor + 'aa)';
+}
+
+function selectColor(hex, el) {
+  selectedColor = hex;
+  document.getElementById('s3-colorpicker').value = hex;
+  document.getElementById('s3-colortext').value = hex;
+  document.querySelectorAll('.color-preset').forEach(function(p){ p.classList.remove('selected'); });
+  el.classList.add('selected');
+  updatePreview();
+}
+
+function colorPickerChanged(val) {
+  selectedColor = val;
+  document.getElementById('s3-colortext').value = val;
+  document.querySelectorAll('.color-preset').forEach(function(p){ p.classList.remove('selected'); });
+  updatePreview();
+}
+
+function colorTextChanged(val) {
+  if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+    selectedColor = val;
+    document.getElementById('s3-colorpicker').value = val;
+    updatePreview();
+  }
+}
+
+function selectEmoji(emoji, el) {
+  selectedEmoji = emoji;
+  document.getElementById('s3-emoji').value = emoji;
+  document.getElementById('preview-emoji').textContent = emoji;
+  document.querySelectorAll('.emoji-opt').forEach(function(e){ e.classList.remove('selected'); });
+  el.classList.add('selected');
+}
+
+function customEmoji(val) {
+  if (val) {
+    selectedEmoji = val;
+    document.getElementById('preview-emoji').textContent = val;
+    document.querySelectorAll('.emoji-opt').forEach(function(e){ e.classList.remove('selected'); });
+  }
+}
+
+function changeRooms(delta) {
+  roomCount = Math.max(1, Math.min(500, roomCount + delta));
+  document.getElementById('room-display').textContent = roomCount;
+  document.getElementById('room-count-label').textContent = roomCount;
+}
+
+function populateReview() {
+  var name = document.getElementById('s2-name').value;
+  var city = document.getElementById('s2-city').value;
+  document.getElementById('review-emoji').textContent = selectedEmoji;
+  document.getElementById('review-name').textContent = name;
+  document.getElementById('review-city').textContent = city;
+  document.getElementById('review-preview').style.background = 'linear-gradient(135deg, '+selectedColor+', '+selectedColor+'aa)';
+  document.getElementById('chk-email-val').textContent = document.getElementById('s1-email').value;
+  document.getElementById('chk-hotel-val').textContent = name + ' — ' + city;
+  document.getElementById('chk-brand-val').textContent = selectedColor + ' · ' + selectedEmoji;
+  document.getElementById('chk-rooms-val').textContent = roomCount;
+}
+
+async function createHotel() {
+  var btn = document.getElementById('create-btn');
+  btn.textContent = '⏳ Creating your hotel...';
+  btn.disabled = true;
+  hideErr();
+
+  var payload = {
+    hotelName: document.getElementById('s2-name').value.trim(),
+    city: document.getElementById('s2-city').value.trim(),
+    ownerName: document.getElementById('s1-owner').value.trim(),
+    roomCount: roomCount,
+    colour: selectedColor,
+    emoji: selectedEmoji,
+    email: document.getElementById('s1-email').value.trim(),
+    password: document.getElementById('s1-password').value
+  };
+
+  try {
+    var res = await fetch('/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     });
+    var data = await res.json();
 
-    function syncColor(val) {
-      document.getElementById('s-colortext').value = val;
-    }
-    function syncColorText(val) {
-      if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
-        document.getElementById('s-colorpicker').value = val;
-      }
-    }
-
-    function switchTab(tab) {
-      document.getElementById('section-signup').classList.toggle('active', tab === 'signup');
-      document.getElementById('section-login').classList.toggle('active', tab === 'login');
-      document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
-      document.getElementById('tab-login').classList.toggle('active', tab === 'login');
-      document.getElementById('form-title').textContent = tab === 'signup' ? 'Create your account' : 'Welcome back';
-      document.getElementById('form-sub').innerHTML = tab === 'signup'
-        ? 'Already have an account? <a href="#" onclick="switchTab(\'login\')">Sign in</a>'
-        : 'New hotel? <a href="#" onclick="switchTab(\'signup\')">Create account</a>';
-      showMsg('', '');
+    if (!res.ok) {
+      showErr(data.error || 'Something went wrong. Please try again.');
+      btn.textContent = '🚀 Create My Hotel';
+      btn.disabled = false;
+      return;
     }
 
-    function showMsg(text, type) {
-      const el = document.getElementById('msg');
-      el.textContent = text;
-      el.className = 'msg' + (type ? ' ' + type : '');
-    }
+    // Save hotel data
+    localStorage.setItem('welco_admin_hotel', JSON.stringify(data.hotel));
 
-    function generateHotelId(name) {
-      return 'hotel_' + name.toLowerCase().replace(/[^a-z0-9]/g, '').substring(0, 10) + '_' + Date.now().toString().slice(-4);
-    }
+    // Show success
+    document.querySelectorAll('.step-panel').forEach(function(p){ p.classList.remove('active'); });
+    document.getElementById('step-6').classList.add('active');
+    document.getElementById('progress-fill').style.width = '100%';
+    document.getElementById('success-msg').textContent =
+      'Welcome to Welco, ' + payload.ownerName.split(' ')[0] + '! ' +
+      payload.hotelName + ' is live with ' + roomCount + ' rooms. Here\'s what to do next:';
 
-    async function handleSignup() {
-      const hotelName = document.getElementById('s-hotelname').value.trim();
-      const city = document.getElementById('s-city').value.trim();
-      const ownerName = document.getElementById('s-ownername').value.trim();
-      const roomCount = parseInt(document.getElementById('s-rooms').value);
-      const colour = document.getElementById('s-colortext').value.trim();
-      const email = document.getElementById('s-email').value.trim();
-      const password = document.getElementById('s-password').value;
+  } catch(e) {
+    showErr('Connection error. Please check your internet and try again.');
+    btn.textContent = '🚀 Create My Hotel';
+    btn.disabled = false;
+  }
+}
 
-      if (!hotelName || !city || !ownerName || !roomCount || !email || !password) {
-        return showMsg('Please fill in all fields.', 'error');
-      }
-      if (password.length < 6) {
-        return showMsg('Password must be at least 6 characters.', 'error');
-      }
-
-      const btn = document.getElementById('btn-signup');
-      btn.disabled = true;
-      btn.textContent = 'Creating account...';
-      showMsg('', '');
-
-      try {
-        const res = await fetch('/signup', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            hotelName, city, ownerName, roomCount,
-            colour, emoji: selectedEmoji, email, password
-          })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Signup failed');
-
-        // Save to localStorage and redirect
-        localStorage.setItem('welco_hotel', JSON.stringify(data.hotel));
-        showMsg('Account created! Redirecting to your dashboard...', 'success');
-        setTimeout(() => window.location.href = '/admin.html', 1500);
-      } catch (err) {
-        showMsg(err.message, 'error');
-        btn.disabled = false;
-        btn.textContent = 'Create Hotel Account';
-      }
-    }
-
-    async function handleLogin() {
-      const email = document.getElementById('l-email').value.trim();
-      const password = document.getElementById('l-password').value;
-
-      if (!email || !password) return showMsg('Please enter email and password.', 'error');
-
-      const btn = document.getElementById('btn-login');
-      btn.disabled = true;
-      btn.textContent = 'Signing in...';
-      showMsg('', '');
-
-      try {
-        const res = await fetch('/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Login failed');
-
-        localStorage.setItem('welco_hotel', JSON.stringify(data.hotel));
-        showMsg('Welcome back! Redirecting...', 'success');
-        setTimeout(() => window.location.href = '/hotel-dashboard.html', 1500);
-      } catch (err) {
-        showMsg(err.message, 'error');
-        btn.disabled = false;
-        btn.textContent = 'Sign In to Dashboard';
-      }
-    }
-  </script>
+// Initialize preview
+updatePreview();
+</script>
 </body>
 </html>

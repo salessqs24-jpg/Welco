@@ -7,17 +7,17 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
   <style>
-    :root { --brand: #005f73; --brand2: #0a9396; --light: #94d2bd; --sand: #f7f3ee; --ink: #0d1b1e; }
+    :root { --brand: #005f73; --brand2: #0a9396; --ink: #0d1b1e; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100vh; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5 url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80') center/cover fixed no-repeat; min-height: 100vh; }
     .header { background: linear-gradient(90deg, var(--brand), var(--brand2)); color: white; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; position: sticky; top: 0; z-index: 50; }
     .header-left h1 { font-size: 18px; font-weight: 700; }
     .header-left p { font-size: 12px; opacity: 0.7; margin-top: 2px; }
-    .header-right { display: flex; gap: 8px; flex-wrap: wrap; }
+    .header-right { display: flex; gap: 8px; }
     .btn-export { padding: 8px 16px; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
     .btn-excel { background: white; color: var(--brand); }
     .btn-csv { background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3); }
-    .filters { background: white; padding: 12px 24px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; border-bottom: 1px solid #eee; }
+    .filters { background: rgba(255,255,255,0.95); padding: 12px 24px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; border-bottom: 1px solid #eee; }
     .filter-btn { padding: 6px 14px; border: 1.5px solid #ddd; border-radius: 20px; background: white; color: #555; cursor: pointer; font-size: 12px; transition: all 0.2s; }
     .filter-btn.active { border-color: var(--brand); background: var(--brand); color: white; }
     .hotel-select { padding: 7px 12px; border: 1.5px solid #ddd; border-radius: 20px; font-size: 12px; outline: none; background: white; cursor: pointer; }
@@ -25,8 +25,8 @@
     .date-inputs input { padding: 6px 10px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 12px; outline: none; }
     .btn-apply { padding: 6px 14px; background: var(--brand2); color: white; border: none; border-radius: 8px; font-size: 12px; cursor: pointer; }
     .container { max-width: 1100px; margin: 20px auto; padding: 0 16px 40px; }
-    .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
-    .stat-card { background: white; border-radius: 14px; padding: 18px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); display: flex; align-items: center; gap: 14px; }
+    .stat-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 20px; }
+    .stat-card { background: rgba(255,255,255,0.92); border-radius: 14px; padding: 18px 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 14px; }
     .stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
     .stat-icon.teal { background: #e8f4f4; }
     .stat-icon.amber { background: #fff8e6; }
@@ -34,18 +34,41 @@
     .stat-num { font-size: 28px; font-weight: 700; color: var(--ink); line-height: 1; }
     .stat-label { font-size: 11px; color: #888; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
     .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-    .chart-card { background: white; border-radius: 14px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
-    .chart-card.full { grid-column: 1 / -1; }
+    .chart-card { background: rgba(255,255,255,0.92); border-radius: 14px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    .chart-card.full { grid-column: 1/-1; }
     .chart-title { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
     .chart-sub { font-size: 11px; color: #aaa; margin-bottom: 16px; }
     .donut-wrap { position: relative; height: 200px; }
-    .donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none; }
-    .donut-center .big { font-size: 28px; font-weight: 700; color: var(--ink); line-height: 1; }
-    .donut-center .small { font-size: 10px; color: #aaa; text-transform: uppercase; letter-spacing: 0.05em; }
-    .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; justify-content: center; }
-    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #555; }
-    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .activity-card { background: white; border-radius: 14px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+    .donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; pointer-events: none; }
+    .donut-center .big { font-size: 28px; font-weight: 700; color: var(--ink); }
+    .donut-center .small { font-size: 10px; color: #aaa; text-transform: uppercase; }
+    .legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; justify-content: center; }
+    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #555; }
+    .legend-dot { width: 9px; height: 9px; border-radius: 50%; }
+
+    /* ── STAFF PERFORMANCE ── */
+    .staff-table { width: 100%; border-collapse: collapse; }
+    .staff-table th { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.08em; padding: 8px 12px; border-bottom: 2px solid #f0f0f0; text-align: left; font-weight: 600; }
+    .staff-table td { padding: 12px 12px; border-bottom: 1px solid #f5f5f5; font-size: 13px; color: var(--ink); vertical-align: middle; }
+    .staff-table tr:last-child td { border-bottom: none; }
+    .staff-table tr:hover td { background: #f9f9f9; }
+    .rank-badge { width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+    .rank-1 { background: #ffd700; color: #7a5f00; }
+    .rank-2 { background: #c0c0c0; color: #555; }
+    .rank-3 { background: #cd7f32; color: white; }
+    .rank-other { background: #f0f0f0; color: #888; }
+    .perf-bar-wrap { display: flex; align-items: center; gap: 8px; }
+    .perf-bar-bg { flex: 1; background: #eee; border-radius: 4px; height: 6px; }
+    .perf-bar-fill { height: 100%; border-radius: 4px; background: var(--brand2); }
+    .badge-fast { background: #d1fae5; color: #065f46; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; }
+    .badge-slow { background: #fde8ea; color: #e63946; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; }
+
+    /* ── PEAK HOURS ── */
+    .peak-highlight { background: rgba(10,147,150,0.08); border-radius: 8px; padding: 10px 16px; margin-bottom: 16px; display: flex; gap: 24px; flex-wrap: wrap; }
+    .peak-item { font-size: 12px; color: #555; }
+    .peak-item strong { color: var(--brand); font-size: 15px; }
+
+    .activity-card { background: rgba(255,255,255,0.92); border-radius: 14px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
     .activity-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
     .activity-title { font-size: 13px; font-weight: 700; color: var(--ink); }
     .live-dot { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #2ecc71; font-weight: 500; }
@@ -61,6 +84,7 @@
     .badge-pending { background: #fff3cd; color: #8a6000; }
     .badge-progress { background: #cff4fc; color: #0a6070; }
     .badge-done { background: #d1fae5; color: #065f46; }
+    .section-heading { font-size: 18px; font-weight: 700; color: var(--ink); margin: 24px 0 12px; display: flex; align-items: center; gap: 8px; }
     .empty { text-align: center; padding: 32px; color: #aaa; font-size: 13px; }
     @media (max-width: 768px) {
       .stat-row { grid-template-columns: 1fr 1fr; }
@@ -73,7 +97,7 @@
 <div class="header">
   <div class="header-left">
     <h1>📊 Welco Analytics</h1>
-    <p>Guest feedback & request insights · Auto-refreshes every 15s</p>
+    <p>Guest feedback · Peak hours · Staff performance · Auto-refreshes every 15s</p>
   </div>
   <div class="header-right">
     <button class="btn-export btn-excel" onclick="exportExcel()">📊 Excel</button>
@@ -99,6 +123,7 @@
 
 <div class="container">
 
+  <!-- STAT CARDS -->
   <div class="stat-row">
     <div class="stat-card"><div class="stat-icon teal">📋</div><div><div class="stat-num" id="s-total">-</div><div class="stat-label">Total Requests</div></div></div>
     <div class="stat-card"><div class="stat-icon amber">⏳</div><div><div class="stat-num" id="s-pending">-</div><div class="stat-label">Pending</div></div></div>
@@ -106,7 +131,7 @@
     <div class="stat-card"><div class="stat-icon teal">⭐</div><div><div class="stat-num" id="s-rating">-</div><div class="stat-label">Avg Rating</div></div></div>
   </div>
 
-  <!-- Donuts -->
+  <!-- ROW 1: Status donut + Dept donut -->
   <div class="chart-grid">
     <div class="chart-card">
       <div class="chart-title">Request Status</div>
@@ -120,32 +145,26 @@
     <div class="chart-card">
       <div class="chart-title">By Department</div>
       <div class="chart-sub">Which category gets most requests</div>
-      <div class="donut-wrap">
-        <canvas id="chart-cat"></canvas>
-      </div>
+      <div class="donut-wrap"><canvas id="chart-cat"></canvas></div>
       <div class="legend" id="legend-cat"></div>
     </div>
   </div>
 
-  <!-- Line chart full width -->
+  <!-- ROW 2: Line chart full width -->
   <div class="chart-grid">
     <div class="chart-card full">
       <div class="chart-title">Requests Over Time</div>
       <div class="chart-sub">Daily request volume — last 14 days</div>
-      <div style="height:220px">
-        <canvas id="chart-line"></canvas>
-      </div>
+      <div style="height:220px"><canvas id="chart-line"></canvas></div>
     </div>
   </div>
 
-  <!-- Bar + Activity -->
+  <!-- ROW 3: Ratings + Activity -->
   <div class="chart-grid">
     <div class="chart-card">
       <div class="chart-title">Star Ratings</div>
       <div class="chart-sub">Guest satisfaction breakdown</div>
-      <div style="height:200px">
-        <canvas id="chart-ratings"></canvas>
-      </div>
+      <div style="height:200px"><canvas id="chart-ratings"></canvas></div>
     </div>
     <div class="activity-card">
       <div class="activity-header">
@@ -156,11 +175,54 @@
     </div>
   </div>
 
+  <!-- ══════════ PEAK HOURS ══════════ -->
+  <div class="section-heading">⏰ Peak Hours Analysis</div>
+  <div class="chart-card full" style="margin-bottom:16px">
+    <div class="chart-title">Requests by Hour of Day</div>
+    <div class="chart-sub">When do your guests need help the most?</div>
+    <div class="peak-highlight" id="peak-highlight"></div>
+    <div style="height:240px"><canvas id="chart-hours"></canvas></div>
+  </div>
+
+  <div class="chart-grid" style="margin-bottom:16px">
+    <div class="chart-card">
+      <div class="chart-title">Requests by Day of Week</div>
+      <div class="chart-sub">Busiest days for your hotel</div>
+      <div style="height:220px"><canvas id="chart-days"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Category by Hour</div>
+      <div class="chart-sub">What do guests request at different times?</div>
+      <div style="height:220px"><canvas id="chart-cathour"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ══════════ STAFF PERFORMANCE ══════════ -->
+  <div class="section-heading">👷 Staff Performance Report</div>
+  <div class="chart-card full" style="margin-bottom:16px">
+    <div class="chart-title">Staff Leaderboard</div>
+    <div class="chart-sub">Ranked by tasks completed · Response time · Rating earned</div>
+    <div id="staff-perf-table"><div class="empty">Loading...</div></div>
+  </div>
+
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="chart-title">Tasks Completed per Staff</div>
+      <div class="chart-sub">Who handles the most requests?</div>
+      <div style="height:220px"><canvas id="chart-staffbar"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Avg Response Time per Staff</div>
+      <div class="chart-sub">Minutes from request to claim (lower = better)</div>
+      <div style="height:220px"><canvas id="chart-stafftime"></canvas></div>
+    </div>
+  </div>
+
 </div>
 
 <script>
-var allData = [], currentHotel = 'all', currentDateFilter = 'all';
-var customFrom = null, customTo = null, currentFiltered = [], hotelNames = {}, charts = {};
+var allData=[], currentHotel='all', currentDateFilter='all';
+var customFrom=null, customTo=null, currentFiltered=[], hotelNames={}, charts={};
 
 async function loadData() {
   try {
@@ -206,32 +268,14 @@ function applyCustomDate() {
 function applyFilters() {
   currentHotel = document.getElementById('hotel-select').value;
   var data = allData.slice();
-  if (currentHotel !== 'all') data = data.filter(function(r){ return r.hotel_id === currentHotel; });
+  if (currentHotel !== 'all') data = data.filter(function(r){ return r.hotel_id===currentHotel; });
   var now = new Date();
-  if (currentDateFilter === 'today') { var ts = now.toDateString(); data = data.filter(function(r){ return new Date(r.created_at).toDateString()===ts; }); }
-  else if (currentDateFilter === 'week') { var wa = new Date(now); wa.setDate(wa.getDate()-7); data = data.filter(function(r){ return new Date(r.created_at)>=wa; }); }
-  else if (currentDateFilter === 'month') { var ma = new Date(now); ma.setDate(ma.getDate()-30); data = data.filter(function(r){ return new Date(r.created_at)>=ma; }); }
-  else if (currentDateFilter === 'custom' && customFrom && customTo) { data = data.filter(function(r){ var d=new Date(r.created_at); return d>=customFrom&&d<=customTo; }); }
+  if (currentDateFilter==='today') { var ts=now.toDateString(); data=data.filter(function(r){return new Date(r.created_at).toDateString()===ts;}); }
+  else if (currentDateFilter==='week') { var wa=new Date(now); wa.setDate(wa.getDate()-7); data=data.filter(function(r){return new Date(r.created_at)>=wa;}); }
+  else if (currentDateFilter==='month') { var ma=new Date(now); ma.setDate(ma.getDate()-30); data=data.filter(function(r){return new Date(r.created_at)>=ma;}); }
+  else if (currentDateFilter==='custom'&&customFrom&&customTo) { data=data.filter(function(r){var d=new Date(r.created_at);return d>=customFrom&&d<=customTo;}); }
   currentFiltered = data;
   renderAll(data);
-}
-
-function renderAll(data) {
-  var pending = data.filter(function(r){ return r.status==='pending'; }).length;
-  var inprog = data.filter(function(r){ return r.status==='in_progress'; }).length;
-  var done = data.filter(function(r){ return r.status==='done'; }).length;
-  var rated = data.filter(function(r){ return r.feedback_rating; });
-  var avg = rated.length ? (rated.reduce(function(s,r){ return s+r.feedback_rating; },0)/rated.length).toFixed(1) : '-';
-  document.getElementById('s-total').textContent = data.length;
-  document.getElementById('s-pending').textContent = pending;
-  document.getElementById('s-done').textContent = done;
-  document.getElementById('s-rating').textContent = avg==='-'?'-':avg+'⭐';
-  document.getElementById('donut-total').textContent = data.length;
-  renderStatusDonut(pending, inprog, done);
-  renderCatDonut(data);
-  renderLineChart(data);
-  renderRatingBar(rated);
-  renderActivity(data);
 }
 
 function mkChart(id, config) {
@@ -239,86 +283,192 @@ function mkChart(id, config) {
   charts[id] = new Chart(document.getElementById(id).getContext('2d'), config);
 }
 
-function renderStatusDonut(pending, inprog, done) {
-  mkChart('chart-status', {
-    type: 'doughnut',
-    data: { labels:['Pending','In Progress','Done'], datasets:[{ data:[pending,inprog,done], backgroundColor:['#EE9B00','#0A9396','#2ECC71'], borderWidth:0, hoverOffset:6 }] },
-    options: { responsive:true, maintainAspectRatio:false, cutout:'72%', plugins:{ legend:{display:false} } }
-  });
-  document.getElementById('legend-status').innerHTML = ['Pending','In Progress','Done'].map(function(l,i){
-    return '<div class="legend-item"><div class="legend-dot" style="background:'+['#EE9B00','#0A9396','#2ECC71'][i]+'"></div>'+l+' ('+[pending,inprog,done][i]+')</div>';
-  }).join('');
+function renderAll(data) {
+  var pending=data.filter(function(r){return r.status==='pending';}).length;
+  var inprog=data.filter(function(r){return r.status==='in_progress';}).length;
+  var done=data.filter(function(r){return r.status==='done';}).length;
+  var rated=data.filter(function(r){return r.feedback_rating;});
+  var avg=rated.length?(rated.reduce(function(s,r){return s+r.feedback_rating;},0)/rated.length).toFixed(1):'-';
+  document.getElementById('s-total').textContent=data.length;
+  document.getElementById('s-pending').textContent=pending;
+  document.getElementById('s-done').textContent=done;
+  document.getElementById('s-rating').textContent=avg==='-'?'-':avg+'⭐';
+  document.getElementById('donut-total').textContent=data.length;
+
+  renderStatusDonut(pending,inprog,done);
+  renderCatDonut(data);
+  renderLineChart(data);
+  renderRatingBar(rated);
+  renderActivity(data);
+  renderPeakHours(data);
+  renderDayOfWeek(data);
+  renderCatByHour(data);
+  renderStaffPerformance(data);
+}
+
+function renderStatusDonut(p,i,d) {
+  mkChart('chart-status',{type:'doughnut',data:{labels:['Pending','In Progress','Done'],datasets:[{data:[p,i,d],backgroundColor:['#EE9B00','#0A9396','#2ECC71'],borderWidth:0,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false}}}});
+  document.getElementById('legend-status').innerHTML=['Pending','In Progress','Done'].map(function(l,i){return '<div class="legend-item"><div class="legend-dot" style="background:'+['#EE9B00','#0A9396','#2ECC71'][i]+'"></div>'+l+' ('+[p,i,d][i]+')</div>';}).join('');
 }
 
 function renderCatDonut(data) {
   var cats=['Housekeeping','Room Service','Maintenance','Front Desk'];
   var colors=['#4361EE','#F77F00','#E63946','#9B5DE5'];
-  var emojis=['🛏️','🍽️','🔧','🛎️'];
-  var counts=cats.map(function(c){ return data.filter(function(r){ return r.category===c; }).length; });
-  mkChart('chart-cat', {
-    type:'doughnut',
-    data:{ labels:cats, datasets:[{ data:counts, backgroundColor:colors, borderWidth:0, hoverOffset:6 }] },
-    options:{ responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{ legend:{display:false} } }
-  });
-  document.getElementById('legend-cat').innerHTML = cats.map(function(c,i){
-    return '<div class="legend-item"><div class="legend-dot" style="background:'+colors[i]+'"></div>'+emojis[i]+' '+c+' ('+counts[i]+')</div>';
-  }).join('');
+  var counts=cats.map(function(c){return data.filter(function(r){return r.category===c;}).length;});
+  mkChart('chart-cat',{type:'doughnut',data:{labels:cats,datasets:[{data:counts,backgroundColor:colors,borderWidth:0,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false}}}});
+  document.getElementById('legend-cat').innerHTML=cats.map(function(c,i){return '<div class="legend-item"><div class="legend-dot" style="background:'+colors[i]+'"></div>'+['🛏️','🍽️','🔧','🛎️'][i]+' '+c+' ('+counts[i]+')</div>';}).join('');
 }
 
 function renderLineChart(data) {
-  var days=[], counts=[];
-  for (var i=13;i>=0;i--) {
-    var d=new Date(); d.setDate(d.getDate()-i);
-    days.push(d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}));
-    var ds=d.toDateString();
-    counts.push(data.filter(function(r){ return new Date(r.created_at).toDateString()===ds; }).length);
-  }
-  mkChart('chart-line', {
-    type:'line',
-    data:{ labels:days, datasets:[{ label:'Requests', data:counts, borderColor:'#0A9396', backgroundColor:'rgba(10,147,150,0.08)', borderWidth:2.5, pointBackgroundColor:'#005f73', pointRadius:4, fill:true, tension:0.4 }] },
-    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ x:{grid:{display:false},ticks:{font:{size:10},color:'#aaa'}}, y:{beginAtZero:true,ticks:{stepSize:1,font:{size:10},color:'#aaa'},grid:{color:'#f0f0f0'}} } }
-  });
+  var days=[],counts=[];
+  for(var i=13;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);days.push(d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}));var ds=d.toDateString();counts.push(data.filter(function(r){return new Date(r.created_at).toDateString()===ds;}).length);}
+  mkChart('chart-line',{type:'line',data:{labels:days,datasets:[{data:counts,borderColor:'#0A9396',backgroundColor:'rgba(10,147,150,0.08)',borderWidth:2.5,pointBackgroundColor:'#005f73',pointRadius:4,fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#aaa'}},y:{beginAtZero:true,ticks:{stepSize:1,font:{size:10},color:'#aaa'},grid:{color:'#f0f0f0'}}}}});
 }
 
 function renderRatingBar(rated) {
-  var counts=[5,4,3,2,1].map(function(s){ return rated.filter(function(r){ return r.feedback_rating===s; }).length; });
-  mkChart('chart-ratings', {
-    type:'bar',
-    data:{ labels:['5⭐','4⭐','3⭐','2⭐','1⭐'], datasets:[{ data:counts, backgroundColor:['#2ECC71','#0A9396','#EE9B00','#F77F00','#E63946'], borderRadius:6, borderWidth:0 }] },
-    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ x:{grid:{display:false},ticks:{font:{size:11},color:'#888'}}, y:{beginAtZero:true,ticks:{stepSize:1,font:{size:10},color:'#aaa'},grid:{color:'#f0f0f0'}} } }
-  });
+  var counts=[5,4,3,2,1].map(function(s){return rated.filter(function(r){return r.feedback_rating===s;}).length;});
+  mkChart('chart-ratings',{type:'bar',data:{labels:['5⭐','4⭐','3⭐','2⭐','1⭐'],datasets:[{data:counts,backgroundColor:['#2ECC71','#0A9396','#EE9B00','#F77F00','#E63946'],borderRadius:6,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:11},color:'#888'}},y:{beginAtZero:true,ticks:{stepSize:1,font:{size:10},color:'#aaa'},grid:{color:'#f0f0f0'}}}}});
 }
 
 function renderActivity(data) {
-  var list = document.getElementById('activity-list');
-  var recent = data.slice(0,10);
-  if (!recent.length) { list.innerHTML='<div class="empty">No activity yet</div>'; return; }
+  var list=document.getElementById('activity-list');
+  var recent=data.slice(0,10);
+  if(!recent.length){list.innerHTML='<div class="empty">No activity yet</div>';return;}
   var catColors={'Housekeeping':'#4361EE','Room Service':'#F77F00','Maintenance':'#E63946','Front Desk':'#9B5DE5'};
-  list.innerHTML = recent.map(function(r) {
+  list.innerHTML=recent.map(function(r){
     var bc=r.status==='done'?'badge-done':r.status==='in_progress'?'badge-progress':'badge-pending';
     var bt=r.status==='done'?'Done':r.status==='in_progress'?'In Progress':'Pending';
     var time=new Date(r.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
     var dot=catColors[r.category]||'#0a9396';
-    var msg=(r.message||'No details').substring(0,35)+(r.message&&r.message.length>35?'...':'');
+    var msg=(r.message||'No details').substring(0,35)+((r.message&&r.message.length>35)?'...':'');
     return '<div class="activity-item"><div class="act-dot" style="background:'+dot+'"></div><div class="act-content"><div class="act-title">Room '+(r.room_number||'?')+' — '+(r.category||'General')+'</div><div class="act-meta">'+msg+'</div><div class="act-meta">'+time+(r.claimed_by?' · 👷 '+r.claimed_by:'')+'</div></div><span class="act-badge '+bc+'">'+bt+'</span></div>';
   }).join('');
 }
 
+// ── PEAK HOURS ──
+function renderPeakHours(data) {
+  var hourCounts = new Array(24).fill(0);
+  data.forEach(function(r){ hourCounts[new Date(r.created_at).getHours()]++; });
+  var labels = [];
+  for(var h=0;h<24;h++) labels.push(h===0?'12am':h<12?h+'am':h===12?'12pm':(h-12)+'pm');
+
+  // Find peak and quiet hours
+  var maxVal = Math.max.apply(null, hourCounts);
+  var peakHour = hourCounts.indexOf(maxVal);
+  var minVal = Math.min.apply(null, hourCounts.filter(function(v){return v>0;})||[0]);
+  var quietHour = hourCounts.indexOf(minVal);
+
+  var colors = hourCounts.map(function(v){
+    if (v === maxVal) return '#E63946';
+    if (v >= maxVal * 0.7) return '#EE9B00';
+    return '#0A9396';
+  });
+
+  document.getElementById('peak-highlight').innerHTML =
+    '<div class="peak-item">🔴 Busiest Hour: <strong>'+labels[peakHour]+'</strong> ('+maxVal+' requests)</div>' +
+    '<div class="peak-item">🟢 Quietest Hour: <strong>'+labels[quietHour]+'</strong> ('+minVal+' requests)</div>' +
+    '<div class="peak-item">📊 Total: <strong>'+data.length+'</strong> requests analyzed</div>';
+
+  mkChart('chart-hours',{
+    type:'bar',
+    data:{labels:labels,datasets:[{data:hourCounts,backgroundColor:colors,borderRadius:4,borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.raw+' requests';}}}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:'#aaa'}},y:{beginAtZero:true,ticks:{stepSize:1,font:{size:10},color:'#aaa'},grid:{color:'#f0f0f0'}}}}
+  });
+}
+
+function renderDayOfWeek(data) {
+  var days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var counts=new Array(7).fill(0);
+  data.forEach(function(r){counts[new Date(r.created_at).getDay()]++;});
+  var maxD=Math.max.apply(null,counts);
+  var colors=counts.map(function(v){return v===maxD?'#E63946':v>=maxD*0.7?'#EE9B00':'#0A9396';});
+  mkChart('chart-days',{type:'bar',data:{labels:days,datasets:[{data:counts,backgroundColor:colors,borderRadius:6,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:11},color:'#888'}},y:{beginAtZero:true,ticks:{stepSize:1,font:{size:10},color:'#aaa'},grid:{color:'#f0f0f0'}}}}});
+}
+
+function renderCatByHour(data) {
+  var cats=['Housekeeping','Room Service','Maintenance','Front Desk'];
+  var colors=['#4361EE','#F77F00','#E63946','#9B5DE5'];
+  var timeSlots=['Night\n(12am-6am)','Morning\n(6am-12pm)','Afternoon\n(12pm-6pm)','Evening\n(6pm-12am)'];
+  var datasets=cats.map(function(cat,ci){
+    var counts=[0,1,2,3].map(function(slot){
+      return data.filter(function(r){
+        if(r.category!==cat)return false;
+        var h=new Date(r.created_at).getHours();
+        if(slot===0)return h<6;
+        if(slot===1)return h>=6&&h<12;
+        if(slot===2)return h>=12&&h<18;
+        return h>=18;
+      }).length;
+    });
+    return {label:cat,data:counts,backgroundColor:colors[ci],borderRadius:4,borderWidth:0};
+  });
+  mkChart('chart-cathour',{type:'bar',data:{labels:['Night','Morning','Afternoon','Evening'],datasets:datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:10}}},scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:10},color:'#888'}},y:{stacked:true,beginAtZero:true,ticks:{stepSize:1,font:{size:10},color:'#aaa'},grid:{color:'#f0f0f0'}}}}});
+}
+
+// ── STAFF PERFORMANCE ──
+function renderStaffPerformance(data) {
+  var staffMap = {};
+  data.forEach(function(r) {
+    if (!r.claimed_by) return;
+    if (!staffMap[r.claimed_by]) staffMap[r.claimed_by] = { name: r.claimed_by, total: 0, done: 0, totalTime: 0, timeCount: 0, ratings: [] };
+    var s = staffMap[r.claimed_by];
+    s.total++;
+    if (r.status === 'done') s.done++;
+    if (r.claimed_at && r.created_at) {
+      var diff = (new Date(r.claimed_at) - new Date(r.created_at)) / 60000;
+      if (diff > 0 && diff < 120) { s.totalTime += diff; s.timeCount++; }
+    }
+    if (r.feedback_rating) s.ratings.push(r.feedback_rating);
+  });
+
+  var staff = Object.values(staffMap).sort(function(a,b){ return b.done-a.done; });
+  var maxDone = staff.length ? staff[0].done : 1;
+
+  var el = document.getElementById('staff-perf-table');
+  if (!staff.length) { el.innerHTML='<div class="empty">No staff performance data yet. Staff need to claim and complete requests first.</div>'; return; }
+
+  var html = '<table class="staff-table"><thead><tr><th>#</th><th>Staff Name</th><th>Tasks Done</th><th>Performance</th><th>Avg Response</th><th>Avg Rating</th></tr></thead><tbody>';
+  staff.forEach(function(s, i) {
+    var rankClass = i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-other';
+    var rankLabel = i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
+    var avgTime = s.timeCount ? (s.totalTime/s.timeCount).toFixed(1) : '-';
+    var avgRating = s.ratings.length ? (s.ratings.reduce(function(a,b){return a+b;},0)/s.ratings.length).toFixed(1) : '-';
+    var pct = maxDone > 0 ? (s.done/maxDone*100) : 0;
+    var timeBadge = avgTime !== '-' ? (parseFloat(avgTime) < 5 ? '<span class="badge-fast">⚡ Fast</span>' : parseFloat(avgTime) > 15 ? '<span class="badge-slow">🐢 Slow</span>' : '') : '';
+    html += '<tr>'+
+      '<td><span class="rank-badge '+rankClass+'">'+rankLabel+'</span></td>'+
+      '<td><strong>'+s.name+'</strong></td>'+
+      '<td>'+s.done+' / '+s.total+' total</td>'+
+      '<td><div class="perf-bar-wrap"><div class="perf-bar-bg"><div class="perf-bar-fill" style="width:'+pct+'%"></div></div><span style="font-size:11px;color:#888;min-width:28px">'+s.done+'</span></div></td>'+
+      '<td>'+(avgTime==='-'?'-':avgTime+' min')+' '+timeBadge+'</td>'+
+      '<td>'+(avgRating==='-'?'-':avgRating+'⭐')+'</td>'+
+    '</tr>';
+  });
+  html += '</tbody></table>';
+  el.innerHTML = html;
+
+  // Staff bar chart
+  var names = staff.map(function(s){return s.name;});
+  var dones = staff.map(function(s){return s.done;});
+  var times = staff.map(function(s){return s.timeCount?(s.totalTime/s.timeCount).toFixed(1):0;});
+  mkChart('chart-staffbar',{type:'bar',data:{labels:names,datasets:[{data:dones,backgroundColor:'#0A9396',borderRadius:6,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#888'}},y:{beginAtZero:true,ticks:{stepSize:1,font:{size:10},color:'#aaa'},grid:{color:'#f0f0f0'}}}}});
+  mkChart('chart-stafftime',{type:'bar',data:{labels:names,datasets:[{data:times,backgroundColor:times.map(function(t){return parseFloat(t)<5?'#2ECC71':parseFloat(t)>15?'#E63946':'#EE9B00';}),borderRadius:6,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#888'}},y:{beginAtZero:true,ticks:{font:{size:10},color:'#aaa'},grid:{color:'#f0f0f0'}}}}});
+}
+
 function exportExcel() {
-  if (!currentFiltered.length) { alert('No data!'); return; }
-  var rows = currentFiltered.map(function(r){ return {'Date':new Date(r.created_at).toLocaleDateString('en-IN'),'Time':new Date(r.created_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),'Hotel':hotelNames[r.hotel_id]||r.hotel_id,'Room':r.room_number||'-','Category':r.category||'General','Request':r.message||'-','Status':r.status==='done'?'Completed':r.status==='in_progress'?'In Progress':'Pending','Handled By':r.claimed_by||'-','Rating':r.feedback_rating||'-','Comment':r.feedback_comments||'-'}; });
-  var ws=XLSX.utils.json_to_sheet(rows);
-  ws['!cols']=[{wch:12},{wch:8},{wch:20},{wch:8},{wch:14},{wch:30},{wch:12},{wch:14},{wch:8},{wch:30}];
-  var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Welco Requests');
+  if(!currentFiltered.length){alert('No data!');return;}
+  var rows=currentFiltered.map(function(r){return{'Date':new Date(r.created_at).toLocaleDateString('en-IN'),'Time':new Date(r.created_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),'Hotel':hotelNames[r.hotel_id]||r.hotel_id,'Room':r.room_number||'-','Category':r.category||'General','Request':r.message||'-','Status':r.status==='done'?'Completed':r.status==='in_progress'?'In Progress':'Pending','Handled By':r.claimed_by||'-','Rating':r.feedback_rating||'-','Comment':r.feedback_comments||'-'};});
+  var ws=XLSX.utils.json_to_sheet(rows);ws['!cols']=[{wch:12},{wch:8},{wch:20},{wch:8},{wch:14},{wch:30},{wch:12},{wch:14},{wch:8},{wch:30}];
+  var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Welco Requests');
   XLSX.writeFile(wb,'Welco-Analytics-'+new Date().toISOString().slice(0,10)+'.xlsx');
 }
 
 function exportCSV() {
-  if (!currentFiltered.length) { alert('No data!'); return; }
+  if(!currentFiltered.length){alert('No data!');return;}
   var h=['Date','Time','Hotel','Room','Category','Request','Status','Handled By','Rating','Comment'];
-  var rows=currentFiltered.map(function(r){ return [new Date(r.created_at).toLocaleDateString('en-IN'),new Date(r.created_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),hotelNames[r.hotel_id]||r.hotel_id,r.room_number||'-',r.category||'General','"'+(r.message||'-').replace(/"/g,"'")+'"',r.status==='done'?'Completed':r.status==='in_progress'?'In Progress':'Pending',r.claimed_by||'-',r.feedback_rating||'-','"'+(r.feedback_comments||'-').replace(/"/g,"'")+'"'].join(','); });
+  var rows=currentFiltered.map(function(r){return[new Date(r.created_at).toLocaleDateString('en-IN'),new Date(r.created_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),hotelNames[r.hotel_id]||r.hotel_id,r.room_number||'-',r.category||'General','"'+(r.message||'-').replace(/"/g,"'")+'"',r.status==='done'?'Completed':r.status==='in_progress'?'In Progress':'Pending',r.claimed_by||'-',r.feedback_rating||'-','"'+(r.feedback_comments||'-').replace(/"/g,"'")+'"'].join(',');});
   var blob=new Blob([[h.join(','),...rows].join('\n')],{type:'text/csv'});
-  var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='Welco-'+new Date().toISOString().slice(0,10)+'.csv'; a.click();
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Welco-'+new Date().toISOString().slice(0,10)+'.csv';a.click();
 }
 
 loadData();

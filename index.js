@@ -240,6 +240,43 @@ app.post('/announcements/:id/toggle', async (req, res) => {
   res.json(data);
 });
 
+
+// ─────────────────────────────────────────
+// MAINTENANCE TASKS
+// ─────────────────────────────────────────
+app.get('/maintenance', async (req, res) => {
+  let query = supabase.from('maintenance_tasks').select('*').eq('is_active', true).order('next_due', { ascending: true });
+  if (req.query.hotel_id) query = query.eq('hotel_id', req.query.hotel_id);
+  if (req.query.department) query = query.eq('department', req.query.department);
+  const { data, error } = await query;
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+});
+
+app.post('/maintenance', async (req, res) => {
+  const { hotel_id, department, title, description, frequency, next_due, created_by } = req.body;
+  if (!hotel_id || !title || !frequency) return res.status(400).json({ error: 'hotel_id, title and frequency required.' });
+  const { data, error } = await supabase.from('maintenance_tasks')
+    .insert([{ hotel_id, department, title, description, frequency, next_due, created_by, is_active: true }])
+    .select().single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+});
+
+app.post('/maintenance/:id/done', async (req, res) => {
+  const { last_done, next_due } = req.body;
+  const { data, error } = await supabase.from('maintenance_tasks')
+    .update({ last_done, next_due }).eq('id', req.params.id).select().single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+});
+
+app.delete('/maintenance/:id', async (req, res) => {
+  const { error } = await supabase.from('maintenance_tasks').update({ is_active: false }).eq('id', req.params.id);
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ success: true });
+});
+
 // ─────────────────────────────────────────
 // QR
 // ─────────────────────────────────────────

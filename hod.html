@@ -8,12 +8,7 @@
   <style>
     :root { --brand: #005f73; --brand2: #0a9396; --ink: #0d1b1e; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5;
-  background-image: url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  background-repeat: no-repeat; min-height: 100vh; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5 url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80') center/cover fixed no-repeat; min-height: 100vh; }
 
     /* LOGIN */
     #login-screen { min-height: 100vh; background: linear-gradient(160deg, #005f73, #0a9396); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
@@ -116,6 +111,24 @@
     .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #555; }
     .legend-dot { width: 9px; height: 9px; border-radius: 50%; }
 
+
+    /* MAINTENANCE */
+    .maint-item { padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+    .maint-item:last-child { border-bottom: none; }
+    .maint-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+    .maint-title-txt { font-size: 14px; font-weight: 600; color: var(--ink); }
+    .maint-desc-txt { font-size: 12px; color: #888; margin-bottom: 6px; }
+    .maint-meta { font-size: 11px; color: #aaa; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .due-badge { padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+    .due-overdue { background: #fde8ea; color: #e63946; }
+    .due-today { background: #fff3cd; color: #8a6000; }
+    .due-upcoming { background: #d1fae5; color: #065f46; }
+    .btn-mark-done { padding: 5px 12px; background: #2ecc71; color: white; border: none; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: 600; }
+    .btn-delete-task { padding: 5px 10px; background: #fde8ea; color: #e63946; border: none; border-radius: 6px; font-size: 11px; cursor: pointer; }
+    .freq-pill { padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; }
+    .freq-daily { background: #e8f4f4; color: #005f73; }
+    .freq-weekly { background: #fff8e6; color: #8a6000; }
+    .freq-monthly { background: #f0e8ff; color: #6b21a8; }
     .empty { text-align: center; padding: 32px; color: #aaa; font-size: 14px; }
     .loading { text-align: center; padding: 24px; color: #aaa; }
 
@@ -171,6 +184,7 @@
     <div class="tab" onclick="showTab('rooms')">🚪 Rooms</div>
     <div class="tab" onclick="showTab('staff')">👷 Staff</div>
     <div class="tab" onclick="showTab('analytics')">📈 Analytics</div>
+    <div class="tab" onclick="showTab('maintenance')">🔧 Schedule</div>
   </div>
 
   <div class="content">
@@ -278,6 +292,53 @@
         <div class="card-title">Requests Over Time</div>
         <div class="card-sub">Last 14 days — your department only</div>
         <div class="chart-wrap"><canvas id="chart-line"></canvas></div>
+      </div>
+    </div>
+
+
+    <!-- MAINTENANCE SCHEDULE -->
+    <div class="tab-panel" id="panel-maintenance">
+      <div class="card">
+        <div class="card-title">Add Maintenance Task</div>
+        <div class="card-sub">Create recurring tasks for your department</div>
+        <div class="msg-box" id="maint-msg"></div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+          <input type="text" id="maint-title" placeholder="Task title e.g. Clean AC filters" style="padding:10px 12px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:14px;outline:none">
+          <textarea id="maint-desc" placeholder="Description (optional)" style="padding:10px 12px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:14px;outline:none;resize:none;height:70px;font-family:sans-serif"></textarea>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <select id="maint-freq" style="flex:1;padding:10px 12px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:14px;outline:none;background:white">
+              <option value="daily">🔄 Daily</option>
+              <option value="weekly">📅 Weekly</option>
+              <option value="monthly">🗓️ Monthly</option>
+            </select>
+            <button class="btn-add" onclick="addMaintenanceTask()">+ Add Task</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Tasks -->
+      <div class="card">
+        <div class="card-title">🔴 Overdue & Due Today</div>
+        <div class="card-sub">Tasks that need immediate attention</div>
+        <div id="maint-urgent"><div class="loading">Loading...</div></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px">
+        <div class="card">
+          <div class="card-title">🔄 Daily Tasks</div>
+          <div class="card-sub">Every day</div>
+          <div id="maint-daily"><div class="loading">Loading...</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">📅 Weekly Tasks</div>
+          <div class="card-sub">Every week</div>
+          <div id="maint-weekly"><div class="loading">Loading...</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">🗓️ Monthly Tasks</div>
+          <div class="card-sub">Every month</div>
+          <div id="maint-monthly"><div class="loading">Loading...</div></div>
+        </div>
       </div>
     </div>
 
@@ -553,12 +614,135 @@ function renderAnalytics(reqs) {
 }
 
 function showTab(name) {
-  var names=['overview','requests','rooms','staff','analytics'];
+  var names=['overview','requests','rooms','staff','analytics','maintenance'];
   document.querySelectorAll('.tab').forEach(function(t,i){t.classList.toggle('active',names[i]===name);});
   document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
   document.getElementById('panel-'+name).classList.add('active');
   if (name==='rooms') loadRooms();
   if (name==='staff') loadStaff();
+  if (name==='maintenance') loadMaintenance();
+}
+
+
+/* ─── MAINTENANCE SCHEDULE ─── */
+var maintTasks = [];
+
+function loadMaintenance() {
+  fetch('/maintenance?hotel_id='+hodData.hotel_id+'&department='+encodeURIComponent(hodData.dept))
+    .then(function(r){return r.json();}).then(function(data){
+      if (!Array.isArray(data)) return;
+      maintTasks = data;
+      renderMaintenance(data);
+    }).catch(function(){
+      document.getElementById('maint-urgent').innerHTML='<div class="empty">Could not load tasks</div>';
+    });
+}
+
+function addMaintenanceTask() {
+  var title = document.getElementById('maint-title').value.trim();
+  var desc = document.getElementById('maint-desc').value.trim();
+  var freq = document.getElementById('maint-freq').value;
+  if (!title) { alert('Enter a task title!'); return; }
+
+  var now = new Date();
+  var nextDue = new Date(now);
+  if (freq==='daily') nextDue.setDate(nextDue.getDate()+1);
+  else if (freq==='weekly') nextDue.setDate(nextDue.getDate()+7);
+  else nextDue.setMonth(nextDue.getMonth()+1);
+
+  fetch('/maintenance', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      hotel_id: hodData.hotel_id,
+      department: hodData.dept,
+      title: title,
+      description: desc,
+      frequency: freq,
+      next_due: nextDue.toISOString(),
+      created_by: hodData.name
+    })
+  }).then(function(r){return r.json();}).then(function(data){
+    if (data.error) { alert(data.error); return; }
+    document.getElementById('maint-title').value='';
+    document.getElementById('maint-desc').value='';
+    var msg=document.getElementById('maint-msg');
+    msg.textContent='✅ Task added: '+title+' ('+freq+')';
+    msg.className='msg-box msg-success';
+    setTimeout(function(){msg.className='msg-box';},3000);
+    loadMaintenance();
+  });
+}
+
+function markTaskDone(id, freq) {
+  var now = new Date();
+  var nextDue = new Date(now);
+  if (freq==='daily') nextDue.setDate(nextDue.getDate()+1);
+  else if (freq==='weekly') nextDue.setDate(nextDue.getDate()+7);
+  else nextDue.setMonth(nextDue.getMonth()+1);
+
+  fetch('/maintenance/'+id+'/done', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ last_done: now.toISOString(), next_due: nextDue.toISOString() })
+  }).then(function(){ loadMaintenance(); });
+}
+
+function deleteTask(id) {
+  if (!confirm('Delete this task?')) return;
+  fetch('/maintenance/'+id, {method:'DELETE'}).then(function(){ loadMaintenance(); });
+}
+
+function renderMaintenance(tasks) {
+  var now = new Date();
+  var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  function getDueBadge(task) {
+    if (!task.next_due) return '<span class="due-badge due-upcoming">No due date</span>';
+    var due = new Date(task.next_due);
+    var dueDay = new Date(due.getFullYear(), due.getMonth(), due.getDate());
+    if (dueDay < today) return '<span class="due-badge due-overdue">⚠️ Overdue</span>';
+    if (dueDay.getTime() === today.getTime()) return '<span class="due-badge due-today">📅 Due Today</span>';
+    var diff = Math.ceil((dueDay-today)/(1000*60*60*24));
+    return '<span class="due-badge due-upcoming">✅ Due in '+diff+' day'+(diff>1?'s':'')+'</span>';
+  }
+
+  function taskHTML(task) {
+    var freqClass = 'freq-'+task.frequency;
+    var lastDone = task.last_done ? 'Last done: '+new Date(task.last_done).toLocaleDateString('en-IN',{day:'numeric',month:'short'}) : 'Never done';
+    return '<div class="maint-item">'+
+      '<div class="maint-top">'+
+        '<div>'+
+          '<div class="maint-title-txt">'+task.title+'</div>'+
+          (task.description?'<div class="maint-desc-txt">'+task.description+'</div>':'')+
+        '</div>'+
+        '<div style="display:flex;gap:6px;align-items:center">'+
+          '<span class="freq-pill '+freqClass+'">'+task.frequency+'</span>'+
+          getDueBadge(task)+
+        '</div>'+
+      '</div>'+
+      '<div class="maint-meta">'+
+        '<span>'+lastDone+'</span>'+
+        '<span>By: '+task.created_by+'</span>'+
+        '<button class="btn-mark-done" onclick="markTaskDone('+task.id+',''+task.frequency+'')">✓ Mark Done</button>'+
+        '<button class="btn-delete-task" onclick="deleteTask('+task.id+')">✕</button>'+
+      '</div>'+
+    '</div>';
+  }
+
+  // Urgent (overdue + due today)
+  var urgent = tasks.filter(function(t) {
+    if (!t.next_due) return false;
+    var due = new Date(new Date(t.next_due).getFullYear(), new Date(t.next_due).getMonth(), new Date(t.next_due).getDate());
+    return due <= today;
+  });
+  document.getElementById('maint-urgent').innerHTML = urgent.length
+    ? urgent.map(taskHTML).join('') : '<div class="empty">✅ No overdue tasks!</div>';
+
+  // By frequency
+  ['daily','weekly','monthly'].forEach(function(freq) {
+    var filtered = tasks.filter(function(t){ return t.frequency===freq; });
+    document.getElementById('maint-'+freq).innerHTML = filtered.length
+      ? filtered.map(taskHTML).join('') : '<div class="empty">No '+freq+' tasks</div>';
+  });
 }
 
 window.onload = function() {

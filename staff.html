@@ -483,14 +483,15 @@ function loadTasks() {
       var mins=Math.floor(remaining);
       var secs=Math.floor((remaining-mins)*60);
       var timerClass=pct>50?'':pct>25?'warning':'urgent';
-      var cardClass=r.status==='done'?'done':r.status==='in_progress'?'in-progress':pct===0?'urgent':'';
+      var catColor = r.category==='Front Desk'?'#9b5de5':r.category==='Housekeeping'?'#4361ee':r.category==='Room Service'?'#f77f00':r.category==='Maintenance'?'#e63946':'#0a9396';
+var cardClass=r.status==='done'?'done':r.status==='in_progress'?'in-progress':pct===0?'urgent':'';
       var timeAgo=Math.floor(elapsed)>0?Math.floor(elapsed)+'m ago':'Just now';
       var actionsHtml='';
       if (r.status==='pending') actionsHtml='<button class="btn-accept" onclick="claimTask('+r.id+')">👋 Accept</button>';
       else if (r.status==='in_progress') actionsHtml='<span class="claimed-badge">✅ '+(r.claimed_by||'Staff')+'</span><button class="btn-done" onclick="markDone('+r.id+')">Mark Done ✓</button>';
       else actionsHtml='<button class="btn-done" disabled>✅ Completed</button>';
-      return '<div class="task-card '+cardClass+'">'+
-        '<div class="task-top"><span class="task-room">Room '+(r.room_number||'?')+'</span><span class="task-cat">'+(r.category||'General')+'</span></div>'+
+      return '<div class="task-card '+cardClass+'" style="border-left-color:'+catColor+'">'+
+        '<div class="task-top"><span class="task-room">Room '+(r.room_number||'?')+'</span>'<span class="task-cat" style="background:'+catColor+'">'+(r.category||'General')+'</span>'+
         '<div class="task-msg">'+(r.message||'No details')+'</div>'+
         '<div class="task-time">🕐 '+timeAgo+'</div>'+
         (r.status!=='done'?'<div class="task-sla'+(pct<25?' urgent-text':'')+'">⏱ '+mins+'m '+secs+'s remaining</div>'+

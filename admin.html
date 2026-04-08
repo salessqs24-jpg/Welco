@@ -160,6 +160,7 @@
     <div class="tab active" onclick="showTab('overview')">📊 Overview</div>
     <div class="tab" onclick="showTab('rooms')">🚪 Rooms</div>
     <div class="tab" onclick="showTab('staff')">👷 Staff</div>
+    <div class="tab" onclick="showTab('hod')">🎯 HOD</div>
     <div class="tab" onclick="showTab('announce')">📢 Announce</div>
     <div class="tab" onclick="showTab('reports')">📋 Reports</div>
     <div class="tab" onclick="showTab('settings')">⚙️ Settings</div>
@@ -216,6 +217,32 @@
         <div class="card-title">Staff Members</div>
         <div class="card-sub">These are the only people who can access your staff dashboard</div>
         <div id="staff-list"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+    
+    <!-- HOD TAB -->
+    <div class="tab-panel" id="panel-hod">
+      <div class="card">
+        <div class="card-title">Add Head of Department</div>
+        <div class="card-sub">Each department can have one HOD. They monitor their team and get SLA alerts.</div>
+        <div class="msg-box" id="hod-msg"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+          <input type="text" id="new-hod-name" placeholder="HOD full name e.g. Sunita" style="flex:1;min-width:120px;padding:10px 12px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:14px;outline:none">
+          <select id="new-hod-dept" style="padding:10px 12px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:14px;outline:none;background:white">
+            <option value="Housekeeping">&#x1F6CF;&#xFE0F; Housekeeping</option>
+            <option value="Room Service">&#x1F37D;&#xFE0F; Room Service</option>
+            <option value="Maintenance">&#x1F527; Maintenance</option>
+            <option value="Front Desk">&#x1F6CE;&#xFE0F; Front Desk</option>
+          </select>
+          <input type="text" id="new-hod-pin" placeholder="4-digit PIN" maxlength="4" style="max-width:110px;padding:10px 12px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:14px;outline:none">
+          <button class="btn-add" onclick="addHOD()">+ Add HOD</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Department HODs</div>
+        <div class="card-sub">One HOD per department. They login at <strong>welco.onrender.com/hod.html</strong></div>
+        <div id="hod-list"><div class="loading">Loading...</div></div>
       </div>
     </div>
 
@@ -414,7 +441,7 @@ function removeLogo() {
 }
 
 function showTab(name) {
-  var names = ['overview','rooms','staff','announce','reports','settings'];
+  var names = ['overview','rooms','staff','hod','announce','reports','settings'];
   document.querySelectorAll('.tab').forEach(function(t,i){ t.classList.toggle('active', names[i]===name); });
   document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
   document.getElementById('panel-'+name).classList.add('active');
@@ -422,6 +449,7 @@ function showTab(name) {
   if (name==='rooms') loadRooms();
   if (name==='staff') loadStaff();
   if (name==='announce') loadAnnouncements();
+  if (name==='hod') loadHOD();
 }
 
 function loadOverview() {
@@ -597,6 +625,59 @@ function showQR(hotelId,roomId,roomNum) {
 function downloadQR() {
   var canvas=document.querySelector('#qr-output canvas'); if(!canvas) return;
   var link=document.createElement('a'); link.download='welco-'+currentQRRoom+'.png'; link.href=canvas.toDataURL(); link.click();
+}
+
+
+/* ─── HOD ─── */
+function loadHOD() {
+  fetch('/hod?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(list){
+    var el = document.getElementById('hod-list');
+    if (!Array.isArray(list) || list.length===0) {
+      el.innerHTML = '<div class="empty">No HODs added yet. Add one above.</div>';
+      return;
+    }
+    var deptColors = {'Housekeeping':'#4361EE','Room Service':'#F77F00','Maintenance':'#E63946','Front Desk':'#9B5DE5'};
+    var deptEmojis = {'Housekeeping':'🛏️','Room Service':'🍽️','Maintenance':'🔧','Front Desk':'🛎️'};
+    el.innerHTML = list.map(function(h){
+      var color = deptColors[h.department] || '#005f73';
+      return '<div class="staff-row">'+
+        '<div style="display:flex;align-items:center;gap:10px">'+
+          '<div style="width:36px;height:36px;border-radius:8px;background:'+color+'20;display:flex;align-items:center;justify-content:center;font-size:18px">'+(deptEmojis[h.department]||'👤')+'</div>'+
+          '<div>'+
+            '<div class="staff-name-txt">'+h.name+'</div>'+
+            '<div style="font-size:11px;color:#888;margin-top:2px">'+h.department+'</div>'+
+          '</div>'+
+        '</div>'+
+        '<div style="display:flex;gap:8px;align-items:center">'+
+          '<div class="staff-pin">PIN: '+h.pin+'</div>'+
+          '<button class="btn-remove" onclick="removeHOD('+h.id+')">Remove</button>'+
+        '</div>'+
+      '</div>';
+    }).join('');
+  }).catch(function(){});
+}
+
+function addHOD() {
+  var name = document.getElementById('new-hod-name').value.trim();
+  var dept = document.getElementById('new-hod-dept').value;
+  var pin  = document.getElementById('new-hod-pin').value.trim();
+  if (!name || pin.length !== 4) { alert('Enter full name and exactly 4-digit PIN'); return; }
+  fetch('/hod', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hotel.hotel_id,name:name,department:dept,pin:pin})})
+    .then(function(r){return r.json();}).then(function(data){
+      if (data.error) { alert(data.error); return; }
+      document.getElementById('new-hod-name').value='';
+      document.getElementById('new-hod-pin').value='';
+      var msg=document.getElementById('hod-msg');
+      msg.textContent='✅ '+name+' added as HOD for '+dept+'! They can login at welco.onrender.com/hod.html';
+      msg.className='msg-box msg-success';
+      setTimeout(function(){msg.className='msg-box';},5000);
+      loadHOD();
+    });
+}
+
+function removeHOD(id) {
+  if (!confirm('Remove this HOD?')) return;
+  fetch('/hod/'+id,{method:'DELETE'}).then(function(){ loadHOD(); });
 }
 
 window.onload=function(){

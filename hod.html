@@ -748,7 +748,22 @@ function renderMaintenance(tasks) {
 window.onload = function() {
   var stored = localStorage.getItem('welco_hod');
   if (stored) {
-    fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
+    function loadHotels() {
+  fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
+    allHotels = hotels;
+    var sel = document.getElementById('l-hotel');
+    if (!hotels || hotels.length === 0) {
+      sel.innerHTML = '<option value="">No hotels found</option>';
+      return;
+    }
+    sel.innerHTML = hotels.map(function(h){
+      return '<option value="'+h.hotel_id+'">'+(h.emoji||'🏨')+' '+h.name+'</option>';
+    }).join('');
+  }).catch(function(){
+    setTimeout(loadHotels, 3000); // retry after 3 seconds
+  });
+}
+loadHotels();
       allHotels = hotels;
       hodData = JSON.parse(stored);
       hodData.hotel = hotels.find(function(h){return h.hotel_id===hodData.hotel_id;})||{};

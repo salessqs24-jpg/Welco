@@ -147,7 +147,7 @@
   <div class="login-sub">Head of Department Access</div>
   <div class="login-card">
     <label class="lbl">Select Hotel</label>
-    <select id="l-hotel"></select>
+    <select id="l-hotel"><option value="">Loading hotels...</option></select>
     <label class="lbl">Your Name</label>
     <input type="text" id="l-name" placeholder="Exactly as added by Admin">
     <label class="lbl">PIN</label>
@@ -360,7 +360,7 @@ var SLA_MINUTES = {'Housekeeping':5,'Room Service':30,'Maintenance':5,'Front Des
 function loadHotels() {
   var sel = document.getElementById('l-hotel');
   sel.innerHTML = '<option value="">Loading hotels...</option>';
-  fetch('/hotels')
+  fetch('/hotels?t='+Date.now())
     .then(function(r){ return r.json(); })
     .then(function(hotels){
       allHotels = hotels;
@@ -767,7 +767,13 @@ window.onload = function() {
       hodData = JSON.parse(stored);
       hodData.hotel = hotels.find(function(h){return h.hotel_id===hodData.hotel_id;})||{};
       startApp();
-    }).catch(function(){});
+    }).catch(function(){
+      // If auto-login fails, just show login screen
+      localStorage.removeItem('welco_hod');
+    });
+  } else {
+    // Not logged in — make sure hotels load for dropdown
+    loadHotels();
   }
 };
 </script>

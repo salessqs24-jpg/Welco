@@ -357,13 +357,27 @@ var deptEmojis = {'Housekeeping':'🛏️','Room Service':'🍽️','Maintenance
 var SLA_MINUTES = {'Housekeeping':5,'Room Service':30,'Maintenance':5,'Front Desk':5};
 
 // Load hotels for dropdown
-fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
-  allHotels = hotels;
+function loadHotels() {
   var sel = document.getElementById('l-hotel');
-  sel.innerHTML = hotels.map(function(h){
-    return '<option value="'+h.hotel_id+'">'+(h.emoji||'🏨')+' '+h.name+'</option>';
-  }).join('');
-}).catch(function(){});
+  sel.innerHTML = '<option value="">Loading hotels...</option>';
+  fetch('/hotels')
+    .then(function(r){ return r.json(); })
+    .then(function(hotels){
+      allHotels = hotels;
+      if (!hotels || hotels.length === 0) {
+        sel.innerHTML = '<option value="">No hotels found — try again</option>';
+        setTimeout(loadHotels, 4000);
+        return;
+      }
+      sel.innerHTML = hotels.map(function(h){
+        return '<option value="'+h.hotel_id+'">'+(h.emoji||'🏨')+' '+h.name+'</option>';
+      }).join('');
+    }).catch(function(){
+      sel.innerHTML = '<option value="">Retrying...</option>';
+      setTimeout(loadHotels, 3000);
+    });
+}
+loadHotels();
 
 function doLogin() {
   var hotel_id = document.getElementById('l-hotel').value;
@@ -748,22 +762,7 @@ function renderMaintenance(tasks) {
 window.onload = function() {
   var stored = localStorage.getItem('welco_hod');
   if (stored) {
-    function loadHotels() {
-  fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
-    allHotels = hotels;
-    var sel = document.getElementById('l-hotel');
-    if (!hotels || hotels.length === 0) {
-      sel.innerHTML = '<option value="">No hotels found</option>';
-      return;
-    }
-    sel.innerHTML = hotels.map(function(h){
-      return '<option value="'+h.hotel_id+'">'+(h.emoji||'🏨')+' '+h.name+'</option>';
-    }).join('');
-  }).catch(function(){
-    setTimeout(loadHotels, 3000); // retry after 3 seconds
-  });
-}
-loadHotels();
+    fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
       allHotels = hotels;
       hodData = JSON.parse(stored);
       hodData.hotel = hotels.find(function(h){return h.hotel_id===hodData.hotel_id;})||{};

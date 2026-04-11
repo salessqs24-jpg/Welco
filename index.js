@@ -9,6 +9,9 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANO
 app.use(express.json({ limit: '5mb' }));
 app.use(express.static(__dirname));
 
+// Health check — Render pings this to confirm app is alive
+app.get('/health', (req, res) => res.json({ status: 'ok', ts: Date.now() }));
+
 function generateHotelCode(name) {
   var base = name.toUpperCase().replace(/[^A-Z]/g, '').substring(0, 3);
   while (base.length < 3) base += 'X';
@@ -19,7 +22,7 @@ function generateStaffId(hotelCode) {
   return (hotelCode || 'WLC') + '-' + Math.floor(Math.random() * 9000 + 1000);
 }
 
-// OWNER SIGNUP
+// ── OWNER SIGNUP ──────────────────────────────────────────────────────────────
 app.post('/owner/signup', async (req, res) => {
   const { name, email, password, group_name, phone, secret_answer } = req.body;
   if (!name || !email || !password) return res.status(400).json({ error: 'Name, email and password required.' });
@@ -32,7 +35,7 @@ app.post('/owner/signup', async (req, res) => {
   res.json({ owner });
 });
 
-// OWNER LOGIN
+// ── OWNER LOGIN ───────────────────────────────────────────────────────────────
 app.post('/owner/login', async (req, res) => {
   const { email, password } = req.body;
   const { data: owner } = await supabase.from('owners').select('*').eq('email', email).eq('password', password).maybeSingle();
@@ -41,7 +44,7 @@ app.post('/owner/login', async (req, res) => {
   res.json({ owner, hotels: hotels || [] });
 });
 
-// ADD HOTEL
+// ── ADD HOTEL ─────────────────────────────────────────────────────────────────
 app.post('/owner/add-hotel', async (req, res) => {
   const { owner_id, hotelName, city, roomCount, colour, emoji } = req.body;
   if (!owner_id || !hotelName) return res.status(400).json({ error: 'owner_id and hotelName required.' });
@@ -59,7 +62,7 @@ app.post('/owner/add-hotel', async (req, res) => {
   res.json({ hotel });
 });
 
-// SECRET QUESTION
+// ── SECRET QUESTION ───────────────────────────────────────────────────────────
 app.get('/owner/secret-question', async (req, res) => {
   const { email } = req.query;
   if (!email) return res.status(400).json({ error: 'Email required.' });
@@ -69,7 +72,7 @@ app.get('/owner/secret-question', async (req, res) => {
   res.json({ found: true, question: 'mother' });
 });
 
-// RESET PASSWORD
+// ── RESET PASSWORD ────────────────────────────────────────────────────────────
 app.post('/owner/reset-password', async (req, res) => {
   const { email, secret_answer, new_password } = req.body;
   if (!email || !secret_answer || !new_password) return res.status(400).json({ error: 'All fields required.' });
@@ -81,7 +84,7 @@ app.post('/owner/reset-password', async (req, res) => {
   res.json({ success: true });
 });
 
-// MAIN LOGIN - tries owners table first, then old hotels table
+// ── MAIN LOGIN (tries owners first, falls back to legacy hotels table) ─────────
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
   const { data: owner } = await supabase.from('owners').select('*').eq('email', email).eq('password', password).maybeSingle();
@@ -95,7 +98,7 @@ app.post('/login', async (req, res) => {
   res.json({ hotel, hotels: [hotel] });
 });
 
-// LEGACY SIGNUP
+// ── LEGACY SIGNUP ─────────────────────────────────────────────────────────────
 app.post('/signup', async (req, res) => {
   const { hotelName, city, ownerName, roomCount, colour, emoji, email, password } = req.body;
   const { data: existingOwner } = await supabase.from('owners').select('id').eq('email', email).maybeSingle();
@@ -114,7 +117,7 @@ app.post('/signup', async (req, res) => {
   res.json({ hotel: { ...hotel, hotel_id }, owner });
 });
 
-// HOTELS
+// ── HOTELS ────────────────────────────────────────────────────────────────────
 app.get('/hotels', async (req, res) => {
   const { data, error } = await supabase.from('hotels').select('*');
   if (error) return res.status(500).json({ error: error.message });
@@ -128,7 +131,7 @@ app.post('/hotels/:hotel_id/update', async (req, res) => {
   res.json(data);
 });
 
-// ROOMS
+// ── ROOMS ─────────────────────────────────────────────────────────────────────
 app.get('/rooms', async (req, res) => {
   let query = supabase.from('rooms').select('*');
   if (req.query.hotel_id) query = query.eq('hotel_id', req.query.hotel_id);
@@ -150,7 +153,7 @@ app.delete('/rooms/:id', async (req, res) => {
   res.json({ success: true });
 });
 
-// STAFF
+// ── STAFF ─────────────────────────────────────────────────────────────────────
 app.get('/staff', async (req, res) => {
   let query = supabase.from('staff').select('*');
   if (req.query.hotel_id) query = query.eq('hotel_id', req.query.hotel_id);
@@ -184,7 +187,7 @@ app.post('/staff/verify', async (req, res) => {
   res.json({ success: true, staff: data });
 });
 
-// HOD
+// ── HOD ───────────────────────────────────────────────────────────────────────
 app.get('/hod', async (req, res) => {
   const { data, error } = await supabase.from('hod').select('*').eq('hotel_id', req.query.hotel_id);
   if (error) return res.status(500).json({ error: error.message });
@@ -217,7 +220,7 @@ app.post('/hod/verify', async (req, res) => {
   res.json({ success: true, hod: { ...hod, hotel } });
 });
 
-// REQUESTS
+// ── REQUESTS ──────────────────────────────────────────────────────────────────
 app.get('/requests', async (req, res) => {
   let query = supabase.from('requests').select('*').order('created_at', { ascending: false });
   if (req.query.hotel_id) query = query.eq('hotel_id', req.query.hotel_id);
@@ -253,7 +256,7 @@ app.post('/requests/:id/feedback', async (req, res) => {
   res.json(data);
 });
 
-// ANNOUNCEMENTS
+// ── ANNOUNCEMENTS ─────────────────────────────────────────────────────────────
 app.get('/announcements', async (req, res) => {
   let query = supabase.from('announcements').select('*').order('created_at', { ascending: false });
   if (req.query.hotel_id) query = query.eq('hotel_id', req.query.hotel_id);
@@ -283,7 +286,7 @@ app.post('/announcements/:id/toggle', async (req, res) => {
   res.json(data);
 });
 
-// MAINTENANCE
+// ── MAINTENANCE ───────────────────────────────────────────────────────────────
 app.get('/maintenance', async (req, res) => {
   let query = supabase.from('maintenance_tasks').select('*').eq('is_active', true).order('next_due', { ascending: true });
   if (req.query.hotel_id) query = query.eq('hotel_id', req.query.hotel_id);
@@ -313,11 +316,11 @@ app.delete('/maintenance/:id', async (req, res) => {
   res.json({ success: true });
 });
 
-// QR
+// ── QR ────────────────────────────────────────────────────────────────────────
 app.get('/qr/:room_id', async (req, res) => {
   const { data, error } = await supabase.from('rooms').select('*, hotels(*)').eq('id', req.params.room_id).single();
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
 });
 
-app.listen(PORT, () => console.log('Welco server running at http://localhost:' + PORT));
+app.listen(PORT, () => console.log('Welco server running on port ' + PORT));

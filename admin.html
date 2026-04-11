@@ -343,6 +343,17 @@
           <button class="btn-add" onclick="addHOD()">+ Add HOD</button>
         </div>
       </div>
+      <div class="card" style="background:linear-gradient(135deg,#e8f4f4,#d0f0f0);border:1.5px solid #0a9396">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <div style="font-size:28px">🔑</div>
+          <div style="flex:1">
+            <div style="font-size:11px;color:#005f73;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin-bottom:4px">Hotel Code — Share this with your HODs</div>
+            <div style="font-size:32px;font-weight:900;color:#005f73;letter-spacing:5px;font-family:monospace" id="hod-hotel-code">...</div>
+            <div style="font-size:11px;color:#555;margin-top:4px">HOD enters this code + their name + PIN at <strong>welco.onrender.com/hod.html</strong></div>
+          </div>
+          <button onclick="copyHotelCode()" id="copy-code-btn" style="padding:10px 18px;background:#005f73;color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0">📋 Copy Code</button>
+        </div>
+      </div>
       <div class="card">
         <div class="card-title">Department HODs</div>
         <div class="card-sub">One HOD per department. They login at <strong>welco.onrender.com/hod.html</strong></div>
@@ -679,7 +690,7 @@ function showTab(name) {
   if (name==='rooms') loadRooms();
   if (name==='staff') loadStaff();
   if (name==='announce') loadAnnouncements();
-  if (name==='hod') loadHOD();
+  if (name==='hod') { loadHOD(); document.getElementById('hod-hotel-code').textContent = hotel.hotel_code || 'N/A'; }
 }
 
 /* ═══════════════════════════════════════════════
@@ -954,6 +965,18 @@ function downloadQR() {
 /* ═══════════════════════════════════════════════
    HOD
 ═══════════════════════════════════════════════ */
+function copyHotelCode() {
+  var code = document.getElementById('hod-hotel-code').textContent;
+  if (!code || code === '...') return;
+  navigator.clipboard.writeText(code).then(function() {
+    var btn = document.getElementById('copy-code-btn');
+    btn.textContent = '✅ Copied!';
+    setTimeout(function() { btn.textContent = '📋 Copy Code'; }, 2000);
+  }).catch(function() {
+    prompt('Copy this hotel code:', code);
+  });
+}
+
 function loadHOD() {
   fetch('/hod?hotel_id='+hotel.hotel_id)
     .then(function(r){return r.json();})

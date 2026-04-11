@@ -14,6 +14,8 @@
     :root { --brand: #005f73; --brand2: #0a9396; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: sans-serif; background: #f4f4f4 url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80') center/cover fixed no-repeat; min-height: 100vh; }
+
+    /* ── LOGIN ── */
     #login-screen { min-height: 100vh; background: linear-gradient(160deg, #005f73, #0a9396); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
     .login-card { background: white; border-radius: 20px; padding: 28px; width: 100%; max-width: 360px; }
     .login-logo { font-size: 48px; text-align: center; margin-bottom: 8px; }
@@ -24,39 +26,59 @@
     .login-card input:focus { border-color: #0a9396; }
     .login-btn { width: 100%; padding: 14px; background: #005f73; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; }
     .login-err { color: #e63946; font-size: 13px; text-align: center; margin-top: 10px; display: none; }
-    .login-signup { text-align: center; margin-top: 16px; font-size: 13px; color: #888; }
-    .login-signup a { color: #0a9396; text-decoration: none; font-weight: 500; }
+
+    /* ── TOPBAR ── */
     #app-screen { display: none; }
-    .topbar { background: linear-gradient(90deg, var(--brand), var(--brand2)); color: white; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; }
-    .hotel-switcher { position: relative; display: inline-block; }
-    .hotel-switcher-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-family: sans-serif; }
-    .hotel-switcher-btn:hover { background: rgba(255,255,255,0.25); }
-    .hotel-dropdown { position: absolute; top: 110%; right: 0; background: white; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.15); min-width: 200px; z-index: 100; overflow: hidden; display: none; }
-    .hotel-dropdown.open { display: block; }
-    .hotel-dropdown-item { padding: 12px 16px; font-size: 13px; color: #0d1b1e; cursor: pointer; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #f0f0f0; }
-    .hotel-dropdown-item:last-child { border-bottom: none; }
-    .hotel-dropdown-item:hover { background: #e8f4f4; }
-    .hotel-dropdown-item.active { background: #e8f4f4; font-weight: 700; color: var(--brand); }
-    .hotel-dropdown-item .h-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-    .topbar-left { display: flex; align-items: center; gap: 10px; }
-    .topbar-name { font-size: 16px; font-weight: bold; }
+    .topbar { background: linear-gradient(90deg, var(--brand), var(--brand2)); color: white; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; gap: 10px; }
+    .topbar-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+    .topbar-name { font-size: 15px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .topbar-city { font-size: 11px; opacity: 0.75; }
-    .logout-btn { background: rgba(255,255,255,0.15); border: none; color: white; padding: 6px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; }
-    #topbar-logo-img { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; border: 2px solid rgba(255,255,255,0.4); display: none; }
-    #topbar-logo-emoji { font-size: 24px; }
+    #topbar-logo-img { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; border: 2px solid rgba(255,255,255,0.4); display: none; flex-shrink: 0; }
+    #topbar-logo-emoji { font-size: 24px; flex-shrink: 0; }
+    .topbar-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .logout-btn { background: rgba(255,255,255,0.15); border: none; color: white; padding: 6px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; white-space: nowrap; }
+
+    /* ── HOTEL SWITCHER ── */
+    .hotel-switcher { position: relative; display: none; }
+    .hotel-switcher-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.35); color: white; padding: 6px 10px 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-family: sans-serif; white-space: nowrap; }
+    .hotel-switcher-btn:hover { background: rgba(255,255,255,0.25); }
+    .switcher-arrow { font-size: 10px; opacity: 0.8; transition: transform 0.2s; }
+    .hotel-switcher.open .switcher-arrow { transform: rotate(180deg); }
+    .hotel-dropdown { position: absolute; top: calc(100% + 8px); right: 0; background: white; border-radius: 14px; box-shadow: 0 8px 30px rgba(0,0,0,0.18); min-width: 220px; z-index: 200; overflow: hidden; display: none; }
+    .hotel-switcher.open .hotel-dropdown { display: block; }
+    .hotel-dropdown-header { padding: 10px 16px 8px; font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid #f0f0f0; }
+    .hotel-dropdown-item { padding: 12px 16px; font-size: 13px; color: #0d1b1e; cursor: pointer; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #f5f5f5; transition: background 0.15s; }
+    .hotel-dropdown-item:last-child { border-bottom: none; }
+    .hotel-dropdown-item:hover { background: #f0fafa; }
+    .hotel-dropdown-item.active { background: #e8f4f4; font-weight: 700; color: var(--brand); }
+    .h-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .h-item-text { flex: 1; }
+    .h-item-name { font-size: 13px; font-weight: 600; }
+    .h-item-city { font-size: 11px; color: #999; margin-top: 1px; }
+    .h-check { color: var(--brand); font-size: 14px; margin-left: auto; }
+    .hotel-dropdown-add { padding: 12px 16px; font-size: 13px; color: #0a9396; cursor: pointer; display: flex; align-items: center; gap: 10px; border-top: 2px solid #f0f0f0; font-weight: 600; }
+    .hotel-dropdown-add:hover { background: #f0fafa; }
+
+    /* ── TABS ── */
     .tabs { display: flex; background: white; border-bottom: 1px solid #eee; overflow-x: auto; }
     .tab { padding: 14px 16px; font-size: 13px; font-weight: 500; color: #999; cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; }
     .tab.active { color: var(--brand); border-bottom-color: var(--brand); }
+
+    /* ── CONTENT ── */
     .content { padding: 16px; max-width: 700px; margin: 0 auto; padding-bottom: 40px; }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
     .card { background: rgba(255,255,255,0.92); border-radius: 14px; padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.12); }
     .card-title { font-size: 15px; font-weight: bold; color: #1a1a2e; margin-bottom: 4px; }
     .card-sub { font-size: 12px; color: #999; margin-bottom: 16px; }
+
+    /* ── STATS ── */
     .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px; }
     .stat-box { background: rgba(255,255,255,0.92); border-radius: 12px; padding: 16px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
     .stat-num { font-size: 32px; font-weight: bold; color: var(--brand2); }
     .stat-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+
+    /* ── ROOMS ── */
     .rooms-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
     .room-card { background: #f9f9f9; border-radius: 10px; padding: 14px; text-align: center; border: 1px solid #eee; }
     .room-num { font-size: 20px; font-weight: bold; color: var(--brand); }
@@ -68,11 +90,15 @@
     .add-row input { flex: 1; min-width: 80px; padding: 10px 12px; border: 1.5px solid #e0ddd8; border-radius: 8px; font-size: 14px; outline: none; }
     .add-row input:focus { border-color: var(--brand2); }
     .btn-add { padding: 10px 18px; background: var(--brand); color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; }
+
+    /* ── STAFF ── */
     .staff-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
     .staff-row:last-child { border-bottom: none; }
     .staff-name-txt { font-size: 14px; font-weight: 500; }
     .staff-pin { font-family: monospace; font-size: 16px; font-weight: bold; color: var(--brand2); background: #e8f4f4; padding: 4px 10px; border-radius: 6px; }
     .btn-remove { background: #fde8ea; color: #e63946; border: none; border-radius: 6px; padding: 4px 10px; font-size: 11px; cursor: pointer; }
+
+    /* ── REQUESTS ── */
     .request-row { padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
     .request-row:last-child { border-bottom: none; }
     .req-top { display: flex; justify-content: space-between; margin-bottom: 4px; }
@@ -84,6 +110,8 @@
     .badge-pending { background: #fff3cd; color: #8a6000; }
     .badge-progress { background: #cff4fc; color: #0a6070; }
     .badge-done { background: #d1fae5; color: #065f46; }
+
+    /* ── SETTINGS ── */
     .settings-form label { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 6px; }
     .settings-form input[type="text"], .settings-form input[type="email"] { width: 100%; padding: 12px 14px; border: 1.5px solid #e0ddd8; border-radius: 10px; font-size: 14px; margin-bottom: 14px; outline: none; }
     .color-row { display: flex; gap: 8px; align-items: center; margin-bottom: 14px; }
@@ -93,18 +121,8 @@
     .msg-box { padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 14px; display: none; }
     .msg-success { background: #d1fae5; color: #065f46; display: block; }
     .msg-error { background: #fde8ea; color: #e63946; display: block; }
-    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
-    .modal.open { display: flex; }
-    .modal-box { background: white; border-radius: 20px; padding: 28px; text-align: center; max-width: 300px; width: 100%; }
-    #qr-output { margin: 0 auto 16px; width: 180px; height: 180px; }
-    .modal-btns { display: flex; gap: 10px; justify-content: center; }
-    .btn-dl { padding: 10px 20px; background: var(--brand2); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; }
-    .btn-close { padding: 10px 20px; background: #eee; color: #333; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; }
-    .empty { text-align: center; padding: 40px; color: #aaa; font-size: 14px; }
-    .loading { text-align: center; padding: 40px; color: #aaa; }
-    select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; outline: none; background: white; }
 
-    /* Logo upload */
+    /* ── LOGO UPLOAD ── */
     .logo-upload-area { display: flex; align-items: center; gap: 16px; padding: 16px; border: 2px dashed #e0ddd8; border-radius: 12px; margin-bottom: 14px; cursor: pointer; transition: border-color 0.2s; }
     .logo-upload-area:hover { border-color: var(--brand2); }
     .logo-preview-wrap { width: 64px; height: 64px; border-radius: 12px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 30px; overflow: hidden; flex-shrink: 0; border: 1px solid #e0e0e0; }
@@ -117,7 +135,7 @@
     #logo-file-input { display: none; }
     .logo-size-note { font-size: 11px; color: #aaa; margin-top: -8px; margin-bottom: 14px; }
 
-    /* ── Announcement styles ── */
+    /* ── ANNOUNCEMENTS ── */
     .ann-compose { display: flex; gap: 8px; flex-direction: column; }
     .ann-compose textarea { width: 100%; padding: 12px 14px; border: 1.5px solid #e0ddd8; border-radius: 10px; font-size: 14px; resize: none; height: 80px; font-family: sans-serif; outline: none; }
     .ann-compose textarea:focus { border-color: var(--brand2); }
@@ -134,10 +152,25 @@
     .btn-toggle-off { padding: 5px 10px; background: #fff3cd; color: #8a6000; border: none; border-radius: 6px; font-size: 11px; cursor: pointer; }
     .preview-banner { display: flex; align-items: center; gap: 10px; background: linear-gradient(90deg,#ee9b00,#ca6702); color: white; padding: 12px 16px; border-radius: 10px; font-size: 13px; margin-bottom: 16px; }
     .preview-banner .prev-icon { font-size: 18px; }
+
+    /* ── QR MODAL ── */
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
+    .modal.open { display: flex; }
+    .modal-box { background: white; border-radius: 20px; padding: 28px; text-align: center; max-width: 300px; width: 100%; }
+    #qr-output { margin: 0 auto 16px; width: 180px; height: 180px; }
+    .modal-btns { display: flex; gap: 10px; justify-content: center; }
+    .btn-dl { padding: 10px 20px; background: var(--brand2); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; }
+    .btn-close { padding: 10px 20px; background: #eee; color: #333; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; }
+
+    /* ── MISC ── */
+    .empty { text-align: center; padding: 40px; color: #aaa; font-size: 14px; }
+    .loading { text-align: center; padding: 40px; color: #aaa; }
+    select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; outline: none; background: white; }
   </style>
 </head>
 <body>
 
+<!-- ══════════════ LOGIN SCREEN ══════════════ -->
 <div id="login-screen">
   <div class="login-logo">⚙️</div>
   <div class="login-title">Welco Admin</div>
@@ -156,15 +189,13 @@
   </div>
 </div>
 
-<!-- FORGOT PASSWORD MODAL -->
+<!-- ══════════════ FORGOT PASSWORD MODAL ══════════════ -->
 <div id="forgot-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;padding:20px">
   <div style="background:white;border-radius:20px;padding:28px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,0.3)">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
       <div style="font-size:18px;font-weight:700;color:#0d1b1e">Reset Password 🔑</div>
       <span onclick="hideForgot()" style="cursor:pointer;font-size:20px;color:#aaa">✕</span>
     </div>
-
-    <!-- Step 1: Email -->
     <div id="fp1">
       <div style="font-size:13px;color:#888;margin-bottom:16px">Enter your email to find your account.</div>
       <div style="color:#e63946;font-size:13px;margin-bottom:10px;display:none" id="fp-err1"></div>
@@ -172,8 +203,6 @@
       <input type="email" id="fp-email" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none;margin-bottom:14px">
       <button onclick="fpFindAccount(this)" style="width:100%;padding:12px;background:#005f73;color:white;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer">Find My Account →</button>
     </div>
-
-    <!-- Step 2: Secret Answer + New Password -->
     <div id="fp2" style="display:none">
       <div style="font-size:13px;color:#888;margin-bottom:16px" id="fp-q-text">Answer your secret question</div>
       <div style="color:#e63946;font-size:13px;margin-bottom:10px;display:none" id="fp-err2"></div>
@@ -185,8 +214,6 @@
       <input type="password" id="fp-cp" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none;margin-bottom:14px">
       <button onclick="fpReset(this)" style="width:100%;padding:12px;background:#005f73;color:white;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer">Reset Password</button>
     </div>
-
-    <!-- Step 3: Success -->
     <div id="fp3" style="display:none;text-align:center;padding:10px 0">
       <div style="font-size:48px;margin-bottom:12px">✅</div>
       <div style="font-size:18px;font-weight:700;color:#0d1b1e;margin-bottom:8px">Password Reset!</div>
@@ -196,22 +223,41 @@
   </div>
 </div>
 
+<!-- ══════════════ APP SCREEN ══════════════ -->
 <div id="app-screen">
+
+  <!-- TOPBAR with hotel switcher -->
   <div class="topbar">
     <div class="topbar-left">
       <img id="topbar-logo-img" src="" alt="Hotel Logo">
       <div id="topbar-logo-emoji">🏨</div>
-      <div>
+      <div style="min-width:0">
         <div class="topbar-name" id="t-name">Hotel</div>
         <div class="topbar-city" id="t-city">Admin Panel</div>
       </div>
     </div>
-    <button class="logout-btn" onclick="doLogout()">Logout</button>
+    <div class="topbar-right">
+      <!-- Hotel Switcher — shown only when owner has 2+ hotels -->
+      <div class="hotel-switcher" id="hotel-switcher">
+        <button class="hotel-switcher-btn" onclick="toggleSwitcher(event)">
+          <span>🏨</span>
+          <span id="switcher-label">Switch Hotel</span>
+          <span class="switcher-arrow">▼</span>
+        </button>
+        <div class="hotel-dropdown" id="hotel-dropdown">
+          <div class="hotel-dropdown-header">Your Hotels</div>
+          <!-- items injected by renderHotelDropdown() -->
+        </div>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">Logout</button>
+    </div>
   </div>
 
+  <!-- TABS -->
   <div class="tabs">
     <div class="tab active" onclick="showTab('overview')">📊 Overview</div>
     <div class="tab" onclick="showTab('rooms')">🚪 Rooms</div>
+    <div class="tab" onclick="showTab('staff')">👤 Staff</div>
     <div class="tab" onclick="showTab('hod')">🎯 HOD</div>
     <div class="tab" onclick="showTab('announce')">📢 Announce</div>
     <div class="tab" onclick="showTab('reports')">📋 Reports</div>
@@ -220,7 +266,7 @@
 
   <div class="content">
 
-    <!-- OVERVIEW -->
+    <!-- ══ OVERVIEW ══ -->
     <div class="tab-panel active" id="panel-overview">
       <div class="stat-grid">
         <div class="stat-box"><div class="stat-num" id="s-rooms">-</div><div class="stat-label">Rooms</div></div>
@@ -235,7 +281,7 @@
       </div>
     </div>
 
-    <!-- ROOMS -->
+    <!-- ══ ROOMS ══ -->
     <div class="tab-panel" id="panel-rooms">
       <div class="card">
         <div class="card-title">Add New Room</div>
@@ -252,6 +298,26 @@
         <div class="rooms-grid" id="rooms-grid"><div class="loading">Loading...</div></div>
       </div>
     </div>
+
+    <!-- ══ STAFF ══ -->
+    <div class="tab-panel" id="panel-staff">
+      <div class="card">
+        <div class="card-title">Add Staff Member</div>
+        <div class="card-sub">Staff login at welco.onrender.com/staff.html using their PIN</div>
+        <div class="msg-box" id="staff-msg"></div>
+        <div class="add-row">
+          <input type="text" id="new-staff-name" placeholder="Full name e.g. Ramesh">
+          <select id="new-staff-dept" style="padding:10px 12px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:14px;outline:none;background:white">
+            <option value="Housekeeping">🛏️ Housekeeping</option>
+            <option value="Room Service">🍽️ Room Service</option>
+            <option value="Maintenance">🔧 Maintenance</option>
+            <option value="Front Desk">🛎️ Front Desk</option>
+            <option value="General">👤 General</option>
+          </select>
+          <input type="text" id="new-staff-pin" placeholder="4-digit PIN" maxlength="4" style="max-width:110px">
+          <button class="btn-add" onclick="addStaff()">+ Add</button>
+        </div>
+      </div>
       <div class="card">
         <div class="card-title">Staff Members</div>
         <div class="card-sub">These are the only people who can access your staff dashboard</div>
@@ -259,8 +325,7 @@
       </div>
     </div>
 
-    
-    <!-- HOD TAB -->
+    <!-- ══ HOD ══ -->
     <div class="tab-panel" id="panel-hod">
       <div class="card">
         <div class="card-title">Add Head of Department</div>
@@ -269,10 +334,10 @@
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
           <input type="text" id="new-hod-name" placeholder="HOD full name e.g. Sunita" style="flex:1;min-width:120px;padding:10px 12px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:14px;outline:none">
           <select id="new-hod-dept" style="padding:10px 12px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:14px;outline:none;background:white">
-            <option value="Housekeeping">&#x1F6CF;&#xFE0F; Housekeeping</option>
-            <option value="Room Service">&#x1F37D;&#xFE0F; Room Service</option>
-            <option value="Maintenance">&#x1F527; Maintenance</option>
-            <option value="Front Desk">&#x1F6CE;&#xFE0F; Front Desk</option>
+            <option value="Housekeeping">🛏️ Housekeeping</option>
+            <option value="Room Service">🍽️ Room Service</option>
+            <option value="Maintenance">🔧 Maintenance</option>
+            <option value="Front Desk">🛎️ Front Desk</option>
           </select>
           <input type="text" id="new-hod-pin" placeholder="4-digit PIN" maxlength="4" style="max-width:110px;padding:10px 12px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:14px;outline:none">
           <button class="btn-add" onclick="addHOD()">+ Add HOD</button>
@@ -285,19 +350,16 @@
       </div>
     </div>
 
-    <!-- ═══════════ ANNOUNCEMENTS TAB ═══════════ -->
+    <!-- ══ ANNOUNCEMENTS ══ -->
     <div class="tab-panel" id="panel-announce">
       <div class="card">
         <div class="card-title">Post Announcement</div>
         <div class="card-sub">Guests will see this banner when they scan any room QR code</div>
         <div class="msg-box" id="ann-msg"></div>
-
-        <!-- Live preview -->
         <div class="preview-banner" id="ann-preview" style="display:none">
           <span class="prev-icon">📢</span>
           <span id="ann-preview-text" style="flex:1"></span>
         </div>
-
         <div class="ann-compose">
           <textarea id="ann-input" placeholder="e.g. Pool closed for maintenance today. Sorry for the inconvenience!" oninput="previewAnn(this.value)"></textarea>
           <div class="ann-compose-row">
@@ -305,16 +367,14 @@
           </div>
         </div>
       </div>
-
       <div class="card">
         <div class="card-title">Active & Past Announcements</div>
         <div class="card-sub">Only one announcement can be active at a time</div>
         <div id="ann-list"><div class="loading">Loading...</div></div>
       </div>
     </div>
-    <!-- ══════════════════════════════════════════ -->
 
-    <!-- REPORTS -->
+    <!-- ══ REPORTS ══ -->
     <div class="tab-panel" id="panel-reports">
       <div class="card">
         <div class="card-title">All Requests</div>
@@ -338,7 +398,7 @@
       </div>
     </div>
 
-    <!-- SETTINGS -->
+    <!-- ══ SETTINGS ══ -->
     <div class="tab-panel" id="panel-settings">
       <div class="card">
         <div class="card-title">Hotel Settings</div>
@@ -373,17 +433,18 @@
             <label>Hotel Emoji <span style="font-weight:400;text-transform:none;font-size:11px">(used when no logo is set)</span></label>
             <input type="text" id="set-emoji" placeholder="🏨" maxlength="2">
           </div>
-          <button class="save-btn" onclick="saveSettings()">Save Changes</button>
+          <button class="save-btn" onclick="saveSettings()" style="margin-top:14px">Save Changes</button>
         </div>
       </div>
     </div>
 
-  </div>
-</div>
+  </div><!-- /content -->
+</div><!-- /app-screen -->
 
+<!-- QR MODAL -->
 <div class="modal" id="qr-modal">
   <div class="modal-box">
-    <h3 id="qr-title">Room QR</h3>
+    <h3 id="qr-title" style="margin-bottom:4px">Room QR</h3>
     <p id="qr-sub" style="color:#888;font-size:13px;margin-bottom:16px">Scan to open guest portal</p>
     <div id="qr-output"></div>
     <div class="modal-btns">
@@ -394,6 +455,9 @@
 </div>
 
 <script>
+/* ═══════════════════════════════════════════════
+   GLOBALS
+═══════════════════════════════════════════════ */
 var hotel = null;
 var allHotels = [];
 var currentQRRoom = '';
@@ -402,41 +466,67 @@ var pendingLogoBase64 = null;
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw-admin.js').catch(function(){});
 
+/* ═══════════════════════════════════════════════
+   LOGIN / LOGOUT
+═══════════════════════════════════════════════ */
 function doLogin() {
   var email = document.getElementById('l-email').value.trim();
   var password = document.getElementById('l-password').value;
+  var btn = document.querySelector('.login-btn');
   if (!email || !password) { showErr('Please enter email and password.'); return; }
-  // Try old system first (most users), then new owner system
-  fetch('/login', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:email,password:password})})
-    .then(function(r){ return r.json().then(function(d){ return {ok:r.ok,d:d}; }); })
-    .then(function(res){
-      if (res.ok) {
-        hotel = res.d.hotel || (res.d.hotels && res.d.hotels[0]);
-        allHotels = res.d.hotels || (hotel ? [hotel] : []);
-        if (!hotel) { showErr('No hotel found for this account.'); return; }
-        localStorage.setItem('welco_admin_hotel', JSON.stringify(hotel));
-        localStorage.setItem('welco_admin_hotels', JSON.stringify(allHotels));
-        startApp();
-        return;
-      }
-      // Try new owner system
-      return fetch('/owner/login', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:email,password:password})})
-        .then(function(r2){ return r2.json().then(function(d){ return {ok:r2.ok,d:d}; }); })
-        .then(function(res2){
-          if (!res2.ok) { showErr(res2.d.error || 'Invalid email or password.'); return; }
-          allHotels = res2.d.hotels || [];
-          hotel = allHotels[0] || res2.d.hotel;
-          if (!hotel) { showErr('No hotel found. Please sign up first.'); return; }
-          localStorage.setItem('welco_admin_hotel', JSON.stringify(hotel));
-          localStorage.setItem('welco_admin_hotels', JSON.stringify(allHotels));
-          startApp();
-        });
-    }).catch(function(){ showErr('Connection error. Please try again.'); });
+  attemptLogin(email, password, btn, 1);
+}
+
+function attemptLogin(email, password, btn, attempt) {
+  var messages = ['Logging in…', 'Server waking up… (30s)', 'Almost there…'];
+  btn.textContent = messages[Math.min(attempt - 1, messages.length - 1)];
+  btn.disabled = true;
+
+  // 70 second timeout — handles Render free tier cold start (up to 50s)
+  var controller = new AbortController();
+  var timeoutId = setTimeout(function() { controller.abort(); }, 70000);
+
+  fetch('/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email, password: password }),
+    signal: controller.signal
+  })
+  .then(function(r) {
+    clearTimeout(timeoutId);
+    return r.json().then(function(d) { return { ok: r.ok, d: d }; });
+  })
+  .then(function(res) {
+    btn.textContent = 'Login to Admin';
+    btn.disabled = false;
+    if (!res.ok) {
+      showErr(res.d.error || 'Invalid email or password.');
+      return;
+    }
+    allHotels = res.d.hotels || (res.d.hotel ? [res.d.hotel] : []);
+    hotel = res.d.hotel || allHotels[0] || null;
+    if (!hotel) { showErr('No hotel found for this account.'); return; }
+    localStorage.setItem('welco_admin_hotel', JSON.stringify(hotel));
+    localStorage.setItem('welco_admin_hotels', JSON.stringify(allHotels));
+    startApp();
+  })
+  .catch(function(err) {
+    clearTimeout(timeoutId);
+    if (attempt < 3) {
+      // Auto-retry up to 3 times — server may still be waking up
+      setTimeout(function() { attemptLogin(email, password, btn, attempt + 1); }, 5000);
+    } else {
+      btn.textContent = 'Login to Admin';
+      btn.disabled = false;
+      showErr('Server is taking too long. Please wait 1 minute and try again.');
+    }
+  });
 }
 
 function showErr(msg) {
   var el = document.getElementById('login-err');
-  el.textContent = msg; el.style.display = 'block';
+  el.textContent = msg;
+  el.style.display = 'block';
 }
 
 function doLogout() {
@@ -446,23 +536,32 @@ function doLogout() {
   hotel = null;
   document.getElementById('app-screen').style.display = 'none';
   document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-err').style.display = 'none';
 }
 
+/* ═══════════════════════════════════════════════
+   APP STARTUP
+═══════════════════════════════════════════════ */
 function startApp() {
-  // Load all hotels for switcher
-  var storedHotels = localStorage.getItem('welco_admin_hotels');
-  if (storedHotels) {
-    try { allHotels = JSON.parse(storedHotels); } catch(e) {}
-  }
+  // Refresh allHotels from storage if needed
+  try {
+    var stored = localStorage.getItem('welco_admin_hotels');
+    if (stored) allHotels = JSON.parse(stored);
+  } catch(e) {}
+
+  // Hotel switcher — show only when owner has 2+ hotels
+  var sw = document.getElementById('hotel-switcher');
   if (allHotels.length > 1) {
-    document.getElementById('hotel-switcher').style.display = 'flex';
+    sw.style.display = 'block';
     document.getElementById('switcher-label').textContent = hotel.name;
     renderHotelDropdown();
   } else {
-    document.getElementById('hotel-switcher').style.display = 'none';
+    sw.style.display = 'none';
   }
+
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app-screen').style.display = 'block';
+
   document.getElementById('t-name').textContent = hotel.name;
   document.getElementById('t-city').textContent = hotel.city || '';
   document.documentElement.style.setProperty('--brand', hotel.colour || '#005f73');
@@ -473,9 +572,65 @@ function startApp() {
   document.getElementById('set-colorpicker').value = hotel.colour || '#0a9396';
   document.getElementById('set-emoji').value = hotel.emoji || '🏨';
   applyLogoOrEmoji(hotel.logo_url, hotel.emoji);
-  loadOverview(); loadRooms(); loadStaff();
+
+  pendingLogoBase64 = null;
+  showTab('overview');
+  loadOverview();
+  loadRooms();
+  loadStaff();
 }
 
+/* ═══════════════════════════════════════════════
+   HOTEL SWITCHER
+═══════════════════════════════════════════════ */
+function toggleSwitcher(e) {
+  e.stopPropagation();
+  document.getElementById('hotel-switcher').classList.toggle('open');
+}
+
+function renderHotelDropdown() {
+  var dd = document.getElementById('hotel-dropdown');
+  dd.innerHTML = '<div class="hotel-dropdown-header">Your Hotels</div>';
+  allHotels.forEach(function(h) {
+    var isActive = h.hotel_id === hotel.hotel_id;
+    var item = document.createElement('div');
+    item.className = 'hotel-dropdown-item' + (isActive ? ' active' : '');
+    item.innerHTML =
+      '<div class="h-dot" style="background:' + (h.colour || '#005f73') + '"></div>' +
+      '<div class="h-item-text">' +
+        '<div class="h-item-name">' + h.name + '</div>' +
+        '<div class="h-item-city">' + (h.city || '') + '</div>' +
+      '</div>' +
+      (isActive ? '<span class="h-check">✓</span>' : '');
+    item.onclick = function() { switchToHotel(h.hotel_id); };
+    dd.appendChild(item);
+  });
+  var addBtn = document.createElement('div');
+  addBtn.className = 'hotel-dropdown-add';
+  addBtn.innerHTML = '<span>➕</span><span>Add New Hotel</span>';
+  addBtn.onclick = function() { window.location.href = '/signup.html'; };
+  dd.appendChild(addBtn);
+}
+
+function switchToHotel(hotel_id) {
+  var h = allHotels.find(function(x) { return x.hotel_id === hotel_id; });
+  if (!h) return;
+  hotel = h;
+  localStorage.setItem('welco_admin_hotel', JSON.stringify(hotel));
+  document.getElementById('hotel-switcher').classList.remove('open');
+  document.getElementById('switcher-label').textContent = hotel.name;
+  startApp();
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+  var sw = document.getElementById('hotel-switcher');
+  if (sw && !sw.contains(e.target)) sw.classList.remove('open');
+});
+
+/* ═══════════════════════════════════════════════
+   LOGO
+═══════════════════════════════════════════════ */
 function applyLogoOrEmoji(logoUrl, emoji) {
   var imgEl = document.getElementById('topbar-logo-img');
   var emojiEl = document.getElementById('topbar-logo-emoji');
@@ -497,8 +652,8 @@ function applyLogoOrEmoji(logoUrl, emoji) {
 function handleLogoUpload(event) {
   var file = event.target.files[0]; if (!file) return;
   var note = document.getElementById('logo-size-note');
-  if (file.size > 1024*1024) { note.textContent = '⚠️ Image is large ('+( file.size/1024/1024).toFixed(1)+' MB). Recommended: under 1 MB.'; note.style.color='#e67e00'; }
-  else { note.textContent = '✅ '+file.name+' ready — click Save Changes to apply.'; note.style.color='#065f46'; }
+  if (file.size > 1024*1024) { note.textContent = '⚠️ Image is large (' + (file.size/1024/1024).toFixed(1) + ' MB). Recommended: under 1 MB.'; note.style.color='#e67e00'; }
+  else { note.textContent = '✅ ' + file.name + ' ready — click Save Changes to apply.'; note.style.color='#065f46'; }
   var reader = new FileReader();
   reader.onload = function(e) { pendingLogoBase64 = e.target.result; applyLogoOrEmoji(pendingLogoBase64, hotel.emoji); };
   reader.readAsDataURL(file);
@@ -512,24 +667,31 @@ function removeLogo() {
   document.getElementById('logo-file-input').value = '';
 }
 
+/* ═══════════════════════════════════════════════
+   TABS
+═══════════════════════════════════════════════ */
 function showTab(name) {
-  var names = ['overview','rooms','hod','announce','reports','settings'];
-  document.querySelectorAll('.tab').forEach(function(t,i){ t.classList.toggle('active', names[i]===name); });
-  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+  var names = ['overview','rooms','staff','hod','announce','reports','settings'];
+  document.querySelectorAll('.tab').forEach(function(t,i) { t.classList.toggle('active', names[i]===name); });
+  document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
   document.getElementById('panel-'+name).classList.add('active');
   if (name==='reports') loadReports();
   if (name==='rooms') loadRooms();
+  if (name==='staff') loadStaff();
   if (name==='announce') loadAnnouncements();
   if (name==='hod') loadHOD();
 }
 
+/* ═══════════════════════════════════════════════
+   OVERVIEW
+═══════════════════════════════════════════════ */
 function loadOverview() {
   Promise.all([
     fetch('/rooms?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}),
     fetch('/requests?hotel_id='+hotel.hotel_id).then(function(r){return r.json();})
   ]).then(function(res){
     var rooms=res[0], reqs=res[1];
-    document.getElementById('s-rooms').textContent = Array.isArray(rooms)?rooms.length:0;
+    document.getElementById('s-rooms').textContent = Array.isArray(rooms) ? rooms.length : 0;
     if (Array.isArray(reqs)) {
       document.getElementById('s-pending').textContent = reqs.filter(function(r){return r.status==='pending';}).length;
       document.getElementById('s-done').textContent = reqs.filter(function(r){return r.status==='done';}).length;
@@ -540,60 +702,105 @@ function loadOverview() {
   }).catch(function(){});
 }
 
+/* ═══════════════════════════════════════════════
+   ROOMS
+═══════════════════════════════════════════════ */
 function loadRooms() {
-  fetch('/rooms?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(rooms){
-    if (!Array.isArray(rooms)) return;
-    document.getElementById('rooms-count').textContent = rooms.length+' rooms total';
-    document.getElementById('rooms-grid').innerHTML = rooms.length===0 ? '<div class="empty" style="grid-column:1/-1">No rooms yet</div>'
-      : rooms.map(function(r){ return '<div class="room-card"><div class="room-num">Room '+r.room_number+'</div><div class="room-floor">Floor '+(r.floor||1)+'</div><div class="room-actions"><button class="btn-qr" onclick="showQR(\''+hotel.hotel_id+'\',\''+r.id+'\',\''+r.room_number+'\')">QR</button><button class="btn-del" onclick="deleteRoom('+r.id+')">✕</button></div></div>'; }).join('');
-  }).catch(function(){});
+  fetch('/rooms?hotel_id='+hotel.hotel_id)
+    .then(function(r){return r.json();})
+    .then(function(rooms){
+      if (!Array.isArray(rooms)) return;
+      document.getElementById('rooms-count').textContent = rooms.length + ' rooms total';
+      document.getElementById('rooms-grid').innerHTML = rooms.length===0
+        ? '<div class="empty" style="grid-column:1/-1">No rooms yet</div>'
+        : rooms.map(function(r){
+            return '<div class="room-card">'+
+              '<div class="room-num">Room '+r.room_number+'</div>'+
+              '<div class="room-floor">Floor '+(r.floor||1)+'</div>'+
+              '<div class="room-actions">'+
+                '<button class="btn-qr" onclick="showQR(\''+hotel.hotel_id+'\',\''+r.id+'\',\''+r.room_number+'\')">QR</button>'+
+                '<button class="btn-del" onclick="deleteRoom('+r.id+')">✕</button>'+
+              '</div>'+
+            '</div>';
+          }).join('');
+    }).catch(function(){});
 }
 
 function addRoom() {
   var num = document.getElementById('new-room-num').value.trim();
   var floor = document.getElementById('new-room-floor').value || 1;
   if (!num) { alert('Enter a room number!'); return; }
-  fetch('/rooms', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hotel.hotel_id,room_number:num,floor:parseInt(floor),is_active:true})})
-    .then(function(){ document.getElementById('new-room-num').value=''; document.getElementById('new-room-floor').value=''; loadRooms(); loadOverview(); });
+  fetch('/rooms', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({hotel_id:hotel.hotel_id, room_number:num, floor:parseInt(floor), is_active:true})
+  }).then(function(){ document.getElementById('new-room-num').value=''; document.getElementById('new-room-floor').value=''; loadRooms(); loadOverview(); });
 }
 
 function deleteRoom(id) {
   if (!confirm('Delete this room?')) return;
-  fetch('/rooms/'+id,{method:'DELETE'}).then(function(){ loadRooms(); loadOverview(); });
+  fetch('/rooms/'+id, {method:'DELETE'}).then(function(){ loadRooms(); loadOverview(); });
 }
 
+/* ═══════════════════════════════════════════════
+   STAFF
+═══════════════════════════════════════════════ */
 function loadStaff() {
-  fetch('/staff?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(staff){
-    if (!Array.isArray(staff)) return;
-    document.getElementById('staff-list').innerHTML = staff.length===0 ? '<div class="empty">No staff added yet.<br><small>Add staff above so they can login.</small></div>'
-      : staff.map(function(s){ var deptColors={'Housekeeping':'#4361EE','Room Service':'#F77F00','Maintenance':'#E63946','Front Desk':'#9B5DE5','General':'#888'};
-          var dc=deptColors[s.department]||'#888';
-          return '<div class="staff-row"><div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:8px;background:'+dc+'20;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:'+dc+'">'+(s.department||'?').substring(0,2).toUpperCase()+'</div><div><div class="staff-name-txt">'+s.name+'</div><div style="font-size:11px;color:#888">'+( s.staff_id||'No ID')+'  ·  '+(s.department||'General')+'</div></div></div><div style="display:flex;gap:8px;align-items:center"><div class="staff-pin">'+s.pin+'</div><button class="btn-remove" onclick="removeStaff('+s.id+')">Remove</button></div></div>'; }).join('');
-  }).catch(function(){});
+  fetch('/staff?hotel_id='+hotel.hotel_id)
+    .then(function(r){return r.json();})
+    .then(function(staff){
+      if (!Array.isArray(staff)) return;
+      var deptColors = {'Housekeeping':'#4361EE','Room Service':'#F77F00','Maintenance':'#E63946','Front Desk':'#9B5DE5','General':'#888'};
+      document.getElementById('staff-list').innerHTML = staff.length===0
+        ? '<div class="empty">No staff added yet.<br><small>Add staff above so they can login.</small></div>'
+        : staff.map(function(s){
+            var dc = deptColors[s.department] || '#888';
+            return '<div class="staff-row">'+
+              '<div style="display:flex;align-items:center;gap:10px">'+
+                '<div style="width:36px;height:36px;border-radius:8px;background:'+dc+'20;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:'+dc+'">'+
+                  (s.department||'?').substring(0,2).toUpperCase()+
+                '</div>'+
+                '<div>'+
+                  '<div class="staff-name-txt">'+s.name+'</div>'+
+                  '<div style="font-size:11px;color:#888">'+(s.staff_id||'No ID')+'  ·  '+(s.department||'General')+'</div>'+
+                '</div>'+
+              '</div>'+
+              '<div style="display:flex;gap:8px;align-items:center">'+
+                '<div class="staff-pin">'+s.pin+'</div>'+
+                '<button class="btn-remove" onclick="removeStaff('+s.id+')">Remove</button>'+
+              '</div>'+
+            '</div>';
+          }).join('');
+    }).catch(function(){});
 }
 
 function addStaff() {
   var name = document.getElementById('new-staff-name').value.trim();
-  var pin = document.getElementById('new-staff-pin').value.trim();
+  var pin  = document.getElementById('new-staff-pin').value.trim();
+  var dept = document.getElementById('new-staff-dept').value;
   if (!name || pin.length !== 4) { alert('Enter a full name and exactly 4-digit PIN'); return; }
-  fetch('/staff', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hotel.hotel_id,name:name,pin:pin})})
-    .then(function(r){return r.json();}).then(function(data){
-      if (data.error) { alert(data.error); return; }
-      document.getElementById('new-staff-name').value=''; document.getElementById('new-staff-pin').value='';
-      var msg = document.getElementById('staff-msg');
-      msg.textContent = '✅ '+name+' added! They can now login with PIN: '+pin;
-      msg.className = 'msg-box msg-success';
-      setTimeout(function(){ msg.className='msg-box'; }, 4000);
-      loadStaff();
-    });
+  fetch('/staff', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({hotel_id:hotel.hotel_id, name:name, pin:pin, department:dept})
+  }).then(function(r){return r.json();}).then(function(data){
+    if (data.error) { alert(data.error); return; }
+    document.getElementById('new-staff-name').value='';
+    document.getElementById('new-staff-pin').value='';
+    var msg = document.getElementById('staff-msg');
+    msg.textContent = '✅ '+name+' added! They can now login with PIN: '+pin;
+    msg.className = 'msg-box msg-success';
+    setTimeout(function(){ msg.className='msg-box'; }, 4000);
+    loadStaff();
+  });
 }
 
 function removeStaff(id) {
   if (!confirm('Remove this staff member? They will no longer be able to login.')) return;
-  fetch('/staff/'+id,{method:'DELETE'}).then(function(){ loadStaff(); });
+  fetch('/staff/'+id, {method:'DELETE'}).then(function(){ loadStaff(); });
 }
 
-/* ─── ANNOUNCEMENTS ─── */
+/* ═══════════════════════════════════════════════
+   ANNOUNCEMENTS
+═══════════════════════════════════════════════ */
 function previewAnn(val) {
   var prev = document.getElementById('ann-preview');
   if (val.trim()) { document.getElementById('ann-preview-text').textContent = val; prev.style.display='flex'; }
@@ -603,131 +810,178 @@ function previewAnn(val) {
 function postAnnouncement() {
   var msg = document.getElementById('ann-input').value.trim();
   if (!msg) { alert('Please type an announcement first.'); return; }
-  fetch('/announcements', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hotel.hotel_id,message:msg})})
-    .then(function(r){return r.json();}).then(function(data){
-      if (data.error) { alert(data.error); return; }
-      document.getElementById('ann-input').value='';
-      document.getElementById('ann-preview').style.display='none';
-      var m = document.getElementById('ann-msg');
-      m.textContent='✅ Announcement posted! Guests will see it now.';
-      m.className='msg-box msg-success';
-      setTimeout(function(){m.className='msg-box';},4000);
-      loadAnnouncements();
-    });
+  fetch('/announcements', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({hotel_id:hotel.hotel_id, message:msg})
+  }).then(function(r){return r.json();}).then(function(data){
+    if (data.error) { alert(data.error); return; }
+    document.getElementById('ann-input').value='';
+    document.getElementById('ann-preview').style.display='none';
+    var m = document.getElementById('ann-msg');
+    m.textContent='✅ Announcement posted! Guests will see it now.';
+    m.className='msg-box msg-success';
+    setTimeout(function(){m.className='msg-box';},4000);
+    loadAnnouncements();
+  });
 }
 
 function loadAnnouncements() {
-  fetch('/announcements?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(list){
-    var el = document.getElementById('ann-list');
-    if (!Array.isArray(list) || list.length===0) { el.innerHTML='<div class="empty">No announcements yet</div>'; return; }
-    el.innerHTML = list.map(function(a){
-      var time = new Date(a.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
-      var badge = a.is_active ? '<span class="ann-active-badge">🟢 Live</span>' : '<span class="ann-inactive-badge">Off</span>';
-      var toggleBtn = a.is_active
-        ? '<button class="btn-toggle-off" onclick="toggleAnn('+a.id+',false)">Turn Off</button>'
-        : '<button class="btn-toggle-on" onclick="toggleAnn('+a.id+',true)">Turn On</button>';
-      return '<div class="ann-row"><div><div class="ann-msg">'+a.message+'</div><div class="ann-meta">'+badge+' &nbsp;'+time+'</div></div><div class="ann-actions">'+toggleBtn+'<button class="btn-del" onclick="deleteAnn('+a.id+')">✕</button></div></div>';
-    }).join('');
-  }).catch(function(){ document.getElementById('ann-list').innerHTML='<div class="empty">Could not load</div>'; });
+  fetch('/announcements?hotel_id='+hotel.hotel_id)
+    .then(function(r){return r.json();})
+    .then(function(list){
+      var el = document.getElementById('ann-list');
+      if (!Array.isArray(list) || list.length===0) { el.innerHTML='<div class="empty">No announcements yet</div>'; return; }
+      el.innerHTML = list.map(function(a){
+        var time = new Date(a.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+        var badge = a.is_active ? '<span class="ann-active-badge">🟢 Live</span>' : '<span class="ann-inactive-badge">Off</span>';
+        var toggleBtn = a.is_active
+          ? '<button class="btn-toggle-off" onclick="toggleAnn('+a.id+',false)">Turn Off</button>'
+          : '<button class="btn-toggle-on" onclick="toggleAnn('+a.id+',true)">Turn On</button>';
+        return '<div class="ann-row">'+
+          '<div><div class="ann-msg">'+a.message+'</div><div class="ann-meta">'+badge+'&nbsp;&nbsp;'+time+'</div></div>'+
+          '<div class="ann-actions">'+toggleBtn+'<button class="btn-del" onclick="deleteAnn('+a.id+')">✕</button></div>'+
+        '</div>';
+      }).join('');
+    }).catch(function(){ document.getElementById('ann-list').innerHTML='<div class="empty">Could not load</div>'; });
 }
 
 function toggleAnn(id, active) {
-  fetch('/announcements/'+id+'/toggle',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({is_active:active})})
+  fetch('/announcements/'+id+'/toggle', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({is_active:active})})
     .then(function(){ loadAnnouncements(); });
 }
 
 function deleteAnn(id) {
   if (!confirm('Delete this announcement?')) return;
-  fetch('/announcements/'+id,{method:'DELETE'}).then(function(){ loadAnnouncements(); });
+  fetch('/announcements/'+id, {method:'DELETE'}).then(function(){ loadAnnouncements(); });
 }
 
+/* ═══════════════════════════════════════════════
+   REPORTS
+═══════════════════════════════════════════════ */
 function loadReports() {
-  fetch('/requests?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(reqs){
-    if (!Array.isArray(reqs)) return;
-    var status=document.getElementById('filter-status').value;
-    var cat=document.getElementById('filter-cat').value;
-    if (status) reqs=reqs.filter(function(r){return r.status===status;});
-    if (cat) reqs=reqs.filter(function(r){return r.category===cat;});
-    document.getElementById('reports-list').innerHTML = reqs.length ? reqs.map(reqRow).join('') : '<div class="empty">No requests found</div>';
-  }).catch(function(){});
+  fetch('/requests?hotel_id='+hotel.hotel_id)
+    .then(function(r){return r.json();})
+    .then(function(reqs){
+      if (!Array.isArray(reqs)) return;
+      var status = document.getElementById('filter-status').value;
+      var cat    = document.getElementById('filter-cat').value;
+      if (status) reqs = reqs.filter(function(r){return r.status===status;});
+      if (cat)    reqs = reqs.filter(function(r){return r.category===cat;});
+      document.getElementById('reports-list').innerHTML = reqs.length ? reqs.map(reqRow).join('') : '<div class="empty">No requests found</div>';
+    }).catch(function(){});
 }
 
 function reqRow(r) {
-  var bc=r.status==='done'?'badge-done':r.status==='in_progress'?'badge-progress':'badge-pending';
-  var bt=r.status==='done'?'Done':r.status==='in_progress'?'In Progress':'Pending';
-  var time=new Date(r.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
-  return '<div class="request-row"><div class="req-top"><span class="req-room">Room '+(r.room_number||'-')+'</span><span class="req-cat">'+(r.category||'General')+'</span></div><div class="req-msg">'+(r.message||'No details')+'</div><div class="req-meta"><span class="badge '+bc+'">'+bt+'</span>'+(r.claimed_by?'<span>👷 '+r.claimed_by+'</span>':'')+(r.feedback_rating?'<span>⭐ '+r.feedback_rating+'/5</span>':'')+'<span>'+time+'</span></div></div>';
+  var bc = r.status==='done'?'badge-done':r.status==='in_progress'?'badge-progress':'badge-pending';
+  var bt = r.status==='done'?'Done':r.status==='in_progress'?'In Progress':'Pending';
+  var time = new Date(r.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+  return '<div class="request-row">'+
+    '<div class="req-top"><span class="req-room">Room '+(r.room_number||'-')+'</span><span class="req-cat">'+(r.category||'General')+'</span></div>'+
+    '<div class="req-msg">'+(r.message||'No details')+'</div>'+
+    '<div class="req-meta"><span class="badge '+bc+'">'+bt+'</span>'+
+      (r.claimed_by?'<span>👷 '+r.claimed_by+'</span>':'')+
+      (r.feedback_rating?'<span>⭐ '+r.feedback_rating+'/5</span>':'')+
+      '<span>'+time+'</span>'+
+    '</div>'+
+  '</div>';
 }
 
+/* ═══════════════════════════════════════════════
+   SETTINGS
+═══════════════════════════════════════════════ */
 function saveSettings() {
-  var name=document.getElementById('set-name').value.trim();
-  var city=document.getElementById('set-city').value.trim();
-  var colour=document.getElementById('set-colortext').value.trim();
-  var emoji=document.getElementById('set-emoji').value.trim();
-  if (!name) return;
+  var name   = document.getElementById('set-name').value.trim();
+  var city   = document.getElementById('set-city').value.trim();
+  var colour = document.getElementById('set-colortext').value.trim();
+  var emoji  = document.getElementById('set-emoji').value.trim();
+  if (!name) { alert('Hotel name cannot be empty.'); return; }
   var payload = { name:name, city:city, colour:colour, emoji:emoji };
   if (pendingLogoBase64 !== null) payload.logo_url = pendingLogoBase64;
-  fetch('/hotels/'+hotel.hotel_id+'/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
-    .then(function(r){
-      if (r.ok) {
-        var newLogo = pendingLogoBase64 !== null ? pendingLogoBase64 : hotel.logo_url;
-        hotel=Object.assign({},hotel,{name:name,city:city,colour:colour,emoji:emoji,logo_url:newLogo});
-        localStorage.setItem('welco_admin_hotel',JSON.stringify(hotel));
-        document.getElementById('t-name').textContent=name;
-        document.getElementById('t-city').textContent=city;
-        document.documentElement.style.setProperty('--brand',colour);
-        applyLogoOrEmoji(hotel.logo_url,emoji);
-        pendingLogoBase64=null;
-        var msg=document.getElementById('settings-msg');
-        msg.textContent='✅ Settings saved!'; msg.className='msg-box msg-success';
-        setTimeout(function(){msg.className='msg-box';},3000);
-        document.getElementById('logo-size-note').textContent='';
+  fetch('/hotels/'+hotel.hotel_id+'/update', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  }).then(function(r){
+    if (r.ok) {
+      var newLogo = pendingLogoBase64 !== null ? pendingLogoBase64 : hotel.logo_url;
+      hotel = Object.assign({}, hotel, {name:name, city:city, colour:colour, emoji:emoji, logo_url:newLogo});
+      localStorage.setItem('welco_admin_hotel', JSON.stringify(hotel));
+      // Update allHotels too so switcher stays in sync
+      for (var i=0; i<allHotels.length; i++) {
+        if (allHotels[i].hotel_id === hotel.hotel_id) { allHotels[i] = hotel; break; }
       }
-    });
+      localStorage.setItem('welco_admin_hotels', JSON.stringify(allHotels));
+      document.getElementById('t-name').textContent = name;
+      document.getElementById('t-city').textContent = city;
+      document.documentElement.style.setProperty('--brand', colour);
+      applyLogoOrEmoji(hotel.logo_url, emoji);
+      if (allHotels.length > 1) renderHotelDropdown();
+      pendingLogoBase64 = null;
+      var msg = document.getElementById('settings-msg');
+      msg.textContent='✅ Settings saved!'; msg.className='msg-box msg-success';
+      setTimeout(function(){ msg.className='msg-box'; }, 3000);
+      document.getElementById('logo-size-note').textContent='';
+    }
+  });
 }
 
-function showQR(hotelId,roomId,roomNum) {
-  currentQRRoom='Room-'+roomNum;
-  document.getElementById('qr-title').textContent='Room '+roomNum;
-  document.getElementById('qr-sub').textContent=hotel.name;
-  var output=document.getElementById('qr-output'); output.innerHTML='';
-  new QRCode(output,{text:LIVE_URL+'/guest.html?hotel_id='+hotelId+'&room_id='+roomId,width:180,height:180,colorDark:hotel.colour||'#005f73',colorLight:'#ffffff'});
+/* ═══════════════════════════════════════════════
+   QR
+═══════════════════════════════════════════════ */
+function showQR(hotelId, roomId, roomNum) {
+  currentQRRoom = 'Room-'+roomNum;
+  document.getElementById('qr-title').textContent = 'Room '+roomNum;
+  document.getElementById('qr-sub').textContent = hotel.name;
+  var output = document.getElementById('qr-output');
+  output.innerHTML = '';
+  new QRCode(output, {
+    text: LIVE_URL+'/guest.html?hotel_id='+hotelId+'&room_id='+roomId,
+    width: 180, height: 180,
+    colorDark: hotel.colour || '#005f73',
+    colorLight: '#ffffff'
+  });
   document.getElementById('qr-modal').classList.add('open');
 }
 
 function downloadQR() {
-  var canvas=document.querySelector('#qr-output canvas'); if(!canvas) return;
-  var link=document.createElement('a'); link.download='welco-'+currentQRRoom+'.png'; link.href=canvas.toDataURL(); link.click();
+  var canvas = document.querySelector('#qr-output canvas');
+  if (!canvas) return;
+  var link = document.createElement('a');
+  link.download = 'welco-'+currentQRRoom+'.png';
+  link.href = canvas.toDataURL();
+  link.click();
 }
 
-
-/* ─── HOD ─── */
+/* ═══════════════════════════════════════════════
+   HOD
+═══════════════════════════════════════════════ */
 function loadHOD() {
-  fetch('/hod?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(list){
-    var el = document.getElementById('hod-list');
-    if (!Array.isArray(list) || list.length===0) {
-      el.innerHTML = '<div class="empty">No HODs added yet. Add one above.</div>';
-      return;
-    }
-    var deptColors = {'Housekeeping':'#4361EE','Room Service':'#F77F00','Maintenance':'#E63946','Front Desk':'#9B5DE5'};
-    var deptEmojis = {'Housekeeping':'🛏️','Room Service':'🍽️','Maintenance':'🔧','Front Desk':'🛎️'};
-    el.innerHTML = list.map(function(h){
-      var color = deptColors[h.department] || '#005f73';
-      return '<div class="staff-row">'+
-        '<div style="display:flex;align-items:center;gap:10px">'+
-          '<div style="width:36px;height:36px;border-radius:8px;background:'+color+'20;display:flex;align-items:center;justify-content:center;font-size:18px">'+(deptEmojis[h.department]||'👤')+'</div>'+
-          '<div>'+
-            '<div class="staff-name-txt">'+h.name+'</div>'+
-            '<div style="font-size:11px;color:#888;margin-top:2px">'+h.department+'</div>'+
+  fetch('/hod?hotel_id='+hotel.hotel_id)
+    .then(function(r){return r.json();})
+    .then(function(list){
+      var el = document.getElementById('hod-list');
+      if (!Array.isArray(list) || list.length===0) {
+        el.innerHTML = '<div class="empty">No HODs added yet. Add one above.</div>';
+        return;
+      }
+      var deptColors = {'Housekeeping':'#4361EE','Room Service':'#F77F00','Maintenance':'#E63946','Front Desk':'#9B5DE5'};
+      var deptEmojis = {'Housekeeping':'🛏️','Room Service':'🍽️','Maintenance':'🔧','Front Desk':'🛎️'};
+      el.innerHTML = list.map(function(h){
+        var color = deptColors[h.department] || '#005f73';
+        return '<div class="staff-row">'+
+          '<div style="display:flex;align-items:center;gap:10px">'+
+            '<div style="width:36px;height:36px;border-radius:8px;background:'+color+'20;display:flex;align-items:center;justify-content:center;font-size:18px">'+(deptEmojis[h.department]||'👤')+'</div>'+
+            '<div>'+
+              '<div class="staff-name-txt">'+h.name+'</div>'+
+              '<div style="font-size:11px;color:#888;margin-top:2px">'+h.department+'</div>'+
+            '</div>'+
           '</div>'+
-        '</div>'+
-        '<div style="display:flex;gap:8px;align-items:center">'+
-          '<div class="staff-pin">PIN: '+h.pin+'</div>'+
-          '<button class="btn-remove" onclick="removeHOD('+h.id+')">Remove</button>'+
-        '</div>'+
-      '</div>';
-    }).join('');
-  }).catch(function(){});
+          '<div style="display:flex;gap:8px;align-items:center">'+
+            '<div class="staff-pin">PIN: '+h.pin+'</div>'+
+            '<button class="btn-remove" onclick="removeHOD('+h.id+')">Remove</button>'+
+          '</div>'+
+        '</div>';
+      }).join('');
+    }).catch(function(){});
 }
 
 function addHOD() {
@@ -735,72 +989,90 @@ function addHOD() {
   var dept = document.getElementById('new-hod-dept').value;
   var pin  = document.getElementById('new-hod-pin').value.trim();
   if (!name || pin.length !== 4) { alert('Enter full name and exactly 4-digit PIN'); return; }
-  fetch('/hod', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hotel.hotel_id,name:name,department:dept,pin:pin})})
-    .then(function(r){return r.json();}).then(function(data){
-      if (data.error) { alert(data.error); return; }
-      document.getElementById('new-hod-name').value='';
-      document.getElementById('new-hod-pin').value='';
-      var msg=document.getElementById('hod-msg');
-      msg.textContent='✅ '+name+' added as HOD for '+dept+'! They can login at welco.onrender.com/hod.html';
-      msg.className='msg-box msg-success';
-      setTimeout(function(){msg.className='msg-box';},5000);
-      loadHOD();
-    });
+  fetch('/hod', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({hotel_id:hotel.hotel_id, name:name, department:dept, pin:pin})
+  }).then(function(r){return r.json();}).then(function(data){
+    if (data.error) { alert(data.error); return; }
+    document.getElementById('new-hod-name').value='';
+    document.getElementById('new-hod-pin').value='';
+    var msg = document.getElementById('hod-msg');
+    msg.textContent='✅ '+name+' added as HOD for '+dept+'! They can login at welco.onrender.com/hod.html';
+    msg.className='msg-box msg-success';
+    setTimeout(function(){ msg.className='msg-box'; },5000);
+    loadHOD();
+  });
 }
 
 function removeHOD(id) {
   if (!confirm('Remove this HOD?')) return;
-  fetch('/hod/'+id,{method:'DELETE'}).then(function(){ loadHOD(); });
+  fetch('/hod/'+id, {method:'DELETE'}).then(function(){ loadHOD(); });
 }
 
+/* ═══════════════════════════════════════════════
+   FORGOT PASSWORD
+═══════════════════════════════════════════════ */
+function showForgot() { document.getElementById('forgot-modal').style.display='flex'; }
+function hideForgot() { document.getElementById('forgot-modal').style.display='none'; }
 
-/* ─── HOTEL SWITCHER ─── */
-function toggleSwitcher() {
-  document.getElementById('hotel-dropdown').classList.toggle('open');
+function fpFindAccount(btn) {
+  var email = document.getElementById('fp-email').value.trim();
+  var err   = document.getElementById('fp-err1');
+  if (!email) { err.textContent='Enter your email.'; err.style.display='block'; return; }
+  btn.textContent='Searching…'; btn.disabled=true;
+  fetch('/owner/secret-question?email='+encodeURIComponent(email))
+    .then(function(r){return r.json().then(function(d){return{ok:r.ok,d:d};});})
+    .then(function(res){
+      btn.textContent='Find My Account →'; btn.disabled=false;
+      if (!res.ok) { err.textContent=res.d.error||'Account not found.'; err.style.display='block'; return; }
+      err.style.display='none';
+      document.getElementById('fp-q-text').textContent='What is your mother\'s maiden name?';
+      document.getElementById('fp1').style.display='none';
+      document.getElementById('fp2').style.display='block';
+    }).catch(function(){
+      btn.textContent='Find My Account →'; btn.disabled=false;
+      err.textContent='Connection error.'; err.style.display='block';
+    });
 }
 
-function renderHotelDropdown() {
-  var dd = document.getElementById('hotel-dropdown');
-  if (!dd) return;
-  dd.innerHTML = allHotels.map(function(h) {
-    var isActive = h.hotel_id === hotel.hotel_id;
-    return '<div class="hotel-dropdown-item' + (isActive?' active':'') + '" onclick="switchToHotel(\'' + h.hotel_id + '\')">' +
-      '<div class="h-dot" style="background:'+(h.colour||'#005f73')+'"></div>' +
-      '<div><div style="font-weight:600">' + h.name + '</div>' +
-      '<div style="font-size:11px;color:#888">' + (h.city||'') + '</div></div>' +
-      (isActive ? '<span style="margin-left:auto;color:#005f73">✓</span>' : '') +
-    '</div>';
-  }).join('') +
-  '<div class="hotel-dropdown-item" onclick="window.location.href=\'signup.html\'" style="border-top:2px solid #eee;color:#0a9396">' +
-    '<span style="font-size:16px">➕</span><div style="margin-left:8px">Add New Hotel</div>' +
-  '</div>';
+function fpReset(btn) {
+  var ans  = document.getElementById('fp-ans').value.trim();
+  var np   = document.getElementById('fp-np').value;
+  var cp   = document.getElementById('fp-cp').value;
+  var err  = document.getElementById('fp-err2');
+  var email = document.getElementById('fp-email').value.trim();
+  if (!ans)            { err.textContent='Enter your secret answer.'; err.style.display='block'; return; }
+  if (np.length < 6)  { err.textContent='Password must be at least 6 characters.'; err.style.display='block'; return; }
+  if (np !== cp)       { err.textContent='Passwords do not match.'; err.style.display='block'; return; }
+  btn.textContent='Resetting…'; btn.disabled=true;
+  fetch('/owner/reset-password', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({email:email, secret_answer:ans, new_password:np})
+  }).then(function(r){return r.json().then(function(d){return{ok:r.ok,d:d};});})
+    .then(function(res){
+      btn.textContent='Reset Password'; btn.disabled=false;
+      if (!res.ok) { err.textContent=res.d.error||'Reset failed.'; err.style.display='block'; return; }
+      document.getElementById('fp2').style.display='none';
+      document.getElementById('fp3').style.display='block';
+    }).catch(function(){
+      btn.textContent='Reset Password'; btn.disabled=false;
+      err.textContent='Connection error.'; err.style.display='block';
+    });
 }
 
-function switchToHotel(hotel_id) {
-  var h = allHotels.find(function(x){ return x.hotel_id === hotel_id; });
-  if (!h) return;
-  hotel = h;
-  localStorage.setItem('welco_admin_hotel', JSON.stringify(hotel));
-  var dd = document.getElementById('hotel-dropdown');
-  if (dd) dd.classList.remove('open');
-  var sl = document.getElementById('switcher-label');
-  if (sl) sl.textContent = hotel.name;
-  renderHotelDropdown();
-  startApp();
-  showTab('overview');
-}
-
-document.addEventListener('click', function(e) {
-  var sw = document.getElementById('hotel-switcher');
-  if (sw && !sw.contains(e.target)) {
-    var dd = document.getElementById('hotel-dropdown');
-    if (dd) dd.classList.remove('open');
-  }
-});
-
-window.onload=function(){
-  var stored=localStorage.getItem('welco_admin_hotel');
-  if (stored) { hotel=JSON.parse(stored); startApp(); }
+/* ═══════════════════════════════════════════════
+   AUTO LOGIN FROM STORAGE
+═══════════════════════════════════════════════ */
+window.onload = function() {
+  try {
+    var stored = localStorage.getItem('welco_admin_hotel');
+    if (stored) {
+      hotel = JSON.parse(stored);
+      var storedHotels = localStorage.getItem('welco_admin_hotels');
+      if (storedHotels) allHotels = JSON.parse(storedHotels);
+      startApp();
+    }
+  } catch(e) {}
 };
 </script>
 </body>

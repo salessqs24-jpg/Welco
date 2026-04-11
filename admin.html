@@ -13,12 +13,7 @@
   <style>
     :root { --brand: #005f73; --brand2: #0a9396; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: sans-serif; background: #f4f4f4;
-  background-image: url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  background-repeat: no-repeat; min-height: 100vh; }
+    body { font-family: sans-serif; background: #f4f4f4 url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80') center/cover fixed no-repeat; min-height: 100vh; }
     #login-screen { min-height: 100vh; background: linear-gradient(160deg, #005f73, #0a9396); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
     .login-card { background: white; border-radius: 20px; padding: 28px; width: 100%; max-width: 360px; }
     .login-logo { font-size: 48px; text-align: center; margin-bottom: 8px; }
@@ -33,6 +28,16 @@
     .login-signup a { color: #0a9396; text-decoration: none; font-weight: 500; }
     #app-screen { display: none; }
     .topbar { background: linear-gradient(90deg, var(--brand), var(--brand2)); color: white; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; }
+    .hotel-switcher { position: relative; display: inline-block; }
+    .hotel-switcher-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-family: sans-serif; }
+    .hotel-switcher-btn:hover { background: rgba(255,255,255,0.25); }
+    .hotel-dropdown { position: absolute; top: 110%; right: 0; background: white; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.15); min-width: 200px; z-index: 100; overflow: hidden; display: none; }
+    .hotel-dropdown.open { display: block; }
+    .hotel-dropdown-item { padding: 12px 16px; font-size: 13px; color: #0d1b1e; cursor: pointer; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #f0f0f0; }
+    .hotel-dropdown-item:last-child { border-bottom: none; }
+    .hotel-dropdown-item:hover { background: #e8f4f4; }
+    .hotel-dropdown-item.active { background: #e8f4f4; font-weight: 700; color: var(--brand); }
+    .hotel-dropdown-item .h-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
     .topbar-left { display: flex; align-items: center; gap: 10px; }
     .topbar-name { font-size: 16px; font-weight: bold; }
     .topbar-city { font-size: 11px; opacity: 0.75; }
@@ -144,7 +149,50 @@
     <input type="password" id="l-password" placeholder="Your password">
     <button class="login-btn" onclick="doLogin()">Login to Admin</button>
     <div class="login-err" id="login-err"></div>
-    <div class="login-signup">No account? <a href="/signup.html">Sign up free</a></div>
+    <div style="display:flex;justify-content:space-between;margin-top:12px;font-size:13px">
+      <span style="color:#888">No account? <a href="/signup.html" style="color:var(--brand2)">Sign up free</a></span>
+      <a onclick="showForgot()" style="color:#e63946;cursor:pointer;font-weight:500">Forgot password?</a>
+    </div>
+  </div>
+</div>
+
+<!-- FORGOT PASSWORD MODAL -->
+<div id="forgot-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;padding:20px">
+  <div style="background:white;border-radius:20px;padding:28px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,0.3)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div style="font-size:18px;font-weight:700;color:#0d1b1e">Reset Password 🔑</div>
+      <span onclick="hideForgot()" style="cursor:pointer;font-size:20px;color:#aaa">✕</span>
+    </div>
+
+    <!-- Step 1: Email -->
+    <div id="fp1">
+      <div style="font-size:13px;color:#888;margin-bottom:16px">Enter your email to find your account.</div>
+      <div style="color:#e63946;font-size:13px;margin-bottom:10px;display:none" id="fp-err1"></div>
+      <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:5px;font-weight:600">Email Address</label>
+      <input type="email" id="fp-email" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none;margin-bottom:14px">
+      <button onclick="fpFindAccount(this)" style="width:100%;padding:12px;background:#005f73;color:white;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer">Find My Account →</button>
+    </div>
+
+    <!-- Step 2: Secret Answer + New Password -->
+    <div id="fp2" style="display:none">
+      <div style="font-size:13px;color:#888;margin-bottom:16px" id="fp-q-text">Answer your secret question</div>
+      <div style="color:#e63946;font-size:13px;margin-bottom:10px;display:none" id="fp-err2"></div>
+      <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:5px;font-weight:600">Secret Answer</label>
+      <input type="text" id="fp-ans" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none;margin-bottom:12px">
+      <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:5px;font-weight:600">New Password</label>
+      <input type="password" id="fp-np" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none;margin-bottom:12px">
+      <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:5px;font-weight:600">Confirm Password</label>
+      <input type="password" id="fp-cp" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none;margin-bottom:14px">
+      <button onclick="fpReset(this)" style="width:100%;padding:12px;background:#005f73;color:white;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer">Reset Password</button>
+    </div>
+
+    <!-- Step 3: Success -->
+    <div id="fp3" style="display:none;text-align:center;padding:10px 0">
+      <div style="font-size:48px;margin-bottom:12px">✅</div>
+      <div style="font-size:18px;font-weight:700;color:#0d1b1e;margin-bottom:8px">Password Reset!</div>
+      <div style="font-size:13px;color:#888;margin-bottom:16px">Login with your new password.</div>
+      <button onclick="hideForgot()" style="width:100%;padding:12px;background:#005f73;color:white;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer">Go to Login</button>
+    </div>
   </div>
 </div>
 
@@ -347,6 +395,7 @@
 
 <script>
 var hotel = null;
+var allHotels = [];
 var currentQRRoom = '';
 var LIVE_URL = 'https://welco.onrender.com';
 var pendingLogoBase64 = null;
@@ -357,14 +406,32 @@ function doLogin() {
   var email = document.getElementById('l-email').value.trim();
   var password = document.getElementById('l-password').value;
   if (!email || !password) { showErr('Please enter email and password.'); return; }
-  fetch('/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:email,password:password}) })
+  // Try old system first (most users), then new owner system
+  fetch('/login', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:email,password:password})})
     .then(function(r){ return r.json().then(function(d){ return {ok:r.ok,d:d}; }); })
     .then(function(res){
-      if (!res.ok) { showErr(res.d.error || 'Login failed.'); return; }
-      hotel = res.d.hotel;
-      localStorage.setItem('welco_admin_hotel', JSON.stringify(hotel));
-      startApp();
-    }).catch(function(){ showErr('Connection error.'); });
+      if (res.ok) {
+        hotel = res.d.hotel || (res.d.hotels && res.d.hotels[0]);
+        allHotels = res.d.hotels || (hotel ? [hotel] : []);
+        if (!hotel) { showErr('No hotel found for this account.'); return; }
+        localStorage.setItem('welco_admin_hotel', JSON.stringify(hotel));
+        localStorage.setItem('welco_admin_hotels', JSON.stringify(allHotels));
+        startApp();
+        return;
+      }
+      // Try new owner system
+      return fetch('/owner/login', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:email,password:password})})
+        .then(function(r2){ return r2.json().then(function(d){ return {ok:r2.ok,d:d}; }); })
+        .then(function(res2){
+          if (!res2.ok) { showErr(res2.d.error || 'Invalid email or password.'); return; }
+          allHotels = res2.d.hotels || [];
+          hotel = allHotels[0] || res2.d.hotel;
+          if (!hotel) { showErr('No hotel found. Please sign up first.'); return; }
+          localStorage.setItem('welco_admin_hotel', JSON.stringify(hotel));
+          localStorage.setItem('welco_admin_hotels', JSON.stringify(allHotels));
+          startApp();
+        });
+    }).catch(function(){ showErr('Connection error. Please try again.'); });
 }
 
 function showErr(msg) {
@@ -374,12 +441,26 @@ function showErr(msg) {
 
 function doLogout() {
   localStorage.removeItem('welco_admin_hotel');
+  localStorage.removeItem('welco_admin_hotels');
+  allHotels = [];
   hotel = null;
   document.getElementById('app-screen').style.display = 'none';
   document.getElementById('login-screen').style.display = 'flex';
 }
 
 function startApp() {
+  // Load all hotels for switcher
+  var storedHotels = localStorage.getItem('welco_admin_hotels');
+  if (storedHotels) {
+    try { allHotels = JSON.parse(storedHotels); } catch(e) {}
+  }
+  if (allHotels.length > 1) {
+    document.getElementById('hotel-switcher').style.display = 'flex';
+    document.getElementById('switcher-label').textContent = hotel.name;
+    renderHotelDropdown();
+  } else {
+    document.getElementById('hotel-switcher').style.display = 'none';
+  }
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app-screen').style.display = 'block';
   document.getElementById('t-name').textContent = hotel.name;
@@ -485,7 +566,9 @@ function loadStaff() {
   fetch('/staff?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(staff){
     if (!Array.isArray(staff)) return;
     document.getElementById('staff-list').innerHTML = staff.length===0 ? '<div class="empty">No staff added yet.<br><small>Add staff above so they can login.</small></div>'
-      : staff.map(function(s){ return '<div class="staff-row"><div><div class="staff-name-txt">'+s.name+'</div></div><div style="display:flex;gap:8px;align-items:center"><div class="staff-pin">PIN: '+s.pin+'</div><button class="btn-remove" onclick="removeStaff('+s.id+')">Remove</button></div></div>'; }).join('');
+      : staff.map(function(s){ var deptColors={'Housekeeping':'#4361EE','Room Service':'#F77F00','Maintenance':'#E63946','Front Desk':'#9B5DE5','General':'#888'};
+          var dc=deptColors[s.department]||'#888';
+          return '<div class="staff-row"><div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:8px;background:'+dc+'20;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:'+dc+'">'+(s.department||'?').substring(0,2).toUpperCase()+'</div><div><div class="staff-name-txt">'+s.name+'</div><div style="font-size:11px;color:#888">'+( s.staff_id||'No ID')+'  ·  '+(s.department||'General')+'</div></div></div><div style="display:flex;gap:8px;align-items:center"><div class="staff-pin">'+s.pin+'</div><button class="btn-remove" onclick="removeStaff('+s.id+')">Remove</button></div></div>'; }).join('');
   }).catch(function(){});
 }
 
@@ -669,6 +752,51 @@ function removeHOD(id) {
   if (!confirm('Remove this HOD?')) return;
   fetch('/hod/'+id,{method:'DELETE'}).then(function(){ loadHOD(); });
 }
+
+
+/* ─── HOTEL SWITCHER ─── */
+function toggleSwitcher() {
+  document.getElementById('hotel-dropdown').classList.toggle('open');
+}
+
+function renderHotelDropdown() {
+  var dd = document.getElementById('hotel-dropdown');
+  if (!dd) return;
+  dd.innerHTML = allHotels.map(function(h) {
+    var isActive = h.hotel_id === hotel.hotel_id;
+    return '<div class="hotel-dropdown-item' + (isActive?' active':'') + '" onclick="switchToHotel(\'' + h.hotel_id + '\')">' +
+      '<div class="h-dot" style="background:'+(h.colour||'#005f73')+'"></div>' +
+      '<div><div style="font-weight:600">' + h.name + '</div>' +
+      '<div style="font-size:11px;color:#888">' + (h.city||'') + '</div></div>' +
+      (isActive ? '<span style="margin-left:auto;color:#005f73">✓</span>' : '') +
+    '</div>';
+  }).join('') +
+  '<div class="hotel-dropdown-item" onclick="window.location.href=\'signup.html\'" style="border-top:2px solid #eee;color:#0a9396">' +
+    '<span style="font-size:16px">➕</span><div style="margin-left:8px">Add New Hotel</div>' +
+  '</div>';
+}
+
+function switchToHotel(hotel_id) {
+  var h = allHotels.find(function(x){ return x.hotel_id === hotel_id; });
+  if (!h) return;
+  hotel = h;
+  localStorage.setItem('welco_admin_hotel', JSON.stringify(hotel));
+  var dd = document.getElementById('hotel-dropdown');
+  if (dd) dd.classList.remove('open');
+  var sl = document.getElementById('switcher-label');
+  if (sl) sl.textContent = hotel.name;
+  renderHotelDropdown();
+  startApp();
+  showTab('overview');
+}
+
+document.addEventListener('click', function(e) {
+  var sw = document.getElementById('hotel-switcher');
+  if (sw && !sw.contains(e.target)) {
+    var dd = document.getElementById('hotel-dropdown');
+    if (dd) dd.classList.remove('open');
+  }
+});
 
 window.onload=function(){
   var stored=localStorage.getItem('welco_admin_hotel');

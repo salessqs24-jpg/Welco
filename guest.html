@@ -189,26 +189,35 @@
     var roomNumber = null;
     var selectedQuick = '';
     var hotelData = null;
-    var enabledGuestOptions = [];
 
     var params = new URLSearchParams(window.location.search);
     hotelId = params.get('hotel_id') || params.get('hotel') || 'hotel_001';
     roomId = params.get('room_id') || null;
     roomNumber = params.get('room') || '101';
 
-    // All 11 possible guest options with emoji
-    var ALL_GUEST_OPTIONS = {
-      'Wake Up Call':                   '⏰ Wake Up Call',
-      'Luggage Help':                   '🧳 Luggage Help',
-      'Late Checkout Info':             '🕐 Late Checkout',
-      'Airport Transfer & Local Cab':   '🚕 Airport Transfer & Cab',
-      'Room Upgradation Info':          '⬆️ Room Upgrade Info',
-      'Room Decoration Info':           '🌸 Room Decoration',
-      'Private Dinner Info':            '🍽️ Private Dinner',
-      'Extend Stay Info':               '📅 Extend Stay',
-      'Bike Rent Info':                 '🏍️ Bike Rental',
-      'Adventure Activities Info':      '🏄 Adventure Activities',
-      'SPA Booking Info':               '💆 SPA Booking'
+    // All dept guest options loaded from hotel
+    var deptGuestOptions = {}; // { Housekeeping: {enabled:[...], custom:[...]}, ... }
+
+    var DEPT_DEFAULTS = {
+      'Housekeeping': ['Extra Towels','Extra Pillow','Water Bottles','Clean Room','Extra Blanket','Toiletries'],
+      'Room Service':  ['Breakfast','Coffee','Tea','Water','Snacks','Ice Bucket'],
+      'Maintenance':   ['AC Issue','Hot Water','Light Bulb','TV Issue','WiFi Help','Door Lock'],
+      'Front Desk':    ['Wake Up Call','Luggage Help','Late Checkout Info','Airport Transfer & Local Cab','Room Upgradation Info','Room Decoration Info','Private Dinner Info','Extend Stay Info','Bike Rent Info','Adventure Activities Info','SPA Booking Info']
+    };
+
+    var DEPT_DEFAULT_LABELS = {
+      'Extra Towels':'🛁 Extra Towels','Extra Pillow':'🛏️ Extra Pillow','Water Bottles':'💧 Water Bottles',
+      'Clean Room':'🧹 Clean Room','Extra Blanket':'🛌 Extra Blanket','Toiletries':'🧴 Toiletries',
+      'Breakfast':'🍳 Breakfast','Coffee':'☕ Coffee','Tea':'🍵 Tea','Water':'💧 Water',
+      'Snacks':'🍪 Snacks','Ice Bucket':'🧊 Ice Bucket','AC Issue':'❄️ AC Issue',
+      'Hot Water':'♨️ Hot Water','Light Bulb':'💡 Light Bulb','TV Issue':'📺 TV Issue',
+      'WiFi Help':'📶 WiFi Help','Door Lock':'🔑 Door Lock','Wake Up Call':'⏰ Wake Up Call',
+      'Luggage Help':'🧳 Luggage Help','Late Checkout Info':'🕐 Late Checkout Info',
+      'Airport Transfer & Local Cab':'🚕 Airport Transfer & Local Cab',
+      'Room Upgradation Info':'⬆️ Room Upgradation Info','Room Decoration Info':'🌸 Room Decoration Info',
+      'Private Dinner Info':'🍽️ Private Dinner Info','Extend Stay Info':'📅 Extend Stay Info',
+      'Bike Rent Info':'🏍️ Bike Rent Info','Adventure Activities Info':'🏄 Adventure Activities Info',
+      'SPA Booking Info':'💆 SPA Booking Info'
     };
 
     var quickOptions = {
@@ -250,12 +259,9 @@
           document.title = 'Welco — ' + hotel.name;
           document.getElementById('welcome-msg').style.display = 'inline-block';
 
-          // Load enabled guest options from hotel settings
-          if (hotel.guest_options && Array.isArray(hotel.guest_options)) {
-            enabledGuestOptions = hotel.guest_options;
-          } else {
-            // Default: show all
-            enabledGuestOptions = Object.keys(ALL_GUEST_OPTIONS);
+          // Load dept guest options
+          if (hotel.dept_guest_options) {
+            deptGuestOptions = hotel.dept_guest_options;
           }
 
           loadAnnouncement();
@@ -293,64 +299,64 @@
       selectedCategory = cat;
       selectedQuick = '';
 
-      // Hide both quick sections first
       document.getElementById('quick-section').style.display = 'none';
       document.getElementById('services-section').style.display = 'none';
 
-      if (cat === 'Front Desk') {
-        // Show dynamic guest services
-        renderGuestServices();
-        document.getElementById('services-section').style.display = 'block';
-      } else {
-        // Show standard quick options
-        var quickItemsEl = document.getElementById('quick-items');
-        quickItemsEl.innerHTML = '';
-        (quickOptions[cat] || []).forEach(function(item) {
-          var el = document.createElement('button');
-          el.className = 'quick-item';
-          el.textContent = item;
-          el.onclick = function() {
-            document.querySelectorAll('.quick-item').forEach(function(q) { q.classList.remove('selected'); });
-            el.classList.add('selected');
-            selectedQuick = item.replace(/[^\w\s]/gi, '').trim();
-            document.getElementById('message').value = selectedQuick;
-          };
-          quickItemsEl.appendChild(el);
-        });
-        document.getElementById('quick-section').style.display = 'block';
-      }
+      // Always use services-section (dept_guest_options) for all categories
+      renderDeptServices(cat);
+      document.getElementById('services-section').style.display = 'block';
 
       document.getElementById('eta-time').textContent = etaMap[cat] || '10 mins';
       document.getElementById('eta-badge').style.display = 'block';
     }
 
-    function renderGuestServices() {
+    function renderDeptServices(cat) {
       var grid = document.getElementById('services-grid');
       grid.innerHTML = '';
-      if (!enabledGuestOptions || enabledGuestOptions.length === 0) {
-        grid.innerHTML = '<div class="no-services">No quick services available. Please describe your request below.</div>';
+
+      var savedDept = deptGuestOptions[cat];
+      var enabledKeys, customItems;
+
+      if (savedDept && savedDept.enabled) {
+        enabledKeys  = savedDept.enabled;
+        customItems  = savedDept.custom || [];
+      } else {
+        // fallback to defaults
+        enabledKeys  = DEPT_DEFAULTS[cat] || [];
+        customItems  = [];
+      }
+
+      if (enabledKeys.length === 0 && customItems.length === 0) {
+        grid.innerHTML = '<div class="no-services" style="grid-column:1/-1">No quick options set. Please describe your request below.</div>';
         return;
       }
-      enabledGuestOptions.forEach(function(key) {
-        var label;
-        if (key.indexOf('CUSTOM::') === 0) {
-          // Custom option — label is stored in key as "CUSTOM::emoji label::timestamp"
-          var parts = key.replace('CUSTOM::', '').split('::');
-          label = parts[0] || key;
-        } else {
-          label = ALL_GUEST_OPTIONS[key] || key;
-        }
-        var el = document.createElement('button');
-        el.className = 'service-item';
-        el.textContent = label;
-        el.onclick = function() {
-          document.querySelectorAll('.service-item').forEach(function(s) { s.classList.remove('selected'); });
-          el.classList.add('selected');
-          selectedQuick = label;
-          document.getElementById('message').value = label;
-        };
-        grid.appendChild(el);
+
+      // Standard enabled options
+      enabledKeys.forEach(function(key) {
+        if (key.indexOf('CUSTOM::') === 0) return; // handle custom below
+        var label = DEPT_DEFAULT_LABELS[key] || key;
+        addServiceBtn(grid, key, label);
       });
+
+      // Custom options that are enabled
+      customItems.forEach(function(c) {
+        if (enabledKeys.indexOf(c.key) !== -1) {
+          addServiceBtn(grid, c.key, c.label);
+        }
+      });
+    }
+
+    function addServiceBtn(grid, key, label) {
+      var el = document.createElement('button');
+      el.className = 'service-item';
+      el.textContent = label;
+      el.onclick = function() {
+        document.querySelectorAll('.service-item').forEach(function(s) { s.classList.remove('selected'); });
+        el.classList.add('selected');
+        selectedQuick = label.replace(/[\u{1F000}-\u{1FFFF}]/gu, '').trim() || label;
+        document.getElementById('message').value = selectedQuick;
+      };
+      grid.appendChild(el);
     }
 
     function setRating(r) {

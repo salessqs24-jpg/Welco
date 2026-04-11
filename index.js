@@ -124,6 +124,13 @@ app.get('/hotels', async (req, res) => {
   res.json(data);
 });
 
+app.post('/hotels/:hotel_id/dept-guest-options', async (req, res) => {
+  const { dept_guest_options } = req.body;
+  const { data, error } = await supabase.from('hotels').update({ dept_guest_options }).eq('hotel_id', req.params.hotel_id).select().single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+});
+
 app.post('/hotels/:hotel_id/guest-options', async (req, res) => {
   const { guest_options } = req.body;
   const { data, error } = await supabase.from('hotels').update({ guest_options }).eq('hotel_id', req.params.hotel_id).select().single();

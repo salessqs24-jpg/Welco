@@ -780,95 +780,123 @@ function renderMaintenance(tasks) {
 }
 
 /* ═══════════════════════════════════════════════
-   GUEST OPTIONS
+   GUEST OPTIONS — per department
 ═══════════════════════════════════════════════ */
-var ALL_GUEST_OPTIONS = [
-  { key: 'Wake Up Call',                 label: '⏰ Wake Up Call' },
-  { key: 'Luggage Help',                 label: '🧳 Luggage Help' },
-  { key: 'Late Checkout Info',           label: '🕐 Late Checkout Info' },
-  { key: 'Airport Transfer & Local Cab', label: '🚕 Airport Transfer & Local Cab' },
-  { key: 'Room Upgradation Info',        label: '⬆️ Room Upgradation Info' },
-  { key: 'Room Decoration Info',         label: '🌸 Room Decoration Info' },
-  { key: 'Private Dinner Info',          label: '🍽️ Private Dinner Info' },
-  { key: 'Extend Stay Info',             label: '📅 Extend Stay Info' },
-  { key: 'Bike Rent Info',               label: '🏍️ Bike Rent Info' },
-  { key: 'Adventure Activities Info',    label: '🏄 Adventure Activities Info' },
-  { key: 'SPA Booking Info',             label: '💆 SPA Booking Info' }
-];
+var DEPT_DEFAULT_OPTIONS = {
+  'Housekeeping': [
+    { key: 'Extra Towels',    label: '🛁 Extra Towels' },
+    { key: 'Extra Pillow',    label: '🛏️ Extra Pillow' },
+    { key: 'Water Bottles',   label: '💧 Water Bottles' },
+    { key: 'Clean Room',      label: '🧹 Clean Room' },
+    { key: 'Extra Blanket',   label: '🛌 Extra Blanket' },
+    { key: 'Toiletries',      label: '🧴 Toiletries' }
+  ],
+  'Room Service': [
+    { key: 'Breakfast',       label: '🍳 Breakfast' },
+    { key: 'Coffee',          label: '☕ Coffee' },
+    { key: 'Tea',             label: '🍵 Tea' },
+    { key: 'Water',           label: '💧 Water' },
+    { key: 'Snacks',          label: '🍪 Snacks' },
+    { key: 'Ice Bucket',      label: '🧊 Ice Bucket' }
+  ],
+  'Maintenance': [
+    { key: 'AC Issue',        label: '❄️ AC Issue' },
+    { key: 'Hot Water',       label: '♨️ Hot Water' },
+    { key: 'Light Bulb',      label: '💡 Light Bulb' },
+    { key: 'TV Issue',        label: '📺 TV Issue' },
+    { key: 'WiFi Help',       label: '📶 WiFi Help' },
+    { key: 'Door Lock',       label: '🔑 Door Lock' }
+  ],
+  'Front Desk': [
+    { key: 'Wake Up Call',                 label: '⏰ Wake Up Call' },
+    { key: 'Luggage Help',                 label: '🧳 Luggage Help' },
+    { key: 'Late Checkout Info',           label: '🕐 Late Checkout Info' },
+    { key: 'Airport Transfer & Local Cab', label: '🚕 Airport Transfer & Local Cab' },
+    { key: 'Room Upgradation Info',        label: '⬆️ Room Upgradation Info' },
+    { key: 'Room Decoration Info',         label: '🌸 Room Decoration Info' },
+    { key: 'Private Dinner Info',          label: '🍽️ Private Dinner Info' },
+    { key: 'Extend Stay Info',             label: '📅 Extend Stay Info' },
+    { key: 'Bike Rent Info',               label: '🏍️ Bike Rent Info' },
+    { key: 'Adventure Activities Info',    label: '🏄 Adventure Activities Info' },
+    { key: 'SPA Booking Info',             label: '💆 SPA Booking Info' }
+  ]
+};
 
-var currentGuestOptions = [];   // enabled keys (standard + custom)
-var customGuestOptions = [];    // custom added by HOD: [{key, label}]
+var currentDeptOptions = [];   // enabled keys for this dept
+var customDeptOptions  = [];   // custom added by this HOD: [{key, label}]
+var fullDeptOptions    = {};   // full saved object from DB
 
 function loadGuestOptions() {
   fetch('/hotels').then(function(r) { return r.json(); }).then(function(hotels) {
     var hotel = hotels.find(function(h) { return h.hotel_id === hodData.hotel_id; });
-    var saved = (hotel && hotel.guest_options) ? hotel.guest_options : ALL_GUEST_OPTIONS.map(function(o) { return o.key; });
+    fullDeptOptions = (hotel && hotel.dept_guest_options) ? hotel.dept_guest_options : {};
+    var dept = hodData.dept;
+    var saved = fullDeptOptions[dept]; // {enabled: [...], custom: [...]}
 
-    // Separate standard keys from custom ones
-    var standardKeys = ALL_GUEST_OPTIONS.map(function(o) { return o.key; });
-    currentGuestOptions = saved.filter(function(k) { return standardKeys.indexOf(k) !== -1; });
+    var defaults = (DEPT_DEFAULT_OPTIONS[dept] || []).map(function(o) { return o.key; });
 
-    // Custom options: anything in saved that's not a standard key
-    // They are stored as "CUSTOM::emoji label" format
-    customGuestOptions = saved
-      .filter(function(k) { return k.indexOf('CUSTOM::') === 0; })
-      .map(function(k) {
-        var parts = k.replace('CUSTOM::', '').split('::');
-        return { key: k, label: parts[0] || k };
+    if (saved) {
+      currentDeptOptions = saved.enabled || defaults;
+      customDeptOptions  = (saved.custom || []).map(function(c) {
+        return { key: c.key, label: c.label };
       });
-
-    // Also enable custom ones
-    customGuestOptions.forEach(function(c) {
-      if (currentGuestOptions.indexOf(c.key) === -1) currentGuestOptions.push(c.key);
-    });
-
+      // ensure custom enabled ones are in currentDeptOptions
+      customDeptOptions.forEach(function(c) {
+        if ((saved.enabled || []).indexOf(c.key) === -1) {
+          currentDeptOptions.push(c.key);
+        }
+      });
+    } else {
+      currentDeptOptions = defaults;
+      customDeptOptions  = [];
+    }
     renderGuestOptionsList();
   }).catch(function() { renderGuestOptionsList(); });
 }
 
 function renderGuestOptionsList() {
+  var dept = hodData.dept;
+  var defaults = DEPT_DEFAULT_OPTIONS[dept] || [];
   var list = document.getElementById('go-list');
-  var html = '';
-
-  // Standard options
-  ALL_GUEST_OPTIONS.forEach(function(opt) {
-    var isEnabled = currentGuestOptions.indexOf(opt.key) !== -1;
+  var html = '<div style="font-size:11px;color:#0a9396;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Default Options</div>';
+  defaults.forEach(function(opt) {
+    var isEnabled = currentDeptOptions.indexOf(opt.key) !== -1;
     html += optionRowHTML(opt.key, opt.label, isEnabled, false);
   });
-
-  // Custom options
-  customGuestOptions.forEach(function(opt) {
-    var isEnabled = currentGuestOptions.indexOf(opt.key) !== -1;
-    html += optionRowHTML(opt.key, opt.label, isEnabled, true);
-  });
-
+  if (customDeptOptions.length > 0) {
+    html += '<div style="font-size:11px;color:#ee9b00;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin:12px 0 6px">Your Custom Options</div>';
+    customDeptOptions.forEach(function(opt) {
+      var isEnabled = currentDeptOptions.indexOf(opt.key) !== -1;
+      html += optionRowHTML(opt.key, opt.label, isEnabled, true);
+    });
+  }
   list.innerHTML = html;
 }
 
 function optionRowHTML(key, label, isEnabled, isCustom) {
-  var encodedKey = encodeURIComponent(key);
+  var safeKey = key.replace(/'/g, "\\'");
   return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:' +
     (isEnabled ? '#e8f4f4' : '#f9f9f9') + ';border-radius:12px;border:1.5px solid ' +
-    (isEnabled ? '#0a9396' : '#eee') + ';gap:10px">' +
+    (isEnabled ? '#0a9396' : '#eee') + ';gap:10px;margin-bottom:6px">' +
     '<span style="font-size:14px;font-weight:' + (isEnabled ? '600' : '400') + ';color:' +
     (isEnabled ? '#005f73' : '#888') + ';flex:1">' + label +
     (isCustom ? ' <span style="font-size:10px;background:#fff3cd;color:#8a6000;padding:1px 6px;border-radius:10px;margin-left:4px">Custom</span>' : '') +
     '</span>' +
-    (isCustom ? '<button onclick="removeCustomOption(\'' + encodedKey + '\')" style="background:#fde8ea;color:#e63946;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;flex-shrink:0">✕</button>' : '') +
+    (isCustom ? '<button onclick="removeCustomDeptOption(\'' + safeKey + '\')" style="background:#fde8ea;color:#e63946;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;flex-shrink:0;margin-right:6px">✕</button>' : '') +
     '<label style="position:relative;display:inline-block;width:46px;height:26px;cursor:pointer;flex-shrink:0">' +
-      '<input type="checkbox" ' + (isEnabled ? 'checked' : '') + ' data-key="' + key + '" onchange="toggleOption(this)" style="opacity:0;width:0;height:0">' +
+      '<input type="checkbox" ' + (isEnabled ? 'checked' : '') + ' data-key="' + key + '" onchange="toggleDeptOption(this)" style="opacity:0;width:0;height:0">' +
       '<span style="position:absolute;inset:0;background:' + (isEnabled ? '#0a9396' : '#ddd') + ';border-radius:26px;transition:0.3s"></span>' +
       '<span style="position:absolute;top:3px;left:' + (isEnabled ? '23px' : '3px') + ';width:20px;height:20px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></span>' +
     '</label>' +
   '</div>';
 }
 
-function toggleOption(checkbox) {
+function toggleDeptOption(checkbox) {
   var key = checkbox.getAttribute('data-key');
   if (checkbox.checked) {
-    if (currentGuestOptions.indexOf(key) === -1) currentGuestOptions.push(key);
+    if (currentDeptOptions.indexOf(key) === -1) currentDeptOptions.push(key);
   } else {
-    currentGuestOptions = currentGuestOptions.filter(function(k) { return k !== key; });
+    currentDeptOptions = currentDeptOptions.filter(function(k) { return k !== key; });
   }
   renderGuestOptionsList();
 }
@@ -878,38 +906,34 @@ function addCustomOption() {
   var text  = document.getElementById('custom-option-text').value.trim();
   if (!text) { alert('Please enter a service name.'); return; }
   var label = (emoji ? emoji + ' ' : '✨ ') + text;
-  var key   = 'CUSTOM::' + label + '::' + Date.now();
-  customGuestOptions.push({ key: key, label: label });
-  currentGuestOptions.push(key); // auto-enable new custom option
+  var key   = 'CUSTOM::' + text + '::' + Date.now();
+  customDeptOptions.push({ key: key, label: label });
+  currentDeptOptions.push(key);
   document.getElementById('custom-option-emoji').value = '';
   document.getElementById('custom-option-text').value = '';
   renderGuestOptionsList();
-  // Auto-scroll to show new item
-  document.getElementById('go-list').lastElementChild && document.getElementById('go-list').lastElementChild.scrollIntoView({ behavior: 'smooth' });
 }
 
-function removeCustomOption(encodedKey) {
-  var key = decodeURIComponent(encodedKey);
-  customGuestOptions = customGuestOptions.filter(function(c) { return c.key !== key; });
-  currentGuestOptions = currentGuestOptions.filter(function(k) { return k !== key; });
+function removeCustomDeptOption(key) {
+  customDeptOptions  = customDeptOptions.filter(function(c) { return c.key !== key; });
+  currentDeptOptions = currentDeptOptions.filter(function(k) { return k !== key; });
   renderGuestOptionsList();
 }
 
 function saveGuestOptions() {
-  // Combine: enabled standard keys + all custom keys (enabled or not tracked separately)
-  var toSave = currentGuestOptions.slice();
-  // Make sure all custom keys are included
-  customGuestOptions.forEach(function(c) {
-    if (toSave.indexOf(c.key) === -1) { /* already excluded by toggle, keep it out */ }
-  });
-
-  fetch('/hotels/' + hodData.hotel_id + '/guest-options', {
+  var dept = hodData.dept;
+  // Build updated dept_guest_options — keep other depts unchanged
+  fullDeptOptions[dept] = {
+    enabled: currentDeptOptions,
+    custom:  customDeptOptions.map(function(c) { return { key: c.key, label: c.label }; })
+  };
+  fetch('/hotels/' + hodData.hotel_id + '/dept-guest-options', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ guest_options: toSave })
+    body: JSON.stringify({ dept_guest_options: fullDeptOptions })
   }).then(function(r) { return r.json(); }).then(function() {
     var msg = document.getElementById('go-msg');
-    msg.textContent = '✅ Saved! Guests will see ' + toSave.length + ' option(s) in Front Desk.';
+    msg.textContent = '✅ Saved! Guests will see ' + currentDeptOptions.length + ' option(s) under ' + dept + '.';
     msg.className = 'msg-box msg-success';
     setTimeout(function() { msg.className = 'msg-box'; }, 4000);
   }).catch(function() {

@@ -332,15 +332,22 @@
         return;
       }
       enabledGuestOptions.forEach(function(key) {
-        var label = ALL_GUEST_OPTIONS[key] || key;
+        var label;
+        if (key.indexOf('CUSTOM::') === 0) {
+          // Custom option — label is stored in key as "CUSTOM::emoji label::timestamp"
+          var parts = key.replace('CUSTOM::', '').split('::');
+          label = parts[0] || key;
+        } else {
+          label = ALL_GUEST_OPTIONS[key] || key;
+        }
         var el = document.createElement('button');
         el.className = 'service-item';
         el.textContent = label;
         el.onclick = function() {
           document.querySelectorAll('.service-item').forEach(function(s) { s.classList.remove('selected'); });
           el.classList.add('selected');
-          selectedQuick = key;
-          document.getElementById('message').value = key;
+          selectedQuick = label;
+          document.getElementById('message').value = label;
         };
         grid.appendChild(el);
       });

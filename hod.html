@@ -349,6 +349,17 @@
         <div id="go-list" style="display:flex;flex-direction:column;gap:10px;margin-top:8px"></div>
         <button onclick="saveGuestOptions()" style="margin-top:18px;width:100%;padding:14px;background:#005f73;color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer">💾 Save Guest Options</button>
       </div>
+
+      <div class="card" style="border:2px dashed #0a9396">
+        <div class="card-title">➕ Add Custom Option</div>
+        <div class="card-sub">Add your own hotel-specific service that guests can request</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+          <input type="text" id="custom-option-emoji" placeholder="emoji e.g. 🎵" maxlength="2" style="width:60px;padding:10px 8px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:18px;outline:none;text-align:center">
+          <input type="text" id="custom-option-text" placeholder="Service name e.g. Live Music Info" style="flex:1;min-width:160px;padding:10px 12px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:14px;outline:none">
+          <button onclick="addCustomOption()" style="padding:10px 18px;background:#0a9396;color:white;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">+ Add</button>
+        </div>
+        <div style="font-size:11px;color:#aaa;margin-top:8px">Custom options are saved along with your selection above.</div>
+      </div>
     </div>
 
   </div>
@@ -785,29 +796,71 @@ var ALL_GUEST_OPTIONS = [
   { key: 'SPA Booking Info',             label: '💆 SPA Booking Info' }
 ];
 
-var currentGuestOptions = [];
+var currentGuestOptions = [];   // enabled keys (standard + custom)
+var customGuestOptions = [];    // custom added by HOD: [{key, label}]
 
 function loadGuestOptions() {
   fetch('/hotels').then(function(r) { return r.json(); }).then(function(hotels) {
     var hotel = hotels.find(function(h) { return h.hotel_id === hodData.hotel_id; });
-    currentGuestOptions = (hotel && hotel.guest_options) ? hotel.guest_options : ALL_GUEST_OPTIONS.map(function(o) { return o.key; });
+    var saved = (hotel && hotel.guest_options) ? hotel.guest_options : ALL_GUEST_OPTIONS.map(function(o) { return o.key; });
+
+    // Separate standard keys from custom ones
+    var standardKeys = ALL_GUEST_OPTIONS.map(function(o) { return o.key; });
+    currentGuestOptions = saved.filter(function(k) { return standardKeys.indexOf(k) !== -1; });
+
+    // Custom options: anything in saved that's not a standard key
+    // They are stored as "CUSTOM::emoji label" format
+    customGuestOptions = saved
+      .filter(function(k) { return k.indexOf('CUSTOM::') === 0; })
+      .map(function(k) {
+        var parts = k.replace('CUSTOM::', '').split('::');
+        return { key: k, label: parts[0] || k };
+      });
+
+    // Also enable custom ones
+    customGuestOptions.forEach(function(c) {
+      if (currentGuestOptions.indexOf(c.key) === -1) currentGuestOptions.push(c.key);
+    });
+
     renderGuestOptionsList();
   }).catch(function() { renderGuestOptionsList(); });
 }
 
 function renderGuestOptionsList() {
   var list = document.getElementById('go-list');
-  list.innerHTML = ALL_GUEST_OPTIONS.map(function(opt) {
+  var html = '';
+
+  // Standard options
+  ALL_GUEST_OPTIONS.forEach(function(opt) {
     var isEnabled = currentGuestOptions.indexOf(opt.key) !== -1;
-    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:' + (isEnabled ? '#e8f4f4' : '#f9f9f9') + ';border-radius:12px;border:1.5px solid ' + (isEnabled ? '#0a9396' : '#eee') + ';transition:all 0.2s">' +
-      '<span style="font-size:14px;font-weight:' + (isEnabled ? '600' : '400') + ';color:' + (isEnabled ? '#005f73' : '#888') + '">' + opt.label + '</span>' +
-      '<label style="position:relative;display:inline-block;width:46px;height:26px;cursor:pointer">' +
-        '<input type="checkbox" ' + (isEnabled ? 'checked' : '') + ' data-key="' + opt.key + '" onchange="toggleOption(this)" style="opacity:0;width:0;height:0">' +
-        '<span style="position:absolute;inset:0;background:' + (isEnabled ? '#0a9396' : '#ddd') + ';border-radius:26px;transition:0.3s"></span>' +
-        '<span style="position:absolute;top:3px;left:' + (isEnabled ? '23px' : '3px') + ';width:20px;height:20px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></span>' +
-      '</label>' +
-    '</div>';
-  }).join('');
+    html += optionRowHTML(opt.key, opt.label, isEnabled, false);
+  });
+
+  // Custom options
+  customGuestOptions.forEach(function(opt) {
+    var isEnabled = currentGuestOptions.indexOf(opt.key) !== -1;
+    html += optionRowHTML(opt.key, opt.label, isEnabled, true);
+  });
+
+  list.innerHTML = html;
+}
+
+function optionRowHTML(key, label, isEnabled, isCustom) {
+  var encodedKey = encodeURIComponent(key);
+  return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:' +
+    (isEnabled ? '#e8f4f4' : '#f9f9f9') + ';border-radius:12px;border:1.5px solid ' +
+    (isEnabled ? '#0a9396' : '#eee') + ';gap:10px">' +
+    '<span style="font-size:14px;font-weight:' + (isEnabled ? '600' : '400') + ';color:' +
+    (isEnabled ? '#005f73' : '#888') + ';flex:1">' + label +
+    (isCustom ? ' <span style="font-size:10px;background:#fff3cd;color:#8a6000;padding:1px 6px;border-radius:10px;margin-left:4px">Custom</span>' : '') +
+    '</span>' +
+    (isCustom ? '<button onclick="removeCustomOption(\'' + encodedKey + '\')" style="background:#fde8ea;color:#e63946;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;flex-shrink:0">✕</button>' : '') +
+    '<label style="position:relative;display:inline-block;width:46px;height:26px;cursor:pointer;flex-shrink:0">' +
+      '<input type="checkbox" ' + (isEnabled ? 'checked' : '') + ' data-key="' + key + '" onchange="toggleOption(this)" style="opacity:0;width:0;height:0">' +
+      '<span style="position:absolute;inset:0;background:' + (isEnabled ? '#0a9396' : '#ddd') + ';border-radius:26px;transition:0.3s"></span>' +
+      '<span style="position:absolute;top:3px;left:' + (isEnabled ? '23px' : '3px') + ';width:20px;height:20px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></span>' +
+    '</label>' +
+  '</div>';
 }
 
 function toggleOption(checkbox) {
@@ -820,14 +873,43 @@ function toggleOption(checkbox) {
   renderGuestOptionsList();
 }
 
+function addCustomOption() {
+  var emoji = document.getElementById('custom-option-emoji').value.trim();
+  var text  = document.getElementById('custom-option-text').value.trim();
+  if (!text) { alert('Please enter a service name.'); return; }
+  var label = (emoji ? emoji + ' ' : '✨ ') + text;
+  var key   = 'CUSTOM::' + label + '::' + Date.now();
+  customGuestOptions.push({ key: key, label: label });
+  currentGuestOptions.push(key); // auto-enable new custom option
+  document.getElementById('custom-option-emoji').value = '';
+  document.getElementById('custom-option-text').value = '';
+  renderGuestOptionsList();
+  // Auto-scroll to show new item
+  document.getElementById('go-list').lastElementChild && document.getElementById('go-list').lastElementChild.scrollIntoView({ behavior: 'smooth' });
+}
+
+function removeCustomOption(encodedKey) {
+  var key = decodeURIComponent(encodedKey);
+  customGuestOptions = customGuestOptions.filter(function(c) { return c.key !== key; });
+  currentGuestOptions = currentGuestOptions.filter(function(k) { return k !== key; });
+  renderGuestOptionsList();
+}
+
 function saveGuestOptions() {
+  // Combine: enabled standard keys + all custom keys (enabled or not tracked separately)
+  var toSave = currentGuestOptions.slice();
+  // Make sure all custom keys are included
+  customGuestOptions.forEach(function(c) {
+    if (toSave.indexOf(c.key) === -1) { /* already excluded by toggle, keep it out */ }
+  });
+
   fetch('/hotels/' + hodData.hotel_id + '/guest-options', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ guest_options: currentGuestOptions })
+    body: JSON.stringify({ guest_options: toSave })
   }).then(function(r) { return r.json(); }).then(function() {
     var msg = document.getElementById('go-msg');
-    msg.textContent = '✅ Guest options saved! Guests will see ' + currentGuestOptions.length + ' option(s).';
+    msg.textContent = '✅ Saved! Guests will see ' + toSave.length + ' option(s) in Front Desk.';
     msg.className = 'msg-box msg-success';
     setTimeout(function() { msg.className = 'msg-box'; }, 4000);
   }).catch(function() {

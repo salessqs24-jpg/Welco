@@ -11,7 +11,6 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Welco Staff">
 
-  <!-- ── OneSignal Push Notifications ── -->
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script>
     window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -36,8 +35,9 @@
     .hotel-sub { color: rgba(255,255,255,0.7); font-size: 13px; margin-bottom: 32px; text-align: center; }
     .login-card { background: white; border-radius: 20px; padding: 28px; width: 100%; max-width: 340px; }
     .login-card label { font-size: 12px; color: #888; display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.08em; }
-    .login-card select, .login-card input[type="text"] { width: 100%; padding: 12px 14px; border: 1.5px solid #e0ddd8; border-radius: 10px; font-size: 15px; margin-bottom: 20px; outline: none; background: white; }
-    .login-card select:focus, .login-card input:focus { border-color: #0a9396; }
+    .login-card input[type="text"] { width: 100%; padding: 12px 14px; border: 1.5px solid #e0ddd8; border-radius: 10px; font-size: 15px; margin-bottom: 20px; outline: none; background: white; }
+    .login-card input:focus { border-color: #0a9396; }
+    .staff-id-hint { background: #e8f4f4; border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; font-size: 12px; color: #005f73; line-height: 1.6; }
     .pin-label { font-size: 12px; color: #888; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.08em; }
     .pin-dots { display: flex; gap: 12px; justify-content: center; margin-bottom: 20px; }
     .pin-dot { width: 14px; height: 14px; border-radius: 50%; background: #ddd; transition: background 0.2s; }
@@ -49,7 +49,6 @@
     .login-btn { width: 100%; padding: 14px; background: #005f73; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; }
     .login-error { color: #e63946; font-size: 13px; text-align: center; margin-top: 10px; display: none; line-height: 1.5; }
 
-    /* Notification permission prompt */
     .notif-prompt { background: #e8f4f4; border: 1.5px solid #0a9396; border-radius: 12px; padding: 14px; margin-bottom: 16px; display: none; }
     .notif-prompt p { font-size: 13px; color: #005f73; margin-bottom: 10px; line-height: 1.5; }
     .notif-prompt-btns { display: flex; gap: 8px; }
@@ -68,7 +67,6 @@
     .notif-badge.zero { background: rgba(255,255,255,0.2); }
     .logout-btn { background: rgba(255,255,255,0.15); border: none; color: white; padding: 6px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; }
 
-    /* Notification status bar */
     .notif-status-bar { display: none; background: #fff3cd; border-bottom: 1px solid #ffd166; padding: 10px 16px; font-size: 12px; color: #8a6000; text-align: center; cursor: pointer; }
     .notif-status-bar.granted { background: #d1fae5; color: #065f46; border-color: #6ee7b7; cursor: default; }
 
@@ -114,14 +112,15 @@
     <div class="hotel-logo" id="login-emoji">🏨</div>
   </div>
   <div class="hotel-name" id="login-hotel-name">Welco Staff</div>
-  <div class="hotel-sub" id="login-hotel-sub">Loading hotels...</div>
+  <div class="hotel-sub" id="login-hotel-sub">Staff Portal</div>
+
   <div class="login-card">
-    <label>Select Hotel</label>
-    <select id="hotel-select" onchange="switchHotel(this.value)">
-      <option value="">Loading...</option>
-    </select>
-    <label>Your Name (exactly as added by manager)</label>
-    <input type="text" id="staff-name" placeholder="e.g. Rahul">
+    <div class="staff-id-hint">
+      📋 Your <strong>Staff ID</strong> is given by your admin<br>
+      Example: <strong style="letter-spacing:1px">FAT760-1234</strong>
+    </div>
+    <label>Staff ID</label>
+    <input type="text" id="staff-id-input" placeholder="e.g. FAT760-1234" autocomplete="off" style="text-transform:uppercase;letter-spacing:1px;font-weight:700" oninput="this.value=this.value.toUpperCase()">
     <div class="pin-label">Enter Your PIN</div>
     <div class="pin-dots">
       <div class="pin-dot" id="dot-0"></div>
@@ -144,7 +143,6 @@
       <button class="pin-btn" onclick="deletePin()">⌫</button>
     </div>
 
-    <!-- Push notification permission prompt -->
     <div class="notif-prompt" id="notif-prompt">
       <p>🔔 Enable push notifications to get alerted for new guest requests — even when this app is closed!</p>
       <div class="notif-prompt-btns">
@@ -153,7 +151,7 @@
       </div>
     </div>
 
-    <button class="login-btn" onclick="doLogin()">Login to Dashboard</button>
+    <button class="login-btn" id="login-btn" onclick="doLogin()">Login to Dashboard</button>
     <div class="login-error" id="login-error"></div>
   </div>
 </div>
@@ -204,13 +202,11 @@ var loggedInStaff = '';
 var currentHotelId = '';
 var currentFilter = 'all';
 var knownRequestIds = null;
-var allHotels = [];
 var refreshInterval = null;
 var audioCtx = null;
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(function(){});
 
-// Show notification prompt on load if not yet decided
 window.addEventListener('load', function() {
   if ('Notification' in window && Notification.permission === 'default') {
     document.getElementById('notif-prompt').style.display = 'block';
@@ -223,25 +219,22 @@ function enablePush() {
   OneSignalDeferred.push(async function(OneSignal) {
     try {
       await OneSignal.Notifications.requestPermission();
-      var granted = OneSignal.Notifications.permission;
-      showNotifBar(granted);
+      showNotifBar(OneSignal.Notifications.permission);
     } catch(e) {}
   });
 }
 
-function skipPush() {
-  document.getElementById('notif-prompt').style.display = 'none';
-}
+function skipPush() { document.getElementById('notif-prompt').style.display = 'none'; }
 
 function showNotifBar(granted) {
   var bar = document.getElementById('notif-status-bar');
   if (granted) {
-    bar.textContent = '🔔 Push notifications ON — you\'ll be alerted for new requests!';
+    bar.textContent = '🔔 Push notifications ON!';
     bar.className = 'notif-status-bar granted';
     bar.style.display = 'block';
     setTimeout(function(){ bar.style.display='none'; }, 4000);
   } else {
-    bar.textContent = '🔕 Tap here to enable push notifications for new requests';
+    bar.textContent = '🔕 Tap here to enable push notifications';
     bar.className = 'notif-status-bar';
     bar.style.display = 'block';
   }
@@ -269,135 +262,115 @@ function sendPush(title, body) {
     try {
       if (!OneSignal.Notifications.permission) return;
       var reg = await navigator.serviceWorker.ready;
-      reg.showNotification(title, {
-        body: body,
-        icon: '/favicon.ico',
-        vibrate: [200, 100, 200],
-        tag: 'welco-request',
-        renotify: true,
-      });
+      reg.showNotification(title, { body: body, icon: '/favicon.ico', vibrate: [200,100,200], tag: 'welco-request', renotify: true });
     } catch(e) {}
   });
 }
 
-function loadAllHotels() {
-  // Show cached hotels instantly if available
-  var cached = localStorage.getItem('welco_hotels_cache');
-  if (cached) {
-    try {
-      var parsed = JSON.parse(cached);
-      if (parsed && parsed.length > 0) {
-        var select = document.getElementById('hotel-select');
-        allHotels = parsed;
-        select.innerHTML = parsed.map(function(h){
-          return '<option value="'+h.hotel_id+'">'+(h.emoji||'🏨')+' '+h.name+' — '+(h.city||'')+'</option>';
-        }).join('');
-        if (parsed.length > 0) { currentHotelId = parsed[0].hotel_id; applyBranding(parsed[0]); }
-      }
-    } catch(e) {}
-  }
-
-  // Fetch fresh in background
-  fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
-    allHotels = hotels;
-    try { localStorage.setItem('welco_hotels_cache', JSON.stringify(hotels)); } catch(e){}
-    var select = document.getElementById('hotel-select');
-    select.innerHTML = hotels.map(function(h){
-      return '<option value="'+h.hotel_id+'">'+(h.emoji||'🏨')+' '+h.name+' — '+(h.city||'')+'</option>';
-    }).join('');
-    if (hotels.length > 0) { currentHotelId = hotels[0].hotel_id; applyBranding(hotels[0]); }
-  }).catch(function(){
-    if (!cached) {
-      document.getElementById('login-hotel-sub').textContent = 'Retrying...';
-      setTimeout(loadAllHotels, 4000);
-    }
-  });
-}
-
-function applyBranding(hotel) {
-  var color = hotel.colour || '#0a9396';
-  if (hotel.logo_url) {
-    var img = document.getElementById('login-logo-img');
-    img.src = hotel.logo_url; img.style.display = 'block';
-    document.getElementById('login-emoji').style.display = 'none';
-  } else {
-    document.getElementById('login-logo-img').style.display = 'none';
-    document.getElementById('login-emoji').style.display = 'block';
-    document.getElementById('login-emoji').textContent = hotel.emoji || '🏨';
-  }
-  document.getElementById('login-hotel-name').textContent = hotel.name;
-  document.getElementById('login-hotel-sub').textContent = (hotel.city||'') + ' · Staff Portal';
-  document.getElementById('login-screen').style.background = 'linear-gradient(160deg, '+color+'dd, '+color+'88)';
-}
-
-function switchHotel(hotelId) {
-  currentHotelId = hotelId;
-  var hotel = allHotels.find(function(h){return h.hotel_id===hotelId;});
-  if (hotel) applyBranding(hotel);
-}
-
+/* ═══════════════════════════════════════════════
+   PIN PAD
+═══════════════════════════════════════════════ */
 function addPin(num) { if (pin.length < 4) { pin += num; updateDots(); } }
-function deletePin() { pin = pin.slice(0,-1); updateDots(); }
+function deletePin() { pin = pin.slice(0, -1); updateDots(); }
 function clearPin() { pin = ''; updateDots(); }
 function updateDots() {
-  for (var i=0;i<4;i++) document.getElementById('dot-'+i).classList.toggle('filled', i<pin.length);
+  for (var i = 0; i < 4; i++) document.getElementById('dot-'+i).classList.toggle('filled', i < pin.length);
 }
 
+/* ═══════════════════════════════════════════════
+   LOGIN — Staff ID + PIN only. No hotel dropdown.
+   Backend finds the hotel from the staff_id.
+═══════════════════════════════════════════════ */
 function doLogin() {
-  var name = document.getElementById('staff-name').value.trim();
-  if (!name) { showLoginErr('Please enter your name.'); return; }
-  if (!currentHotelId) { showLoginErr('Please select a hotel.'); return; }
+  var staffId = document.getElementById('staff-id-input').value.trim().toUpperCase();
+  var btn = document.getElementById('login-btn');
+
+  if (!staffId) { showLoginErr('Please enter your Staff ID (e.g. FAT760-1234).'); return; }
   if (pin.length !== 4) { showLoginErr('Please enter your 4-digit PIN.'); return; }
-  var btn = document.querySelector('.login-btn');
-  btn.textContent = 'Verifying...'; btn.disabled = true;
+
+  attemptStaffLogin(staffId, pin, btn, 1);
+}
+
+function attemptStaffLogin(staffId, pinVal, btn, attempt) {
+  var messages = ['Verifying…', 'Server waking up… (30s)', 'Almost there…'];
+  btn.textContent = messages[Math.min(attempt - 1, messages.length - 1)];
+  btn.disabled = true;
+
+  var controller = new AbortController();
+  var timeoutId = setTimeout(function() { controller.abort(); }, 70000);
+
   fetch('/staff/verify', {
-    method: 'POST', headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({hotel_id: currentHotelId, name: name, pin: pin})
-  }).then(function(r){return r.json().then(function(d){return {ok:r.ok,d:d};});})
-  .then(function(res){
-    btn.textContent = 'Login to Dashboard'; btn.disabled = false;
-    if (!res.ok) { showLoginErr(res.d.error || 'Invalid name or PIN.'); clearPin(); return; }
-    loggedInStaff = name;
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ staff_id: staffId, pin: pinVal }),
+    signal: controller.signal
+  })
+  .then(function(r) {
+    clearTimeout(timeoutId);
+    return r.json().then(function(d) { return { ok: r.ok, d: d }; });
+  })
+  .then(function(res) {
+    btn.textContent = 'Login to Dashboard';
+    btn.disabled = false;
+    if (!res.ok) { showLoginErr(res.d.error || 'Invalid Staff ID or PIN.'); clearPin(); return; }
+
+    var staff = res.d.staff;
+    currentHotelId = staff.hotel_id;
+    loggedInStaff = staff.name;
+
+    // Fetch hotel branding using hotel_id
+    fetch('/hotels').then(function(r) { return r.json(); }).then(function(hotels) {
+      var hotel = hotels.find(function(h) { return h.hotel_id === currentHotelId; }) || {};
+      applyDashboardBranding(hotel, staff);
+    }).catch(function() {
+      applyDashboardBranding({}, staff);
+    });
+
     document.getElementById('login-error').style.display = 'none';
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('dashboard-screen').style.display = 'block';
-    document.getElementById('dash-staff').textContent = '👋 ' + name;
-    var hotel = allHotels.find(function(h){return h.hotel_id===currentHotelId;});
-    if (hotel) {
-      var color = hotel.colour || '#0a9396';
-      document.getElementById('dash-header').style.background = 'linear-gradient(90deg, '+color+'dd, '+color+'88)';
-      if (hotel.logo_url) {
-        document.getElementById('dash-header-logo').src = hotel.logo_url;
-        document.getElementById('dash-header-logo').style.display = 'block';
-        document.getElementById('dash-header-emoji').style.display = 'none';
-        document.getElementById('dash-hotel').textContent = hotel.name;
-      } else {
-        document.getElementById('dash-header-logo').style.display = 'none';
-        document.getElementById('dash-header-emoji').style.display = 'inline';
-        document.getElementById('dash-header-emoji').textContent = hotel.emoji || '🏨';
-        document.getElementById('dash-hotel').textContent = hotel.name;
-      }
-      loadStaffAnnouncement();
-    }
-    // Init audio on user gesture
+    document.getElementById('dash-staff').textContent = '👋 ' + staff.name + (staff.department ? ' · ' + staff.department : '');
+
     try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
-    // Show notification status
     OneSignalDeferred.push(async function(OneSignal) {
-      var granted = OneSignal.Notifications.permission;
-      if (!granted) showNotifBar(false);
+      if (!OneSignal.Notifications.permission) showNotifBar(false);
     });
+
     loadTasks();
     refreshInterval = setInterval(loadTasks, 5000);
-  }).catch(function(){
-    btn.textContent = 'Login to Dashboard'; btn.disabled = false;
-    showLoginErr('Connection error. Try again.');
+  })
+  .catch(function() {
+    clearTimeout(timeoutId);
+    if (attempt < 3) {
+      setTimeout(function() { attemptStaffLogin(staffId, pinVal, btn, attempt + 1); }, 5000);
+    } else {
+      btn.textContent = 'Login to Dashboard';
+      btn.disabled = false;
+      showLoginErr('Server is taking too long. Wait 1 minute and try again.');
+    }
   });
 }
 
+function applyDashboardBranding(hotel, staff) {
+  var color = hotel.colour || '#0a9396';
+  document.getElementById('dash-header').style.background = 'linear-gradient(90deg, ' + color + 'dd, ' + color + '88)';
+  if (hotel.logo_url) {
+    document.getElementById('dash-header-logo').src = hotel.logo_url;
+    document.getElementById('dash-header-logo').style.display = 'block';
+    document.getElementById('dash-header-emoji').style.display = 'none';
+  } else {
+    document.getElementById('dash-header-logo').style.display = 'none';
+    document.getElementById('dash-header-emoji').style.display = 'inline';
+    document.getElementById('dash-header-emoji').textContent = hotel.emoji || '🏨';
+  }
+  document.getElementById('dash-hotel').textContent = hotel.name || 'Hotel';
+  loadStaffAnnouncement();
+}
+
 function loadStaffAnnouncement() {
-  fetch('/announcements?hotel_id='+currentHotelId).then(function(r){return r.json();}).then(function(data){
+  fetch('/announcements?hotel_id=' + currentHotelId).then(function(r) { return r.json(); }).then(function(data) {
     if (Array.isArray(data)) {
-      var active = data.find(function(a){ return a.is_active; });
+      var active = data.find(function(a) { return a.is_active; });
       if (active) {
         document.getElementById('staff-announcement-text').textContent = active.message;
         document.getElementById('staff-announcement').style.display = 'block';
@@ -417,32 +390,30 @@ function doLogout() {
   document.getElementById('dashboard-screen').style.display = 'none';
   document.getElementById('notif-status-bar').style.display = 'none';
   pin = ''; clearPin();
-  document.getElementById('staff-name').value = '';
+  document.getElementById('staff-id-input').value = '';
   knownRequestIds = null;
+  currentHotelId = '';
 }
 
 function setFilter(f) {
   currentFilter = f;
-  document.querySelectorAll('.filter-tab').forEach(function(t,i){
-    t.classList.toggle('active', ['all','pending','in_progress','done'][i]===f);
+  document.querySelectorAll('.filter-tab').forEach(function(t, i) {
+    t.classList.toggle('active', ['all','pending','in_progress','done'][i] === f);
   });
   loadTasks();
 }
 
 function checkNewRequests(data) {
-  var currentIds = data.map(function(r){return r.id;}).join(',');
+  var currentIds = data.map(function(r) { return r.id; }).join(',');
   if (knownRequestIds === null) { knownRequestIds = currentIds; return; }
   if (currentIds !== knownRequestIds) {
-    var newOnes = data.filter(function(r){
-      return r.status==='pending' && !knownRequestIds.includes(String(r.id));
+    var newOnes = data.filter(function(r) {
+      return r.status === 'pending' && !knownRequestIds.includes(String(r.id));
     });
     if (newOnes.length > 0) {
       playChime();
-      newOnes.forEach(function(r){
-        sendPush(
-          '🔔 New Request — Room ' + (r.room_number||'?'),
-          (r.category||'General') + ': ' + (r.message||'No details')
-        );
+      newOnes.forEach(function(r) {
+        sendPush('🔔 New Request — Room ' + (r.room_number || '?'), (r.category || 'General') + ': ' + (r.message || 'No details'));
       });
     }
     knownRequestIds = currentIds;
@@ -450,55 +421,53 @@ function checkNewRequests(data) {
 }
 
 function loadTasks() {
-  fetch('/requests?hotel_id='+currentHotelId).then(function(r){return r.json();}).then(function(data){
+  fetch('/requests?hotel_id=' + currentHotelId).then(function(r) { return r.json(); }).then(function(data) {
     if (!Array.isArray(data)) return;
-    var pending = data.filter(function(r){return r.status==='pending';}).length;
+    var pending = data.filter(function(r) { return r.status === 'pending'; }).length;
     var badge = document.getElementById('pending-count');
-    badge.textContent = pending+' pending';
-    badge.className = 'notif-badge'+(pending===0?' zero':'');
+    badge.textContent = pending + ' pending';
+    badge.className = 'notif-badge' + (pending === 0 ? ' zero' : '');
     checkNewRequests(data);
-    var filtered = currentFilter==='all' ? data : data.filter(function(r){return r.status===currentFilter;});
+    var filtered = currentFilter === 'all' ? data : data.filter(function(r) { return r.status === currentFilter; });
     var list = document.getElementById('task-list');
-    if (filtered.length===0) {
-      list.innerHTML = '<div class="empty-state"><div class="icon">🎉</div><p>'+(currentFilter==='all'?'No requests yet!':'No '+currentFilter.replace('_',' ')+' requests')+'</p></div>';
+    if (filtered.length === 0) {
+      list.innerHTML = '<div class="empty-state"><div class="icon">🎉</div><p>' + (currentFilter === 'all' ? 'No requests yet!' : 'No ' + currentFilter.replace('_', ' ') + ' requests') + '</p></div>';
       return;
     }
-    list.innerHTML = filtered.map(function(r){
-      var SLA=15, elapsed=(Date.now()-new Date(r.created_at).getTime())/60000;
-      var remaining=Math.max(0,SLA-elapsed), pct=Math.max(0,(remaining/SLA)*100);
-      var mins=Math.floor(remaining), secs=Math.floor((remaining-mins)*60);
-      var timerClass=pct>50?'':pct>25?'warning':'urgent';
-      var cardClass=r.status==='done'?'done':r.status==='in_progress'?'in-progress':pct===0?'urgent':'';
-      var timeAgo=Math.floor(elapsed)>0?Math.floor(elapsed)+'m ago':'Just now';
-      var actionsHtml='';
-      if (r.status==='pending') actionsHtml='<button class="btn-accept" onclick="claimTask('+r.id+')">👋 Accept</button>';
-      else if (r.status==='in_progress') actionsHtml='<span class="claimed-badge">✅ '+(r.claimed_by||'Staff')+'</span><button class="btn-done" onclick="markDone('+r.id+')">Mark Done ✓</button>';
-      else actionsHtml='<button class="btn-done" disabled>✅ Completed</button>';
-      return '<div class="task-card '+cardClass+'">'+
-        '<div class="task-top"><span class="task-room">Room '+(r.room_number||'?')+'</span><span class="task-cat">'+(r.category||'General')+'</span></div>'+
-        '<div class="task-msg">'+(r.message||'No details')+'</div>'+
-        '<div class="task-time">🕐 '+timeAgo+'</div>'+
-        (r.status!=='done'?'<div class="task-sla'+(pct<25?' urgent-text':'')+'">⏱ '+mins+'m '+secs+'s remaining</div>'+
-        '<div class="timer-bar"><div class="timer-fill '+timerClass+'" style="width:'+pct+'%"></div></div>':'')+
-        '<div class="task-actions">'+actionsHtml+'</div></div>';
+    list.innerHTML = filtered.map(function(r) {
+      var SLA = 15, elapsed = (Date.now() - new Date(r.created_at).getTime()) / 60000;
+      var remaining = Math.max(0, SLA - elapsed), pct = Math.max(0, (remaining / SLA) * 100);
+      var mins = Math.floor(remaining), secs = Math.floor((remaining - mins) * 60);
+      var timerClass = pct > 50 ? '' : pct > 25 ? 'warning' : 'urgent';
+      var cardClass = r.status === 'done' ? 'done' : r.status === 'in_progress' ? 'in-progress' : pct === 0 ? 'urgent' : '';
+      var timeAgo = Math.floor(elapsed) > 0 ? Math.floor(elapsed) + 'm ago' : 'Just now';
+      var actionsHtml = '';
+      if (r.status === 'pending') actionsHtml = '<button class="btn-accept" onclick="claimTask(' + r.id + ')">👋 Accept</button>';
+      else if (r.status === 'in_progress') actionsHtml = '<span class="claimed-badge">✅ ' + (r.claimed_by || 'Staff') + '</span><button class="btn-done" onclick="markDone(' + r.id + ')">Mark Done ✓</button>';
+      else actionsHtml = '<button class="btn-done" disabled>✅ Completed</button>';
+      return '<div class="task-card ' + cardClass + '">' +
+        '<div class="task-top"><span class="task-room">Room ' + (r.room_number || '?') + '</span><span class="task-cat">' + (r.category || 'General') + '</span></div>' +
+        '<div class="task-msg">' + (r.message || 'No details') + '</div>' +
+        '<div class="task-time">🕐 ' + timeAgo + '</div>' +
+        (r.status !== 'done' ? '<div class="task-sla' + (pct < 25 ? ' urgent-text' : '') + '">⏱ ' + mins + 'm ' + secs + 's remaining</div>' +
+        '<div class="timer-bar"><div class="timer-fill ' + timerClass + '" style="width:' + pct + '%"></div></div>' : '') +
+        '<div class="task-actions">' + actionsHtml + '</div></div>';
     }).join('');
   }).catch(function(){});
 }
 
 function claimTask(id) {
-  fetch('/requests/'+id+'/claim',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({claimed_by:loggedInStaff})})
-    .then(function(r){return r.json();}).then(function(data){
-      if (data.error) { alert('Error: '+data.error); return; }
+  fetch('/requests/' + id + '/claim', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({claimed_by: loggedInStaff}) })
+    .then(function(r) { return r.json(); }).then(function(data) {
+      if (data.error) { alert('Error: ' + data.error); return; }
       loadTasks();
-    }).catch(function(){ alert('Connection error'); });
+    }).catch(function() { alert('Connection error'); });
 }
 
 function markDone(id) {
-  fetch('/requests/'+id+'/complete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})})
-    .then(function(){ loadTasks(); });
+  fetch('/requests/' + id + '/complete', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({}) })
+    .then(function() { loadTasks(); });
 }
-
-loadAllHotels();
 </script>
 </body>
 </html>

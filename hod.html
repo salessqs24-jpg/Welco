@@ -186,6 +186,7 @@
     <div class="tab" onclick="showTab('staff')">👷 Staff</div>
     <div class="tab" onclick="showTab('analytics')">📈 Analytics</div>
     <div class="tab" onclick="showTab('maintenance')">🔧 Schedule</div>
+    <div class="tab" onclick="showTab('guestoptions')">🎯 Guest Options</div>
   </div>
 
   <div class="content">
@@ -336,6 +337,17 @@
           <div class="card-sub">Every month</div>
           <div id="maint-monthly"><div class="loading">Loading...</div></div>
         </div>
+      </div>
+    </div>
+
+    <!-- ══ GUEST OPTIONS ══ -->
+    <div class="tab-panel" id="panel-guestoptions">
+      <div class="card">
+        <div class="card-title">🎯 Guest Quick Options</div>
+        <div class="card-sub">Toggle which services guests see under <strong>Front Desk</strong> quick requests. Only enabled options appear for guests.</div>
+        <div class="msg-box" id="go-msg"></div>
+        <div id="go-list" style="display:flex;flex-direction:column;gap:10px;margin-top:8px"></div>
+        <button onclick="saveGuestOptions()" style="margin-top:18px;width:100%;padding:14px;background:#005f73;color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer">💾 Save Guest Options</button>
       </div>
     </div>
 
@@ -658,13 +670,14 @@ function renderAnalytics(reqs) {
    TABS
 ═══════════════════════════════════════════════ */
 function showTab(name) {
-  var names = ['overview','requests','rooms','staff','analytics','maintenance'];
+  var names = ['overview','requests','rooms','staff','analytics','maintenance','guestoptions'];
   document.querySelectorAll('.tab').forEach(function(t, i) { t.classList.toggle('active', names[i] === name); });
   document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
   document.getElementById('panel-' + name).classList.add('active');
   if (name === 'rooms') loadRooms();
   if (name === 'staff') loadStaff();
   if (name === 'maintenance') loadMaintenance();
+  if (name === 'guestoptions') loadGuestOptions();
 }
 
 /* ═══════════════════════════════════════════════
@@ -752,6 +765,77 @@ function renderMaintenance(tasks) {
   ['daily','weekly','monthly'].forEach(function(freq) {
     var filtered = tasks.filter(function(t) { return t.frequency === freq; });
     document.getElementById('maint-' + freq).innerHTML = filtered.length ? filtered.map(taskHTML).join('') : '<div class="empty">No ' + freq + ' tasks</div>';
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   GUEST OPTIONS
+═══════════════════════════════════════════════ */
+var ALL_GUEST_OPTIONS = [
+  { key: 'Wake Up Call',                 label: '⏰ Wake Up Call' },
+  { key: 'Luggage Help',                 label: '🧳 Luggage Help' },
+  { key: 'Late Checkout Info',           label: '🕐 Late Checkout Info' },
+  { key: 'Airport Transfer & Local Cab', label: '🚕 Airport Transfer & Local Cab' },
+  { key: 'Room Upgradation Info',        label: '⬆️ Room Upgradation Info' },
+  { key: 'Room Decoration Info',         label: '🌸 Room Decoration Info' },
+  { key: 'Private Dinner Info',          label: '🍽️ Private Dinner Info' },
+  { key: 'Extend Stay Info',             label: '📅 Extend Stay Info' },
+  { key: 'Bike Rent Info',               label: '🏍️ Bike Rent Info' },
+  { key: 'Adventure Activities Info',    label: '🏄 Adventure Activities Info' },
+  { key: 'SPA Booking Info',             label: '💆 SPA Booking Info' }
+];
+
+var currentGuestOptions = [];
+
+function loadGuestOptions() {
+  fetch('/hotels').then(function(r) { return r.json(); }).then(function(hotels) {
+    var hotel = hotels.find(function(h) { return h.hotel_id === hodData.hotel_id; });
+    currentGuestOptions = (hotel && hotel.guest_options) ? hotel.guest_options : ALL_GUEST_OPTIONS.map(function(o) { return o.key; });
+    renderGuestOptionsList();
+  }).catch(function() { renderGuestOptionsList(); });
+}
+
+function renderGuestOptionsList() {
+  var list = document.getElementById('go-list');
+  list.innerHTML = ALL_GUEST_OPTIONS.map(function(opt) {
+    var isEnabled = currentGuestOptions.indexOf(opt.key) !== -1;
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:' + (isEnabled ? '#e8f4f4' : '#f9f9f9') + ';border-radius:12px;border:1.5px solid ' + (isEnabled ? '#0a9396' : '#eee') + ';transition:all 0.2s">' +
+      '<span style="font-size:14px;font-weight:' + (isEnabled ? '600' : '400') + ';color:' + (isEnabled ? '#005f73' : '#888') + '">' + opt.label + '</span>' +
+      '<label style="position:relative;display:inline-block;width:46px;height:26px;cursor:pointer">' +
+        '<input type="checkbox" ' + (isEnabled ? 'checked' : '') + ' data-key="' + opt.key + '" onchange="toggleOption(this)" style="opacity:0;width:0;height:0">' +
+        '<span style="position:absolute;inset:0;background:' + (isEnabled ? '#0a9396' : '#ddd') + ';border-radius:26px;transition:0.3s"></span>' +
+        '<span style="position:absolute;top:3px;left:' + (isEnabled ? '23px' : '3px') + ';width:20px;height:20px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></span>' +
+      '</label>' +
+    '</div>';
+  }).join('');
+}
+
+function toggleOption(checkbox) {
+  var key = checkbox.getAttribute('data-key');
+  if (checkbox.checked) {
+    if (currentGuestOptions.indexOf(key) === -1) currentGuestOptions.push(key);
+  } else {
+    currentGuestOptions = currentGuestOptions.filter(function(k) { return k !== key; });
+  }
+  renderGuestOptionsList();
+}
+
+function saveGuestOptions() {
+  fetch('/hotels/' + hodData.hotel_id + '/guest-options', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ guest_options: currentGuestOptions })
+  }).then(function(r) { return r.json(); }).then(function() {
+    var msg = document.getElementById('go-msg');
+    msg.textContent = '✅ Guest options saved! Guests will see ' + currentGuestOptions.length + ' option(s).';
+    msg.className = 'msg-box msg-success';
+    setTimeout(function() { msg.className = 'msg-box'; }, 4000);
+  }).catch(function() {
+    var msg = document.getElementById('go-msg');
+    msg.textContent = '❌ Failed to save. Try again.';
+    msg.className = 'msg-box msg-success';
+    msg.style.background = '#fde8ea'; msg.style.color = '#e63946';
+    setTimeout(function() { msg.className = 'msg-box'; }, 3000);
   });
 }
 

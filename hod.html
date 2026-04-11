@@ -250,7 +250,7 @@
     <div class="tab-panel" id="panel-staff">
       <div class="card">
         <div class="card-title">Add Staff Member</div>
-        <div class="card-sub">Add staff who can access the staff dashboard</div>
+        <div class="card-sub">Staff will get a unique Staff ID — share it with them for login</div>
         <div class="add-row">
           <input type="text" id="new-staff-name" placeholder="Full name e.g. Rahul">
           <input type="text" id="new-staff-pin" placeholder="4-digit PIN" maxlength="4" style="max-width:110px">
@@ -260,7 +260,7 @@
       </div>
       <div class="card">
         <div class="card-title">Staff Members</div>
-        <div class="card-sub">All staff for this hotel</div>
+        <div class="card-sub">Share the <strong>Staff ID</strong> with each staff member — they use it to login at staff.html</div>
         <div id="staff-list"><div class="loading">Loading...</div></div>
       </div>
     </div>
@@ -568,7 +568,16 @@ function loadStaff() {
     document.getElementById('staff-list').innerHTML = staff.length === 0
       ? '<div class="empty">No staff added yet.</div>'
       : staff.map(function(s) {
-          return '<div class="staff-row"><div><div class="staff-name-txt">' + s.name + '</div></div><div style="display:flex;gap:8px;align-items:center"><div class="staff-pin">PIN: ' + s.pin + '</div><button class="btn-remove" onclick="removeStaff(' + s.id + ')">Remove</button></div></div>';
+          return '<div class="staff-row">'+
+            '<div>'+
+              '<div class="staff-name-txt">'+s.name+'</div>'+
+              '<div style="font-size:11px;color:#aaa;margin-top:3px;font-family:monospace;font-weight:600;letter-spacing:1px">'+(s.staff_id||'No ID')+'</div>'+
+            '</div>'+
+            '<div style="display:flex;gap:8px;align-items:center">'+
+              '<div class="staff-pin">PIN: '+s.pin+'</div>'+
+              '<button class="btn-remove" onclick="removeStaff('+s.id+')">Remove</button>'+
+            '</div>'+
+          '</div>';
         }).join('');
   });
 }
@@ -583,9 +592,10 @@ function addStaff() {
       document.getElementById('new-staff-name').value = '';
       document.getElementById('new-staff-pin').value = '';
       var msg = document.getElementById('staff-msg');
-      msg.textContent = '✅ ' + name + ' added with PIN: ' + pin;
+      var staffId = data.staff_id || 'Check list below';
+      msg.innerHTML = '✅ <strong>'+name+'</strong> added!<br>Staff ID: <strong style="font-family:monospace;letter-spacing:1px;color:#005f73">'+staffId+'</strong> &nbsp; PIN: <strong>'+pin+'</strong><br><span style="font-size:11px;color:#666">Share this Staff ID with '+name+' for login</span>';
       msg.className = 'msg-box msg-success';
-      setTimeout(function() { msg.className = 'msg-box'; }, 4000);
+      setTimeout(function(){ msg.className='msg-box'; }, 8000);
       loadStaff();
     });
 }

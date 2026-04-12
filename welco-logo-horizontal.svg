@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 120" width="520" height="120">
+  <defs>
+    <linearGradient id="bgH" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#003d4d"/>
+      <stop offset="100%" style="stop-color:#005f73"/>
+    </linearGradient>
+    <linearGradient id="goldH" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0c040"/>
+      <stop offset="100%" style="stop-color:#ca8a04"/>
+    </linearGradient>
+    <linearGradient id="tealH" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#94d2bd"/>
+      <stop offset="100%" style="stop-color:#0a9396"/>
+    </linearGradient>
+    <filter id="shadowH">
+      <feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#000" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <!-- Background pill -->
+  <rect x="0" y="0" width="520" height="120" rx="20" fill="url(#bgH)" filter="url(#shadowH)"/>
+  <rect x="1" y="1" width="518" height="118" rx="19" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+
+  <!-- ── MINI HOTEL ICON ── -->
+  <!-- Building -->
+  <rect x="28" y="32" width="52" height="56" rx="2" fill="none" stroke="url(#tealH)" stroke-width="1.8"/>
+  <rect x="30" y="34" width="48" height="52" rx="1" fill="rgba(148,210,189,0.07)"/>
+  <!-- Roof -->
+  <polygon points="22,33 54,12 86,33" fill="none" stroke="url(#goldH)" stroke-width="1.8" stroke-linejoin="round"/>
+  <!-- Flag -->
+  <line x1="54" y1="12" x2="54" y2="4" stroke="url(#goldH)" stroke-width="1.5"/>
+  <polygon points="54,4 63,7 54,10" fill="url(#goldH)"/>
+  <!-- Windows row 1 -->
+  <rect x="34" y="42" width="9" height="8" rx="1" fill="rgba(148,210,189,0.3)" stroke="rgba(148,210,189,0.5)" stroke-width="0.8"/>
+  <rect x="49" y="42" width="9" height="8" rx="1" fill="rgba(240,192,64,0.4)" stroke="rgba(240,192,64,0.5)" stroke-width="0.8"/>
+  <rect x="64" y="42" width="9" height="8" rx="1" fill="rgba(148,210,189,0.3)" stroke="rgba(148,210,189,0.5)" stroke-width="0.8"/>
+  <!-- Windows row 2 -->
+  <rect x="34" y="56" width="9" height="8" rx="1" fill="rgba(148,210,189,0.3)" stroke="rgba(148,210,189,0.5)" stroke-width="0.8"/>
+  <rect x="49" y="56" width="9" height="8" rx="1" fill="rgba(148,210,189,0.3)" stroke="rgba(148,210,189,0.5)" stroke-width="0.8"/>
+  <rect x="64" y="56" width="9" height="8" rx="1" fill="rgba(148,210,189,0.3)" stroke="rgba(148,210,189,0.5)" stroke-width="0.8"/>
+  <!-- Door -->
+  <path d="M49,88 L49,72 Q49,68 54,68 L59,68 Q63,68 63,72 L63,88 Z" fill="rgba(240,192,64,0.3)" stroke="url(#goldH)" stroke-width="1"/>
+  <!-- Base -->
+  <line x1="22" y1="88" x2="86" y2="88" stroke="url(#tealH)" stroke-width="1.5"/>
+  <!-- Star accents -->
+  <polygon points="20,50 21.5,46 23,50 19,47.5 23,47.5" fill="url(#goldH)" opacity="0.6"/>
+  <polygon points="88,50 89.5,46 91,50 87,47.5 91,47.5" fill="url(#goldH)" opacity="0.6"/>
+
+  <!-- Vertical divider -->
+  <line x1="108" y1="24" x2="108" y2="96" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+
+  <!-- ── WORDMARK ── -->
+  <text x="128" y="66"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="52" font-weight="700"
+    fill="white" letter-spacing="1">Wel<tspan fill="url(#tealH)">co</tspan></text>
+
+  <!-- Tagline vertical stack -->
+  <text x="128" y="84"
+    font-family="Arial, sans-serif"
+    font-size="10" font-weight="400"
+    fill="rgba(255,255,255,0.4)"
+    letter-spacing="3.5">HOTEL GUEST SERVICES</text>
+
+  <!-- Right side accent — gold dot cluster -->
+  <circle cx="468" cy="40" r="3" fill="url(#goldH)" opacity="0.4"/>
+  <circle cx="478" cy="40" r="2" fill="url(#goldH)" opacity="0.25"/>
+  <circle cx="488" cy="40" r="1.5" fill="url(#goldH)" opacity="0.15"/>
+  <circle cx="468" cy="80" r="3" fill="url(#tealH)" opacity="0.4"/>
+  <circle cx="478" cy="80" r="2" fill="url(#tealH)" opacity="0.25"/>
+  <circle cx="488" cy="80" r="1.5" fill="url(#tealH)" opacity="0.15"/>
+
+  <!-- Tagline bottom right -->
+  <text x="400" y="64"
+    font-family="Arial, sans-serif"
+    font-size="9" font-weight="400"
+    fill="rgba(255,255,255,0.2)"
+    text-anchor="middle"
+    letter-spacing="2">SCAN · REQUEST · DELIGHT</text>
+</svg>

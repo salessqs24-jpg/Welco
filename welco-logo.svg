@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <!-- Main gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#003d4d;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#005f73;stop-opacity:1" />
+    </linearGradient>
+    <!-- Gold gradient -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0c040;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ca8a04;stop-opacity:1" />
+    </linearGradient>
+    <!-- Teal light gradient -->
+    <linearGradient id="tealGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#94d2bd;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0a9396;stop-opacity:1" />
+    </linearGradient>
+    <!-- Glow filter -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Soft shadow -->
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- Background circle -->
+  <circle cx="200" cy="200" r="190" fill="url(#bgGrad)" filter="url(#shadow)"/>
+
+  <!-- Subtle inner ring -->
+  <circle cx="200" cy="200" r="172" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+  <circle cx="200" cy="200" r="160" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+
+  <!-- ── HOTEL BUILDING ICON ── -->
+  <!-- Building base -->
+  <rect x="140" y="130" width="120" height="95" rx="3" fill="none" stroke="url(#tealGrad)" stroke-width="2.5"/>
+  <rect x="143" y="133" width="114" height="89" rx="2" fill="rgba(148,210,189,0.07)"/>
+
+  <!-- Roof / pediment -->
+  <polygon points="130,132 200,88 270,132" fill="none" stroke="url(#goldGrad)" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- Flag pole -->
+  <line x1="200" y1="88" x2="200" y2="68" stroke="url(#goldGrad)" stroke-width="2"/>
+  <!-- Flag -->
+  <polygon points="200,68 218,74 200,80" fill="url(#goldGrad)"/>
+
+  <!-- Building windows — row 1 -->
+  <rect x="158" y="148" width="18" height="16" rx="2" fill="rgba(148,210,189,0.25)" stroke="rgba(148,210,189,0.5)" stroke-width="1"/>
+  <rect x="191" y="148" width="18" height="16" rx="2" fill="rgba(240,192,64,0.3)" stroke="rgba(240,192,64,0.5)" stroke-width="1"/>
+  <rect x="224" y="148" width="18" height="16" rx="2" fill="rgba(148,210,189,0.25)" stroke="rgba(148,210,189,0.5)" stroke-width="1"/>
+
+  <!-- Building windows — row 2 -->
+  <rect x="158" y="174" width="18" height="16" rx="2" fill="rgba(148,210,189,0.25)" stroke="rgba(148,210,189,0.5)" stroke-width="1"/>
+  <rect x="191" y="174" width="18" height="16" rx="2" fill="rgba(148,210,189,0.25)" stroke="rgba(148,210,189,0.5)" stroke-width="1"/>
+  <rect x="224" y="174" width="18" height="16" rx="2" fill="rgba(148,210,189,0.25)" stroke="rgba(148,210,189,0.5)" stroke-width="1"/>
+
+  <!-- Door (center arch) -->
+  <path d="M188,225 L188,200 Q188,193 196,193 L204,193 Q212,193 212,200 L212,225 Z" fill="rgba(240,192,64,0.3)" stroke="url(#goldGrad)" stroke-width="1.5"/>
+
+  <!-- Columns -->
+  <line x1="163" y1="132" x2="163" y2="225" stroke="rgba(148,210,189,0.3)" stroke-width="1.5"/>
+  <line x1="237" y1="132" x2="237" y2="225" stroke="rgba(148,210,189,0.3)" stroke-width="1.5"/>
+
+  <!-- Base line -->
+  <line x1="132" y1="225" x2="268" y2="225" stroke="url(#tealGrad)" stroke-width="2"/>
+
+  <!-- ── DECORATIVE ELEMENTS ── -->
+  <!-- Left star accent -->
+  <g transform="translate(112, 155)" opacity="0.6">
+    <polygon points="0,-8 2,-3 7,-3 3,1 5,6 0,3 -5,6 -3,1 -7,-3 -2,-3" fill="url(#goldGrad)" filter="url(#glow)"/>
+  </g>
+  <!-- Right star accent -->
+  <g transform="translate(288, 155)" opacity="0.6">
+    <polygon points="0,-8 2,-3 7,-3 3,1 5,6 0,3 -5,6 -3,1 -7,-3 -2,-3" fill="url(#goldGrad)" filter="url(#glow)"/>
+  </g>
+
+  <!-- Small dots -->
+  <circle cx="112" cy="175" r="2" fill="rgba(148,210,189,0.4)"/>
+  <circle cx="288" cy="175" r="2" fill="rgba(148,210,189,0.4)"/>
+  <circle cx="112" cy="185" r="1.5" fill="rgba(148,210,189,0.25)"/>
+  <circle cx="288" cy="185" r="1.5" fill="rgba(148,210,189,0.25)"/>
+
+  <!-- ── WORDMARK ── -->
+  <!-- "Welco" text -->
+  <text
+    x="200" y="272"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="46"
+    font-weight="700"
+    fill="white"
+    text-anchor="middle"
+    letter-spacing="2"
+  >Wel<tspan fill="url(#tealGrad)">co</tspan></text>
+
+  <!-- Tagline -->
+  <text
+    x="200" y="294"
+    font-family="'Arial', sans-serif"
+    font-size="11"
+    font-weight="400"
+    fill="rgba(255,255,255,0.45)"
+    text-anchor="middle"
+    letter-spacing="4"
+  >HOTEL GUEST SERVICES</text>
+
+  <!-- Thin gold divider line -->
+  <line x1="150" y1="305" x2="250" y2="305" stroke="url(#goldGrad)" stroke-width="0.8" opacity="0.6"/>
+
+  <!-- Bottom tagline -->
+  <text
+    x="200" y="322"
+    font-family="'Arial', sans-serif"
+    font-size="9"
+    font-weight="400"
+    fill="rgba(255,255,255,0.3)"
+    text-anchor="middle"
+    letter-spacing="3"
+  >SCAN · REQUEST · DELIGHT</text>
+
+  <!-- Outer decorative ring segments -->
+  <path d="M 200 15 A 185 185 0 0 1 350 100" fill="none" stroke="url(#goldGrad)" stroke-width="1.5" opacity="0.3"/>
+  <path d="M 50 100 A 185 185 0 0 1 200 15" fill="none" stroke="url(#goldGrad)" stroke-width="1.5" opacity="0.3"/>
+  <path d="M 200 385 A 185 185 0 0 1 50 300" fill="none" stroke="url(#goldGrad)" stroke-width="1.5" opacity="0.3"/>
+  <path d="M 350 300 A 185 185 0 0 1 200 385" fill="none" stroke="url(#goldGrad)" stroke-width="1.5" opacity="0.3"/>
+
+  <!-- Corner dots on ring -->
+  <circle cx="200" cy="15" r="3" fill="url(#goldGrad)" opacity="0.5"/>
+  <circle cx="200" cy="385" r="3" fill="url(#goldGrad)" opacity="0.5"/>
+  <circle cx="15" cy="200" r="3" fill="url(#goldGrad)" opacity="0.5"/>
+  <circle cx="385" cy="200" r="3" fill="url(#goldGrad)" opacity="0.5"/>
+</svg>

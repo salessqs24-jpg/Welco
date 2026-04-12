@@ -6,19 +6,22 @@
   <title>Welco — Get Started</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
-    :root { --brand: #005f73; --brand2: #0a9396; --light: #94d2bd; --sand: #f7f3ee; --ink: #0d1b1e; }
+    :root { --brand: #005f73; --brand2: #0a9396; --light: #94d2bd; --sand: #f7f3ee; --ink: #0d1b1e; --mist: #e8f4f4; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'DM Sans', sans-serif; min-height: 100vh; background: linear-gradient(160deg, #005f73, #0a9396); display: flex; align-items: center; justify-content: center; padding: 20px; }
 
     .wizard-wrap { width: 100%; max-width: 560px; }
-
-    /* HEADER */
     .wizard-header { text-align: center; margin-bottom: 28px; }
     .wizard-logo { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 700; color: white; letter-spacing: 0.02em; margin-bottom: 6px; }
     .wizard-logo span { color: var(--light); }
     .wizard-tagline { font-size: 13px; color: rgba(255,255,255,0.65); }
 
-    /* PROGRESS BAR */
+    /* MODE TOGGLE */
+    .mode-toggle { display: flex; gap: 0; background: rgba(255,255,255,0.15); border-radius: 12px; padding: 4px; margin-bottom: 20px; }
+    .mode-btn { flex: 1; padding: 10px; border: none; border-radius: 9px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; background: transparent; color: rgba(255,255,255,0.7); font-family: 'DM Sans', sans-serif; }
+    .mode-btn.active { background: white; color: var(--brand); }
+
+    /* PROGRESS */
     .progress-wrap { margin-bottom: 24px; }
     .progress-steps { display: flex; justify-content: space-between; margin-bottom: 10px; }
     .progress-step { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
@@ -38,11 +41,24 @@
     .step-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
     .step-sub { font-size: 13px; color: #888; margin-bottom: 24px; line-height: 1.5; }
 
+    /* ADD HOTEL BANNER */
+    .add-hotel-banner { background: linear-gradient(135deg, #e8f4f4, #d0f0f0); border: 1.5px solid var(--brand2); border-radius: 14px; padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 14px; }
+    .banner-icon { font-size: 32px; flex-shrink: 0; }
+    .banner-text .b-title { font-size: 14px; font-weight: 700; color: var(--brand); margin-bottom: 3px; }
+    .banner-text .b-sub { font-size: 12px; color: #666; line-height: 1.4; }
+
+    /* EXISTING HOTELS LIST */
+    .existing-hotels { margin-bottom: 20px; }
+    .existing-hotel-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: #f9f9f9; border-radius: 10px; margin-bottom: 8px; }
+    .eh-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .eh-name { font-size: 13px; font-weight: 600; color: var(--ink); }
+    .eh-city { font-size: 11px; color: #aaa; margin-left: auto; }
+
     /* FORM */
     .field { margin-bottom: 16px; }
     .field label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 6px; font-weight: 600; }
     .field input, .field select, .field textarea { width: 100%; padding: 12px 14px; border: 1.5px solid #e0ddd8; border-radius: 10px; font-size: 14px; outline: none; font-family: 'DM Sans', sans-serif; background: white; transition: border-color 0.2s; }
-    .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--brand2); }
+    .field input:focus, .field select:focus { border-color: var(--brand2); }
     .field-row { display: flex; gap: 12px; }
     .field-row .field { flex: 1; }
     .color-row { display: flex; gap: 8px; align-items: center; }
@@ -60,13 +76,13 @@
     .emoji-opt { width: 40px; height: 40px; border: 1.5px solid #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; transition: all 0.2s; }
     .emoji-opt:hover, .emoji-opt.selected { border-color: var(--brand2); background: var(--mist); }
 
-    /* ROOM COUNT SELECTOR */
-    .room-selector { display: flex; align-items: center; gap: 16px; }
+    /* ROOM SELECTOR */
+    .room-selector { display: flex; align-items: center; gap: 16px; justify-content: center; }
     .room-btn { width: 40px; height: 40px; border: 1.5px solid #ddd; border-radius: 8px; background: white; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
     .room-btn:hover { border-color: var(--brand2); background: #e8f4f4; }
     .room-count-display { font-size: 28px; font-weight: 700; color: var(--brand); min-width: 50px; text-align: center; }
 
-    /* PREVIEW CARD */
+    /* PREVIEW */
     .hotel-preview { background: linear-gradient(135deg, var(--brand), var(--brand2)); border-radius: 14px; padding: 20px; margin-bottom: 20px; color: white; display: flex; align-items: center; gap: 14px; }
     .preview-emoji { font-size: 36px; }
     .preview-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; }
@@ -112,14 +128,19 @@
 <body>
 
 <div class="wizard-wrap">
-  <!-- Header -->
   <div class="wizard-header">
     <div class="wizard-logo">Wel<span>co</span></div>
-    <div class="wizard-tagline">Set up your hotel in under 5 minutes</div>
+    <div class="wizard-tagline" id="wizard-tagline">Set up your hotel in under 5 minutes</div>
   </div>
 
-  <!-- Progress -->
-  <div class="progress-wrap">
+  <!-- MODE TOGGLE — shown only when existing owner is logged in -->
+  <div class="mode-toggle" id="mode-toggle" style="display:none">
+    <button class="mode-btn" id="mode-new" onclick="setMode('new')">🏨 New Owner Signup</button>
+    <button class="mode-btn active" id="mode-add" onclick="setMode('add')">➕ Add Hotel to My Account</button>
+  </div>
+
+  <!-- PROGRESS — hidden in add-hotel mode -->
+  <div class="progress-wrap" id="progress-wrap">
     <div class="progress-steps">
       <div class="progress-step">
         <div class="step-circle active" id="sc-1">1</div>
@@ -147,17 +168,121 @@
     </div>
   </div>
 
-  <!-- Card -->
   <div class="wizard-card">
     <div class="err-msg" id="err-msg"></div>
 
-    <!-- ── STEP 1: Account ── -->
+    <!-- ══ ADD HOTEL MODE (for existing owners) ══ -->
+    <div class="step-panel" id="panel-add-hotel">
+
+      <div class="add-hotel-banner">
+        <div class="banner-icon">🏨</div>
+        <div class="banner-text">
+          <div class="b-title">Adding a new hotel to your group</div>
+          <div class="b-sub">This hotel will be linked to your existing owner account and appear in your admin hotel switcher.</div>
+        </div>
+      </div>
+
+      <!-- Existing hotels -->
+      <div id="existing-hotels-wrap" style="margin-bottom:20px">
+        <div style="font-size:11px;color:#aaa;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-bottom:8px">Your Current Hotels</div>
+        <div id="existing-hotels-list"></div>
+      </div>
+
+      <div class="step-title">New Hotel Details</div>
+      <div class="step-sub">Fill in the details for your new property</div>
+
+      <div class="field">
+        <label>Hotel Name</label>
+        <input type="text" id="ah-name" placeholder="e.g. Fateh Bagh" oninput="updateAddPreview()">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>City</label>
+          <input type="text" id="ah-city" placeholder="e.g. Udaipur" oninput="updateAddPreview()">
+        </div>
+        <div class="field">
+          <label>Hotel Type</label>
+          <select id="ah-type">
+            <option value="Boutique Hotel">🏨 Boutique Hotel</option>
+            <option value="Heritage Property">🏯 Heritage Property</option>
+            <option value="Resort">🌴 Resort</option>
+            <option value="Business Hotel">💼 Business Hotel</option>
+            <option value="Guest House">🏡 Guest House</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Brand Colour</label>
+        <div class="color-presets" id="ah-presets">
+          <div class="color-preset selected" style="background:#005f73" onclick="selectAddColor('#005f73',this)"></div>
+          <div class="color-preset" style="background:#e11c0e" onclick="selectAddColor('#e11c0e',this)"></div>
+          <div class="color-preset" style="background:#7c3aed" onclick="selectAddColor('#7c3aed',this)"></div>
+          <div class="color-preset" style="background:#0369a1" onclick="selectAddColor('#0369a1',this)"></div>
+          <div class="color-preset" style="background:#15803d" onclick="selectAddColor('#15803d',this)"></div>
+          <div class="color-preset" style="background:#b45309" onclick="selectAddColor('#b45309',this)"></div>
+          <div class="color-preset" style="background:#be123c" onclick="selectAddColor('#be123c',this)"></div>
+          <div class="color-preset" style="background:#1e293b" onclick="selectAddColor('#1e293b',this)"></div>
+        </div>
+        <div class="color-row">
+          <input type="color" id="ah-colorpicker" value="#005f73" oninput="ahColorPicker(this.value)">
+          <input type="text" id="ah-colortext" value="#005f73" oninput="ahColorText(this.value)" placeholder="#005f73">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Hotel Icon</label>
+        <div class="emoji-picker" id="ah-emoji-picker">
+          <div class="emoji-opt selected" onclick="selectAddEmoji('🏨',this)">🏨</div>
+          <div class="emoji-opt" onclick="selectAddEmoji('🏯',this)">🏯</div>
+          <div class="emoji-opt" onclick="selectAddEmoji('🌴',this)">🌴</div>
+          <div class="emoji-opt" onclick="selectAddEmoji('🏰',this)">🏰</div>
+          <div class="emoji-opt" onclick="selectAddEmoji('⛩️',this)">⛩️</div>
+          <div class="emoji-opt" onclick="selectAddEmoji('🌺',this)">🌺</div>
+          <div class="emoji-opt" onclick="selectAddEmoji('🦚',this)">🦚</div>
+          <div class="emoji-opt" onclick="selectAddEmoji('🌊',this)">🌊</div>
+          <div class="emoji-opt" onclick="selectAddEmoji('🏔️',this)">🏔️</div>
+          <div class="emoji-opt" onclick="selectAddEmoji('🌸',this)">🌸</div>
+        </div>
+      </div>
+
+      <div style="text-align:center;padding:16px 0 24px">
+        <div style="font-size:13px;color:#888;margin-bottom:16px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600">Number of Rooms</div>
+        <div class="room-selector">
+          <button class="room-btn" onclick="changeAddRooms(-10)">−10</button>
+          <button class="room-btn" onclick="changeAddRooms(-1)">−</button>
+          <div class="room-count-display" id="ah-room-display">10</div>
+          <button class="room-btn" onclick="changeAddRooms(1)">+</button>
+          <button class="room-btn" onclick="changeAddRooms(10)">+10</button>
+        </div>
+      </div>
+
+      <!-- Preview -->
+      <div class="hotel-preview" id="ah-preview">
+        <div class="preview-emoji" id="ah-preview-emoji">🏨</div>
+        <div>
+          <div class="preview-name" id="ah-preview-name">New Hotel</div>
+          <div class="preview-city" id="ah-preview-city">City</div>
+        </div>
+      </div>
+
+      <button class="btn-next" id="add-hotel-btn" onclick="addHotelToAccount()">🚀 Add This Hotel</button>
+    </div>
+
+    <!-- ══ NEW SIGNUP STEPS ══ -->
+
+    <!-- STEP 1: Account -->
     <div class="step-panel active" id="step-1">
       <div class="step-title">Create your account</div>
       <div class="step-sub">Your login credentials for the admin panel</div>
       <div class="field">
         <label>Your Name</label>
         <input type="text" id="s1-owner" placeholder="e.g. Prajjval Singh">
+      </div>
+      <div class="field">
+        <label>Hotel Group Name <span style="font-weight:400;text-transform:none;font-size:11px;color:#bbb">(optional)</span></label>
+        <input type="text" id="s1-group" placeholder="e.g. Fateh Collection">
+        <div class="hint">If you own multiple hotels under one brand, add the group name here.</div>
       </div>
       <div class="field">
         <label>Email Address</label>
@@ -169,18 +294,18 @@
       </div>
       <button class="btn-next" onclick="goStep(2)">Continue →</button>
       <div style="text-align:center;margin-top:14px;font-size:13px;color:#888">
-        Already have an account? <a href="admin.html" style="color:var(--brand2);font-weight:500">Login</a>
+        Already have an account? <a href="admin.html" style="color:var(--brand2);font-weight:500">Login to Admin</a>
       </div>
     </div>
 
-    <!-- ── STEP 2: Hotel Info ── -->
+    <!-- STEP 2: Hotel Info -->
     <div class="step-panel" id="step-2">
       <button class="btn-back" onclick="goStep(1)">← Back</button>
-      <div class="step-title">Tell us about your hotel</div>
-      <div class="step-sub">Basic information about your property</div>
+      <div class="step-title">Your first hotel</div>
+      <div class="step-sub">You can add more hotels from your admin panel after signup</div>
       <div class="field">
         <label>Hotel Name</label>
-        <input type="text" id="s2-name" placeholder="e.g. The Grand Palace" oninput="updatePreview()">
+        <input type="text" id="s2-name" placeholder="e.g. Fatehgarh" oninput="updatePreview()">
       </div>
       <div class="field-row">
         <div class="field">
@@ -206,12 +331,11 @@
       <button class="btn-next" onclick="goStep(3)">Continue →</button>
     </div>
 
-    <!-- ── STEP 3: Branding ── -->
+    <!-- STEP 3: Branding -->
     <div class="step-panel" id="step-3">
       <button class="btn-back" onclick="goStep(2)">← Back</button>
       <div class="step-title">Brand your hotel</div>
       <div class="step-sub">Choose colours and an icon that represent your hotel</div>
-
       <div class="hotel-preview" id="hotel-preview">
         <div class="preview-emoji" id="preview-emoji">🏨</div>
         <div>
@@ -219,10 +343,9 @@
           <div class="preview-city" id="preview-city">Your City</div>
         </div>
       </div>
-
       <div class="field">
         <label>Brand Colour</label>
-        <div class="color-presets" id="color-presets">
+        <div class="color-presets">
           <div class="color-preset selected" style="background:#005f73" onclick="selectColor('#005f73',this)"></div>
           <div class="color-preset" style="background:#e11c0e" onclick="selectColor('#e11c0e',this)"></div>
           <div class="color-preset" style="background:#7c3aed" onclick="selectColor('#7c3aed',this)"></div>
@@ -237,7 +360,6 @@
           <input type="text" id="s3-colortext" value="#005f73" oninput="colorTextChanged(this.value)" placeholder="#005f73">
         </div>
       </div>
-
       <div class="field">
         <label>Hotel Icon</label>
         <div class="hint" style="margin-bottom:8px">Choose an emoji that represents your hotel</div>
@@ -258,15 +380,14 @@
       <button class="btn-next" onclick="goStep(4)">Continue →</button>
     </div>
 
-    <!-- ── STEP 4: Rooms ── -->
+    <!-- STEP 4: Rooms -->
     <div class="step-panel" id="step-4">
       <button class="btn-back" onclick="goStep(3)">← Back</button>
       <div class="step-title">How many rooms?</div>
       <div class="step-sub">We'll generate QR codes for each room automatically. You can add or remove rooms later.</div>
-
       <div style="text-align:center;padding:20px 0 28px">
         <div style="font-size:13px;color:#888;margin-bottom:16px;text-transform:uppercase;letter-spacing:0.08em;font-weight:600">Number of Rooms</div>
-        <div class="room-selector" style="justify-content:center">
+        <div class="room-selector">
           <button class="room-btn" onclick="changeRooms(-10)">−10</button>
           <button class="room-btn" onclick="changeRooms(-1)">−</button>
           <div class="room-count-display" id="room-display">10</div>
@@ -275,19 +396,17 @@
         </div>
         <div style="font-size:12px;color:#aaa;margin-top:12px">Rooms will be numbered 1 to <span id="room-count-label">10</span></div>
       </div>
-
       <div style="background:#f8f8f8;border-radius:10px;padding:14px 16px;font-size:13px;color:#666;line-height:1.6;margin-bottom:20px">
-        💡 <strong>Tip:</strong> You can always add more rooms from the Admin panel. Start with your current room count.
+        💡 <strong>Tip:</strong> You can always add more rooms from the Admin panel.
       </div>
       <button class="btn-next" onclick="goStep(5)">Continue →</button>
     </div>
 
-    <!-- ── STEP 5: Review & Create ── -->
+    <!-- STEP 5: Review -->
     <div class="step-panel" id="step-5">
       <button class="btn-back" onclick="goStep(4)">← Back</button>
       <div class="step-title">Review & launch 🚀</div>
       <div class="step-sub">Everything looks good? Click Create Hotel to go live!</div>
-
       <div class="hotel-preview" id="review-preview" style="margin-bottom:20px">
         <div class="preview-emoji" id="review-emoji">🏨</div>
         <div>
@@ -295,35 +414,33 @@
           <div class="preview-city" id="review-city">City</div>
         </div>
       </div>
-
       <div class="checklist">
-        <div class="check-item done" id="chk-account">
+        <div class="check-item done">
           <div class="check-dot">✓</div>
           <div><strong>Account</strong> — <span id="chk-email-val">-</span></div>
         </div>
-        <div class="check-item done" id="chk-hotel">
+        <div class="check-item done">
           <div class="check-dot">✓</div>
           <div><strong>Hotel</strong> — <span id="chk-hotel-val">-</span></div>
         </div>
-        <div class="check-item done" id="chk-brand">
+        <div class="check-item done">
           <div class="check-dot">✓</div>
           <div><strong>Branding</strong> — <span id="chk-brand-val">-</span></div>
         </div>
-        <div class="check-item done" id="chk-rooms">
+        <div class="check-item done">
           <div class="check-dot">✓</div>
           <div><strong>Rooms</strong> — <span id="chk-rooms-val">-</span> rooms will be created</div>
         </div>
       </div>
-
       <button class="btn-next" id="create-btn" onclick="createHotel()">🚀 Create My Hotel</button>
     </div>
 
-    <!-- ── STEP 6: Success ── -->
+    <!-- STEP 6: Success -->
     <div class="step-panel" id="step-6">
       <div class="success-wrap">
-        <div class="success-icon">🎉</div>
-        <div class="success-title">Your hotel is live!</div>
-        <div class="success-sub" id="success-msg">Welcome to Welco! Your hotel has been set up successfully. Here's what to do next:</div>
+        <div class="success-icon" id="success-icon">🎉</div>
+        <div class="success-title" id="success-title">Your hotel is live!</div>
+        <div class="success-sub" id="success-msg">Welcome to Welco!</div>
         <div class="success-links">
           <a href="admin.html" class="link-card">
             <span class="link-icon">⚙️</span>
@@ -344,25 +461,163 @@
       </div>
     </div>
 
-  </div>
-</div>
+  </div><!-- /wizard-card -->
+</div><!-- /wizard-wrap -->
 
 <script>
 var currentStep = 1;
 var totalSteps = 5;
 var roomCount = 10;
+var addRoomCount = 10;
 var selectedColor = '#005f73';
 var selectedEmoji = '🏨';
+var addSelectedColor = '#005f73';
+var addSelectedEmoji = '🏨';
+var currentMode = 'new'; // 'new' or 'add'
+var existingOwner = null;
+var existingHotels = [];
 
+/* ═══ CHECK IF OWNER ALREADY LOGGED IN ═══ */
+window.onload = function() {
+  var storedHotel = localStorage.getItem('welco_admin_hotel');
+  var storedHotels = localStorage.getItem('welco_admin_hotels');
+  if (storedHotel) {
+    try {
+      var hotel = JSON.parse(storedHotel);
+      existingHotels = storedHotels ? JSON.parse(storedHotels) : [hotel];
+      // Owner is logged in — show mode toggle and default to "Add Hotel"
+      document.getElementById('mode-toggle').style.display = 'flex';
+      setMode('add');
+    } catch(e) {}
+  }
+  updatePreview();
+};
+
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('mode-new').classList.toggle('active', mode === 'new');
+  document.getElementById('mode-add').classList.toggle('active', mode === 'add');
+
+  // Hide all panels
+  document.querySelectorAll('.step-panel').forEach(function(p) { p.classList.remove('active'); });
+
+  if (mode === 'add') {
+    document.getElementById('progress-wrap').style.display = 'none';
+    document.getElementById('panel-add-hotel').classList.add('active');
+    document.getElementById('wizard-tagline').textContent = 'Add a new hotel to your group';
+    renderExistingHotels();
+  } else {
+    document.getElementById('progress-wrap').style.display = 'block';
+    document.getElementById('step-1').classList.add('active');
+    document.getElementById('wizard-tagline').textContent = 'Set up your hotel in under 5 minutes';
+    currentStep = 1;
+    updateProgressCircles(1);
+  }
+}
+
+function renderExistingHotels() {
+  var list = document.getElementById('existing-hotels-list');
+  if (!existingHotels || existingHotels.length === 0) {
+    list.innerHTML = '<div style="font-size:13px;color:#aaa;padding:8px 0">No hotels yet</div>';
+    return;
+  }
+  list.innerHTML = existingHotels.map(function(h) {
+    return '<div class="existing-hotel-item">'+
+      '<div class="eh-dot" style="background:'+(h.colour||'#005f73')+'"></div>'+
+      '<span class="eh-name">'+(h.emoji||'🏨')+' '+h.name+'</span>'+
+      '<span class="eh-city">'+(h.city||'')+'</span>'+
+    '</div>';
+  }).join('');
+}
+
+/* ═══ ADD HOTEL MODE FUNCTIONS ═══ */
+function updateAddPreview() {
+  var name = document.getElementById('ah-name').value || 'New Hotel';
+  var city = document.getElementById('ah-city').value || 'City';
+  document.getElementById('ah-preview-name').textContent = name;
+  document.getElementById('ah-preview-city').textContent = city;
+  document.getElementById('ah-preview').style.background = 'linear-gradient(135deg,'+addSelectedColor+','+addSelectedColor+'aa)';
+}
+function selectAddColor(hex, el) {
+  addSelectedColor = hex;
+  document.getElementById('ah-colorpicker').value = hex;
+  document.getElementById('ah-colortext').value = hex;
+  document.querySelectorAll('#ah-presets .color-preset').forEach(function(p){p.classList.remove('selected');});
+  el.classList.add('selected'); updateAddPreview();
+}
+function ahColorPicker(val) { addSelectedColor=val; document.getElementById('ah-colortext').value=val; document.querySelectorAll('#ah-presets .color-preset').forEach(function(p){p.classList.remove('selected');}); updateAddPreview(); }
+function ahColorText(val) { if(/^#[0-9A-Fa-f]{6}$/.test(val)){addSelectedColor=val;document.getElementById('ah-colorpicker').value=val;updateAddPreview();} }
+function selectAddEmoji(emoji, el) { addSelectedEmoji=emoji; document.getElementById('ah-preview-emoji').textContent=emoji; document.querySelectorAll('#ah-emoji-picker .emoji-opt').forEach(function(e){e.classList.remove('selected');}); el.classList.add('selected'); }
+function changeAddRooms(delta) { addRoomCount=Math.max(1,Math.min(500,addRoomCount+delta)); document.getElementById('ah-room-display').textContent=addRoomCount; }
+
+async function addHotelToAccount() {
+  var name = document.getElementById('ah-name').value.trim();
+  var city = document.getElementById('ah-city').value.trim();
+  if (!name) { showErr('Please enter the hotel name.'); return; }
+  if (!city) { showErr('Please enter the city.'); return; }
+
+  var btn = document.getElementById('add-hotel-btn');
+  btn.textContent = '⏳ Adding hotel...'; btn.disabled = true; hideErr();
+
+  // Get owner_id from existing hotel data
+  var storedHotel = localStorage.getItem('welco_admin_hotel');
+  var hotel = storedHotel ? JSON.parse(storedHotel) : null;
+  if (!hotel || !hotel.owner_id) {
+    showErr('Could not find your owner account. Please login to admin first.');
+    btn.textContent = '🚀 Add This Hotel'; btn.disabled = false; return;
+  }
+
+  try {
+    var res = await fetch('/owner/add-hotel', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        owner_id: hotel.owner_id,
+        hotelName: name,
+        city: city,
+        roomCount: addRoomCount,
+        colour: addSelectedColor,
+        emoji: addSelectedEmoji
+      })
+    });
+    var data = await res.json();
+    if (!res.ok) { showErr(data.error || 'Something went wrong.'); btn.textContent='🚀 Add This Hotel'; btn.disabled=false; return; }
+
+    // Add new hotel to local storage
+    existingHotels.push(data.hotel);
+    localStorage.setItem('welco_admin_hotels', JSON.stringify(existingHotels));
+    localStorage.setItem('welco_admin_hotel', JSON.stringify(data.hotel));
+
+    // Show success
+    document.querySelectorAll('.step-panel').forEach(function(p){p.classList.remove('active');});
+    document.getElementById('step-6').classList.add('active');
+    document.getElementById('success-icon').textContent = '🏨';
+    document.getElementById('success-title').textContent = name + ' is live!';
+    document.getElementById('success-msg').textContent = name + ' has been added to your group with ' + addRoomCount + ' rooms. Switch to it from your admin hotel switcher.';
+
+  } catch(e) {
+    showErr('Connection error. Please try again.');
+    btn.textContent='🚀 Add This Hotel'; btn.disabled=false;
+  }
+}
+
+/* ═══ NEW SIGNUP FUNCTIONS ═══ */
 function goStep(n) {
-  // Validate before going forward
   if (n > currentStep) {
     var err = validateStep(currentStep);
     if (err) { showErr(err); return; }
   }
   hideErr();
+  updateProgressCircles(n);
+  document.getElementById('progress-fill').style.width = (n / totalSteps * 100) + '%';
+  document.querySelectorAll('.step-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.getElementById('step-'+n).classList.add('active');
+  if (n === 5) populateReview();
+  currentStep = n;
+  window.scrollTo(0, 0);
+}
 
-  // Update circles
+function updateProgressCircles(n) {
   document.querySelectorAll('[id^="sc-"]').forEach(function(el, i) {
     var step = i + 1;
     el.className = 'step-circle' + (step < n ? ' done' : step === n ? ' active' : '');
@@ -372,19 +627,6 @@ function goStep(n) {
     var step = i + 1;
     el.className = 'step-label' + (step < n ? ' done' : step === n ? ' active' : '');
   });
-
-  // Progress bar
-  document.getElementById('progress-fill').style.width = (n / totalSteps * 100) + '%';
-
-  // Show panel
-  document.querySelectorAll('.step-panel').forEach(function(p){ p.classList.remove('active'); });
-  document.getElementById('step-'+n).classList.add('active');
-
-  // If going to review step, populate it
-  if (n === 5) populateReview();
-
-  currentStep = n;
-  window.scrollTo(0, 0);
 }
 
 function validateStep(step) {
@@ -400,133 +642,66 @@ function validateStep(step) {
   return null;
 }
 
-function showErr(msg) {
-  var el = document.getElementById('err-msg');
-  el.textContent = msg; el.style.display = 'block';
-}
-function hideErr() {
-  document.getElementById('err-msg').style.display = 'none';
-}
-
 function updatePreview() {
-  var name = document.getElementById('s2-name').value || 'Your Hotel';
-  var city = document.getElementById('s2-city').value || 'Your City';
+  var name = document.getElementById('s2-name') ? document.getElementById('s2-name').value || 'Your Hotel' : 'Your Hotel';
+  var city = document.getElementById('s2-city') ? document.getElementById('s2-city').value || 'Your City' : 'Your City';
   document.getElementById('preview-name').textContent = name;
   document.getElementById('preview-city').textContent = city;
-  document.getElementById('hotel-preview').style.background = 'linear-gradient(135deg, ' + selectedColor + ', ' + selectedColor + 'aa)';
+  document.getElementById('hotel-preview').style.background = 'linear-gradient(135deg,'+selectedColor+','+selectedColor+'aa)';
 }
-
 function selectColor(hex, el) {
-  selectedColor = hex;
-  document.getElementById('s3-colorpicker').value = hex;
-  document.getElementById('s3-colortext').value = hex;
-  document.querySelectorAll('.color-preset').forEach(function(p){ p.classList.remove('selected'); });
-  el.classList.add('selected');
-  updatePreview();
+  selectedColor=hex; document.getElementById('s3-colorpicker').value=hex; document.getElementById('s3-colortext').value=hex;
+  document.querySelectorAll('#emoji-picker ~ .color-presets .color-preset, .color-presets .color-preset').forEach(function(p){p.classList.remove('selected');});
+  el.classList.add('selected'); updatePreview();
 }
-
-function colorPickerChanged(val) {
-  selectedColor = val;
-  document.getElementById('s3-colortext').value = val;
-  document.querySelectorAll('.color-preset').forEach(function(p){ p.classList.remove('selected'); });
-  updatePreview();
-}
-
-function colorTextChanged(val) {
-  if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
-    selectedColor = val;
-    document.getElementById('s3-colorpicker').value = val;
-    updatePreview();
-  }
-}
-
-function selectEmoji(emoji, el) {
-  selectedEmoji = emoji;
-  document.getElementById('s3-emoji').value = emoji;
-  document.getElementById('preview-emoji').textContent = emoji;
-  document.querySelectorAll('.emoji-opt').forEach(function(e){ e.classList.remove('selected'); });
-  el.classList.add('selected');
-}
-
-function customEmoji(val) {
-  if (val) {
-    selectedEmoji = val;
-    document.getElementById('preview-emoji').textContent = val;
-    document.querySelectorAll('.emoji-opt').forEach(function(e){ e.classList.remove('selected'); });
-  }
-}
-
-function changeRooms(delta) {
-  roomCount = Math.max(1, Math.min(500, roomCount + delta));
-  document.getElementById('room-display').textContent = roomCount;
-  document.getElementById('room-count-label').textContent = roomCount;
-}
+function colorPickerChanged(val) { selectedColor=val; document.getElementById('s3-colortext').value=val; updatePreview(); }
+function colorTextChanged(val) { if(/^#[0-9A-Fa-f]{6}$/.test(val)){selectedColor=val;document.getElementById('s3-colorpicker').value=val;updatePreview();} }
+function selectEmoji(emoji, el) { selectedEmoji=emoji; document.getElementById('s3-emoji').value=emoji; document.getElementById('preview-emoji').textContent=emoji; document.querySelectorAll('#emoji-picker .emoji-opt').forEach(function(e){e.classList.remove('selected');}); el.classList.add('selected'); }
+function customEmoji(val) { if(val){selectedEmoji=val;document.getElementById('preview-emoji').textContent=val;document.querySelectorAll('#emoji-picker .emoji-opt').forEach(function(e){e.classList.remove('selected');});} }
+function changeRooms(delta) { roomCount=Math.max(1,Math.min(500,roomCount+delta)); document.getElementById('room-display').textContent=roomCount; document.getElementById('room-count-label').textContent=roomCount; }
 
 function populateReview() {
-  var name = document.getElementById('s2-name').value;
-  var city = document.getElementById('s2-city').value;
-  document.getElementById('review-emoji').textContent = selectedEmoji;
-  document.getElementById('review-name').textContent = name;
-  document.getElementById('review-city').textContent = city;
-  document.getElementById('review-preview').style.background = 'linear-gradient(135deg, '+selectedColor+', '+selectedColor+'aa)';
-  document.getElementById('chk-email-val').textContent = document.getElementById('s1-email').value;
-  document.getElementById('chk-hotel-val').textContent = name + ' — ' + city;
-  document.getElementById('chk-brand-val').textContent = selectedColor + ' · ' + selectedEmoji;
-  document.getElementById('chk-rooms-val').textContent = roomCount;
+  var name=document.getElementById('s2-name').value, city=document.getElementById('s2-city').value;
+  document.getElementById('review-emoji').textContent=selectedEmoji;
+  document.getElementById('review-name').textContent=name;
+  document.getElementById('review-city').textContent=city;
+  document.getElementById('review-preview').style.background='linear-gradient(135deg,'+selectedColor+','+selectedColor+'aa)';
+  document.getElementById('chk-email-val').textContent=document.getElementById('s1-email').value;
+  document.getElementById('chk-hotel-val').textContent=name+' — '+city;
+  document.getElementById('chk-brand-val').textContent=selectedColor+' · '+selectedEmoji;
+  document.getElementById('chk-rooms-val').textContent=roomCount;
 }
 
 async function createHotel() {
-  var btn = document.getElementById('create-btn');
-  btn.textContent = '⏳ Creating your hotel...';
-  btn.disabled = true;
-  hideErr();
-
-  var payload = {
-    hotelName: document.getElementById('s2-name').value.trim(),
-    city: document.getElementById('s2-city').value.trim(),
-    ownerName: document.getElementById('s1-owner').value.trim(),
-    roomCount: roomCount,
-    colour: selectedColor,
-    emoji: selectedEmoji,
-    email: document.getElementById('s1-email').value.trim(),
-    password: document.getElementById('s1-password').value
+  var btn=document.getElementById('create-btn');
+  btn.textContent='⏳ Creating your hotel...'; btn.disabled=true; hideErr();
+  var payload={
+    hotelName:document.getElementById('s2-name').value.trim(),
+    city:document.getElementById('s2-city').value.trim(),
+    ownerName:document.getElementById('s1-owner').value.trim(),
+    group_name:document.getElementById('s1-group').value.trim(),
+    roomCount:roomCount, colour:selectedColor, emoji:selectedEmoji,
+    email:document.getElementById('s1-email').value.trim(),
+    password:document.getElementById('s1-password').value
   };
-
   try {
-    var res = await fetch('/signup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    var data = await res.json();
-
-    if (!res.ok) {
-      showErr(data.error || 'Something went wrong. Please try again.');
-      btn.textContent = '🚀 Create My Hotel';
-      btn.disabled = false;
-      return;
-    }
-
-    // Save hotel data
-    localStorage.setItem('welco_admin_hotel', JSON.stringify(data.hotel));
-
-    // Show success
-    document.querySelectorAll('.step-panel').forEach(function(p){ p.classList.remove('active'); });
+    var res=await fetch('/signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    var data=await res.json();
+    if(!res.ok){showErr(data.error||'Something went wrong. Please try again.');btn.textContent='🚀 Create My Hotel';btn.disabled=false;return;}
+    localStorage.setItem('welco_admin_hotel',JSON.stringify(data.hotel));
+    localStorage.setItem('welco_admin_hotels',JSON.stringify([data.hotel]));
+    document.querySelectorAll('.step-panel').forEach(function(p){p.classList.remove('active');});
     document.getElementById('step-6').classList.add('active');
-    document.getElementById('progress-fill').style.width = '100%';
-    document.getElementById('success-msg').textContent =
-      'Welcome to Welco, ' + payload.ownerName.split(' ')[0] + '! ' +
-      payload.hotelName + ' is live with ' + roomCount + ' rooms. Here\'s what to do next:';
-
+    document.getElementById('progress-fill').style.width='100%';
+    document.getElementById('success-msg').textContent='Welcome to Welco, '+payload.ownerName.split(' ')[0]+'! '+payload.hotelName+' is live with '+roomCount+' rooms. You can add more hotels from your admin panel anytime.';
   } catch(e) {
     showErr('Connection error. Please check your internet and try again.');
-    btn.textContent = '🚀 Create My Hotel';
-    btn.disabled = false;
+    btn.textContent='🚀 Create My Hotel'; btn.disabled=false;
   }
 }
 
-// Initialize preview
-updatePreview();
+function showErr(msg){var e=document.getElementById('err-msg');e.textContent=msg;e.style.display='block';}
+function hideErr(){document.getElementById('err-msg').style.display='none';}
 </script>
 </body>
 </html>

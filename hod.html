@@ -591,18 +591,46 @@ function loadStaff() {
     document.getElementById('staff-list').innerHTML = staff.length === 0
       ? '<div class="empty">No staff added yet.</div>'
       : staff.map(function(s) {
+          var isOn = !!s.is_on_duty;
+          var clockInfo = '';
+          if (isOn && s.clocked_in_at) {
+            var mins = Math.floor((Date.now() - new Date(s.clocked_in_at).getTime()) / 60000);
+            clockInfo = '🟢 On duty ' + (mins < 60 ? mins + 'm' : Math.floor(mins/60) + 'h ' + (mins%60) + 'm');
+          } else if (!isOn && s.clocked_out_at) {
+            clockInfo = '🔴 Last seen ' + new Date(s.clocked_out_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+          } else {
+            clockInfo = '⚪ Not clocked in';
+          }
           return '<div class="staff-row">'+
-            '<div>'+
-              '<div class="staff-name-txt">'+s.name+'</div>'+
-              '<div style="font-size:11px;color:#aaa;margin-top:3px;font-family:monospace;font-weight:600;letter-spacing:1px">'+(s.staff_id||'No ID')+'</div>'+
+            '<div style="display:flex;align-items:center;gap:10px">'+
+              '<div style="width:38px;height:38px;border-radius:10px;background:'+(isOn?'#d1fae5':'#f5f5f5')+';display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:'+(isOn?'#065f46':'#aaa')+';position:relative">'+
+                (s.name||'?').charAt(0).toUpperCase()+
+                '<div style="position:absolute;bottom:-2px;right:-2px;width:10px;height:10px;border-radius:50%;background:'+(isOn?'#2ecc71':'#ddd')+';border:2px solid white"></div>'+
+              '</div>'+
+              '<div>'+
+                '<div class="staff-name-txt">'+s.name+'</div>'+
+                '<div style="font-size:10px;color:#aaa;font-family:monospace">'+(s.staff_id||'No ID')+'</div>'+
+                '<div style="font-size:11px;color:'+(isOn?'#065f46':'#aaa')+';margin-top:2px">'+clockInfo+'</div>'+
+              '</div>'+
             '</div>'+
             '<div style="display:flex;gap:8px;align-items:center">'+
-              '<div class="staff-pin">PIN: '+s.pin+'</div>'+
+              '<button onclick="toggleStaffDuty('+s.id+','+isOn+')" style="padding:7px 14px;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;background:'+(isOn?'#fde8ea':'#d1fae5')+';color:'+(isOn?'#c1121f':'#065f46')+'">'+(isOn?'🔴 Clock Out':'🟢 Clock In')+'</button>'+
               '<button class="btn-remove" onclick="removeStaff('+s.id+')">Remove</button>'+
             '</div>'+
           '</div>';
         }).join('');
   });
+}
+
+function toggleStaffDuty(staffId, currentlyOn) {
+  var newStatus = !currentlyOn;
+  fetch('/staff/'+staffId+'/duty', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({is_on_duty:newStatus})
+  }).then(function(r){return r.json();}).then(function(data){
+    if (data.error) { alert(data.error); return; }
+    loadStaff(); // refresh list
+  }).catch(function(){ alert('Connection error'); });
 }
 
 function addStaff() {

@@ -185,6 +185,18 @@ app.post('/staff', async (req, res) => {
   res.json(data);
 });
 
+// Staff duty toggle (clock in / clock out)
+app.post('/staff/:id/duty', async (req, res) => {
+  const { is_on_duty } = req.body;
+  const now = new Date().toISOString();
+  const update = { is_on_duty };
+  if (is_on_duty) update.clocked_in_at = now;
+  else update.clocked_out_at = now;
+  const { data, error } = await supabase.from('staff').update(update).eq('id', req.params.id).select().single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+});
+
 app.delete('/staff/:id', async (req, res) => {
   const { error } = await supabase.from('staff').delete().eq('id', req.params.id);
   if (error) return res.status(500).json({ error: error.message });

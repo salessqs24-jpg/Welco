@@ -362,10 +362,11 @@
         <div class="card-sub">Add your own hotel-specific service that guests can request</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
           <input type="text" id="custom-option-emoji" placeholder="emoji e.g. 🎵" maxlength="2" style="width:60px;padding:10px 8px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:18px;outline:none;text-align:center">
-          <input type="text" id="custom-option-text" placeholder="Service name e.g. Live Music Info" style="flex:1;min-width:160px;padding:10px 12px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:14px;outline:none">
+          <input type="text" id="custom-option-text" placeholder="Service name e.g. Live Music Info" style="flex:1;min-width:140px;padding:10px 12px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:14px;outline:none">
+          <input type="number" id="custom-option-sla" placeholder="15" min="1" max="999" value="15" style="width:64px;padding:10px 8px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:14px;outline:none;text-align:center">
           <button onclick="addCustomOption()" style="padding:10px 18px;background:#0a9396;color:white;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">+ Add</button>
         </div>
-        <div style="font-size:11px;color:#aaa;margin-top:8px">Custom options are saved along with your selection above.</div>
+        <div style="font-size:11px;color:#aaa;margin-top:8px">Enter emoji, service name, and SLA minutes (how long it takes). Custom options are saved with your selection above.</div>
       </div>
     </div>
 
@@ -945,72 +946,120 @@ var DEPT_DEFAULT_OPTIONS = {
 };
 
 var currentDeptOptions = [];   // enabled keys for this dept
-var customDeptOptions  = [];   // custom added by this HOD: [{key, label}]
+var customDeptOptions  = [];   // custom added by this HOD: [{key, label, sla}]
+var optionSlaMap       = {};   // { key: slaMinutes } — tracks SLA for ALL options
 var fullDeptOptions    = {};   // full saved object from DB
+
+// Default SLA per option key
+var DEFAULT_OPTION_SLA = {
+  'Extra Towels': 5, 'Extra Pillow': 5, 'Water Bottles': 5,
+  'Clean Room': 30, 'Extra Blanket': 5, 'Toiletries': 10,
+  'Breakfast': 20, 'Coffee': 10, 'Tea': 10, 'Water': 5,
+  'Snacks': 10, 'Ice Bucket': 5,
+  'AC Issue': 20, 'Hot Water': 15, 'Light Bulb': 10,
+  'TV Issue': 15, 'WiFi Help': 10, 'Door Lock': 10,
+  'Wake Up Call': 2, 'Luggage Help': 5, 'Late Checkout Info': 5,
+  'Airport Transfer & Local Cab': 10, 'Room Upgradation Info': 5,
+  'Room Decoration Info': 30, 'Private Dinner Info': 10,
+  'Extend Stay Info': 5, 'Bike Rent Info': 5,
+  'Adventure Activities Info': 5, 'SPA Booking Info': 5
+};
 
 function loadGuestOptions() {
   fetch('/hotels').then(function(r) { return r.json(); }).then(function(hotels) {
     var hotel = hotels.find(function(h) { return h.hotel_id === hodData.hotel_id; });
     fullDeptOptions = (hotel && hotel.dept_guest_options) ? hotel.dept_guest_options : {};
     var dept = hodData.dept;
-    var saved = fullDeptOptions[dept]; // {enabled: [...], custom: [...]}
-
+    var saved = fullDeptOptions[dept];
     var defaults = (DEPT_DEFAULT_OPTIONS[dept] || []).map(function(o) { return o.key; });
 
     if (saved) {
       currentDeptOptions = saved.enabled || defaults;
-      customDeptOptions  = (saved.custom || []).map(function(c) {
-        return { key: c.key, label: c.label };
+      customDeptOptions = (saved.custom || []).map(function(c) {
+        return { key: c.key, label: c.label, sla: c.sla || 15 };
       });
-      // ensure custom enabled ones are in currentDeptOptions
+      // Load saved SLA map
+      optionSlaMap = saved.slaMap || {};
       customDeptOptions.forEach(function(c) {
-        if ((saved.enabled || []).indexOf(c.key) === -1) {
-          currentDeptOptions.push(c.key);
-        }
+        if (currentDeptOptions.indexOf(c.key) === -1) currentDeptOptions.push(c.key);
+        if (!optionSlaMap[c.key]) optionSlaMap[c.key] = c.sla || 15;
       });
     } else {
       currentDeptOptions = defaults;
-      customDeptOptions  = [];
+      customDeptOptions = [];
+      optionSlaMap = {};
     }
     renderGuestOptionsList();
   }).catch(function() { renderGuestOptionsList(); });
+}
+
+function getSla(key) {
+  if (optionSlaMap[key] !== undefined) return optionSlaMap[key];
+  return DEFAULT_OPTION_SLA[key] || 15;
 }
 
 function renderGuestOptionsList() {
   var dept = hodData.dept;
   var defaults = DEPT_DEFAULT_OPTIONS[dept] || [];
   var list = document.getElementById('go-list');
-  var html = '<div style="font-size:11px;color:#0a9396;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Default Options</div>';
+  var html = '<div style="font-size:11px;color:#0a9396;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Default Options — Toggle & Set SLA Time</div>';
   defaults.forEach(function(opt) {
     var isEnabled = currentDeptOptions.indexOf(opt.key) !== -1;
-    html += optionRowHTML(opt.key, opt.label, isEnabled, false);
+    html += optionRowHTML(opt.key, opt.label, isEnabled, false, getSla(opt.key));
   });
   if (customDeptOptions.length > 0) {
-    html += '<div style="font-size:11px;color:#ee9b00;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin:12px 0 6px">Your Custom Options</div>';
+    html += '<div style="font-size:11px;color:#ee9b00;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin:14px 0 8px">Your Custom Options</div>';
     customDeptOptions.forEach(function(opt) {
       var isEnabled = currentDeptOptions.indexOf(opt.key) !== -1;
-      html += optionRowHTML(opt.key, opt.label, isEnabled, true);
+      html += optionRowHTML(opt.key, opt.label, isEnabled, true, getSla(opt.key));
     });
   }
   list.innerHTML = html;
 }
 
-function optionRowHTML(key, label, isEnabled, isCustom) {
+function optionRowHTML(key, label, isEnabled, isCustom, sla) {
   var safeKey = key.replace(/'/g, "\\'");
-  return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:' +
+  return '<div style="display:flex;flex-direction:column;gap:8px;padding:12px 14px;background:' +
     (isEnabled ? '#e8f4f4' : '#f9f9f9') + ';border-radius:12px;border:1.5px solid ' +
-    (isEnabled ? '#0a9396' : '#eee') + ';gap:10px;margin-bottom:6px">' +
-    '<span style="font-size:14px;font-weight:' + (isEnabled ? '600' : '400') + ';color:' +
-    (isEnabled ? '#005f73' : '#888') + ';flex:1">' + label +
-    (isCustom ? ' <span style="font-size:10px;background:#fff3cd;color:#8a6000;padding:1px 6px;border-radius:10px;margin-left:4px">Custom</span>' : '') +
-    '</span>' +
-    (isCustom ? '<button onclick="removeCustomDeptOption(\'' + safeKey + '\')" style="background:#fde8ea;color:#e63946;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;flex-shrink:0;margin-right:6px">✕</button>' : '') +
-    '<label style="position:relative;display:inline-block;width:46px;height:26px;cursor:pointer;flex-shrink:0">' +
-      '<input type="checkbox" ' + (isEnabled ? 'checked' : '') + ' data-key="' + key + '" onchange="toggleDeptOption(this)" style="opacity:0;width:0;height:0">' +
-      '<span style="position:absolute;inset:0;background:' + (isEnabled ? '#0a9396' : '#ddd') + ';border-radius:26px;transition:0.3s"></span>' +
-      '<span style="position:absolute;top:3px;left:' + (isEnabled ? '23px' : '3px') + ';width:20px;height:20px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></span>' +
-    '</label>' +
+    (isEnabled ? '#0a9396' : '#eee') + ';margin-bottom:8px">' +
+
+    // Top row: label + delete + toggle
+    '<div style="display:flex;align-items:center;gap:8px">' +
+      '<span style="font-size:14px;font-weight:' + (isEnabled ? '600' : '400') + ';color:' + (isEnabled ? '#005f73' : '#888') + ';flex:1">' +
+        label +
+        (isCustom ? ' <span style="font-size:10px;background:#fff3cd;color:#8a6000;padding:1px 6px;border-radius:10px;margin-left:4px">Custom</span>' : '') +
+      '</span>' +
+      (isCustom ? '<button onclick="removeCustomDeptOption(\'' + safeKey + '\')" style="background:#fde8ea;color:#e63946;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;flex-shrink:0">✕</button>' : '') +
+      '<label style="position:relative;display:inline-block;width:46px;height:26px;cursor:pointer;flex-shrink:0">' +
+        '<input type="checkbox" ' + (isEnabled ? 'checked' : '') + ' data-key="' + key + '" onchange="toggleDeptOption(this)" style="opacity:0;width:0;height:0">' +
+        '<span style="position:absolute;inset:0;background:' + (isEnabled ? '#0a9396' : '#ddd') + ';border-radius:26px;transition:0.3s"></span>' +
+        '<span style="position:absolute;top:3px;left:' + (isEnabled ? '23px' : '3px') + ';width:20px;height:20px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></span>' +
+      '</label>' +
+    '</div>' +
+
+    // Bottom row: SLA input (only show when enabled)
+    (isEnabled ?
+    '<div style="display:flex;align-items:center;gap:8px;padding-top:4px;border-top:1px solid rgba(10,147,150,0.12)">' +
+      '<span style="font-size:11px;color:#0a9396;font-weight:600">⏱ SLA Time:</span>' +
+      '<input type="number" min="1" max="999" value="' + sla + '" data-sla-key="' + key + '" onchange="updateSla(this)" ' +
+        'style="width:64px;padding:5px 8px;border:1.5px solid #0a9396;border-radius:8px;font-size:13px;font-weight:700;color:#005f73;text-align:center;outline:none;background:white">' +
+      '<span style="font-size:12px;color:#888">minutes</span>' +
+      '<span style="font-size:11px;color:#aaa;margin-left:4px">Guest sees: "Ready in ' + sla + ' min"</span>' +
+    '</div>' : '') +
+
   '</div>';
+}
+
+function updateSla(input) {
+  var key = input.getAttribute('data-sla-key');
+  var val = parseInt(input.value);
+  if (isNaN(val) || val < 1) val = 1;
+  if (val > 999) val = 999;
+  input.value = val;
+  optionSlaMap[key] = val;
+  // Update preview text inline
+  var preview = input.parentElement.querySelector('span:last-child');
+  if (preview) preview.textContent = 'Guest sees: "Ready in ' + val + ' min"';
 }
 
 function toggleDeptOption(checkbox) {
@@ -1026,28 +1075,32 @@ function toggleDeptOption(checkbox) {
 function addCustomOption() {
   var emoji = document.getElementById('custom-option-emoji').value.trim();
   var text  = document.getElementById('custom-option-text').value.trim();
+  var slaVal = parseInt(document.getElementById('custom-option-sla').value) || 15;
   if (!text) { alert('Please enter a service name.'); return; }
   var label = (emoji ? emoji + ' ' : '✨ ') + text;
   var key   = 'CUSTOM::' + text + '::' + Date.now();
-  customDeptOptions.push({ key: key, label: label });
+  customDeptOptions.push({ key: key, label: label, sla: slaVal });
   currentDeptOptions.push(key);
+  optionSlaMap[key] = slaVal;
   document.getElementById('custom-option-emoji').value = '';
   document.getElementById('custom-option-text').value = '';
+  document.getElementById('custom-option-sla').value = '15';
   renderGuestOptionsList();
 }
 
 function removeCustomDeptOption(key) {
   customDeptOptions  = customDeptOptions.filter(function(c) { return c.key !== key; });
   currentDeptOptions = currentDeptOptions.filter(function(k) { return k !== key; });
+  delete optionSlaMap[key];
   renderGuestOptionsList();
 }
 
 function saveGuestOptions() {
   var dept = hodData.dept;
-  // Build updated dept_guest_options — keep other depts unchanged
   fullDeptOptions[dept] = {
     enabled: currentDeptOptions,
-    custom:  customDeptOptions.map(function(c) { return { key: c.key, label: c.label }; })
+    slaMap:  optionSlaMap,
+    custom:  customDeptOptions.map(function(c) { return { key: c.key, label: c.label, sla: optionSlaMap[c.key] || c.sla || 15 }; })
   };
   fetch('/hotels/' + hodData.hotel_id + '/dept-guest-options', {
     method: 'POST',
@@ -1055,7 +1108,7 @@ function saveGuestOptions() {
     body: JSON.stringify({ dept_guest_options: fullDeptOptions })
   }).then(function(r) { return r.json(); }).then(function() {
     var msg = document.getElementById('go-msg');
-    msg.textContent = '✅ Saved! Guests will see ' + currentDeptOptions.length + ' option(s) under ' + dept + '.';
+    msg.textContent = '✅ Saved! ' + currentDeptOptions.length + ' option(s) with custom SLA times.';
     msg.className = 'msg-box msg-success';
     setTimeout(function() { msg.className = 'msg-box'; }, 4000);
   }).catch(function() {

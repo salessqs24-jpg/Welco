@@ -379,7 +379,7 @@ function loadTasks(){
     var list=document.getElementById('task-list');
     if(filtered.length===0){list.innerHTML='<div class="empty-state"><div class="icon">🎉</div><p>'+(currentFilter==='all'?'No requests yet!':'No '+currentFilter.replace('_',' ')+' requests')+'</p></div>';return;}
     list.innerHTML=filtered.map(function(r){
-      var SLA=15,elapsed=(Date.now()-new Date(r.created_at).getTime())/60000;
+      var SLA=r.sla_minutes||15,elapsed=(Date.now()-new Date(r.created_at).getTime())/60000;
       var remaining=Math.max(0,SLA-elapsed),pct=Math.max(0,(remaining/SLA)*100);
       var mins=Math.floor(remaining),secs=Math.floor((remaining-mins)*60);
       var tc=pct>50?'':pct>25?'warning':'urgent';

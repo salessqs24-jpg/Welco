@@ -233,6 +233,9 @@
       'Front Desk': '5–10 mins'
     };
 
+    // Per-option SLA loaded from HOD settings
+    var currentCatSlaMap = {}; // { optionKey: minutes } for currently selected category
+
     async function loadBranding() {
       try {
         if (roomId) {
@@ -297,17 +300,37 @@
       document.querySelectorAll('.cat-btn').forEach(function(b) { b.classList.remove('selected'); });
       btn.classList.add('selected');
       selectedCategory = cat;
-      selectedQuicks = [];  // reset selections
+      selectedQuicks = [];
 
       document.getElementById('quick-section').style.display = 'none';
       document.getElementById('services-section').style.display = 'none';
 
-      // Always use services-section (dept_guest_options) for all categories
+      // Load slaMap for this dept
+      var savedDeptFull = deptGuestOptions[cat];
+      currentCatSlaMap = (savedDeptFull && savedDeptFull.slaMap) ? savedDeptFull.slaMap : {};
+
       renderDeptServices(cat);
       document.getElementById('services-section').style.display = 'block';
 
+      // Default ETA for the category
       document.getElementById('eta-time').textContent = etaMap[cat] || '10 mins';
       document.getElementById('eta-badge').style.display = 'block';
+    }
+
+    function getOptionSla(key) {
+      if (currentCatSlaMap[key] !== undefined) return currentCatSlaMap[key];
+      // fallback defaults
+      var DEFAULTS = {
+        'Extra Towels':5,'Extra Pillow':5,'Water Bottles':5,'Clean Room':30,
+        'Extra Blanket':5,'Toiletries':10,'Breakfast':20,'Coffee':10,'Tea':10,
+        'Water':5,'Snacks':10,'Ice Bucket':5,'AC Issue':20,'Hot Water':15,
+        'Light Bulb':10,'TV Issue':15,'WiFi Help':10,'Door Lock':10,
+        'Wake Up Call':2,'Luggage Help':5,'Late Checkout Info':5,
+        'Airport Transfer & Local Cab':10,'Room Upgradation Info':5,
+        'Room Decoration Info':30,'Private Dinner Info':10,'Extend Stay Info':5,
+        'Bike Rent Info':5,'Adventure Activities Info':5,'SPA Booking Info':5
+      };
+      return DEFAULTS[key] || 15;
     }
 
     function renderDeptServices(cat) {
@@ -350,8 +373,8 @@
       var el = document.createElement('button');
       el.className = 'service-item';
       el.textContent = label;
+      el.setAttribute('data-key', key);
       el.onclick = function() {
-        // Toggle selection — multi-select
         var cleanLabel = label.replace(/[\u{1F000}-\u{1FFFF}]/gu, '').trim() || label;
         var idx = selectedQuicks.indexOf(cleanLabel);
         if (idx === -1) {
@@ -361,8 +384,21 @@
           selectedQuicks.splice(idx, 1);
           el.classList.remove('selected');
         }
-        // Update message box with all selected items
         document.getElementById('message').value = selectedQuicks.join(', ');
+
+        // Update ETA: show max SLA among all selected options
+        if (selectedQuicks.length > 0) {
+          var allBtns = document.querySelectorAll('.service-item.selected');
+          var maxSla = 0;
+          allBtns.forEach(function(b) {
+            var k = b.getAttribute('data-key');
+            var s = getOptionSla(k);
+            if (s > maxSla) maxSla = s;
+          });
+          document.getElementById('eta-time').textContent = maxSla + ' mins';
+        } else {
+          document.getElementById('eta-time').textContent = etaMap[selectedCategory] || '10 mins';
+        }
       };
       grid.appendChild(el);
     }
@@ -376,6 +412,18 @@
       });
     }
 
+    function getMaxSla() {
+      var allBtns = document.querySelectorAll('.service-item.selected');
+      if (allBtns.length === 0) return 15;
+      var maxSla = 0;
+      allBtns.forEach(function(b) {
+        var k = b.getAttribute('data-key');
+        var s = getOptionSla(k);
+        if (s > maxSla) maxSla = s;
+      });
+      return maxSla || 15;
+    }
+
     async function submitRequest() {
       if (!selectedCategory) return alert('Please select a category first!');
       var message = document.getElementById('message').value || selectedQuicks.join(', ');
@@ -383,7 +431,7 @@
         var res = await fetch('/requests', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ hotel_id: hotelId, room_id: roomId, room_number: roomNumber, category: selectedCategory, message: message })
+          body: JSON.stringify({ hotel_id: hotelId, room_id: roomId, room_number: roomNumber, category: selectedCategory, message: message, sla_minutes: getMaxSla() })
         });
         var data = await res.json();
         if (data && data.id) {

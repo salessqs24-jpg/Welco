@@ -256,8 +256,8 @@ app.get('/requests', async (req, res) => {
 });
 
 app.post('/requests', async (req, res) => {
-  const { hotel_id, room_number, category, message } = req.body;
-  const { data, error } = await supabase.from('requests').insert([{ hotel_id, room_number, category, message, status: 'pending' }]).select().single();
+  const { hotel_id, room_number, category, message, sla_minutes } = req.body;
+  const { data, error } = await supabase.from('requests').insert([{ hotel_id, room_number, category, message, status: 'pending', sla_minutes: sla_minutes || 15 }]).select().single();
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
 });

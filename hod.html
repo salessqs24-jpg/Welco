@@ -504,6 +504,53 @@ function startApp() {
 
   loadAll();
   refreshInterval = setInterval(loadAll, 10000);
+
+  // Apply permissions — hide tabs HOD doesn't have access to
+  applyHodPermissions();
+}
+
+function applyHodPermissions() {
+  fetch('/hod?hotel_id=' + hodData.hotel_id)
+    .then(function(r){return r.json();})
+    .then(function(list){
+      var hod = list.find(function(h){ return h.name === hodData.name; });
+      if (!hod || !hod.permissions) return; // all access if no permissions set
+      var perms = hod.permissions;
+
+      // Store permissions globally
+      hodData.permissions = perms;
+
+      // Update tabs visibility
+      var tabMap = {
+        'analytics': 3, // index in tabs array (0-based: overview,requests,rooms,staff,analytics,announce,maintenance,guestoptions)
+        'announce': 5,
+        'schedule': 6,
+        'guest_options': 7,
+        'staff': 3 // staff tab index
+      };
+
+      var tabs = document.querySelectorAll('.tab');
+      // analytics = index 4, announce = 5, maintenance = 6, guestoptions = 7, staff = 3
+      var permTabMap = [
+        null, // 0 overview — always visible
+        null, // 1 requests — always visible
+        null, // 2 rooms — always visible
+        'staff', // 3 staff
+        'analytics', // 4 analytics
+        'announce', // 5 announcements
+        'schedule', // 6 maintenance/schedule
+        'guest_options' // 7 guest options
+      ];
+
+      tabs.forEach(function(tab, i) {
+        var permKey = permTabMap[i];
+        if (permKey && perms[permKey] === false) {
+          tab.style.display = 'none';
+        } else {
+          tab.style.display = '';
+        }
+      });
+    }).catch(function(){});
 }
 
 function loadAll() {
@@ -825,6 +872,20 @@ function renderStaffPerformance(reqs) {
    TABS
 ═══════════════════════════════════════════════ */
 function showTab(name) {
+  // Permission check
+  var permMap = {
+    'staff': 'staff',
+    'analytics': 'analytics',
+    'announce': 'announce',
+    'maintenance': 'schedule',
+    'guestoptions': 'guest_options'
+  };
+  var requiredPerm = permMap[name];
+  if (requiredPerm && hodData.permissions && hodData.permissions[requiredPerm] === false) {
+    alert('⛔ Access Denied\nYour admin has not granted you permission to access ' + name.replace('guestoptions','Guest Options').replace('maintenance','Schedule') + '.');
+    return;
+  }
+
   var names = ['overview','requests','rooms','staff','analytics','announce','maintenance','guestoptions'];
   document.querySelectorAll('.tab').forEach(function(t, i) { t.classList.toggle('active', names[i] === name); });
   document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });

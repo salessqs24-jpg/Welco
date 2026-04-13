@@ -230,6 +230,14 @@ app.post('/hod', async (req, res) => {
   res.json(data);
 });
 
+// Update HOD permissions
+app.post('/hod/:id/permissions', async (req, res) => {
+  const { permissions } = req.body;
+  const { data, error } = await supabase.from('hod').update({ permissions }).eq('id', req.params.id).select().single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+});
+
 app.delete('/hod/:id', async (req, res) => {
   const { error } = await supabase.from('hod').delete().eq('id', req.params.id);
   if (error) return res.status(500).json({ error: error.message });

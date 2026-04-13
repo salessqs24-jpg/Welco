@@ -1152,23 +1152,77 @@ function loadHOD() {
       }
       var deptColors = {'Housekeeping':'#4361EE','Room Service':'#F77F00','Maintenance':'#E63946','Front Desk':'#9B5DE5'};
       var deptEmojis = {'Housekeeping':'🛏️','Room Service':'🍽️','Maintenance':'🔧','Front Desk':'🛎️'};
-      el.innerHTML = list.map(function(h){
+
+      var PERMS = [
+        { key:'announcements', label:'📢 Announcements', desc:'Can post hotel announcements' },
+        { key:'schedule', label:'🔧 Scheduling', desc:'Can manage maintenance tasks' },
+        { key:'guest_options', label:'🎯 Guest Options', desc:'Can edit quick request options' },
+        { key:'staff', label:'👷 Staff Mgmt', desc:'Can add/remove staff members' },
+        { key:'analytics', label:'📊 Analytics', desc:'Can view analytics & reports' }
+      ];
+
+      el.innerHTML = list.map(function(h) {
         var color = deptColors[h.department] || '#005f73';
-        return '<div class="staff-row">'+
-          '<div style="display:flex;align-items:center;gap:10px">'+
-            '<div style="width:36px;height:36px;border-radius:8px;background:'+color+'20;display:flex;align-items:center;justify-content:center;font-size:18px">'+(deptEmojis[h.department]||'👤')+'</div>'+
+        var perms = h.permissions || {announcements:true,schedule:true,guest_options:true,staff:true,analytics:true};
+
+        var permToggles = PERMS.map(function(p) {
+          var isOn = perms[p.key] !== false;
+          return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:'+(isOn?'#f0fdf4':'#fafafa')+';border-radius:8px;border:1px solid '+(isOn?'#86efac':'#eee')+';margin-bottom:6px">'+
             '<div>'+
-              '<div class="staff-name-txt">'+h.name+'</div>'+
-              '<div style="font-size:11px;color:#888;margin-top:2px">'+h.department+'</div>'+
+              '<div style="font-size:13px;font-weight:600;color:'+(isOn?'#065f46':'#888')+'">'+p.label+'</div>'+
+              '<div style="font-size:10px;color:#aaa">'+p.desc+'</div>'+
             '</div>'+
-          '</div>'+
-          '<div style="display:flex;gap:8px;align-items:center">'+
-            '<div class="staff-pin">PIN: '+h.pin+'</div>'+
+            '<label style="position:relative;display:inline-block;width:42px;height:24px;cursor:pointer;flex-shrink:0">'+
+              '<input type="checkbox" '+(isOn?'checked':'')+' data-hod-id="'+h.id+'" data-perm="'+p.key+'" onchange="toggleHodPerm(this)" style="opacity:0;width:0;height:0">'+
+              '<span style="position:absolute;inset:0;background:'+(isOn?'#0a9396':'#ddd')+';border-radius:24px;transition:0.3s"></span>'+
+              '<span style="position:absolute;top:3px;left:'+(isOn?'21px':'3px')+';width:18px;height:18px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></span>'+
+            '</label>'+
+          '</div>';
+        }).join('');
+
+        return '<div style="background:white;border-radius:14px;padding:16px;margin-bottom:14px;border:1px solid #eee;box-shadow:0 2px 8px rgba(0,0,0,0.06)">'+
+          // HOD header
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">'+
+            '<div style="display:flex;align-items:center;gap:10px">'+
+              '<div style="width:40px;height:40px;border-radius:10px;background:'+color+'20;display:flex;align-items:center;justify-content:center;font-size:20px">'+(deptEmojis[h.department]||'👤')+'</div>'+
+              '<div>'+
+                '<div style="font-size:15px;font-weight:700;color:#0d1b1e">'+h.name+'</div>'+
+                '<div style="font-size:11px;color:#888;margin-top:2px">'+h.department+' · PIN: '+h.pin+'</div>'+
+              '</div>'+
+            '</div>'+
             '<button class="btn-remove" onclick="removeHOD('+h.id+')">Remove</button>'+
           '</div>'+
+          // Permission toggles
+          '<div style="font-size:11px;color:#aaa;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Permissions</div>'+
+          permToggles+
         '</div>';
       }).join('');
     }).catch(function(){});
+}
+
+function toggleHodPerm(checkbox) {
+  var hodId = checkbox.getAttribute('data-hod-id');
+  var permKey = checkbox.getAttribute('data-perm');
+  var isOn = checkbox.checked;
+
+  // Optimistic UI update
+  var row = checkbox.closest('div[style*="background:white"]');
+
+  // Fetch current permissions from server, update one key, save back
+  fetch('/hod?hotel_id='+hotel.hotel_id)
+    .then(function(r){return r.json();})
+    .then(function(list){
+      var hod = list.find(function(h){return String(h.id)===String(hodId);});
+      if (!hod) return;
+      var perms = hod.permissions || {announcements:true,schedule:true,guest_options:true,staff:true,analytics:true};
+      perms[permKey] = isOn;
+      return fetch('/hod/'+hodId+'/permissions', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({permissions:perms})
+      });
+    })
+    .then(function(r){ if(r && r.ok) loadHOD(); })
+    .catch(function(){ alert('Failed to update permission. Try again.'); loadHOD(); });
 }
 
 function addHOD() {

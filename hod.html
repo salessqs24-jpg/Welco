@@ -303,6 +303,28 @@
         <div class="card-sub">Individual stats for your team — based on completed requests</div>
         <div id="staff-perf-list"><div class="loading">Loading...</div></div>
       </div>
+
+      <!-- REPORT DOWNLOAD -->
+      <div class="card" style="border:2px solid #0a9396">
+        <div class="card-title">📥 Download Morning Report</div>
+        <div class="card-sub">Select a date range and download your department report for admin</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:16px">
+          <div style="flex:1;min-width:130px">
+            <div style="font-size:11px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">From Date</div>
+            <input type="date" id="report-from" style="width:100%;padding:10px 12px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:14px;outline:none">
+          </div>
+          <div style="flex:1;min-width:130px">
+            <div style="font-size:11px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">To Date</div>
+            <input type="date" id="report-to" style="width:100%;padding:10px 12px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:14px;outline:none">
+          </div>
+          <button onclick="setToday()" style="padding:10px 14px;background:#f0f0f0;color:#555;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap">📅 Today</button>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button onclick="downloadReport('csv')" style="flex:1;padding:12px;background:#005f73;color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer">📄 Download CSV</button>
+          <button onclick="downloadReport('excel')" style="flex:1;padding:12px;background:#1d6f42;color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer">📊 Download Excel</button>
+        </div>
+        <div id="report-msg" style="margin-top:10px;font-size:12px;color:#aaa;text-align:center"></div>
+      </div>
     </div>
 
     <!-- MAINTENANCE -->
@@ -1268,6 +1290,236 @@ function toggleAnn(id, active) {
 function deleteAnn(id) {
   if (!confirm('Delete this announcement?')) return;
   fetch('/announcements/' + id, { method: 'DELETE' }).then(function() { loadAnnouncements(); });
+}
+
+/* ═══════════════════════════════════════════════
+   REPORT DOWNLOAD
+═══════════════════════════════════════════════ */
+function setToday() {
+  var today = new Date().toISOString().split('T')[0];
+  document.getElementById('report-from').value = today;
+  document.getElementById('report-to').value = today;
+}
+
+function downloadReport(format) {
+  var from = document.getElementById('report-from').value;
+  var to = document.getElementById('report-to').value;
+  var msg = document.getElementById('report-msg');
+
+  if (!from || !to) { msg.textContent = '⚠️ Please select both From and To dates.'; msg.style.color='#e63946'; return; }
+  if (from > to) { msg.textContent = '⚠️ From date must be before To date.'; msg.style.color='#e63946'; return; }
+
+  var fromDate = new Date(from + 'T00:00:00');
+  var toDate = new Date(to + 'T23:59:59');
+
+  // Filter requests for this dept in date range
+  var filtered = deptRequests.filter(function(r) {
+    var d = new Date(r.created_at);
+    return d >= fromDate && d <= toDate;
+  });
+
+  if (filtered.length === 0) {
+    msg.textContent = '⚠️ No requests found for this date range.';
+    msg.style.color = '#e63946';
+    return;
+  }
+
+  msg.textContent = '✅ Generating report for ' + filtered.length + ' requests...';
+  msg.style.color = '#065f46';
+
+  // Build report data
+  var hotelName = (hodData.hotel && hodData.hotel.name) || 'Hotel';
+  var reportTitle = hotelName + ' — ' + hodData.dept + ' Department Report';
+  var dateRange = formatDate(fromDate) + ' to ' + formatDate(toDate);
+  var generatedBy = hodData.name + ' (HOD)';
+  var generatedAt = new Date().toLocaleString('en-IN');
+
+  // Summary stats
+  var total = filtered.length;
+  var done = filtered.filter(function(r){return r.status==='done';}).length;
+  var pending = filtered.filter(function(r){return r.status==='pending';}).length;
+  var inprog = filtered.filter(function(r){return r.status==='in_progress';}).length;
+  var rated = filtered.filter(function(r){return r.feedback_rating;});
+  var avgRating = rated.length ? (rated.reduce(function(a,r){return a+r.feedback_rating;},0)/rated.length).toFixed(1) : 'N/A';
+
+  // Staff performance
+  var staffMap = {};
+  filtered.forEach(function(r) {
+    if (!r.claimed_by) return;
+    var n = r.claimed_by;
+    if (!staffMap[n]) staffMap[n] = {name:n,done:0,total:0,ratings:[],responseMs:0,rCount:0};
+    staffMap[n].total++;
+    if (r.status==='done') staffMap[n].done++;
+    if (r.feedback_rating) staffMap[n].ratings.push(r.feedback_rating);
+    if (r.claimed_at && r.created_at) {
+      var ms = new Date(r.claimed_at)-new Date(r.created_at);
+      if (ms>0){staffMap[n].responseMs+=ms;staffMap[n].rCount++;}
+    }
+  });
+  var staffList = Object.values(staffMap).sort(function(a,b){return b.done-a.done;});
+
+  if (format === 'csv') {
+    downloadCSV(filtered, staffList, reportTitle, dateRange, generatedBy, generatedAt, total, done, pending, inprog, avgRating, from, to);
+  } else {
+    downloadExcel(filtered, staffList, reportTitle, dateRange, generatedBy, generatedAt, total, done, pending, inprog, avgRating, from, to);
+  }
+
+  setTimeout(function(){ msg.textContent = ''; }, 4000);
+}
+
+function formatDate(d) {
+  return d.toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'});
+}
+
+function escCSV(val) {
+  if (val === null || val === undefined) return '';
+  var s = String(val);
+  if (s.includes(',') || s.includes('"') || s.includes('\n')) return '"' + s.replace(/"/g,'""') + '"';
+  return s;
+}
+
+function downloadCSV(reqs, staffList, title, dateRange, by, at, total, done, pending, inprog, avgRating, from, to) {
+  var rows = [];
+
+  // Header block
+  rows.push(['WELCO HOTEL MANAGEMENT SYSTEM']);
+  rows.push([title]);
+  rows.push(['Period: ' + dateRange]);
+  rows.push(['Generated by: ' + by + ' | ' + at]);
+  rows.push([]);
+
+  // Summary
+  rows.push(['SUMMARY']);
+  rows.push(['Total Requests','Completed','Pending','In Progress','Avg Guest Rating']);
+  rows.push([total, done, pending, inprog, avgRating]);
+  rows.push([]);
+
+  // Staff performance
+  rows.push(['STAFF PERFORMANCE']);
+  rows.push(['Name','Completed','Total','Completion %','Avg Response (min)','Avg Rating']);
+  staffList.forEach(function(s){
+    var avgR = s.ratings.length ? (s.ratings.reduce(function(a,b){return a+b;},0)/s.ratings.length).toFixed(1) : 'N/A';
+    var avgResp = s.rCount > 0 ? Math.round(s.responseMs/s.rCount/60000) : 'N/A';
+    var pct = s.total > 0 ? Math.round(s.done/s.total*100)+'%' : '0%';
+    rows.push([s.name, s.done, s.total, pct, avgResp, avgR]);
+  });
+  rows.push([]);
+
+  // Request details
+  rows.push(['REQUEST DETAILS']);
+  rows.push(['Date','Time','Room','Category','Request','Status','Handled By','Response Time (min)','Guest Rating','Guest Comment']);
+  reqs.forEach(function(r){
+    var d = new Date(r.created_at);
+    var dateStr = d.toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'});
+    var timeStr = d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+    var respMin = (r.claimed_at && r.created_at) ? Math.round((new Date(r.claimed_at)-new Date(r.created_at))/60000) : '';
+    rows.push([
+      dateStr, timeStr,
+      'Room '+(r.room_number||'?'),
+      r.category||'',
+      r.message||'',
+      r.status==='done'?'Completed':r.status==='in_progress'?'In Progress':'Pending',
+      r.claimed_by||'Unclaimed',
+      respMin,
+      r.feedback_rating||'',
+      r.feedback_comments||''
+    ]);
+  });
+
+  var csv = rows.map(function(row){ return row.map(escCSV).join(','); }).join('\n');
+  var blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'Welco_' + hodData.dept.replace(' ','_') + '_Report_' + from + '_to_' + to + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function downloadExcel(reqs, staffList, title, dateRange, by, at, total, done, pending, inprog, avgRating, from, to) {
+  // Build Excel XML (SpreadsheetML — opens natively in Excel)
+  var xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+  xml += '<?mso-application progid="Excel.Sheet"?>\n';
+  xml += '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" ';
+  xml += 'xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">\n';
+
+  // Styles
+  xml += '<Styles>';
+  xml += '<Style ss:ID="h1"><Font ss:Bold="1" ss:Size="14" ss:Color="#005f73"/></Style>';
+  xml += '<Style ss:ID="h2"><Font ss:Bold="1" ss:Size="12"/><Interior ss:Color="#005f73" ss:Pattern="Solid"/><Font ss:Bold="1" ss:Color="#FFFFFF" ss:Size="11"/></Style>';
+  xml += '<Style ss:ID="hd"><Font ss:Bold="1"/><Interior ss:Color="#e8f4f4" ss:Pattern="Solid"/></Style>';
+  xml += '<Style ss:ID="good"><Interior ss:Color="#d1fae5" ss:Pattern="Solid"/></Style>';
+  xml += '<Style ss:ID="warn"><Interior ss:Color="#fde8ea" ss:Pattern="Solid"/></Style>';
+  xml += '<Style ss:ID="num"><NumberFormat ss:Format="0"/></Style>';
+  xml += '</Styles>';
+
+  function cell(val, style, type) {
+    type = type || (typeof val === 'number' ? 'Number' : 'String');
+    var s = style ? ' ss:StyleID="' + style + '"' : '';
+    return '<Cell' + s + '><Data ss:Type="' + type + '">' + String(val).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</Data></Cell>';
+  }
+  function row(cells) { return '<Row>' + cells + '</Row>\n'; }
+  function emptyRow() { return '<Row><Cell><Data ss:Type="String"></Data></Cell></Row>\n'; }
+
+  // ── Sheet 1: Summary ──
+  xml += '<Worksheet ss:Name="Summary"><Table>';
+  xml += row(cell('WELCO HOTEL MANAGEMENT SYSTEM','h1'));
+  xml += row(cell(title,'h1'));
+  xml += row(cell('Period: ' + dateRange));
+  xml += row(cell('Generated by: ' + by + ' | ' + at));
+  xml += emptyRow();
+  xml += row(cell('DEPARTMENT SUMMARY','h2') + cell('','h2') + cell('','h2') + cell('','h2') + cell('','h2'));
+  xml += row(cell('Total Requests','hd') + cell('Completed','hd') + cell('Pending','hd') + cell('In Progress','hd') + cell('Avg Guest Rating','hd'));
+  xml += row(cell(total,'good','Number') + cell(done,'good','Number') + cell(pending,pending>0?'warn':'','Number') + cell(inprog,'','Number') + cell(avgRating));
+  xml += emptyRow();
+  xml += row(cell('STAFF PERFORMANCE','h2') + cell('','h2') + cell('','h2') + cell('','h2') + cell('','h2') + cell('','h2'));
+  xml += row(cell('Name','hd') + cell('Completed','hd') + cell('Total','hd') + cell('Completion %','hd') + cell('Avg Response (min)','hd') + cell('Avg Rating','hd'));
+  staffList.forEach(function(s,i){
+    var avgR = s.ratings.length ? (s.ratings.reduce(function(a,b){return a+b;},0)/s.ratings.length).toFixed(1) : 'N/A';
+    var avgResp = s.rCount > 0 ? Math.round(s.responseMs/s.rCount/60000) : 'N/A';
+    var pct = s.total > 0 ? Math.round(s.done/s.total*100) : 0;
+    var medal = i===0?'🥇 ':i===1?'🥈 ':i===2?'🥉 ':'';
+    xml += row(cell(medal+s.name, i<3?'good':'') + cell(s.done,'','Number') + cell(s.total,'','Number') + cell(pct+'%') + cell(typeof avgResp==='number'?avgResp:'N/A', typeof avgResp==='number'?'num':'') + cell(avgR));
+  });
+  xml += '</Table></Worksheet>';
+
+  // ── Sheet 2: All Requests ──
+  xml += '<Worksheet ss:Name="Requests"><Table>';
+  xml += row(cell(title,'h1'));
+  xml += row(cell('Period: ' + dateRange));
+  xml += emptyRow();
+  xml += row(
+    cell('Date','hd') + cell('Time','hd') + cell('Room','hd') + cell('Category','hd') +
+    cell('Request','hd') + cell('Status','hd') + cell('Handled By','hd') +
+    cell('Response Time (min)','hd') + cell('Guest Rating','hd') + cell('Guest Comment','hd')
+  );
+  reqs.forEach(function(r){
+    var d = new Date(r.created_at);
+    var dateStr = d.toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'});
+    var timeStr = d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+    var respMin = (r.claimed_at && r.created_at) ? Math.round((new Date(r.claimed_at)-new Date(r.created_at))/60000) : '';
+    var statusLabel = r.status==='done'?'Completed':r.status==='in_progress'?'In Progress':'Pending';
+    var rowStyle = r.status==='done'?'good':r.status==='pending'?'warn':'';
+    xml += row(
+      cell(dateStr,rowStyle) + cell(timeStr,rowStyle) +
+      cell('Room '+(r.room_number||'?'),rowStyle) + cell(r.category||'',rowStyle) +
+      cell(r.message||'',rowStyle) + cell(statusLabel,rowStyle) +
+      cell(r.claimed_by||'Unclaimed',rowStyle) +
+      cell(respMin!==''?respMin:'',rowStyle,respMin!==''?'Number':'String') +
+      cell(r.feedback_rating||'',rowStyle,r.feedback_rating?'Number':'String') +
+      cell(r.feedback_comments||'',rowStyle)
+    );
+  });
+  xml += '</Table></Worksheet>';
+  xml += '</Workbook>';
+
+  var blob = new Blob([xml], {type:'application/vnd.ms-excel'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'Welco_' + hodData.dept.replace(' ','_') + '_Report_' + from + '_to_' + to + '.xls';
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 /* ═══════════════════════════════════════════════

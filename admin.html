@@ -259,6 +259,7 @@
     <div class="tab" onclick="showTab('rooms')">🚪 Rooms</div>
     <div class="tab" onclick="showTab('staff')">👤 Staff</div>
     <div class="tab" onclick="showTab('hod')">🎯 HOD</div>
+    <div class="tab" onclick="showTab('feedback')">⭐ Feedback</div>
     <div class="tab" onclick="showTab('reports')">📋 Reports</div>
     <div class="tab" onclick="showTab('settings')">⚙️ Settings</div>
   </div>
@@ -374,6 +375,50 @@
         <div class="card-title">Department HODs</div>
         <div class="card-sub">One HOD per department. They login at <strong>welco.onrender.com/hod.html</strong></div>
         <div id="hod-list"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- ══ FEEDBACK ══ -->
+    <div class="tab-panel" id="panel-feedback">
+
+      <!-- Summary stats -->
+      <div class="stat-grid" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat-box"><div class="stat-num" id="fb-total">-</div><div class="stat-label">Total Reviews</div></div>
+        <div class="stat-box"><div class="stat-num" id="fb-avg" style="color:#ee9b00">-</div><div class="stat-label">Avg Rating</div></div>
+        <div class="stat-box"><div class="stat-num" id="fb-5star" style="color:#2ecc71">-</div><div class="stat-label">5 Stars</div></div>
+        <div class="stat-box"><div class="stat-num" id="fb-low" style="color:#e63946">-</div><div class="stat-label">Below 3 ⚠️</div></div>
+      </div>
+
+      <!-- Filter row -->
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
+        <select id="fb-filter-stars" onchange="loadFeedback()" style="padding:8px 12px;border:1px solid #ddd;border-radius:8px;font-size:13px;outline:none;background:white">
+          <option value="">All Ratings</option>
+          <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
+          <option value="4">⭐⭐⭐⭐ 4 Stars</option>
+          <option value="3">⭐⭐⭐ 3 Stars</option>
+          <option value="2">⭐⭐ 2 Stars</option>
+          <option value="1">⭐ 1 Star</option>
+        </select>
+        <select id="fb-filter-comment" onchange="loadFeedback()" style="padding:8px 12px;border:1px solid #ddd;border-radius:8px;font-size:13px;outline:none;background:white">
+          <option value="">All Feedback</option>
+          <option value="with">With Comments Only</option>
+          <option value="without">Ratings Only</option>
+        </select>
+      </div>
+
+      <!-- Tip box -->
+      <div style="background:linear-gradient(135deg,#e8f4f4,#d0f0f0);border:1.5px solid #0a9396;border-radius:12px;padding:14px 16px;margin-bottom:16px;display:flex;gap:12px;align-items:flex-start">
+        <div style="font-size:22px">💡</div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:#005f73;margin-bottom:4px">How to post to Google or TripAdvisor</div>
+          <div style="font-size:12px;color:#555;line-height:1.6">Tap <strong>📋 Copy</strong> on any review → open Google Maps or TripAdvisor → go to your hotel page → paste as an owner response or share as a testimonial.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Guest Reviews</div>
+        <div class="card-sub" id="fb-subtitle">Loading reviews...</div>
+        <div id="feedback-list"><div class="loading">Loading...</div></div>
       </div>
     </div>
 
@@ -668,13 +713,14 @@ function removeLogo() {
    TABS
 ═══════════════════════════════════════════════ */
 function showTab(name) {
-  var names = ['overview','rooms','staff','hod','reports','settings'];
+  var names = ['overview','rooms','staff','hod','feedback','reports','settings'];
   document.querySelectorAll('.tab').forEach(function(t,i) { t.classList.toggle('active', names[i]===name); });
   document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
   document.getElementById('panel-'+name).classList.add('active');
   if (name==='reports') loadReports();
   if (name==='rooms') loadRooms();
   if (name==='staff') loadStaff();
+  if (name==='feedback') loadFeedback();
   if (name==='hod') { loadHOD(); document.getElementById('hod-hotel-code').textContent = hotel.hotel_code || 'N/A'; }
 }
 
@@ -734,14 +780,14 @@ function addRoom() {
 
 function addBulkRooms() {
   var startVal = document.getElementById('bulk-room-start').value.trim();
-  var endVal   = document.getElementById('bulk-room-end').value.trim();
-  var floor    = parseInt(document.getElementById('bulk-room-floor').value) || 1;
-  var msg      = document.getElementById('bulk-msg');
+  var endVal = document.getElementById('bulk-room-end').value.trim();
+  var floor = parseInt(document.getElementById('bulk-room-floor').value) || 1;
+  var msg = document.getElementById('bulk-msg');
 
   if (!startVal || !endVal) { msg.textContent='Please enter both start and end room numbers.'; msg.className='msg-box msg-error'; return; }
 
   var start = parseInt(startVal);
-  var end   = parseInt(endVal);
+  var end = parseInt(endVal);
 
   if (isNaN(start) || isNaN(end)) { msg.textContent='Please enter numeric room numbers e.g. 101 to 120.'; msg.className='msg-box msg-error'; return; }
   if (start > end) { msg.textContent='Start room must be less than end room.'; msg.className='msg-box msg-error'; return; }
@@ -809,7 +855,7 @@ function loadStaff() {
                 '</div>'+
                 '<div>'+
                   '<div class="staff-name-txt">'+s.name+'</div>'+
-                  '<div style="font-size:11px;color:#888">'+(s.staff_id||'No ID')+'  ·  '+(s.department||'General')+'</div>'+
+                  '<div style="font-size:11px;color:#888">'+(s.staff_id||'No ID')+' · '+(s.department||'General')+'</div>'+
                 '</div>'+
               '</div>'+
               '<div style="display:flex;gap:8px;align-items:center">'+
@@ -823,7 +869,7 @@ function loadStaff() {
 
 function addStaff() {
   var name = document.getElementById('new-staff-name').value.trim();
-  var pin  = document.getElementById('new-staff-pin').value.trim();
+  var pin = document.getElementById('new-staff-pin').value.trim();
   var dept = document.getElementById('new-staff-dept').value;
   if (!name || pin.length !== 4) { alert('Enter a full name and exactly 4-digit PIN'); return; }
   fetch('/staff', {
@@ -904,6 +950,118 @@ function deleteAnn(id) {
 }
 
 /* ═══════════════════════════════════════════════
+   FEEDBACK
+═══════════════════════════════════════════════ */
+function loadFeedback() {
+  fetch('/requests?hotel_id=' + hotel.hotel_id)
+    .then(function(r) { return r.json(); })
+    .then(function(reqs) {
+      if (!Array.isArray(reqs)) return;
+
+      // Only requests with ratings
+      var rated = reqs.filter(function(r) { return r.feedback_rating; });
+
+      // Apply filters
+      var starFilter = document.getElementById('fb-filter-stars').value;
+      var commentFilter = document.getElementById('fb-filter-comment').value;
+      var filtered = rated;
+      if (starFilter) filtered = filtered.filter(function(r) { return String(r.feedback_rating) === starFilter; });
+      if (commentFilter === 'with') filtered = filtered.filter(function(r) { return r.feedback_comments && r.feedback_comments.trim(); });
+      if (commentFilter === 'without') filtered = filtered.filter(function(r) { return !r.feedback_comments || !r.feedback_comments.trim(); });
+
+      // Stats
+      document.getElementById('fb-total').textContent = rated.length;
+      var avg = rated.length ? (rated.reduce(function(a,r){return a+r.feedback_rating;},0)/rated.length).toFixed(1) : '-';
+      document.getElementById('fb-avg').textContent = avg === '-' ? '-' : avg + ' ⭐';
+      document.getElementById('fb-5star').textContent = rated.filter(function(r){return r.feedback_rating===5;}).length;
+      document.getElementById('fb-low').textContent = rated.filter(function(r){return r.feedback_rating<3;}).length;
+      document.getElementById('fb-subtitle').textContent = filtered.length + ' review(s) shown';
+
+      var list = document.getElementById('feedback-list');
+      if (filtered.length === 0) {
+        list.innerHTML = '<div class="empty">No reviews match your filter</div>';
+        return;
+      }
+
+      list.innerHTML = filtered.map(function(r, idx) {
+        var stars = '';
+        for (var i = 1; i <= 5; i++) {
+          stars += i <= r.feedback_rating ? '⭐' : '☆';
+        }
+        var time = new Date(r.created_at).toLocaleString('en-IN', {day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+        var comment = r.feedback_comments ? r.feedback_comments.trim() : '';
+        var bgColor = r.feedback_rating >= 4 ? '#f0fdf4' : r.feedback_rating === 3 ? '#fffbeb' : '#fef2f2';
+        var borderColor = r.feedback_rating >= 4 ? '#86efac' : r.feedback_rating === 3 ? '#fde68a' : '#fca5a5';
+
+        // Build copy text for Google/TripAdvisor
+        var copyText = stars + ' — ' + hotel.name + '\n';
+        if (comment) copyText += '"' + comment + '"\n';
+        copyText += 'Room ' + (r.room_number||'?') + ' · ' + (r.category||'') + ' · ' + time;
+
+        return '<div style="background:' + bgColor + ';border:1.5px solid ' + borderColor + ';border-radius:14px;padding:16px;margin-bottom:12px">' +
+
+          // Top row: stars + room + time
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap;gap:8px">' +
+            '<div>' +
+              '<div style="font-size:22px;margin-bottom:4px">' + stars + '</div>' +
+              '<div style="font-size:12px;color:#555">Room ' + (r.room_number||'?') + ' · ' + (r.category||'General') + '</div>' +
+            '</div>' +
+            '<div style="text-align:right">' +
+              '<div style="font-size:11px;color:#aaa">' + time + '</div>' +
+              (r.claimed_by ? '<div style="font-size:11px;color:#888;margin-top:2px">👷 ' + r.claimed_by + '</div>' : '') +
+            '</div>' +
+          '</div>' +
+
+          // Comment
+          (comment ?
+            '<div style="background:white;border-radius:10px;padding:12px 14px;font-size:14px;color:#333;line-height:1.6;margin-bottom:12px;font-style:italic">"' + comment + '"</div>'
+            : '<div style="font-size:12px;color:#aaa;margin-bottom:12px;font-style:italic">No written comment</div>') +
+
+          // Action buttons
+          '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+            '<button onclick="copyFeedback(' + idx + ')" id="copy-fb-' + idx + '" data-text="' + encodeURIComponent(copyText) + '" ' +
+              'style="padding:8px 16px;background:#005f73;color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">📋 Copy</button>' +
+            (comment ? '<button onclick="copyForGoogle(' + idx + ')" id="copy-google-' + idx + '" data-text="' + encodeURIComponent(copyText) + '" ' +
+              'style="padding:8px 16px;background:#4285f4;color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">🌐 Copy for Google</button>' : '') +
+            (comment ? '<button onclick="copyForTripadvisor(' + idx + ')" id="copy-ta-' + idx + '" data-text="' + encodeURIComponent(copyText) + '" ' +
+              'style="padding:8px 16px;background:#00aa6c;color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">🦉 Copy for TripAdvisor</button>' : '') +
+          '</div>' +
+
+        '</div>';
+      }).join('');
+    }).catch(function() {
+      document.getElementById('feedback-list').innerHTML = '<div class="empty">Could not load feedback</div>';
+    });
+}
+
+function copyFeedback(idx) {
+  var btn = document.getElementById('copy-fb-' + idx);
+  var text = decodeURIComponent(btn.getAttribute('data-text'));
+  navigator.clipboard.writeText(text).then(function() {
+    btn.textContent = '✅ Copied!';
+    setTimeout(function() { btn.textContent = '📋 Copy'; }, 2000);
+  }).catch(function() { prompt('Copy this review:', text); });
+}
+
+function copyForGoogle(idx) {
+  var btn = document.getElementById('copy-google-' + idx);
+  var text = decodeURIComponent(btn.getAttribute('data-text'));
+  navigator.clipboard.writeText(text).then(function() {
+    btn.textContent = '✅ Copied!';
+    setTimeout(function() { btn.textContent = '🌐 Copy for Google'; }, 2000);
+  }).catch(function() { prompt('Copy for Google:', text); });
+}
+
+function copyForTripadvisor(idx) {
+  var btn = document.getElementById('copy-ta-' + idx);
+  var text = decodeURIComponent(btn.getAttribute('data-text'));
+  navigator.clipboard.writeText(text).then(function() {
+    btn.textContent = '✅ Copied!';
+    setTimeout(function() { btn.textContent = '🦉 Copy for TripAdvisor'; }, 2000);
+  }).catch(function() { prompt('Copy for TripAdvisor:', text); });
+}
+
+/* ═══════════════════════════════════════════════
    REPORTS
 ═══════════════════════════════════════════════ */
 function loadReports() {
@@ -912,9 +1070,9 @@ function loadReports() {
     .then(function(reqs){
       if (!Array.isArray(reqs)) return;
       var status = document.getElementById('filter-status').value;
-      var cat    = document.getElementById('filter-cat').value;
+      var cat = document.getElementById('filter-cat').value;
       if (status) reqs = reqs.filter(function(r){return r.status===status;});
-      if (cat)    reqs = reqs.filter(function(r){return r.category===cat;});
+      if (cat) reqs = reqs.filter(function(r){return r.category===cat;});
       document.getElementById('reports-list').innerHTML = reqs.length ? reqs.map(reqRow).join('') : '<div class="empty">No requests found</div>';
     }).catch(function(){});
 }
@@ -938,8 +1096,8 @@ function reqRow(r) {
    SETTINGS
 ═══════════════════════════════════════════════ */
 function saveSettings() {
-  var name   = document.getElementById('set-name').value.trim();
-  var city   = document.getElementById('set-city').value.trim();
+  var name = document.getElementById('set-name').value.trim();
+  var city = document.getElementById('set-city').value.trim();
   var colour = document.getElementById('set-colortext').value.trim();
   if (!name) { alert('Hotel name cannot be empty.'); return; }
   var payload = { name:name, city:city, colour:colour };
@@ -1045,7 +1203,7 @@ function loadHOD() {
 function addHOD() {
   var name = document.getElementById('new-hod-name').value.trim();
   var dept = document.getElementById('new-hod-dept').value;
-  var pin  = document.getElementById('new-hod-pin').value.trim();
+  var pin = document.getElementById('new-hod-pin').value.trim();
   if (!name || pin.length !== 4) { alert('Enter full name and exactly 4-digit PIN'); return; }
   fetch('/hod', {
     method:'POST', headers:{'Content-Type':'application/json'},
@@ -1075,7 +1233,7 @@ function hideForgot() { document.getElementById('forgot-modal').style.display='n
 
 function fpFindAccount(btn) {
   var email = document.getElementById('fp-email').value.trim();
-  var err   = document.getElementById('fp-err1');
+  var err = document.getElementById('fp-err1');
   if (!email) { err.textContent='Enter your email.'; err.style.display='block'; return; }
   btn.textContent='Searching…'; btn.disabled=true;
   fetch('/owner/secret-question?email='+encodeURIComponent(email))
@@ -1094,14 +1252,14 @@ function fpFindAccount(btn) {
 }
 
 function fpReset(btn) {
-  var ans  = document.getElementById('fp-ans').value.trim();
-  var np   = document.getElementById('fp-np').value;
-  var cp   = document.getElementById('fp-cp').value;
-  var err  = document.getElementById('fp-err2');
+  var ans = document.getElementById('fp-ans').value.trim();
+  var np = document.getElementById('fp-np').value;
+  var cp = document.getElementById('fp-cp').value;
+  var err = document.getElementById('fp-err2');
   var email = document.getElementById('fp-email').value.trim();
-  if (!ans)            { err.textContent='Enter your secret answer.'; err.style.display='block'; return; }
-  if (np.length < 6)  { err.textContent='Password must be at least 6 characters.'; err.style.display='block'; return; }
-  if (np !== cp)       { err.textContent='Passwords do not match.'; err.style.display='block'; return; }
+  if (!ans) { err.textContent='Enter your secret answer.'; err.style.display='block'; return; }
+  if (np.length < 6) { err.textContent='Password must be at least 6 characters.'; err.style.display='block'; return; }
+  if (np !== cp) { err.textContent='Passwords do not match.'; err.style.display='block'; return; }
   btn.textContent='Resetting…'; btn.disabled=true;
   fetch('/owner/reset-password', {
     method:'POST', headers:{'Content-Type':'application/json'},

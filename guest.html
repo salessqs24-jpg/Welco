@@ -9,7 +9,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: sans-serif; min-height: 100vh;
-      background-image: url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80');
+      background: #1a1a2e;
       background-size: cover; background-position: center;
       background-attachment: fixed; display: flex; flex-direction: column;
     }
@@ -262,14 +262,22 @@
         if (hotel) {
           hotelData = hotel;
           document.documentElement.style.setProperty('--brand', hotel.colour || '#1a1a2e');
-          // Set header background to hotel brand color
-          document.querySelector('.hotel-photo-bg').style.background = (hotel.colour || '#1a1a2e') + 'dd';
+
+          // Set full page background to hotel photo
           if (hotel.logo_url) {
+            document.body.style.backgroundImage = 'url(' + hotel.logo_url + ')';
+            document.body.style.backgroundSize = 'cover';
+            document.body.style.backgroundPosition = 'center';
+            document.body.style.backgroundAttachment = 'fixed';
+            // Also show in header
             var photoBg = document.getElementById('hotel-photo-bg-img');
             photoBg.src = hotel.logo_url;
             photoBg.style.display = 'block';
             document.getElementById('hotel-name').textContent = hotel.name;
           } else {
+            // Fall back to brand color background
+            document.body.style.background = (hotel.colour || '#1a1a2e');
+            document.querySelector('.hotel-photo-bg').style.background = (hotel.colour || '#1a1a2e') + 'dd';
             document.getElementById('hotel-name').textContent = (hotel.emoji || '🏨') + ' ' + hotel.name;
           }
           document.getElementById('room-label').textContent = 'Room ' + roomNumber + (hotel.city ? ' — ' + hotel.city : '');

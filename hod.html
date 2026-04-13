@@ -295,6 +295,13 @@
         <div class="card-sub">Last 14 days — your department only</div>
         <div class="chart-wrap"><canvas id="chart-line"></canvas></div>
       </div>
+
+      <!-- STAFF PERFORMANCE -->
+      <div class="card">
+        <div class="card-title">👷 Staff Performance</div>
+        <div class="card-sub">Individual stats for your team — based on completed requests</div>
+        <div id="staff-perf-list"><div class="loading">Loading...</div></div>
+      </div>
     </div>
 
     <!-- MAINTENANCE -->
@@ -703,6 +710,93 @@ function renderAnalytics(reqs) {
     data: {labels:days,datasets:[{data:counts,borderColor:dc,backgroundColor:dc+'18',borderWidth:2.5,pointBackgroundColor:dc,pointRadius:4,fill:true,tension:0.4}]},
     options: {responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#aaa'}},y:{beginAtZero:true,ticks:{stepSize:1,font:{size:10},color:'#aaa'},grid:{color:'#f0f0f0'}}}}
   });
+
+  renderStaffPerformance(reqs);
+}
+
+function renderStaffPerformance(reqs) {
+  var el = document.getElementById('staff-perf-list');
+
+  // Get all requests that were claimed by someone
+  var claimed = reqs.filter(function(r) { return r.claimed_by; });
+  if (claimed.length === 0) {
+    el.innerHTML = '<div class="empty">No staff performance data yet. Data appears once staff start accepting requests.</div>';
+    return;
+  }
+
+  // Group by staff name
+  var staffMap = {};
+  claimed.forEach(function(r) {
+    var name = r.claimed_by;
+    if (!staffMap[name]) {
+      staffMap[name] = { name: name, total: 0, done: 0, inProgress: 0, ratings: [], totalResponseMs: 0, responseCount: 0 };
+    }
+    staffMap[name].total++;
+    if (r.status === 'done') staffMap[name].done++;
+    if (r.status === 'in_progress') staffMap[name].inProgress++;
+    if (r.feedback_rating) staffMap[name].ratings.push(r.feedback_rating);
+    // Response time: claimed_at - created_at
+    if (r.claimed_at && r.created_at) {
+      var ms = new Date(r.claimed_at).getTime() - new Date(r.created_at).getTime();
+      if (ms > 0) { staffMap[name].totalResponseMs += ms; staffMap[name].responseCount++; }
+    }
+  });
+
+  // Sort by total requests handled desc
+  var staffList = Object.values(staffMap).sort(function(a, b) { return b.done - a.done; });
+
+  // Medal for top 3
+  var medals = ['🥇', '🥈', '🥉'];
+
+  el.innerHTML = staffList.map(function(s, idx) {
+    var avgRating = s.ratings.length ? (s.ratings.reduce(function(a, b) { return a + b; }, 0) / s.ratings.length).toFixed(1) : null;
+    var avgResponseMin = s.responseCount > 0 ? Math.round(s.totalResponseMs / s.responseCount / 60000) : null;
+    var completionRate = s.total > 0 ? Math.round((s.done / s.total) * 100) : 0;
+    var barColor = completionRate >= 80 ? '#2ecc71' : completionRate >= 50 ? '#ee9b00' : '#e63946';
+    var initial = s.name.charAt(0).toUpperCase();
+    var medal = idx < 3 ? medals[idx] : '';
+
+    return '<div style="padding:16px 0;border-bottom:1px solid #f0f0f0">' +
+      '<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">' +
+        '<div style="width:40px;height:40px;border-radius:10px;background:#e8f4f4;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#005f73;flex-shrink:0">' + initial + '</div>' +
+        '<div style="flex:1">' +
+          '<div style="display:flex;align-items:center;gap:6px">' +
+            '<span style="font-size:14px;font-weight:700;color:#0d1b1e">' + s.name + '</span>' +
+            (medal ? '<span style="font-size:16px">' + medal + '</span>' : '') +
+          '</div>' +
+          '<div style="font-size:11px;color:#aaa;margin-top:2px">' + s.done + ' completed · ' + s.total + ' total</div>' +
+        '</div>' +
+        '<div style="text-align:right;flex-shrink:0">' +
+          '<div style="font-size:20px;font-weight:700;color:' + barColor + '">' + completionRate + '%</div>' +
+          '<div style="font-size:10px;color:#aaa">completion</div>' +
+        '</div>' +
+      '</div>' +
+      // Progress bar
+      '<div style="height:6px;background:#f0f0f0;border-radius:6px;margin-bottom:10px;overflow:hidden">' +
+        '<div style="height:100%;width:' + completionRate + '%;background:' + barColor + ';border-radius:6px;transition:width 0.5s"></div>' +
+      '</div>' +
+      // Stats row
+      '<div style="display:flex;gap:12px;flex-wrap:wrap">' +
+        '<div style="background:#f9f9f9;border-radius:8px;padding:8px 12px;text-align:center;flex:1;min-width:60px">' +
+          '<div style="font-size:16px;font-weight:700;color:#0a9396">' + s.done + '</div>' +
+          '<div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:0.06em">Done</div>' +
+        '</div>' +
+        '<div style="background:#f9f9f9;border-radius:8px;padding:8px 12px;text-align:center;flex:1;min-width:60px">' +
+          '<div style="font-size:16px;font-weight:700;color:#ee9b00">' + s.inProgress + '</div>' +
+          '<div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:0.06em">Active</div>' +
+        '</div>' +
+        '<div style="background:#f9f9f9;border-radius:8px;padding:8px 12px;text-align:center;flex:1;min-width:60px">' +
+          '<div style="font-size:16px;font-weight:700;color:#f77f00">' + (avgResponseMin !== null ? avgResponseMin + 'm' : 'N/A') + '</div>' +
+          '<div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:0.06em">Avg Response</div>' +
+        '</div>' +
+        '<div style="background:#f9f9f9;border-radius:8px;padding:8px 12px;text-align:center;flex:1;min-width:60px">' +
+          '<div style="font-size:16px;font-weight:700;color:#2ecc71">' + (avgRating ? avgRating + '⭐' : 'N/A') + '</div>' +
+          '<div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:0.06em">Avg Rating</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('') +
+  '<div style="font-size:11px;color:#aaa;text-align:center;padding-top:12px">Sorted by requests completed · 🥇🥈🥉 top performers</div>';
 }
 
 /* ═══════════════════════════════════════════════

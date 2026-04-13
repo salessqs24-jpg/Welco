@@ -216,7 +216,7 @@
     <div class="tab-panel" id="panel-requests">
       <div class="card">
         <div class="card-title">All Requests — <span id="req-dept-title"></span></div>
-        <div class="card-sub">Monitor all requests in your department</div>
+        <div class="card-sub">Monitor and filter requests in your department</div>
         <div class="filter-row">
           <select class="filter-sel" id="filter-status" onchange="renderRequests()">
             <option value="">All Status</option>
@@ -224,7 +224,11 @@
             <option value="in_progress">In Progress</option>
             <option value="done">Done</option>
           </select>
+          <input type="date" id="filter-date" onchange="renderRequests()" style="padding:8px 12px;border:1px solid #ddd;border-radius:8px;font-size:13px;outline:none;background:white">
+          <button onclick="clearDateFilter()" style="padding:8px 12px;background:#f0f0f0;color:#555;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer">✕ Clear Date</button>
+          <button onclick="setFilterToday()" style="padding:8px 12px;background:#e8f4f4;color:#005f73;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer">📅 Today</button>
         </div>
+        <div id="req-count" style="font-size:12px;color:#aaa;margin-bottom:10px"></div>
         <div id="req-list"><div class="loading">Loading...</div></div>
       </div>
     </div>
@@ -621,8 +625,42 @@ function renderOverview(reqs) {
 
 function renderRequests() {
   var status = document.getElementById('filter-status').value;
-  var filtered = status ? deptRequests.filter(function(r) { return r.status === status; }) : deptRequests;
-  document.getElementById('req-list').innerHTML = filtered.length ? filtered.map(reqRow).join('') : '<div class="empty">No requests found</div>';
+  var dateVal = document.getElementById('filter-date').value; // yyyy-mm-dd
+  var filtered = deptRequests;
+
+  if (status) {
+    filtered = filtered.filter(function(r) { return r.status === status; });
+  }
+
+  if (dateVal) {
+    filtered = filtered.filter(function(r) {
+      var d = new Date(r.created_at);
+      var y = d.getFullYear();
+      var m = String(d.getMonth()+1).padStart(2,'0');
+      var day = String(d.getDate()).padStart(2,'0');
+      return y+'-'+m+'-'+day === dateVal;
+    });
+  }
+
+  // Show count
+  var countEl = document.getElementById('req-count');
+  var label = dateVal ? new Date(dateVal).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}) : 'All time';
+  countEl.textContent = filtered.length + ' request(s) — ' + label;
+
+  document.getElementById('req-list').innerHTML = filtered.length
+    ? filtered.map(reqRow).join('')
+    : '<div class="empty">No requests found for this filter</div>';
+}
+
+function setFilterToday() {
+  var today = new Date().toISOString().split('T')[0];
+  document.getElementById('filter-date').value = today;
+  renderRequests();
+}
+
+function clearDateFilter() {
+  document.getElementById('filter-date').value = '';
+  renderRequests();
 }
 
 function reqRow(r) {

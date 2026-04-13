@@ -259,7 +259,6 @@
     <div class="tab" onclick="showTab('rooms')">🚪 Rooms</div>
     <div class="tab" onclick="showTab('staff')">👤 Staff</div>
     <div class="tab" onclick="showTab('hod')">🎯 HOD</div>
-    <div class="tab" onclick="showTab('announce')">📢 Announce</div>
     <div class="tab" onclick="showTab('reports')">📋 Reports</div>
     <div class="tab" onclick="showTab('settings')">⚙️ Settings</div>
   </div>
@@ -375,30 +374,6 @@
         <div class="card-title">Department HODs</div>
         <div class="card-sub">One HOD per department. They login at <strong>welco.onrender.com/hod.html</strong></div>
         <div id="hod-list"><div class="loading">Loading...</div></div>
-      </div>
-    </div>
-
-    <!-- ══ ANNOUNCEMENTS ══ -->
-    <div class="tab-panel" id="panel-announce">
-      <div class="card">
-        <div class="card-title">Post Announcement</div>
-        <div class="card-sub">Guests will see this banner when they scan any room QR code</div>
-        <div class="msg-box" id="ann-msg"></div>
-        <div class="preview-banner" id="ann-preview" style="display:none">
-          <span class="prev-icon">📢</span>
-          <span id="ann-preview-text" style="flex:1"></span>
-        </div>
-        <div class="ann-compose">
-          <textarea id="ann-input" placeholder="e.g. Pool closed for maintenance today. Sorry for the inconvenience!" oninput="previewAnn(this.value)"></textarea>
-          <div class="ann-compose-row">
-            <button class="btn-post" onclick="postAnnouncement()">📢 Post to All Guests</button>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-title">Active & Past Announcements</div>
-        <div class="card-sub">Only one announcement can be active at a time</div>
-        <div id="ann-list"><div class="loading">Loading...</div></div>
       </div>
     </div>
 
@@ -693,14 +668,13 @@ function removeLogo() {
    TABS
 ═══════════════════════════════════════════════ */
 function showTab(name) {
-  var names = ['overview','rooms','staff','hod','announce','reports','settings'];
+  var names = ['overview','rooms','staff','hod','reports','settings'];
   document.querySelectorAll('.tab').forEach(function(t,i) { t.classList.toggle('active', names[i]===name); });
   document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
   document.getElementById('panel-'+name).classList.add('active');
   if (name==='reports') loadReports();
   if (name==='rooms') loadRooms();
   if (name==='staff') loadStaff();
-  if (name==='announce') loadAnnouncements();
   if (name==='hod') { loadHOD(); document.getElementById('hod-hotel-code').textContent = hotel.hotel_code || 'N/A'; }
 }
 

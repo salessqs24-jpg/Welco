@@ -284,12 +284,29 @@
     <!-- ══ ROOMS ══ -->
     <div class="tab-panel" id="panel-rooms">
       <div class="card">
-        <div class="card-title">Add New Room</div>
-        <div class="card-sub">Add a room to your hotel</div>
-        <div class="add-row">
-          <input type="text" id="new-room-num" placeholder="Room number e.g. 305">
+        <div class="card-title">Add Rooms</div>
+        <div class="card-sub">Add a single room or a range of rooms at once</div>
+
+        <!-- Single room -->
+        <div style="font-size:12px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Single Room</div>
+        <div class="add-row" style="margin-bottom:16px">
+          <input type="text" id="new-room-num" placeholder="Room number e.g. 101, Suite-1">
           <input type="number" id="new-room-floor" placeholder="Floor" min="1" style="max-width:80px">
           <button class="btn-add" onclick="addRoom()">+ Add</button>
+        </div>
+
+        <!-- Bulk rooms -->
+        <div style="border-top:1px solid #f0f0f0;padding-top:16px">
+          <div style="font-size:12px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Bulk Add — Range</div>
+          <div style="font-size:12px;color:#aaa;margin-bottom:10px">Type a range like <strong>101-120</strong> or <strong>201-215</strong> to add multiple rooms at once</div>
+          <div class="add-row" style="margin-bottom:8px">
+            <input type="text" id="bulk-room-start" placeholder="Start e.g. 101" style="max-width:120px">
+            <span style="padding:10px 4px;color:#aaa;font-size:18px">—</span>
+            <input type="text" id="bulk-room-end" placeholder="End e.g. 120" style="max-width:120px">
+            <input type="number" id="bulk-room-floor" placeholder="Floor" min="1" style="max-width:80px">
+            <button class="btn-add" style="background:#ee9b00" onclick="addBulkRooms()">+ Add All</button>
+          </div>
+          <div class="msg-box" id="bulk-msg"></div>
         </div>
       </div>
       <div class="card">
@@ -745,6 +762,58 @@ function addRoom() {
     method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({hotel_id:hotel.hotel_id, room_number:num, floor:parseInt(floor), is_active:true})
   }).then(function(){ document.getElementById('new-room-num').value=''; document.getElementById('new-room-floor').value=''; loadRooms(); loadOverview(); });
+}
+
+function addBulkRooms() {
+  var startVal = document.getElementById('bulk-room-start').value.trim();
+  var endVal   = document.getElementById('bulk-room-end').value.trim();
+  var floor    = parseInt(document.getElementById('bulk-room-floor').value) || 1;
+  var msg      = document.getElementById('bulk-msg');
+
+  if (!startVal || !endVal) { msg.textContent='Please enter both start and end room numbers.'; msg.className='msg-box msg-error'; return; }
+
+  var start = parseInt(startVal);
+  var end   = parseInt(endVal);
+
+  if (isNaN(start) || isNaN(end)) { msg.textContent='Please enter numeric room numbers e.g. 101 to 120.'; msg.className='msg-box msg-error'; return; }
+  if (start > end) { msg.textContent='Start room must be less than end room.'; msg.className='msg-box msg-error'; return; }
+  if (end - start > 99) { msg.textContent='Maximum 100 rooms at a time.'; msg.className='msg-box msg-error'; return; }
+
+  var total = end - start + 1;
+  msg.textContent = '⏳ Adding ' + total + ' rooms...';
+  msg.className = 'msg-box msg-success';
+
+  // Build all room numbers — preserve leading zeros/prefix if any
+  // e.g. start=101, end=105 → 101,102,103,104,105
+  var rooms = [];
+  for (var i = start; i <= end; i++) {
+    rooms.push({ hotel_id: hotel.hotel_id, room_number: String(i), floor: floor, is_active: true });
+  }
+
+  // Send all rooms one by one with slight delay to avoid overload
+  var added = 0;
+  var errors = 0;
+
+  function addNext(index) {
+    if (index >= rooms.length) {
+      msg.textContent = '✅ ' + added + ' rooms added' + (errors > 0 ? ' (' + errors + ' already exist)' : '') + '!';
+      msg.className = 'msg-box msg-success';
+      document.getElementById('bulk-room-start').value = '';
+      document.getElementById('bulk-room-end').value = '';
+      document.getElementById('bulk-room-floor').value = '';
+      loadRooms(); loadOverview();
+      return;
+    }
+    fetch('/rooms', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(rooms[index])
+    }).then(function(r) { return r.json(); }).then(function(d) {
+      if (d.error) errors++; else added++;
+      addNext(index + 1);
+    }).catch(function() { errors++; addNext(index + 1); });
+  }
+
+  addNext(0);
 }
 
 function deleteRoom(id) {

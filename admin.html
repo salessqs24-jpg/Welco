@@ -257,7 +257,6 @@
   <div class="tabs">
     <div class="tab active" onclick="showTab('overview')">📊 Overview</div>
     <div class="tab" onclick="showTab('rooms')">🚪 Rooms</div>
-    <div class="tab" onclick="showTab('staff')">👤 Staff</div>
     <div class="tab" onclick="showTab('hod')">🎯 HOD</div>
     <div class="tab" onclick="showTab('feedback')">⭐ Feedback</div>
     <div class="tab" onclick="showTab('reports')">📋 Reports</div>
@@ -313,32 +312,6 @@
         <div class="card-title">All Rooms</div>
         <div class="card-sub" id="rooms-count">Loading...</div>
         <div class="rooms-grid" id="rooms-grid"><div class="loading">Loading...</div></div>
-      </div>
-    </div>
-
-    <!-- ══ STAFF ══ -->
-    <div class="tab-panel" id="panel-staff">
-      <div class="card">
-        <div class="card-title">Add Staff Member</div>
-        <div class="card-sub">Staff login at welco.onrender.com/staff.html using their PIN</div>
-        <div class="msg-box" id="staff-msg"></div>
-        <div class="add-row">
-          <input type="text" id="new-staff-name" placeholder="Full name e.g. Ramesh">
-          <select id="new-staff-dept" style="padding:10px 12px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:14px;outline:none;background:white">
-            <option value="Housekeeping">🛏️ Housekeeping</option>
-            <option value="Room Service">🍽️ Room Service</option>
-            <option value="Maintenance">🔧 Maintenance</option>
-            <option value="Front Desk">🛎️ Front Desk</option>
-            <option value="General">👤 General</option>
-          </select>
-          <input type="text" id="new-staff-pin" placeholder="4-digit PIN" maxlength="4" style="max-width:110px">
-          <button class="btn-add" onclick="addStaff()">+ Add</button>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-title">Staff Members</div>
-        <div class="card-sub">These are the only people who can access your staff dashboard</div>
-        <div id="staff-list"><div class="loading">Loading...</div></div>
       </div>
     </div>
 
@@ -620,7 +593,6 @@ function startApp() {
   showTab('overview');
   loadOverview();
   loadRooms();
-  loadStaff();
 }
 
 /* ═══════════════════════════════════════════════
@@ -713,13 +685,12 @@ function removeLogo() {
    TABS
 ═══════════════════════════════════════════════ */
 function showTab(name) {
-  var names = ['overview','rooms','staff','hod','feedback','reports','settings'];
+  var names = ['overview','rooms','hod','feedback','reports','settings'];
   document.querySelectorAll('.tab').forEach(function(t,i) { t.classList.toggle('active', names[i]===name); });
   document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
   document.getElementById('panel-'+name).classList.add('active');
   if (name==='reports') loadReports();
   if (name==='rooms') loadRooms();
-  if (name==='staff') loadStaff();
   if (name==='feedback') loadFeedback();
   if (name==='hod') { loadHOD(); document.getElementById('hod-hotel-code').textContent = hotel.hotel_code || 'N/A'; }
 }

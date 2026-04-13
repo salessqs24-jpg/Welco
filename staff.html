@@ -206,6 +206,14 @@
     <div class="filter-tab" onclick="setFilter('done')">✅ Done</div>
   </div>
 
+  <!-- Department color legend -->
+  <div style="display:flex;gap:10px;flex-wrap:wrap;padding:8px 16px;background:white;border-bottom:1px solid #eee;font-size:11px">
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:3px;background:#4361EE;display:inline-block"></span>🛏️ Housekeeping</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:3px;background:#F77F00;display:inline-block"></span>🍽️ Room Service</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:3px;background:#e63946;display:inline-block"></span>🔧 Maintenance</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:3px;background:#9B5DE5;display:inline-block"></span>🛎️ Front Desk</span>
+  </div>
+
   <div class="dash-container">
     <div class="refresh-row">
       <div class="section-label" id="req-label">Live Requests</div>
@@ -378,24 +386,47 @@ function loadTasks(){
     var filtered=currentFilter==='all'?data:data.filter(function(r){return r.status===currentFilter;});
     var list=document.getElementById('task-list');
     if(filtered.length===0){list.innerHTML='<div class="empty-state"><div class="icon">🎉</div><p>'+(currentFilter==='all'?'No requests yet!':'No '+currentFilter.replace('_',' ')+' requests')+'</p></div>';return;}
+
+    // Department colors — left border + badge background
+    var deptConfig = {
+      'Housekeeping':  { color: '#4361EE', bg: '#eef0fd', emoji: '🛏️' },
+      'Room Service':  { color: '#F77F00', bg: '#fff3e0', emoji: '🍽️' },
+      'Maintenance':   { color: '#e63946', bg: '#fde8ea', emoji: '🔧' },
+      'Front Desk':    { color: '#9B5DE5', bg: '#f3eefe', emoji: '🛎️' },
+      'General':       { color: '#0a9396', bg: '#e8f4f4', emoji: '👤' }
+    };
+
     list.innerHTML=filtered.map(function(r){
       var SLA=r.sla_minutes||15,elapsed=(Date.now()-new Date(r.created_at).getTime())/60000;
       var remaining=Math.max(0,SLA-elapsed),pct=Math.max(0,(remaining/SLA)*100);
       var mins=Math.floor(remaining),secs=Math.floor((remaining-mins)*60);
       var tc=pct>50?'':pct>25?'warning':'urgent';
-      var cc=r.status==='done'?'done':r.status==='in_progress'?'in-progress':pct===0?'urgent':'';
+      var isDone = r.status==='done';
+      var isUrgent = pct===0 && !isDone;
       var ta=Math.floor(elapsed)>0?Math.floor(elapsed)+'m ago':'Just now';
+
+      var dept = deptConfig[r.category] || deptConfig['General'];
+      var borderColor = isDone ? '#2ecc71' : isUrgent ? '#e63946' : dept.color;
+      var cardBg = isDone ? 'rgba(255,255,255,0.7)' : dept.bg;
+
       var act='';
-      if(r.status==='pending') act='<button class="btn-accept" onclick="claimTask('+r.id+')">👋 Accept</button>';
+      if(r.status==='pending') act='<button class="btn-accept" onclick="claimTask('+r.id+')" style="background:'+dept.color+'">👋 Accept</button>';
       else if(r.status==='in_progress') act='<span class="claimed-badge">✅ '+(r.claimed_by||'Staff')+'</span><button class="btn-done" onclick="markDone('+r.id+')">Mark Done ✓</button>';
       else act='<button class="btn-done" disabled>✅ Completed</button>';
-      return '<div class="task-card '+cc+'">'+
-        '<div class="task-top"><span class="task-room">Room '+(r.room_number||'?')+'</span><span class="task-cat">'+(r.category||'General')+'</span></div>'+
+
+      return '<div class="task-card" style="border-left:4px solid '+borderColor+';background:'+cardBg+(isDone?';opacity:0.65':'')+'">' +
+        '<div class="task-top">'+
+          '<span class="task-room">Room '+(r.room_number||'?')+'</span>'+
+          '<span class="task-cat" style="background:'+dept.color+'">'+dept.emoji+' '+(r.category||'General')+'</span>'+
+        '</div>'+
         '<div class="task-msg">'+(r.message||'No details')+'</div>'+
         '<div class="task-time">🕐 '+ta+'</div>'+
-        (r.status!=='done'?'<div class="task-sla'+(pct<25?' urgent-text':'')+'">⏱ '+mins+'m '+secs+'s remaining</div>'+
-        '<div class="timer-bar"><div class="timer-fill '+tc+'" style="width:'+pct+'%"></div></div>':'')+
-        '<div class="task-actions">'+act+'</div></div>';
+        (r.status!=='done'?
+          '<div class="task-sla'+(pct<25?' urgent-text':'')+'">⏱ '+mins+'m '+secs+'s remaining</div>'+
+          '<div class="timer-bar"><div class="timer-fill '+tc+'" style="width:'+pct+'%"></div></div>'
+        :'')+
+        '<div class="task-actions">'+act+'</div>'+
+      '</div>';
     }).join('');
   }).catch(function(){});
 }

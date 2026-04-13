@@ -442,25 +442,21 @@
             <input type="color" id="set-colorpicker" oninput="document.getElementById('set-colortext').value=this.value">
             <input type="text" id="set-colortext" placeholder="#0a9396">
           </div>
-          <label style="margin-top:6px">Hotel Logo</label>
+          <label style="margin-top:6px">Hotel Photo</label>
           <div class="logo-upload-area" onclick="document.getElementById('logo-file-input').click()">
             <div class="logo-preview-wrap" id="logo-preview-wrap">
               <img id="logo-preview-img" src="" alt="" style="display:none">
               <span id="logo-preview-emoji">🏨</span>
             </div>
             <div class="logo-upload-text">
-              <strong>Upload your hotel logo</strong>
-              <span>JPG, PNG or WebP · Max 1 MB<br>Replaces the emoji in your header</span>
+              <strong>Upload your hotel photo</strong>
+              <span>JPG, PNG or WebP · Max 1 MB<br>Shows in guest portal header</span>
             </div>
             <button class="logo-upload-btn" type="button" onclick="event.stopPropagation();document.getElementById('logo-file-input').click()">Choose</button>
           </div>
-          <button class="logo-remove-btn" id="logo-remove-btn" onclick="removeLogo()">✕ Remove logo — use emoji instead</button>
+          <button class="logo-remove-btn" id="logo-remove-btn" onclick="removeLogo()">✕ Remove photo</button>
           <p class="logo-size-note" id="logo-size-note"></p>
           <input type="file" id="logo-file-input" accept="image/jpeg,image/png,image/webp" onchange="handleLogoUpload(event)">
-          <div id="emoji-row">
-            <label>Hotel Emoji <span style="font-weight:400;text-transform:none;font-size:11px">(used when no logo is set)</span></label>
-            <input type="text" id="set-emoji" placeholder="🏨" maxlength="2">
-          </div>
           <button class="save-btn" onclick="saveSettings()" style="margin-top:14px">Save Changes</button>
         </div>
       </div>
@@ -598,8 +594,7 @@ function startApp() {
   document.getElementById('set-city').value = hotel.city || '';
   document.getElementById('set-colortext').value = hotel.colour || '#0a9396';
   document.getElementById('set-colorpicker').value = hotel.colour || '#0a9396';
-  document.getElementById('set-emoji').value = hotel.emoji || '🏨';
-  applyLogoOrEmoji(hotel.logo_url, hotel.emoji);
+  applyLogoOrEmoji(hotel.logo_url, null);
 
   pendingLogoBase64 = null;
   showTab('overview');
@@ -665,15 +660,14 @@ function applyLogoOrEmoji(logoUrl, emoji) {
   var previewImg = document.getElementById('logo-preview-img');
   var previewEmoji = document.getElementById('logo-preview-emoji');
   var removeBtn = document.getElementById('logo-remove-btn');
-  var emojiRow = document.getElementById('emoji-row');
   if (logoUrl) {
     imgEl.src = logoUrl; imgEl.style.display = 'block'; emojiEl.style.display = 'none';
     previewImg.src = logoUrl; previewImg.style.display = 'block'; previewEmoji.style.display = 'none';
-    removeBtn.style.display = 'block'; emojiRow.style.display = 'none';
+    removeBtn.style.display = 'block';
   } else {
-    imgEl.style.display = 'none'; emojiEl.textContent = emoji || '🏨'; emojiEl.style.display = 'block';
-    previewImg.style.display = 'none'; previewEmoji.textContent = emoji || '🏨'; previewEmoji.style.display = 'block';
-    removeBtn.style.display = 'none'; emojiRow.style.display = 'block';
+    imgEl.style.display = 'none'; emojiEl.textContent = '🏨'; emojiEl.style.display = 'block';
+    previewImg.style.display = 'none'; previewEmoji.textContent = '🏨'; previewEmoji.style.display = 'block';
+    removeBtn.style.display = 'none';
   }
 }
 
@@ -689,8 +683,8 @@ function handleLogoUpload(event) {
 
 function removeLogo() {
   pendingLogoBase64 = '';
-  applyLogoOrEmoji(null, document.getElementById('set-emoji').value || hotel.emoji || '🏨');
-  document.getElementById('logo-size-note').textContent = 'Logo will be removed when you click Save Changes.';
+  applyLogoOrEmoji(null, null);
+  document.getElementById('logo-size-note').textContent = 'Photo will be removed when you click Save Changes.';
   document.getElementById('logo-size-note').style.color = '#888';
   document.getElementById('logo-file-input').value = '';
 }
@@ -973,9 +967,8 @@ function saveSettings() {
   var name   = document.getElementById('set-name').value.trim();
   var city   = document.getElementById('set-city').value.trim();
   var colour = document.getElementById('set-colortext').value.trim();
-  var emoji  = document.getElementById('set-emoji').value.trim();
   if (!name) { alert('Hotel name cannot be empty.'); return; }
-  var payload = { name:name, city:city, colour:colour, emoji:emoji };
+  var payload = { name:name, city:city, colour:colour };
   if (pendingLogoBase64 !== null) payload.logo_url = pendingLogoBase64;
   fetch('/hotels/'+hotel.hotel_id+'/update', {
     method:'POST', headers:{'Content-Type':'application/json'},
@@ -983,9 +976,8 @@ function saveSettings() {
   }).then(function(r){
     if (r.ok) {
       var newLogo = pendingLogoBase64 !== null ? pendingLogoBase64 : hotel.logo_url;
-      hotel = Object.assign({}, hotel, {name:name, city:city, colour:colour, emoji:emoji, logo_url:newLogo});
+      hotel = Object.assign({}, hotel, {name:name, city:city, colour:colour, logo_url:newLogo});
       localStorage.setItem('welco_admin_hotel', JSON.stringify(hotel));
-      // Update allHotels too so switcher stays in sync
       for (var i=0; i<allHotels.length; i++) {
         if (allHotels[i].hotel_id === hotel.hotel_id) { allHotels[i] = hotel; break; }
       }
@@ -993,7 +985,7 @@ function saveSettings() {
       document.getElementById('t-name').textContent = name;
       document.getElementById('t-city').textContent = city;
       document.documentElement.style.setProperty('--brand', colour);
-      applyLogoOrEmoji(hotel.logo_url, emoji);
+      applyLogoOrEmoji(hotel.logo_url, null);
       if (allHotels.length > 1) renderHotelDropdown();
       pendingLogoBase64 = null;
       var msg = document.getElementById('settings-msg');

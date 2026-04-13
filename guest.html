@@ -14,12 +14,22 @@
       background-attachment: fixed; display: flex; flex-direction: column;
     }
     .header {
-      background: rgba(0,0,0,0.6); backdrop-filter: blur(10px);
-      color: white; padding: 20px; text-align: center;
+      position: relative; color: white; text-align: center;
+      overflow: hidden; min-height: 140px;
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+      padding: 0;
     }
-    .header-logo-wrap { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 4px; }
-    .header-logo-img { width: 48px; height: 48px; border-radius: 10px; object-fit: cover; border: 2px solid rgba(255,255,255,0.4); display: none; }
-    .header h1 { font-size: 24px; font-weight: bold; }
+    .hotel-photo-bg {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0.6); backdrop-filter: blur(10px);
+      z-index: 0;
+    }
+    .hotel-photo-bg img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; opacity: 0.55; display: none;
+    }
+    .header-inner { position: relative; z-index: 1; padding: 20px; width: 100%; }
+    .header h1 { font-size: 24px; font-weight: bold; text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
     .header p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
     .welcome-msg { font-size: 12px; margin-top: 8px; background: rgba(255,255,255,0.15); border-radius: 20px; padding: 4px 14px; display: inline-block; }
     .announcement-banner { display: none; margin: 0; background: linear-gradient(90deg, #ee9b00, #ca6702); color: white; padding: 10px 16px; font-size: 13px; font-weight: 500; text-align: center; line-height: 1.5; animation: slideDown 0.4s ease; }
@@ -87,12 +97,14 @@
 <body>
 
   <div class="header">
-    <div class="header-logo-wrap">
-      <img class="header-logo-img" id="header-logo-img" src="" alt="Hotel Logo">
-      <h1 id="hotel-name">🏨 Welco</h1>
+    <div class="hotel-photo-bg">
+      <img id="hotel-photo-bg-img" src="" alt="">
     </div>
-    <p id="room-label">Loading...</p>
-    <div class="welcome-msg" id="welcome-msg" style="display:none">👋 Welcome! We're here to help.</div>
+    <div class="header-inner">
+      <h1 id="hotel-name">🏨 Welco</h1>
+      <p id="room-label">Loading...</p>
+      <div class="welcome-msg" id="welcome-msg" style="display:none">👋 Welcome! We're here to help.</div>
+    </div>
   </div>
 
   <div class="announcement-banner" id="announcement-banner">
@@ -250,9 +262,12 @@
         if (hotel) {
           hotelData = hotel;
           document.documentElement.style.setProperty('--brand', hotel.colour || '#1a1a2e');
+          // Set header background to hotel brand color
+          document.querySelector('.hotel-photo-bg').style.background = (hotel.colour || '#1a1a2e') + 'dd';
           if (hotel.logo_url) {
-            var logoImg = document.getElementById('header-logo-img');
-            logoImg.src = hotel.logo_url; logoImg.style.display = 'block';
+            var photoBg = document.getElementById('hotel-photo-bg-img');
+            photoBg.src = hotel.logo_url;
+            photoBg.style.display = 'block';
             document.getElementById('hotel-name').textContent = hotel.name;
           } else {
             document.getElementById('hotel-name').textContent = (hotel.emoji || '🏨') + ' ' + hotel.name;

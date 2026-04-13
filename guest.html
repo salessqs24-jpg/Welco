@@ -187,7 +187,7 @@
     var hotelId = null;
     var roomId = null;
     var roomNumber = null;
-    var selectedQuick = '';
+    var selectedQuicks = [];  // now an ARRAY for multi-select
     var hotelData = null;
 
     var params = new URLSearchParams(window.location.search);
@@ -297,7 +297,7 @@
       document.querySelectorAll('.cat-btn').forEach(function(b) { b.classList.remove('selected'); });
       btn.classList.add('selected');
       selectedCategory = cat;
-      selectedQuick = '';
+      selectedQuicks = [];  // reset selections
 
       document.getElementById('quick-section').style.display = 'none';
       document.getElementById('services-section').style.display = 'none';
@@ -351,10 +351,18 @@
       el.className = 'service-item';
       el.textContent = label;
       el.onclick = function() {
-        document.querySelectorAll('.service-item').forEach(function(s) { s.classList.remove('selected'); });
-        el.classList.add('selected');
-        selectedQuick = label.replace(/[\u{1F000}-\u{1FFFF}]/gu, '').trim() || label;
-        document.getElementById('message').value = selectedQuick;
+        // Toggle selection — multi-select
+        var cleanLabel = label.replace(/[\u{1F000}-\u{1FFFF}]/gu, '').trim() || label;
+        var idx = selectedQuicks.indexOf(cleanLabel);
+        if (idx === -1) {
+          selectedQuicks.push(cleanLabel);
+          el.classList.add('selected');
+        } else {
+          selectedQuicks.splice(idx, 1);
+          el.classList.remove('selected');
+        }
+        // Update message box with all selected items
+        document.getElementById('message').value = selectedQuicks.join(', ');
       };
       grid.appendChild(el);
     }
@@ -370,7 +378,7 @@
 
     async function submitRequest() {
       if (!selectedCategory) return alert('Please select a category first!');
-      var message = document.getElementById('message').value || selectedQuick;
+      var message = document.getElementById('message').value || selectedQuicks.join(', ');
       try {
         var res = await fetch('/requests', {
           method: 'POST',
@@ -388,7 +396,7 @@
           document.getElementById('message').value = '';
           document.querySelectorAll('.cat-btn').forEach(function(b) { b.classList.remove('selected'); });
           document.querySelectorAll('.quick-item, .service-item').forEach(function(q) { q.classList.remove('selected'); });
-          selectedCategory = ''; selectedQuick = '';
+          selectedCategory = ''; selectedQuicks = [];
           pollInterval = setInterval(checkIfDone, 5000);
         } else { alert('Something went wrong. Please try again.'); }
       } catch(e) { alert('Could not send request. Please try again.'); }

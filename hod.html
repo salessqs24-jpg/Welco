@@ -1,2015 +1,1229 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width, initialscale=1.0">
-<title>Welco HOD</title>
-<script src="https://cdn.jsdelivr.net/npm/
-chart.js@4.4.0/dist/chart.umd.min.js"></
-script>
-<style>
-:root {--brand: #005f73; --brand2:
-#0a9396; --ink: #0d1b1e;}
-* {margin: 0; padding: 0; box-sizing:
-border-box; }
-body {font-family: 'Segoe UI', sansserif; background: #f0f2f5 url('https://
-images.unsplash.com/
-photo-1542314831-068cd1dbfeeb?
-w=1600&q=80') center/cover fixed no-
-repeat; min-height: 100vh; }
-/* LOGIN */
-#login-screen {min-height: 100vh;
-background: linear-gradient(160deg,
-#005f73, #0a9396); display: flex; flexdirection: column; align-items: center;
-justify-content: center; padding: 24px; }
-.login-card {background: white; borderradius: 20px; padding: 32px; width: 100%;
-max-width: 360px; box-shadow: 0 20px
-60px rgba(0,0,0,0.2);}
-.login-logo {font-size: 44px; text-align:
-center; margin-bottom: 8px; }
-.login-title {color: white; font-size:
-22px; font-weight: 700; text-align: center;
-margin-bottom: 4px; }
-.login-sub {color:
-rgba(255,255,255,0.7); font-size: 13px;
-text-align: center; margin-bottom: 28px;}
-.lbl {font-size: 11px; color: #888; text-
-transform: uppercase; letter-spacing:
-0.08em; display: block; margin-bottom:
-6px; font-weight: 600; }
-.login-card input {width: 100%;
-padding: 12px 14px; border: 1.5px solid
-#e0ddd8; border-radius: 10px; font-size:
-14px; margin-bottom: 14px; outline: none;
-background: white; }
-.login-card input:focus {border-color:
-var(--brand2); }
-.login-btn { width: 100%; padding: 14px;
-background: var(--brand); color: white;
-border: none; border-radius: 12px; fontsize: 15px; font-weight: 700; cursor:
-pointer; }
-.login-btn:hover { background: var(--
-brand2); }
-.login-err {color: #e63946; font-size:
-13px; text-align: center; margin-top: 10px;
-display: none;}
-.login-note {font-size: 11px; color:
-#aaa; text-align: center; margin-top:
-12px; line-height: 1.5; }
-.hotel-code-hint { background: #e8f4f4;
-border-radius: 8px; padding: 10px 14px;
-font-size: 12px; color: #005f73; marginbottom: 14px; }
-/* APP */
-#app-screen {display: none; }
-.topbar {background: lineargradient(90deg, var(--brand), var(--
-brand2)); color: white; padding: 14px 20px;
-display: flex; justify-content: spacebetween; align-items: center; position:
-sticky; top: 0; z-index: 50; }
-.topbar-left {display: flex; align-items:
-center; gap: 12px; }
-.topbar-logo {width: 36px; height: 36px;
-border-radius: 8px; object-fit: cover;
-border: 2px solid rgba(255,255,255,0.4);
-display: none; }
-.topbar-emoji {font-size: 22px; }
-.topbar-name {font-size: 16px; fontweight: 700;}
-.topbar-sub {font-size: 11px; opacity:
-0.75; margin-top: 1px; }
-.topbar-right { display: flex; align-items:
-center; gap: 10px; }
-.dept-badge {padding: 4px 12px;
-border-radius: 20px; font-size: 12px; fontweight: 600; background:
-rgba(255,255,255,0.2); }
-.logout-btn {background:
-rgba(255,255,255,0.15); border: none;
-color: white; padding: 6px 14px; borderradius: 8px; font-size: 12px; cursor:
-pointer; }
-/* ALERT BAR */
-.alert-bar {background: #e63946; color:
-white; padding: 10px 20px; font-size:
-13px; font-weight: 600; text-align: center;
-display: none; animation: pulse-bg 2s
-infinite;}
-@keyframes pulse-bg {0%,100%
-{background:#e63946} 50%
-{background:#c1121f} }
-/* TABS */
-.tabs {display: flex; background: white;
-border-bottom: 1px solid #eee; overflowx: auto; }
-.tab {padding: 13px 18px; font-size:
-13px; font-weight: 500; color: #999;
-cursor: pointer; white-space: nowrap;
-border-bottom: 2px solid transparent; }
-.tab.active { color: var(--brand); borderbottom-color: var(--brand); }
-/* CONTENT */
-.content { padding: 16px; max-width:
-900px; margin: 0 auto; padding-bottom:
-40px; }
-.tab-panel {display: none; }
-.tab-panel.active {display: block; }
-/* CARDS */
-.card {background:
-rgba(255,255,255,0.92); border-radius:
-14px; padding: 20px; margin-bottom:
-16px; box-shadow: 0 4px 20px
-rgba(0,0,0,0.12); }
-.card-title {font-size: 15px; fontweight: 700; color: var(--ink); marginbottom: 4px; }
-.card-sub {font-size: 12px; color: #999;
-margin-bottom: 16pх; }
-/* STATS */
-.stat-row {display: grid; grid-templatecolumns: repeat(4,1fr); gap: 12px; marginbottom: 16px; }
-.stat-box {background:
-rgba(255,255,255,0.92); border-radius:
-12px; padding: 16px; text-align: center;
-box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-.stat-num {font-size: 32px; fontweight: 700; color: var(--brand2); }
-.stat-label {font-size: 11px; color:
-#999; text-transform: uppercase; letterspacing: 0.08em; margin-top: 4px; }
-/* REQUESTS */
-.request-row {padding: 14px 0; borderbottom: 1px solid #fOfOf0; }
-.request-row:last-child { borderbottom: none; }
-.req-top {display: flex; justify-content:
-space-between; align-items: center;
-margin-bottom: 6px; }
-.req-room {font-weight: 700; font-size:
-14px; color: var(--ink); }
-.req-cat {color: white; padding: 2px
-10px; border-radius: 10px; font-size:
-11px; font-weight: 600; }
-.req-msg {color: #666; font-size: 13px;
-margin-bottom: 6px; line-height: 1.4;}
-.req-meta {font-size: 11px; color: #aaa;
-display: flex; gap: 10px; flex-wrap: wrap;
-align-items: center;}
-.badge {padding: 3px 10px; borderradius: 10px; font-size: 11px; font-weight:
-600;}
-.badge-pending {background: #fff3cd;
-color: #8a6000; }
-.badge-progress {background: #cff4fc;
-color: #0a6070; }
-.badge-done {background: #d1fae5;
-color: #065f46; }
-.sla-warn {background: #fde8ea; color:
-#e63946; padding: 2px 8px; borderradius: 6px; font-size: 11px; font-weight:
-700; }
-.sla-ok {background: #d1fae5; color:
-#065f46; padding: 2px 8px; border-radius:
-6px; font-size: 11px; }
-/* ROOMS */
-.rooms-grid { display: grid; gridtemplate-columns: repeat(2,1fr); gap:
-10px; }
-.room-card {background: #f9f9f9;
-border-radius: 10px; padding: 14px; textalign: center; border: 1px solid #eee; }
-.room-num {font-size: 20px; fontweight: 700; color: var(--brand); }
-.room-floor {font-size: 11px; color:
-#aaa; margin-bottom: 8px; }
-.btn-del {padding: 6px 10px;
-background: #fde8ea; color: #e63946;
-border: none; border-radius: 6px; fontsize: 11px; cursor: pointer; }
-.add-row {display: flex; gap: 8px; flexwrap: wrap; }
-.add-row input {flex: 1; min-width:
-80px; padding: 10px 12px; border: 1.5px
-solid #e0ddd8; border-radius: 8px; font-
-size: 14px; outline: none; }
-.btn-add {padding: 10px 18px;
-background: var(--brand); color: white;
-border: none; border-radius: 8px; fontsize: 13px; font-weight: 700; cursor:
-pointer; }
-/* STAFF */
-.staff-row {display: flex; justifycontent: space-between; align-items:
-center; padding: 12px 0; border-bottom:
-1px solid #fOfOf0; }
-.staff-row:last-child {border-bottom:
-none;}
-.staff-name-txt {font-size: 14px; fontweight: 500;}
-.staff-pin {font-family: monospace;
-font-size: 15px; font-weight: 700; color:
-var(--brand2); background: #e8f4f4;
-padding: 4px 10px; border-radius: 6px; }
-.btn-remove {background: #fde8ea;
-color: #e63946; border: none; borderradius: 6px; padding: 4px 10px; font-size:
-11px; cursor: pointer; }
-/* MSG */
-.msg-box { padding: 10px 14px; borderradius: 8px; font-size: 13px; marginbottom: 12px; display: none; }
-.msg-success {background: #d1fae5;
-color: #065f46; display: block; }
-/* FILTER */
-.filter-row {display: flex; gap: 8px;
-margin-bottom: 14px; flex-wrap: wrap; }
-select.filter-sel { padding: 8px 12px;
-border: 1px solid #ddd; border-radius:
-8px; font-size: 13px; outline: none;
-background: white; }
-/* CHARTS */
-.chart-wrap {height: 220px; }
-.donut-wrap {position: relative; height:
-180px; }
-.donut-center {position: absolute; top:
-50%; left: 50%; transform:
-translate(-50%,-50%); text-align: center;
-pointer-events: none; }
-.donut-center .big {font-size: 24px;
-font-weight: 700; color: var(--ink); }
-.donut-center .small {font-size: 10px;
-color: #aaa; }
-.legend { display: flex; flex-wrap: wrap;
-gap: 8px; margin-top: 12px; justifycontent: center; }
-.legend-item {display: flex; align-items:
-center; gap: 5px; font-size: 11px; color:
-#555;}
-.legend-dot {width: 9px; height: 9px;
-border-radius: 50%; }
-/* MAINTENANCE */
-.maint-item { padding: 12px 0; border-
-bottom: 1px solid #fOfOf0; }
-.maint-item:last-child {border-bottom:
-none;}
-.maint-top {display: flex; justifycontent: space-between; align-items:
-flex-start; margin-bottom: 4px; }
-.maint-title-txt {font-size: 14px; fontweight: 600; color: var(--ink); }}
-.maint-desc-txt {font-size: 12px; color:
-#888; margin-bottom: 6px; }
-.maint-meta {font-size: 11px; color:
-#aaa; display: flex; gap: 8px; flex-wrap:
-wrap; align-items: center; }
-.due-badge { padding: 2px 8px; borderradius: 6рx; font-size: 11px; font-weight:
-600;}
-.due-overdue {background: #fde8ea;
-color: #e63946; }
-.due-today {background: #fff3cd; color:
-#8a6000; }
-.due-upcoming {background: #d1fae5;
-color: #065f46; }
-.btn-mark-done {padding: 5px 12px;
-background: #2ecc71; color: white;
-border: none; border-radius: 6px; fontsize: 11px; cursor: pointer; font-weight:
-600; }
-.btn-delete-task {padding: 5px 10px;
-background: #fde8ea; color: #e63946;
-border: none; border-radius: 6px; fontsize: 11px; cursor: pointer; }
-.freq-pill { padding: 2px 8px; borderradius: 10px; font-size: 10px; font-weight:
-600;}
-.freq-daily { background: #e8f4f4; color:
-#005f73; }
-.freq-weekly {background: #fff8e6;
-color: #8a6000; }
-.freq-monthly {background: #f0e8ff;
-color: #6b21a8;}
-.empty {text-align: center; padding:
-32px; color: #aaa; font-size: 14px; }
-.loading {text-align: center; padding:
-24px; color: #aaa; }
-@media (max-width: 600px) {
-.stat-row {grid-template-columns: 1fr
-1fr;}
-.rooms-grid {grid-template-columns:
-1fr 1fr; }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welco HOD</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root { --brand: #005f73; --brand2: #0a9396; --ink: #0d1b1e; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5 url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80') center/cover fixed no-repeat; min-height: 100vh; }
+
+    /* LOGIN */
+    #login-screen { min-height: 100vh; background: linear-gradient(160deg, #005f73, #0a9396); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
+    .login-card { background: white; border-radius: 20px; padding: 32px; width: 100%; max-width: 360px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+    .login-logo { font-size: 44px; text-align: center; margin-bottom: 8px; }
+    .login-title { color: white; font-size: 22px; font-weight: 700; text-align: center; margin-bottom: 4px; }
+    .login-sub { color: rgba(255,255,255,0.7); font-size: 13px; text-align: center; margin-bottom: 28px; }
+    .lbl { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 6px; font-weight: 600; }
+    .login-card input { width: 100%; padding: 12px 14px; border: 1.5px solid #e0ddd8; border-radius: 10px; font-size: 14px; margin-bottom: 14px; outline: none; background: white; }
+    .login-card input:focus { border-color: var(--brand2); }
+    .login-btn { width: 100%; padding: 14px; background: var(--brand); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; }
+    .login-btn:hover { background: var(--brand2); }
+    .login-err { color: #e63946; font-size: 13px; text-align: center; margin-top: 10px; display: none; }
+    .login-note { font-size: 11px; color: #aaa; text-align: center; margin-top: 12px; line-height: 1.5; }
+    .hotel-code-hint { background: #e8f4f4; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #005f73; margin-bottom: 14px; }
+
+    /* APP */
+    #app-screen { display: none; }
+    .topbar { background: linear-gradient(90deg, var(--brand), var(--brand2)); color: white; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; }
+    .topbar-left { display: flex; align-items: center; gap: 12px; }
+    .topbar-logo { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; border: 2px solid rgba(255,255,255,0.4); display: none; }
+    .topbar-emoji { font-size: 22px; }
+    .topbar-name { font-size: 16px; font-weight: 700; }
+    .topbar-sub { font-size: 11px; opacity: 0.75; margin-top: 1px; }
+    .topbar-right { display: flex; align-items: center; gap: 10px; }
+    .dept-badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; background: rgba(255,255,255,0.2); }
+    .logout-btn { background: rgba(255,255,255,0.15); border: none; color: white; padding: 6px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; }
+
+    /* ALERT BAR */
+    .alert-bar { background: #e63946; color: white; padding: 10px 20px; font-size: 13px; font-weight: 600; text-align: center; display: none; animation: pulse-bg 2s infinite; }
+    @keyframes pulse-bg { 0%,100%{background:#e63946} 50%{background:#c1121f} }
+
+    /* TABS */
+    .tabs { display: flex; background: white; border-bottom: 1px solid #eee; overflow-x: auto; }
+    .tab { padding: 13px 18px; font-size: 13px; font-weight: 500; color: #999; cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; }
+    .tab.active { color: var(--brand); border-bottom-color: var(--brand); }
+
+    /* CONTENT */
+    .content { padding: 16px; max-width: 900px; margin: 0 auto; padding-bottom: 40px; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* CARDS */
+    .card { background: rgba(255,255,255,0.92); border-radius: 14px; padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.12); }
+    .card-title { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+    .card-sub { font-size: 12px; color: #999; margin-bottom: 16px; }
+
+    /* STATS */
+    .stat-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 16px; }
+    .stat-box { background: rgba(255,255,255,0.92); border-radius: 12px; padding: 16px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .stat-num { font-size: 32px; font-weight: 700; color: var(--brand2); }
+    .stat-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+
+    /* REQUESTS */
+    .request-row { padding: 14px 0; border-bottom: 1px solid #f0f0f0; }
+    .request-row:last-child { border-bottom: none; }
+    .req-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .req-room { font-weight: 700; font-size: 14px; color: var(--ink); }
+    .req-cat { color: white; padding: 2px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+    .req-msg { color: #666; font-size: 13px; margin-bottom: 6px; line-height: 1.4; }
+    .req-meta { font-size: 11px; color: #aaa; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .badge { padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+    .badge-pending { background: #fff3cd; color: #8a6000; }
+    .badge-progress { background: #cff4fc; color: #0a6070; }
+    .badge-done { background: #d1fae5; color: #065f46; }
+    .sla-warn { background: #fde8ea; color: #e63946; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+    .sla-ok { background: #d1fae5; color: #065f46; padding: 2px 8px; border-radius: 6px; font-size: 11px; }
+
+    /* ROOMS */
+    .rooms-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
+    .room-card { background: #f9f9f9; border-radius: 10px; padding: 14px; text-align: center; border: 1px solid #eee; }
+    .room-num { font-size: 20px; font-weight: 700; color: var(--brand); }
+    .room-floor { font-size: 11px; color: #aaa; margin-bottom: 8px; }
+    .btn-del { padding: 6px 10px; background: #fde8ea; color: #e63946; border: none; border-radius: 6px; font-size: 11px; cursor: pointer; }
+    .add-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .add-row input { flex: 1; min-width: 80px; padding: 10px 12px; border: 1.5px solid #e0ddd8; border-radius: 8px; font-size: 14px; outline: none; }
+    .btn-add { padding: 10px 18px; background: var(--brand); color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; }
+
+    /* STAFF */
+    .staff-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+    .staff-row:last-child { border-bottom: none; }
+    .staff-name-txt { font-size: 14px; font-weight: 500; }
+    .staff-pin { font-family: monospace; font-size: 15px; font-weight: 700; color: var(--brand2); background: #e8f4f4; padding: 4px 10px; border-radius: 6px; }
+    .btn-remove { background: #fde8ea; color: #e63946; border: none; border-radius: 6px; padding: 4px 10px; font-size: 11px; cursor: pointer; }
+
+    /* MSG */
+    .msg-box { padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 12px; display: none; }
+    .msg-success { background: #d1fae5; color: #065f46; display: block; }
+
+    /* FILTER */
+    .filter-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+    select.filter-sel { padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; outline: none; background: white; }
+
+    /* CHARTS */
+    .chart-wrap { height: 220px; }
+    .donut-wrap { position: relative; height: 180px; }
+    .donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; pointer-events: none; }
+    .donut-center .big { font-size: 24px; font-weight: 700; color: var(--ink); }
+    .donut-center .small { font-size: 10px; color: #aaa; }
+    .legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; justify-content: center; }
+    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #555; }
+    .legend-dot { width: 9px; height: 9px; border-radius: 50%; }
+
+    /* MAINTENANCE */
+    .maint-item { padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+    .maint-item:last-child { border-bottom: none; }
+    .maint-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+    .maint-title-txt { font-size: 14px; font-weight: 600; color: var(--ink); }
+    .maint-desc-txt { font-size: 12px; color: #888; margin-bottom: 6px; }
+    .maint-meta { font-size: 11px; color: #aaa; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .due-badge { padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+    .due-overdue { background: #fde8ea; color: #e63946; }
+    .due-today { background: #fff3cd; color: #8a6000; }
+    .due-upcoming { background: #d1fae5; color: #065f46; }
+    .btn-mark-done { padding: 5px 12px; background: #2ecc71; color: white; border: none; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: 600; }
+    .btn-delete-task { padding: 5px 10px; background: #fde8ea; color: #e63946; border: none; border-radius: 6px; font-size: 11px; cursor: pointer; }
+    .freq-pill { padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; }
+    .freq-daily { background: #e8f4f4; color: #005f73; }
+    .freq-weekly { background: #fff8e6; color: #8a6000; }
+    .freq-monthly { background: #f0e8ff; color: #6b21a8; }
+    .empty { text-align: center; padding: 32px; color: #aaa; font-size: 14px; }
+    .loading { text-align: center; padding: 24px; color: #aaa; }
+
+    @media (max-width: 600px) {
+      .stat-row { grid-template-columns: 1fr 1fr; }
+      .rooms-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
 </head>
 <body>
-<!-- LOGIN
+
+<!-- ══════════ LOGIN ══════════ -->
 <div id="login-screen">
-<div class="login-logo"></div>
-<div class="login-title">Welco HOD
-Portal</div>
-<div class="login-sub">Head of
-Department Access</div>
-<div class="login-card">
-<div class="hotel-code-hint"> Your
-hotel code is given by your admin e.g.
-<strong>FAT760</strong></div>
-<label class="Ibl">Hotel Code</label>
-<input type="text" id="l-hotelcode"
-placeholder="e.g. FAT760" maxlength="6"
-autocomplete="off" style="texttransform:uppercase;letterspacing:2px;font-weight:700">
-<label class="lbl">Your Name</label>
-<input type="text" id="l-name"
-placeholder="Exactly as added by Admin"
-autocomplete="off">
-<label class="lbl">PIN</label>
-<input type="password" id="I-pin"
-placeholder="4-digit PIN" maxlength="4">
-<button class="login-btn" id="login-btn"
-onclick="doLogin()">Login as HOD</
-button>
-<div class="login-err" id="login-err"></
-div>
-<div class="login-note">Your
-credentials are set by the hotel
-admin.<br>Contact your admin if you can't
-login.</div>
+  <div class="login-logo">🎯</div>
+  <div class="login-title">Welco HOD Portal</div>
+  <div class="login-sub">Head of Department Access</div>
+  <div class="login-card">
+    <div class="hotel-code-hint">📋 Your hotel code is given by your admin e.g. <strong>FAT760</strong></div>
+    <label class="lbl">Hotel Code</label>
+    <input type="text" id="l-hotelcode" placeholder="e.g. FAT760" maxlength="6" autocomplete="off" style="text-transform:uppercase;letter-spacing:2px;font-weight:700">
+    <label class="lbl">Your Name</label>
+    <input type="text" id="l-name" placeholder="Exactly as added by Admin" autocomplete="off">
+    <label class="lbl">PIN</label>
+    <input type="password" id="l-pin" placeholder="4-digit PIN" maxlength="4">
+    <button class="login-btn" id="login-btn" onclick="doLogin()">Login as HOD</button>
+    <div class="login-err" id="login-err"></div>
+    <div class="login-note">Your credentials are set by the hotel admin.<br>Contact your admin if you can't login.</div>
+  </div>
 </div>
-</div>
-APP
--->
+
+<!-- ══════════ APP ══════════ -->
 <div id="app-screen">
-<div class="topbar">
-<div class="topbar-left">
-<img class="topbar-logo" id="t-logo"
-src="" alt=">
-<span class="topbar-emoji" id="temoji"></span>
-<div>
-<div class="topbar-name" id="tname">Hotel</div>
-<div class="topbar-sub" id="tsub">HOD Portal</div>
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <img class="topbar-logo" id="t-logo" src="" alt="">
+      <span class="topbar-emoji" id="t-emoji">🏨</span>
+      <div>
+        <div class="topbar-name" id="t-name">Hotel</div>
+        <div class="topbar-sub" id="t-sub">HOD Portal</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="dept-badge" id="t-dept-badge">Department</span>
+      <button class="logout-btn" onclick="doLogout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="alert-bar" id="alert-bar">⚠️ <span id="alert-msg"></span></div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('overview')">📊 Overview</div>
+    <div class="tab" onclick="showTab('requests')">📋 Requests</div>
+    <div class="tab" onclick="showTab('rooms')">🚪 Rooms</div>
+    <div class="tab" onclick="showTab('staff')">👷 Staff</div>
+    <div class="tab" onclick="showTab('analytics')">📈 Analytics</div>
+    <div class="tab" onclick="showTab('announce')">📢 Announce</div>
+    <div class="tab" onclick="showTab('maintenance')">🔧 Schedule</div>
+    <div class="tab" onclick="showTab('guestoptions')">🎯 Guest Options</div>
+  </div>
+
+  <div class="content">
+
+    <!-- OVERVIEW -->
+    <div class="tab-panel active" id="panel-overview">
+      <div class="stat-row">
+        <div class="stat-box"><div class="stat-num" id="ov-total">-</div><div class="stat-label">Total</div></div>
+        <div class="stat-box"><div class="stat-num" id="ov-pending" style="color:#ee9b00">-</div><div class="stat-label">Pending</div></div>
+        <div class="stat-box"><div class="stat-num" id="ov-progress" style="color:#0a9396">-</div><div class="stat-label">In Progress</div></div>
+        <div class="stat-box"><div class="stat-num" id="ov-done" style="color:#2ecc71">-</div><div class="stat-label">Done</div></div>
+      </div>
+      <div class="card" id="overdue-card" style="display:none;border-left:4px solid #e63946">
+        <div class="card-title" style="color:#e63946">⚠️ Overdue Requests</div>
+        <div class="card-sub">These requests have exceeded the SLA time limit</div>
+        <div id="overdue-list"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Recent Activity — <span id="ov-dept-label"></span></div>
+        <div class="card-sub">Latest requests in your department</div>
+        <div id="ov-recent"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- REQUESTS -->
+    <div class="tab-panel" id="panel-requests">
+      <div class="card">
+        <div class="card-title">All Requests — <span id="req-dept-title"></span></div>
+        <div class="card-sub">Monitor all requests in your department</div>
+        <div class="filter-row">
+          <select class="filter-sel" id="filter-status" onchange="renderRequests()">
+            <option value="">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="in_progress">In Progress</option>
+            <option value="done">Done</option>
+          </select>
+        </div>
+        <div id="req-list"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- ROOMS -->
+    <div class="tab-panel" id="panel-rooms">
+      <div class="card">
+        <div class="card-title">Add New Room</div>
+        <div class="card-sub">Add a room to the hotel</div>
+        <div class="add-row">
+          <input type="text" id="new-room-num" placeholder="Room number e.g. 305">
+          <input type="number" id="new-room-floor" placeholder="Floor" min="1" style="max-width:80px">
+          <button class="btn-add" onclick="addRoom()">+ Add</button>
+        </div>
+        <div class="msg-box" id="room-msg"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">All Rooms</div>
+        <div class="card-sub" id="rooms-count">Loading...</div>
+        <div class="rooms-grid" id="rooms-grid"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- STAFF -->
+    <div class="tab-panel" id="panel-staff">
+      <div class="card">
+        <div class="card-title">Add Staff Member</div>
+        <div class="card-sub">Staff will get a unique Staff ID — share it with them for login</div>
+        <div class="add-row">
+          <input type="text" id="new-staff-name" placeholder="Full name e.g. Rahul">
+          <input type="text" id="new-staff-pin" placeholder="4-digit PIN" maxlength="4" style="max-width:110px">
+          <button class="btn-add" onclick="addStaff()">+ Add</button>
+        </div>
+        <div class="msg-box" id="staff-msg"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Staff Members</div>
+        <div class="card-sub">Share the <strong>Staff ID</strong> with each staff member — they use it to login at staff.html</div>
+        <div id="staff-list"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div class="tab-panel" id="panel-analytics">
+      <div class="stat-row">
+        <div class="stat-box"><div class="stat-num" id="an-total">-</div><div class="stat-label">Total</div></div>
+        <div class="stat-box"><div class="stat-num" id="an-done">-</div><div class="stat-label">Completed</div></div>
+        <div class="stat-box"><div class="stat-num" id="an-rating">-</div><div class="stat-label">Avg Rating</div></div>
+        <div class="stat-box"><div class="stat-num" id="an-pending">-</div><div class="stat-label">Pending</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+        <div class="card">
+          <div class="card-title">Request Status</div>
+          <div class="card-sub">Your department breakdown</div>
+          <div class="donut-wrap">
+            <canvas id="chart-status"></canvas>
+            <div class="donut-center"><div class="big" id="donut-num">0</div><div class="small">Total</div></div>
+          </div>
+          <div class="legend" id="legend-status"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Star Ratings</div>
+          <div class="card-sub">Guest feedback for your dept</div>
+          <div style="height:180px"><canvas id="chart-ratings"></canvas></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Requests Over Time</div>
+        <div class="card-sub">Last 14 days — your department only</div>
+        <div class="chart-wrap"><canvas id="chart-line"></canvas></div>
+      </div>
+
+      <!-- STAFF PERFORMANCE -->
+      <div class="card">
+        <div class="card-title">👷 Staff Performance</div>
+        <div class="card-sub">Individual stats for your team — based on completed requests</div>
+        <div id="staff-perf-list"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- MAINTENANCE -->
+    <div class="tab-panel" id="panel-maintenance">
+      <div class="card">
+        <div class="card-title">Add Maintenance Task</div>
+        <div class="card-sub">Create recurring tasks for your department</div>
+        <div class="msg-box" id="maint-msg"></div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+          <input type="text" id="maint-title" placeholder="Task title e.g. Clean AC filters" style="padding:10px 12px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:14px;outline:none">
+          <textarea id="maint-desc" placeholder="Description (optional)" style="padding:10px 12px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:14px;outline:none;resize:none;height:70px;font-family:sans-serif"></textarea>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <select id="maint-freq" style="flex:1;padding:10px 12px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:14px;outline:none;background:white">
+              <option value="daily">🔄 Daily</option>
+              <option value="weekly">📅 Weekly</option>
+              <option value="monthly">🗓️ Monthly</option>
+            </select>
+            <button class="btn-add" onclick="addMaintenanceTask()">+ Add Task</button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🔴 Overdue & Due Today</div>
+        <div class="card-sub">Tasks that need immediate attention</div>
+        <div id="maint-urgent"><div class="loading">Loading...</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px">
+        <div class="card">
+          <div class="card-title">🔄 Daily Tasks</div>
+          <div class="card-sub">Every day</div>
+          <div id="maint-daily"><div class="loading">Loading...</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">📅 Weekly Tasks</div>
+          <div class="card-sub">Every week</div>
+          <div id="maint-weekly"><div class="loading">Loading...</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">🗓️ Monthly Tasks</div>
+          <div class="card-sub">Every month</div>
+          <div id="maint-monthly"><div class="loading">Loading...</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ANNOUNCEMENTS ══ -->
+    <div class="tab-panel" id="panel-announce">
+      <div class="card">
+        <div class="card-title">📢 Post Announcement</div>
+        <div class="card-sub">Guests will see this banner the moment they scan any room QR code</div>
+        <div class="msg-box" id="ann-msg"></div>
+        <div style="display:flex;align-items:center;gap:10px;background:linear-gradient(90deg,#ee9b00,#ca6702);color:white;padding:12px 16px;border-radius:10px;font-size:13px;margin-bottom:16px;display:none" id="ann-preview">
+          <span style="font-size:18px">📢</span>
+          <span id="ann-preview-text" style="flex:1"></span>
+        </div>
+        <textarea id="ann-input" placeholder="e.g. Pool closed for maintenance today. Rooftop open till 10pm tonight!" oninput="previewAnn(this.value)" style="width:100%;padding:12px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;resize:none;height:90px;font-family:sans-serif;outline:none;margin-bottom:10px"></textarea>
+        <button onclick="postAnnouncement()" style="width:100%;padding:13px;background:#ee9b00;color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer">📢 Post to All Guests</button>
+      </div>
+      <div class="card">
+        <div class="card-title">Active & Past Announcements</div>
+        <div class="card-sub">Only one announcement can be active at a time</div>
+        <div id="ann-list"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- ══ GUEST OPTIONS ══ -->
+    <div class="tab-panel" id="panel-guestoptions">
+      <div class="card">
+        <div class="card-title">🎯 Guest Quick Options</div>
+        <div class="card-sub">Toggle which services guests see under <strong>Front Desk</strong> quick requests. Only enabled options appear for guests.</div>
+        <div class="msg-box" id="go-msg"></div>
+        <div id="go-list" style="display:flex;flex-direction:column;gap:10px;margin-top:8px"></div>
+        <button onclick="saveGuestOptions()" style="margin-top:18px;width:100%;padding:14px;background:#005f73;color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer">💾 Save Guest Options</button>
+      </div>
+
+      <div class="card" style="border:2px dashed #0a9396">
+        <div class="card-title">➕ Add Custom Option</div>
+        <div class="card-sub">Add your own hotel-specific service that guests can request</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+          <input type="text" id="custom-option-emoji" placeholder="emoji e.g. 🎵" maxlength="2" style="width:60px;padding:10px 8px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:18px;outline:none;text-align:center">
+          <input type="text" id="custom-option-text" placeholder="Service name e.g. Live Music Info" style="flex:1;min-width:140px;padding:10px 12px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:14px;outline:none">
+          <input type="number" id="custom-option-sla" placeholder="15" min="1" max="999" value="15" style="width:64px;padding:10px 8px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:14px;outline:none;text-align:center">
+          <button onclick="addCustomOption()" style="padding:10px 18px;background:#0a9396;color:white;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">+ Add</button>
+        </div>
+        <div style="font-size:11px;color:#aaa;margin-top:8px">Enter emoji, service name, and SLA minutes (how long it takes). Custom options are saved with your selection above.</div>
+      </div>
+    </div>
+
+  </div>
 </div>
-</div>
-<div class="topbar-right">
-<span class="dept-badge" id="t-deptbadge">Department</span>
-<button class="logout-btn"
-onclick="doLogout()">Logout</button>
-</div>
-</div>
-<div class="alert-bar" id="alert-bar">!
-<span id="alert-msg"></span></div>
-<div class="tabs">
-<div class="tab active"
-onclick="show Tab('overview')">
-Overview</div>
-<div class="tab"
-onclick="showTab('requests')">
-Requests</div>
-<div class="tab"
-onclick="show Tab('rooms')">
-div>
-<div class="tab"
-Rooms</
-onclick="showTab('staff')">
-<div class="tab"
-onclick="showTab('analytics')">
-Analytics</div>
-<div class="tab"
-Staff</div>
-onclick="showTab('announce')">
-Announce</div>
-<div class="tab"
-onclick="showTab('maintenance')">
-Schedule</div>
-<div class="tab"
-onclick="showTab('guestoptions')">
-Guest Options</div>
-</div>
-<div class="content">
-<!-- OVERVIEW -->
-<div class="tab-panel active" id="paneloverview">
-<div class="stat-row">
-<div class="stat-box"><div
-class="stat-num" id="ov-total">-</
-div><div class="stat-label">Total</div></
-div>
-<div class="stat-box"><div
-class="stat-num" id="ov-pending"
-style="color:#ee9b00">-</div><div
-class="stat-label">Pending</div></div>
-<div class="stat-box"><div
-class="stat-num" id="ov-progress"
-style="color:#0a9396">-</div><div
-class="stat-label">In Progress</div></div>
-<div class="stat-box"><div
-class="stat-num" id="ov-done"
-style="color:#2ecc71">-</div><div
-class="stat-label">Done</div></div>
-</div>
-<div class="card" id="overdue-card"
-style="display:none;border-left:4px solid
-#e63946">
-<div class="card-title"
-style="color:#e63946">
-Requests</div>
-Overdue
-<div class="card-sub">These
-requests have exceeded the SLA time
-limit</div>
-<div id="overdue-list"></div>
-</div>
-<div class="card">
-<div class="card-title">Recent
-Activity - <span id="ov-dept-label"></
-span></div>
-<div class="card-sub">Latest
-requests in your department</div>
-<div id="ov-recent"><div
-class="loading">Loading...</div></div>
-</div>
-</div>
-<!-- REQUESTS -->
-<div class="tab-panel" id="panelrequests">
-<div class="card">
-<div class="card-title">All Requests
-- <span id="req-dept-title"></span></div>
-<div class="card-sub">Monitor all
-requests in your department</div>
-<div class="filter-row">
-<select class="filter-sel" id="filterstatus" onchange="renderRequests()">
-<option value="">AIl Status</
-option>
-<option value="pending">Pending</
-option>
-<option value="in_progress">In
-Progress</option>
-<option value="done">Done</
-option>
-</select>
-</div>
-<div id="req-list"><div
-class="loading">Loading...</div></div>
-</div>
-</div>
-<!-- ROOMS --<
-<div class="tab-panel" id="рanelrooms">
-<div class="card">
-<div class="card-title">Add New
-Room</div>
-<div class="card-sub">Add a room to
-the hotel</div>
-<div class="add-row">
-<input type="text" id="new-roomnum" placeholder="Room number e.g.
-305">
-<input type="number" id="newroom-floor" placeholder="Floor" min="1"
-style="max-width:80px">
-<button class="btn-add"
-onclick="addRoom()">+ Add</button>
-</div>
-<div class="msg-box" id="roommsg"></div>
-div>
-</div>
-<div class="card">
-<div class="card-title">All Rooms</
-<div class="card-sub" id="roomscount">Loading...</div>
-<div class="rooms-grid" id="roomsgrid"><div class="loading">Loading...</
-div></div>
-</div>
-</div>
-<!-- STAFF -->
-<div class="tab-panel" id="panel-staff">
-<div class="card">
-<div class="card-title">Add Staff
-Member</div>
-<div class="card-sub">Staff will get a
-unique Staff ID - share it with them for
-login</div>
-<div class="add-row">
-<input type="text" id="new-staffname" placeholder="Full name e.g. Rahul">
-<input type="text" id="new-staffpin" placeholder="4-digit PIN"
-maxlength="4" style="max-width:110pх">
-<button class="btn-add"
-onclick="addStaff()">+ Add</button>
-</div>
-<div class="msg-box" id="staffmsg"></div>
-</div>
-<div class="card">
-<div class="card-title">Staff
-Members</div>
-<div class="card-sub">Share the
-<strong>Staff ID</strong> with each staff
-member - they use it to login at
-staff.html</div>
-<div id="staff-list"><div
-class="loading">Loading...</div></div>
-</div>
-</div>
-<!-- ANALYTICS -->
-<div class="tab-panel" id="panelanalytics">
-<div class="stat-row">
-<div class="stat-box"><div
-class="stat-num" id="an-total">->/
-div><div class="stat-label">Total</div></
-div>
-<div class="stat-box"><div
-class="stat-num" id="an-done">->/
-div><div class="stat-label">Completed</
-div></div>
-<div class="stat-box"><div
-class="stat-num" id="an-rating">-</
-div><div class="stat-label">Avg Rating</
-div></div>
-<div class="stat-box"><div
-class="stat-num" id="an-pending">-</
-div><div class="stat-label">Pending</
-div></div>
-</div>
-<div style="display:grid;grid-templatecolumns:1fr 1fr;gap:16px;marginbottom:16px">
-<div class="card">
-<div class="card-title">Request
-Status</div>
-<div class="card-sub">Your
-department breakdown</div>
-<div class="donut-wrap">
-<canvas id="chart-status"></
-canvas>
-<div class="donut-center"><div
-class="big" id="donut-num">0</div><div
-class="small">Total</div></div>
-</div>
-<div class="legend" id="legendstatus"></div>
-</div>
-<div class="card">
-<div class="card-title">Star
-Ratings</div>
-<div class="card-sub">Guest
-feedback for your dept</div>
-<div style="height:180px"><canvas
-id="chart-ratings"></canvas></div>
-</div>
-</div>
-<div class="card">
-<div class="card-title">Requests Over
-Time</div>
-<div class="card-sub">Last 14 days
-your department only</div>
-<div class="chart-wrap"><canvas
-id="chart-line"></canvas></div>
-</div>
-<!-- STAFF PERFORMANCE ->
-<div class="card">
-<div class="card-title"> Staff
-<div class="card-sub">Individual
-Performance</div>
-stats for your team -- based on completed
-requests</div>
-<div id="staff-perf-list"><div
-class="loading">Loading...</div></div>
-</div>
-</div>
-<!-- MAINTENANCE -->
-<div class="tab-panel" id="panelmaintenance">
-<div class="card">
-<div class="card-title">Add
-Maintenance Task</div>
-<div class="card-sub">Create
-recurring tasks for your department</div>
-<div class="msg-box" id="maintmsg"></div>
-<div style="display:flex;flexdirection:column;gap:10px;margintop:4px">
-<input type="text" id="maint-title"
-placeholder="Task title e.g. Clean AC
-filters" style="padding:10px
-12px;border:1.5px solid #e0ddd8;borderradius:8px;font-size:14px;outline:none">
-<textarea id="maint-desc"
-placeholder="Description (optional)"
-style="padding:10px 12px;border:1.5px
-solid #e0ddd8;border-radius:8px;fontsize:14px;outline:none;resize:none;height:
-70px;font-family:sans-serif"></textarea>
-<div style="display:flex;gap:8px;flexwrap:wraр">
-<select id="maint-freq"
-style="flex:1;padding:10px
-12px;border:1.5px solid #e0ddd8;borderradius:8px;fontsize:14px;outline:none;background:white">
-<option value="daily"> Daily</
-option>
-JUL <option value="weekly" 17
-Weekly</option>
-<option value="monthly">
-Monthly</option>
-</select>
-<button class="btn-add"
-onclick="addMaintenanceTask()">+ Add
-Task</button>
-</div>
-</div>
-</div>
-<div class="card">
-<div class="card-title">
-Due Today</div>
-Overdue &
-<div class="card-sub">Tasks that
-need immediate attention</div>
-<div id="maint-urgent"><div
-class="loading">Loading...</div></div>
-</div>
-<div style="display:grid;grid-templatecolumns:1fr 1fr 1fr;gap:16px;marginbottom:16px">
-<div class="card">
-<div class="card-title"> Daily
-Tasks</div>
-<div class="card-sub">Every day</
-div>
-<div id="maint-daily"><div
-class="loading">Loading...</div></div>
-</div>
-<div class="card">
-<div class="card-title"> JUL
-17 Weekly
-Tasks</div>
-<div class="card-sub">Every week</
-div>
-<div id="maint-weekly"><div
-class="loading">Loading...</div></div>
-</div>
-<div class="card">
-<div class="card-title"> Monthly
-Tasks</div>
-<div class="card-sub">Every
-month</div>
-<div id="maint-monthly"><div
-class="loading">Loading...</div></div>
-</div>
-</div>
-</div>
-<!--= ANNOUNCEMENTS=I-<
-<div class="tab-panel" id="panelannounce">
-<div class="card">
-<div class="card-title">
-Announcement</div>
-Post
-<div class="card-sub">Guests will
-see this banner the moment they scan any
-room QR code</div>
-<div class="msg-box" id="annmsg"></div>
-<div style="display:flex;alignitems:center;gap:10px;background:lineargradient(90deg,#ee9b00,#ca6702);color:w
-hite;padding:12px 16px;borderradius:10px;font-size:13px;marginbottom:16px;display:none" id="annpreview">
-<span style="font-size:18px"> </
-span>
-<span id="ann-preview-text"
-style="flex:1"></span>
-</div>
-<textarea id="ann-input"
-placeholder="e.g. Pool closed for
-maintenance today. Rooftop open till
-10pm tonight!"
-oninput="previewAnn(this.value)"
-style="width:100%;padding:12px
-14px;border:1.5px solid #e0ddd8;border-
-radius:10px;fontsize:14px;resize:none;height:90px;fontfamily:sans-serif;outline:none;marginbottom:10px"></textarea>
-<button
-onclick="postAnnouncement()"
-style="width:100%;padding:13px;backgrou
-nd:#ee9b00;color:white;border:none;borde
-r-radius:10px;font-size:14px;fontweight:700;cursor:pointer">
-Guests</button>
-</div>
-<div class="card">
-Post to All
-<div class="card-title">Active & Past
-Announcements</div>
-<div class="card-sub">Only one
-announcement can be active at a time</
-div>
-<div id="ann-list"><div
-class="loading">Loading...</div></div>
-</div>
-</div>
-= GUEST OPTIONS =
--->
-<div class="tab-panel" id="panelguestoptions">
-<div class="card">
-<div class="card-title">
-Quick Options</div>
-Guest
-<div class="card-sub">Toggle which
-services guests see under <strong>Front
-Desk</strong> quick requests. Only
-enabled options appear for guests.</div>
-div>
-<div class="msg-box" id="go-msg"></
-<div id="go-list"
-style="display:flex;flexdirection:column;gap:10px;margintop:8px"></div>
-<button onclick="saveGuestOptions()"
-style="margintop:18px;width:100%;padding:14px;backgr
-ound:#005f73;color:white;border:none;bor
-der-radius:12px;font-size:15px;fontweight:700;cursor:pointer"> Save Guest
-Options</button>
-</div>
-<div class="card" style="border:2px
-dashed #0a9396">
-<div class="card-title">-- Add
-Custom Option</div>
-<div class="card-sub">Add your own
-hotel-specific service that guests can
-request</div>
-<div style="display:flex;gap:8px;flexwrap:wrap;margin-top:4px">
-<input type="text" id="customoption-emoji" placeholder="emoji e.g.
-maxlength="2"
-style="width:60px;padding:10px
-8px;border:1.5px solid #e0ddd8;borderradius:8px;fontוI
-size:18px;outline:none;text-align:center">
-<input type="text" id="customoption-text" placeholder="Service name
-e.g. Live Music Info" style="flex:1;minwidth:140px;padding:10px
-12px;border:1.5px solid #e0ddd8;borderradius:8px;font-size:14px;outline:none">
-<input type="number" id="customoption-sla" placeholder="15" min="1"
-max="999" value="15"
-style="width:64px;padding:10px
-8px;border:1.5px solid #e0ddd8;borderradius:8px;fontsize:14px;outline:none;text-align:center">
-<button
-onclick="addCustomOption()"
-style="padding:10px
-18px;background:#0a9396;color:white;bor
-der:none;border-radius:8px;fontsize:13px;fontweight:700;cursor:pointer">+ Add</
-button>
-</div>
-<div style="fontsize:11px;color:#aaa;margintop:8px">Enter emoji, service name, anp
-SLA minutes (how long it takes). Custom
-options are saved with your selection
-above.</div>
-</div>
-</div>
-</div>
-</div>
+
 <script>
 var hodData = null;
-var deptRequests = [0;
-var refreshlnterval = null;
+var deptRequests = [];
+var refreshInterval = null;
 var charts = {};
-var deptColors =
-{'Housekeeping':'#4361EE',Room
-Service':'#F77F00';Maintenance': '#E63946',
-Front Desk':'#9B5DE5'};
-var deptEmojis =
-{'Housekeeping':"'Room
-Service':'O"'Maintenance: "Front
-Desk':';
-var SLA_MINUTES =
-{'Housekeeping':5;Room
-Service':30'Maintenance':5,Front Desk':5};
-/*
-LOGIN – uses hotel_code + name + PIN
-No hotel dropdown - no privacy leak
+
+var deptColors = {'Housekeeping':'#4361EE','Room Service':'#F77F00','Maintenance':'#E63946','Front Desk':'#9B5DE5'};
+var deptEmojis = {'Housekeeping':'🛏️','Room Service':'🍽️','Maintenance':'🔧','Front Desk':'🛎️'};
+var SLA_MINUTES = {'Housekeeping':5,'Room Service':30,'Maintenance':5,'Front Desk':5};
+
+/* ═══════════════════════════════════════════════
+   LOGIN — uses hotel_code + name + PIN
+   No hotel dropdown — no privacy leak
+═══════════════════════════════════════════════ */
 function doLogin() {
-var hotelCode =
-document.getElementByld('l-
-hotelcode').value.trim().toUpperCase();
-var name = document.getElementByld('Iname').value.trim();
-var pin = document.getElementByld('lpin').value.trim();
-var btn =
-document.getElementByld('login-btn');
-if (!hotelCode) {showErr('Enter your
-Hotel Code (given by admin):); return; }
-if (!name) {showErr('Enter your name
-exactly as set by admin.); return; }
-if (pin.length !== 4) {showErr('PIN must
-be exactly 4 digits.); return; }
-attemptHodLogin(hotelCode, name, pin,
-btn, 1);
+  var hotelCode = document.getElementById('l-hotelcode').value.trim().toUpperCase();
+  var name = document.getElementById('l-name').value.trim();
+  var pin = document.getElementById('l-pin').value.trim();
+  var btn = document.getElementById('login-btn');
+
+  if (!hotelCode) { showErr('Enter your Hotel Code (given by admin).'); return; }
+  if (!name) { showErr('Enter your name exactly as set by admin.'); return; }
+  if (pin.length !== 4) { showErr('PIN must be exactly 4 digits.'); return; }
+
+  attemptHodLogin(hotelCode, name, pin, btn, 1);
 }
-function attemptHodLogin(hotelCode,
-name, pin, btn, attempt) {
-var messages = ['Verifying..., 'Server
-waking up... (30s)', 'Almost there...];
-btn.textContent =
-messages[Math.min(attempt - 1,
-messages.length - 1)];
-btn.disabled = true;
-var controller = new AbortController();
-var timeoutld = setTimeout(function() {
-controller.abort(); }, 70000);
-fetch('/hod/verify', {
-method: 'POST',
-headers: {'Content-Type': 'application/
-json'},
-body: JSON.stringify({ hotel_code:
-hotelCode, name: name, pin: pin }),
-})
-signal: controller.signal
-.then(function(r) {
-clearTimeout(timeoutld);
-return r.json().then(function(d) { return {
-ok: r.ok, d: d }; });
-})
-.then(function(res) {
-btn.textContent = 'Login as HOD';
-btn.disabled = false;
-if (!res.ok) {showErr(res.d.error ||
-'Invalid Hotel Code, name or PIN!); return;}
-var hotel = res.d.hod.hotel || {};
-hodData = {
-hotel_id: hotel.hotel_id,
-hotel: hotel,
-name: name,
-dept: res.d.hod.department
-localStorage.setltem('welco_hod',
-JSON.stringify(hodData));
-})
-startApp();
-.catch(function() {
-clearTimeout(timeoutld);
-if (attempt < 3) {
-setTimeout(function() {
-attemptHodLogin(hotelCode, name, pin,
-btn, attempt + 1); }, 5000);
-} else {
-btn.textContent = 'Login as HOD';
-btn.disabled = false;
-showErr('Server is taking too long. Wait
-1 minute and try again.);
+
+function attemptHodLogin(hotelCode, name, pin, btn, attempt) {
+  var messages = ['Verifying…', 'Server waking up… (30s)', 'Almost there…'];
+  btn.textContent = messages[Math.min(attempt - 1, messages.length - 1)];
+  btn.disabled = true;
+
+  var controller = new AbortController();
+  var timeoutId = setTimeout(function() { controller.abort(); }, 70000);
+
+  fetch('/hod/verify', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ hotel_code: hotelCode, name: name, pin: pin }),
+    signal: controller.signal
+  })
+  .then(function(r) {
+    clearTimeout(timeoutId);
+    return r.json().then(function(d) { return { ok: r.ok, d: d }; });
+  })
+  .then(function(res) {
+    btn.textContent = 'Login as HOD';
+    btn.disabled = false;
+    if (!res.ok) { showErr(res.d.error || 'Invalid Hotel Code, name or PIN.'); return; }
+    var hotel = res.d.hod.hotel || {};
+    hodData = {
+      hotel_id: hotel.hotel_id,
+      hotel: hotel,
+      name: name,
+      dept: res.d.hod.department
+    };
+    localStorage.setItem('welco_hod', JSON.stringify(hodData));
+    startApp();
+  })
+  .catch(function() {
+    clearTimeout(timeoutId);
+    if (attempt < 3) {
+      setTimeout(function() { attemptHodLogin(hotelCode, name, pin, btn, attempt + 1); }, 5000);
+    } else {
+      btn.textContent = 'Login as HOD';
+      btn.disabled = false;
+      showErr('Server is taking too long. Wait 1 minute and try again.');
+    }
+  });
 }
-});
-}
+
 function showErr(msg) {
-var el = document.getElementByld('loginerr');
+  var el = document.getElementById('login-err');
+  el.textContent = msg;
+  el.style.display = 'block';
 }
-el.textContent = msg;
-el.style.display = 'block';
+
 function doLogout() {
+  clearInterval(refreshInterval);
+  localStorage.removeItem('welco_hod');
+  hodData = null;
+  document.getElementById('app-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
 }
-clearInterval(refreshlnterval);
-localStorage.removeltem('welco_hod');
-hodData = null;
-document.getElementByld('appscreen').style.display = 'none';
-document.getElementByld('loginscreen').style.display = 'flex';
-APP START
+
+/* ═══════════════════════════════════════════════
+   APP START
+═══════════════════════════════════════════════ */
 function startApp() {
-document.getElementByld('loginscreen').style.display = 'none';
-document.getElementByld('appscreen').style.display = 'block';
-var h = hodData.hotel || {};
-=
-var color = h.colour || '#005f73';
-if (h.logo_url) {
-document.getElementByld('t-logo').src
-h.logo_url;
-document.getElementByld('tlogo').style.display = 'block';
-document.getElementByld('temoji').style.display = 'none';
-} else {
-document.getElementByld('temoji').textContent = h.emoji ||'
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app-screen').style.display = 'block';
+  var h = hodData.hotel || {};
+  var color = h.colour || '#005f73';
+
+  if (h.logo_url) {
+    document.getElementById('t-logo').src = h.logo_url;
+    document.getElementById('t-logo').style.display = 'block';
+    document.getElementById('t-emoji').style.display = 'none';
+  } else {
+    document.getElementById('t-emoji').textContent = h.emoji || '🏨';
+  }
+  document.getElementById('t-name').textContent = h.name || 'Hotel';
+  document.getElementById('t-sub').textContent = hodData.name + ' · HOD';
+  document.getElementById('t-dept-badge').textContent = (deptEmojis[hodData.dept] || '') + ' ' + hodData.dept;
+  document.getElementById('ov-dept-label').textContent = hodData.dept;
+  document.getElementById('req-dept-title').textContent = hodData.dept;
+  document.querySelector('.topbar').style.background = 'linear-gradient(90deg, ' + color + 'dd, ' + color + '88)';
+
+  loadAll();
+  refreshInterval = setInterval(loadAll, 10000);
 }
-document.getElementByld('tname').textContent = h.name || 'Hotel';
-document.getElementByld('tsub').textContent = hodData.name +'.
-HOD';
-document.getElementByld('t-deptbadge').textContent =
-(deptEmojis[hodData.dept] || ") + "+
-hodData.dept;
-document.getElementByld('ov-deptlabel').textContent = hodData.dept;
-document.getElementByld('req-depttitle').textContent = hodData.dept;
-document.querySelector('.topbar').style.ba
-ckground = 'linear-gradient(90deg,'+
-color + 'dd, '+ color + '88)';
-loadAlI();
-refreshInterval = setInterval (loadAll,
-10000);
+
+function loadAll() {
+  fetch('/requests?hotel_id=' + hodData.hotel_id)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (!Array.isArray(data)) return;
+      deptRequests = data.filter(function(r) { return r.category === hodData.dept; });
+      checkSLAAlerts(deptRequests);
+      renderOverview(deptRequests);
+      renderRequests();
+      renderAnalytics(deptRequests);
+    }).catch(function() {});
 }
-function loadAlI() {
-fetch('/requests?hotel_id='+
-hodData.hotel_id)
-.then(function(r) {return r.json(); })
-.then(function(data) {
-if (!Array.isArray(data)) return;
-}
-deptRequests = data.filter(function(r) {
-return r.category === hodData.dept; });
-checkSLAAlerts(deptRequests);
-renderOverview(deptRequests);
-renderRequests();
-renderAnalytics(deptRequests);
-}).catch(function() {});
+
 function checkSLAAlerts(reqs) {
-var sla = SLA_MINUTES[hodData.dept] ||
-15;
-var overdue = reqs.filter(function(r) {
-if (r.status === 'done') return false;
-return (Date.now() - new
-Date(r.created_at).getTime()) / 60000 >
-sla;
-});
-var bar =
-document.getElementByld('alert-bar');
-var card =
-document.getElementByld('overdue-card');
-if (overdue.length 0) {
-bar.style.display = 'block';
-document.getElementByld('alertmsg').textContent = overdue.length +'
-request(s) in' + hodData.dept +'have
-exceeded SLA!";
-card.style.display = 'block';
-document.getElementByld('overduelist').innerHTML =
-overdue.map(function(r) {
-var elapsed = Math.floor((Date.now() -
-new Date(r.created_at).getTime()) /
-60000);
-return '<div class="request-row"><div
-class="req-top"><span class="reqroom">Room'+ (r.room_number || '?') + '</
-span><span class="sla-warn">' + elapsed
-+ 'm overdue</span></div><div
-class="req-msg">' + (r.message ||'No
-details') + '</div></div>';
+  var sla = SLA_MINUTES[hodData.dept] || 15;
+  var overdue = reqs.filter(function(r) {
+    if (r.status === 'done') return false;
+    return (Date.now() - new Date(r.created_at).getTime()) / 60000 > sla;
+  });
+  var bar = document.getElementById('alert-bar');
+  var card = document.getElementById('overdue-card');
+  if (overdue.length > 0) {
+    bar.style.display = 'block';
+    document.getElementById('alert-msg').textContent = overdue.length + ' request(s) in ' + hodData.dept + ' have exceeded SLA!';
+    card.style.display = 'block';
+    document.getElementById('overdue-list').innerHTML = overdue.map(function(r) {
+      var elapsed = Math.floor((Date.now() - new Date(r.created_at).getTime()) / 60000);
+      return '<div class="request-row"><div class="req-top"><span class="req-room">Room ' + (r.room_number || '?') + '</span><span class="sla-warn">' + elapsed + 'm overdue</span></div><div class="req-msg">' + (r.message || 'No details') + '</div></div>';
+    }).join('');
+  } else {
+    bar.style.display = 'none';
+    card.style.display = 'none';
+  }
 }
-}
-}).join(");
-} else {
-bar.style.display = 'none';
-card.style.display = 'none';
+
 function renderOverview(reqs) {
-document.getElementByld('ovtotal').textContent = reqs.length;
-document.getElementByld('ovpending').textContent =
-reqs.filter(function(r) { return r.status ===
-'pending'; }).length;
-document.getElementByld('ovprogress').textContent =
-reqs.filter(function(r) { return r.status ===
-'in_progress'; }).length;
-document.getElementByld('ovdone').textContent = reqs.filter(function(r)
-{ return r.status === 'done'; }).length;
+  document.getElementById('ov-total').textContent = reqs.length;
+  document.getElementById('ov-pending').textContent = reqs.filter(function(r) { return r.status === 'pending'; }).length;
+  document.getElementById('ov-progress').textContent = reqs.filter(function(r) { return r.status === 'in_progress'; }).length;
+  document.getElementById('ov-done').textContent = reqs.filter(function(r) { return r.status === 'done'; }).length;
+  var el = document.getElementById('ov-recent');
+  el.innerHTML = reqs.slice(0, 8).length ? reqs.slice(0, 8).map(reqRow).join('') : '<div class="empty">No requests yet</div>';
 }
-var el = document.getElementByld('ovrecent');
-el.innerHTML = reqs.slice(0, 8).length ?
-reqs.slice(0, 8).map(reqRow).join("): '<div
-class="empty">No requests yet</div>';
+
 function renderRequests() {
-var status =
-document.getElementByld('filterstatus').value;
-var filtered = status?
-deptRequests.filter(function(r) {return
-r.status === status; }): deptRequests;
-document.getElementByld('reqlist').innerHTML = filtered.length?
-filtered.map(reqRow).join(") : '<div
-class="empty">No requests found</div>';
+  var status = document.getElementById('filter-status').value;
+  var filtered = status ? deptRequests.filter(function(r) { return r.status === status; }) : deptRequests;
+  document.getElementById('req-list').innerHTML = filtered.length ? filtered.map(reqRow).join('') : '<div class="empty">No requests found</div>';
 }
+
 function reqRow(r) {
-var sla = SLA_MINUTES[hodData.dept] ||
-15;
-var elapsed = (Date.now() - new
-Date(r.created_at).getTime()) / 60000;
-var remaining = Math.max(0, sla -
-elapsed);
-var isOverdue = elapsed > sla && r.status!
-== 'done';
-var bc = r.status === 'done' ? 'badgedone': r.status === 'in_progress' ? 'badgeprogress': 'badge-pending';
-var bt = r.status === 'done' ? 'Done' :
-r.status === 'in_progress'? 'In Progress':
-'Pending';
-var time = new
-Date(r.created_at).toLocaleString('en-IN',
-{day:'numeric', month:'short', hour:'2-
-digit', minute:'2-digit'});
-var catColor = deptColors[r.category] ||
-'#005f73'
-var slaHtml = r.status !== 'done'
-? (isOverdue ? '<span class="slawarn">'+ Math.floor(elapsed) + 'm
-overdue</span>': '<span class="sla-ok">
-'+ Math.floor(remaining) + 'm left</
-span>')
-.Iו
-return '<div class="request-row">' +
-'<div class="req-top"><span class="reqroom">Room'+ (r.room_number || '?') + '</
-span><span class="req-cat"
-style="background:' + catColor +">'+
-(r.category || 'General') + '</span></div>' +
-'<div class="req-msg">' + (r.message ||
-'No details') + '</div>' +
-'<div class="req-meta"><span
-class="badge'+ bc + ">' + bt + '</span>' +
-slaHtml + (r.claimed_by? '<span>'+
-r.claimed_by + '</span>' : ") +
-(r.feedback_rating? '<span> +
-r.feedback_rating + '/5</span>': ") +
-'<span>' + time + '</span></div>' +
+  var sla = SLA_MINUTES[hodData.dept] || 15;
+  var elapsed = (Date.now() - new Date(r.created_at).getTime()) / 60000;
+  var remaining = Math.max(0, sla - elapsed);
+  var isOverdue = elapsed > sla && r.status !== 'done';
+  var bc = r.status === 'done' ? 'badge-done' : r.status === 'in_progress' ? 'badge-progress' : 'badge-pending';
+  var bt = r.status === 'done' ? 'Done' : r.status === 'in_progress' ? 'In Progress' : 'Pending';
+  var time = new Date(r.created_at).toLocaleString('en-IN', {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+  var catColor = deptColors[r.category] || '#005f73';
+  var slaHtml = r.status !== 'done'
+    ? (isOverdue ? '<span class="sla-warn">⚠️ ' + Math.floor(elapsed) + 'm overdue</span>' : '<span class="sla-ok">⏱ ' + Math.floor(remaining) + 'm left</span>')
+    : '';
+  return '<div class="request-row">' +
+    '<div class="req-top"><span class="req-room">Room ' + (r.room_number || '?') + '</span><span class="req-cat" style="background:' + catColor + '">' + (r.category || 'General') + '</span></div>' +
+    '<div class="req-msg">' + (r.message || 'No details') + '</div>' +
+    '<div class="req-meta"><span class="badge ' + bc + '">' + bt + '</span>' + slaHtml + (r.claimed_by ? '<span>👷 ' + r.claimed_by + '</span>' : '') + (r.feedback_rating ? '<span>⭐ ' + r.feedback_rating + '/5</span>' : '') + '<span>' + time + '</span></div>' +
+  '</div>';
 }
-/*
-'</div>';
-ROOMS
+
+/* ═══════════════════════════════════════════════
+   ROOMS
+═══════════════════════════════════════════════ */
 function loadRooms() {
-fetch('/rooms?hotel_id=' +
-hodData.hotel_id).then(function(r) { return
-r.json(); }).then(function(rooms) {
-(!Array.isArray(rooms)) return;
-document.getElementByld('roomscount').textContent = rooms.length +'
-rooms total';
-document.getElementByld('roomsgrid').innerHTML = rooms.length === 0
-? '<div class="empty" style="gridcolumn:1/-1">No rooms yet</div>
-rooms.map(function(r) {
-return '<div class="room-card"><div
-class="room-num">Room'+
-r.room_number + '</div><div class="roomfloor">Floor'+ (r.floor || 1) + '</
-div><div><button class="btn-del"
-onclick="deleteRoom(' + r.id + ')">X
-Delete</button></div></div>';
-});
-}).join(");
+  fetch('/rooms?hotel_id=' + hodData.hotel_id).then(function(r) { return r.json(); }).then(function(rooms) {
+    if (!Array.isArray(rooms)) return;
+    document.getElementById('rooms-count').textContent = rooms.length + ' rooms total';
+    document.getElementById('rooms-grid').innerHTML = rooms.length === 0
+      ? '<div class="empty" style="grid-column:1/-1">No rooms yet</div>'
+      : rooms.map(function(r) {
+          return '<div class="room-card"><div class="room-num">Room ' + r.room_number + '</div><div class="room-floor">Floor ' + (r.floor || 1) + '</div><div><button class="btn-del" onclick="deleteRoom(' + r.id + ')">✕ Delete</button></div></div>';
+        }).join('');
+  });
 }
+
 function addRoom() {
-var num =
-document.getElementByld('new-roomnum').value.trim();
-var floor =
-document.getElementByld('new-roomfloor').value || 1;
-if (!num) {alert('Enter a room number!");
-return; }
-fetch('/rooms', {method:'POST',headers:
-{'Content-Type':'application/
-json'), body:JSON.stringify({hotel_id:hodDa
-ta.hotel_id,room_number:num,floor:parsel
-nt(floor),is_active:true})})
-.then(function() {
-document.getElementByld('new-roomnum').value = ";
-document.getElementByld('new-roomfloor').value = ":
-var msg =
-document.getElementByld('room-msg');
+  var num = document.getElementById('new-room-num').value.trim();
+  var floor = document.getElementById('new-room-floor').value || 1;
+  if (!num) { alert('Enter a room number!'); return; }
+  fetch('/rooms', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hodData.hotel_id,room_number:num,floor:parseInt(floor),is_active:true})})
+    .then(function() {
+      document.getElementById('new-room-num').value = '';
+      document.getElementById('new-room-floor').value = '';
+      var msg = document.getElementById('room-msg');
+      msg.textContent = '✅ Room ' + num + ' added!';
+      msg.className = 'msg-box msg-success';
+      setTimeout(function() { msg.className = 'msg-box'; }, 3000);
+      loadRooms();
+    });
 }
-msg.textContent
-added!";
-Room' + num +
-msg.className = 'msg-box msgsuccess';
-setTimeout(function() {
-msg.className = 'msg-box'; }, 3000);
-});
-loadRooms();
+
 function deleteRoom(id) {
-if (!confirm('Delete this room?')) return;
-fetch('/rooms/' + id,
-{method:'DELETE'}).then(function() {
+  if (!confirm('Delete this room?')) return;
+  fetch('/rooms/' + id, {method:'DELETE'}).then(function() { loadRooms(); });
 }
-loadRooms(); });
-/*
-STAFF
-*/
+
+/* ═══════════════════════════════════════════════
+   STAFF
+═══════════════════════════════════════════════ */
 function loadStaff() {
-fetch('/staff?hotel_id=' +
-hodData.hotel_id).then(function(r) { return
-r.json(); }).then(function(staff) {
-if (!Array.isArray(staff)) return;
-document.getElementByld('stafflist').innerHTML = staff.length === 0
-? '<div class="empty">No staff added
-yet.</div>'
-staff.map(function(s) {
-var isOn = !!s.is_on_duty;
-var clockInfo = ".
-if (isOn && s.clocked_in_at) {
-var mins = Math.floor((Date.now() -
-new Date(s.clocked_in_at).getTime()) /
-60000);
-clockInfo = On duty'+ (mins <
-60 ? mins + 'm': Math.floor(mins/60) + 'h'
-+ (mins%60) + 'm');
-} else if (!isOn && s.clocked_out_at) {
-clockInfo = Last seen' + new
-Date(s.clocked_out_at).toLocale TimeStrin
-g('en-IN',{hour:'2-digit',minute:'2-digit'});
-} else {
+  fetch('/staff?hotel_id=' + hodData.hotel_id).then(function(r) { return r.json(); }).then(function(staff) {
+    if (!Array.isArray(staff)) return;
+    document.getElementById('staff-list').innerHTML = staff.length === 0
+      ? '<div class="empty">No staff added yet.</div>'
+      : staff.map(function(s) {
+          var isOn = !!s.is_on_duty;
+          var clockInfo = '';
+          if (isOn && s.clocked_in_at) {
+            var mins = Math.floor((Date.now() - new Date(s.clocked_in_at).getTime()) / 60000);
+            clockInfo = '🟢 On duty ' + (mins < 60 ? mins + 'm' : Math.floor(mins/60) + 'h ' + (mins%60) + 'm');
+          } else if (!isOn && s.clocked_out_at) {
+            clockInfo = '🔴 Last seen ' + new Date(s.clocked_out_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+          } else {
+            clockInfo = '⚪ Not clocked in';
+          }
+          return '<div class="staff-row">'+
+            '<div style="display:flex;align-items:center;gap:10px">'+
+              '<div style="width:38px;height:38px;border-radius:10px;background:'+(isOn?'#d1fae5':'#f5f5f5')+';display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:'+(isOn?'#065f46':'#aaa')+';position:relative">'+
+                (s.name||'?').charAt(0).toUpperCase()+
+                '<div style="position:absolute;bottom:-2px;right:-2px;width:10px;height:10px;border-radius:50%;background:'+(isOn?'#2ecc71':'#ddd')+';border:2px solid white"></div>'+
+              '</div>'+
+              '<div>'+
+                '<div class="staff-name-txt">'+s.name+'</div>'+
+                '<div style="font-size:10px;color:#aaa;font-family:monospace">'+(s.staff_id||'No ID')+'</div>'+
+                '<div style="font-size:11px;color:'+(isOn?'#065f46':'#aaa')+';margin-top:2px">'+clockInfo+'</div>'+
+              '</div>'+
+            '</div>'+
+            '<div style="display:flex;gap:8px;align-items:center">'+
+              '<button onclick="toggleStaffDuty('+s.id+','+isOn+')" style="padding:7px 14px;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;background:'+(isOn?'#fde8ea':'#d1fae5')+';color:'+(isOn?'#c1121f':'#065f46')+'">'+(isOn?'🔴 Clock Out':'🟢 Clock In')+'</button>'+
+              '<button class="btn-remove" onclick="removeStaff('+s.id+')">Remove</button>'+
+            '</div>'+
+          '</div>';
+        }).join('');
+  });
 }
-clockInfo = Not clocked in';
-return '<div class="staff-row">'+
-'<div style="display:flex;align-
-items:center;gap:10px">'+
-'<div
-style="width:38px;height:38px;borderradius:10px;background:'+
-(isOn?'#d1fae5':'#f5f5f5')
-+';display:flex;align-items:center;justifycontent:center;font-size:16px;fontweight:700;color:'+(isOn?'#065f46':'#aaa')
-+';position:relative">'+
-(s.namel|'?').charAt(0).toUpperCase()+
-'<div
-style="position:absolute;bottom:-2px;right
-:-2px;width:10px;height:10px;borderradius:50%;background:'+
-(isOn?'#2ecc71':'#ddd')+';border:2px solid
-white"></div>'+
-'</div>'+
-'<div>'+
-'<div class="staff-nametxt">'+s.name+'</div>'+
-'<div style="fontsize:10px;color:#aaa;fontfamily:monospace">'+(s.staff_id||'No ID')
-+'</div>'+
-'<div style="fontsize:11px;color:'+(isOn?'#065f46':'#aaa')
-+';margin-top:2px">'+clockInfo+'</div>'+
-'</div>'+
-'</div>'+
-'<div
-style="display:flex;gap:8px;alignitems:center">'+
-'<button
-onclick="toggleStaffDuty('+s.id+''+isOn+')"
-style="padding:7px
-14px;border:none;border-radius:8px;fontsize:12px;fontweight:700;cursor:pointer;background:'+
-(isOn?'#fde8ea':'#d1fae5')+';color:'+
-(isOn?'#c1121f':'#065f46')+">'+(isOn?
-Clock Out':' Clock In')+'</button>'+
-'<button class="btn-remove"
-onclick="removeStaff('+s.id+')">Remove</
-button>'+
-'</div>'+
-'</div>';
-}).join(");
-});
+
+function toggleStaffDuty(staffId, currentlyOn) {
+  var newStatus = !currentlyOn;
+  fetch('/staff/'+staffId+'/duty', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({is_on_duty:newStatus})
+  }).then(function(r){return r.json();}).then(function(data){
+    if (data.error) { alert(data.error); return; }
+    loadStaff(); // refresh list
+  }).catch(function(){ alert('Connection error'); });
 }
-function toggleStaffDuty(staffld,
-currentlyOn) {
-var newStatus = !currentlyOn;
-fetch('/staff/'+staffld+'/duty', {
-method:'POST', headers:{'ContentType':'application/json'},
-body:JSON.stringify({is_on_duty:newStatu
-s})
-}).then(function(r){return
-r.json();}).then(function(data){
-if (data.error) { alert(data.error); return; }
-loadStaff(); // refresh list
-}).catch(function(){ alert('Connection
-error'); });
-}
+
 function addStaff() {
-var name =
-document.getElementByld('new-staffname').value.trim();
-var pin =
-document.getElementByld('new-staffpin').value.trim();
-if (!name || pin.length !== 4) {alert('Enter
-full name and 4-digit PIN'); return; }
-fetch('/staff', {method:'POST', headers:
-{'Content-Type':'application/
-json'},body:JSON.stringify({hotel_id:hodDa
-ta.hotel_id,name:name,pin:pin})})
-.then(function(r) { return r.json();
-}).then(function(data) {
-if (data.error) { alert(data.error); return;
+  var name = document.getElementById('new-staff-name').value.trim();
+  var pin = document.getElementById('new-staff-pin').value.trim();
+  if (!name || pin.length !== 4) { alert('Enter full name and 4-digit PIN'); return; }
+  fetch('/staff', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hodData.hotel_id,name:name,pin:pin})})
+    .then(function(r) { return r.json(); }).then(function(data) {
+      if (data.error) { alert(data.error); return; }
+      document.getElementById('new-staff-name').value = '';
+      document.getElementById('new-staff-pin').value = '';
+      var msg = document.getElementById('staff-msg');
+      var staffId = data.staff_id || 'Check list below';
+      msg.innerHTML = '✅ <strong>'+name+'</strong> added!<br>Staff ID: <strong style="font-family:monospace;letter-spacing:1px;color:#005f73">'+staffId+'</strong> &nbsp; PIN: <strong>'+pin+'</strong><br><span style="font-size:11px;color:#666">Share this Staff ID with '+name+' for login</span>';
+      msg.className = 'msg-box msg-success';
+      setTimeout(function(){ msg.className='msg-box'; }, 8000);
+      loadStaff();
+    });
 }
-document.getElementByld('new-staffname').value = ";
-document.getElementByld('new-staffpin').value = "
-var msg =
-document.getElementByld('staff-msg');
-var staffld = data.staff_id || 'Check list
-below';
-msg.innerHTML =
-<strong>'+name+'</strong> added!
-<br>Staff ID: <strong style="fontfamily:monospace;letterspacing:1px;color:#005f73">'+staffld+'>/
-strong> &nbsp; PIN: <strong>'+pin+'</
-strong><br><span style="fontsize:11px;color:#666">Share this Staff ID
-with '+name+' for login</span>';
-msg.className = 'msg-box msgsuccess';
-setTimeout(function(){
-msg.className='msg-box'; }, 8000);
-loadStaff();
-});
-}
+
 function removeStaff(id) {
-if (!confirm('Remove this staff
-member?')) return;
-fetch('/staff/' + id,
-{method:'DELETE'}).then(function( {
-loadStaff(); });
+  if (!confirm('Remove this staff member?')) return;
+  fetch('/staff/' + id, {method:'DELETE'}).then(function() { loadStaff(); });
 }
-/*
-ANALYTICS
+
+/* ═══════════════════════════════════════════════
+   ANALYTICS
+═══════════════════════════════════════════════ */
 function renderAnalytics(reqs) {
-var pending = reqs.filter(function(r) {
-return r.status === 'pending'; }).length;
-var inprog = reqs.filter(function(r) {
-return r.status === 'in_progress'; }).length;
-var done = reqs.filter(function(r) {
-return r.status === 'done'; }).length;
-var rated = reqs.filter(function(r) { return
-r.feedback_rating; });
-var avg = rated.length?
-(rated.reduce(function(s, r) { return s +
-r.feedback_rating; }, 0) /
-rated.length).toFixed(1) : '-';
-document.getElementByld('antotal').textContent = reqs.length;
-document.getElementByld('andone').textContent = done;
-document.getElementByld('anrating').textContent = avg === '-?'-: avg
-+
-document.getElementByld('anpending').textContent = pending;
-document.getElementByld('donut-
-num').textContent = reqs.length;
-if (charts.status) charts.status.destroy();
-charts.status = new
-Chart(document.getElementByld('chartstatus').getContext('2d'), {
-type: 'doughnut',
-data: {labels: ['Pending',In
-Progress''Done'],datasets:[{data:
-[pending,inprog,done],backgroundColor:
-['#EE9B00';#0A9396';#2ECC71'],borderWid
-th:0,hoverOffset:6}]},
-options:
-{responsive:true, maintainAspectRatio:fals
-e,cutout:'70%',plugins:{legend:
-{display:false}}}
-});
-document.getElementByld('legendstatus').innerHTML = ['Pending',In
-Progress''Done'].map(function(l, i) {
-return '<div class="legend-item"><div
-class="legend-dot" style="background:' +
-['#EE9B00';#0A9396';#2ECC71][i] + "></
-div>' + I + '('+ [pending, inprog,done][i] +
-')</div>';
-}).join(");
-var rCounts = [5,4,3,2,1].map(function(s)
-{ return rated.filter(function(r) {return
-r.feedback_rating === s; }).length; });
-if (charts.ratings)
-charts.ratings.destroy();
-charts.ratings = new
-Chart(document.getElementByld('chartratings').getContext('2d'), {
-type: 'bar',
-data: {labels:
-['5 4 "3 12 '],datasets:
-[{data:rCounts,backgroundColor:
-[#2ECC71';#0A9396';#EE9B00';#F77F00';
-#E63946'],borderRadius:6,borderWidth:0}]},
-options:
-{responsive:true, maintainAspectRatio:fals
-e,plugins:{legend:{display:false}},scales:{x:
-{grid:{display:false},ticks:{font:{size:10}}},y:
-{beginAtZero:true,ticks:{stepSize:1,font:
-{size:10}},grid:{color:'#fOfOf0'}}}}
-});
-var days = [, counts = [];
-for (var i = 13; i >= 0; i--) {
-var d = new Date();
-d.setDate(d.getDate() - i);
-days.push(d.toLocaleDateString('en-IN',
-{day:'numeric', month:'short'}));
-var ds = d.toDateString();
-counts.push(reqs.filter(function(r) {
-return new
-Date(r.created_at).toDateString() === ds;
-}).length);
+  var pending = reqs.filter(function(r) { return r.status === 'pending'; }).length;
+  var inprog = reqs.filter(function(r) { return r.status === 'in_progress'; }).length;
+  var done = reqs.filter(function(r) { return r.status === 'done'; }).length;
+  var rated = reqs.filter(function(r) { return r.feedback_rating; });
+  var avg = rated.length ? (rated.reduce(function(s, r) { return s + r.feedback_rating; }, 0) / rated.length).toFixed(1) : '-';
+  document.getElementById('an-total').textContent = reqs.length;
+  document.getElementById('an-done').textContent = done;
+  document.getElementById('an-rating').textContent = avg === '-' ? '-' : avg + '⭐';
+  document.getElementById('an-pending').textContent = pending;
+  document.getElementById('donut-num').textContent = reqs.length;
+
+  if (charts.status) charts.status.destroy();
+  charts.status = new Chart(document.getElementById('chart-status').getContext('2d'), {
+    type: 'doughnut',
+    data: {labels:['Pending','In Progress','Done'],datasets:[{data:[pending,inprog,done],backgroundColor:['#EE9B00','#0A9396','#2ECC71'],borderWidth:0,hoverOffset:6}]},
+    options: {responsive:true,maintainAspectRatio:false,cutout:'70%',plugins:{legend:{display:false}}}
+  });
+  document.getElementById('legend-status').innerHTML = ['Pending','In Progress','Done'].map(function(l, i) {
+    return '<div class="legend-item"><div class="legend-dot" style="background:' + ['#EE9B00','#0A9396','#2ECC71'][i] + '"></div>' + l + ' (' + [pending,inprog,done][i] + ')</div>';
+  }).join('');
+
+  var rCounts = [5,4,3,2,1].map(function(s) { return rated.filter(function(r) { return r.feedback_rating === s; }).length; });
+  if (charts.ratings) charts.ratings.destroy();
+  charts.ratings = new Chart(document.getElementById('chart-ratings').getContext('2d'), {
+    type: 'bar',
+    data: {labels:['5⭐','4⭐','3⭐','2⭐','1⭐'],datasets:[{data:rCounts,backgroundColor:['#2ECC71','#0A9396','#EE9B00','#F77F00','#E63946'],borderRadius:6,borderWidth:0}]},
+    options: {responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{beginAtZero:true,ticks:{stepSize:1,font:{size:10}},grid:{color:'#f0f0f0'}}}}
+  });
+
+  var days = [], counts = [];
+  for (var i = 13; i >= 0; i--) {
+    var d = new Date(); d.setDate(d.getDate() - i);
+    days.push(d.toLocaleDateString('en-IN', {day:'numeric',month:'short'}));
+    var ds = d.toDateString();
+    counts.push(reqs.filter(function(r) { return new Date(r.created_at).toDateString() === ds; }).length);
+  }
+  if (charts.line) charts.line.destroy();
+  var dc = deptColors[hodData.dept] || '#0A9396';
+  charts.line = new Chart(document.getElementById('chart-line').getContext('2d'), {
+    type: 'line',
+    data: {labels:days,datasets:[{data:counts,borderColor:dc,backgroundColor:dc+'18',borderWidth:2.5,pointBackgroundColor:dc,pointRadius:4,fill:true,tension:0.4}]},
+    options: {responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#aaa'}},y:{beginAtZero:true,ticks:{stepSize:1,font:{size:10},color:'#aaa'},grid:{color:'#f0f0f0'}}}}
+  });
+
+  renderStaffPerformance(reqs);
 }
-if (charts.line) charts.line.destroy();
-var dc = deptColors[hodData.dept] ॥
-'#0A9396';
-charts.line = new
-Chart(document.getElementByld('chartline').getContext('2d'), {
-type: 'line',
-data: {labels:days,datasets:
-[{data:counts,borderColor:dc,backgroundC
-olor:dc+'18',borderWidth:2.5,pointBackgro
-undColor:dc,pointRadius:4,fill:true,tension:
-0.4}]},
-options:
-{responsive:true, maintainAspectRatio:fals
-e,plugins:{legend:{display:false}},scales:{x:
-{grid:{display:false},ticks:{font:
-{size:10}, color:'#aaa'}},y:
-{beginAtZero:true,ticks:{stepSize:1,font:
-{size:10},color:'#aaa'},grid:
-{color:'#f0fOf0'}}}}
-};
-renderStaffPerformance(reqs);
-}
+
 function renderStaffPerformance(reqs) {
-var el = document.getElementByld('staffperf-list');
-// Get all requests that were claimed by
-someone
-var claimed = reqs.filter(function(r) {
-return r.claimed_by; });
-if (claimed.length === 0) {
-el.innerHTML = '<div class="empty">No
-staff performance data yet. Data appears
-once staff start accepting requests.</div>';
-return;
+  var el = document.getElementById('staff-perf-list');
+
+  // Get all requests that were claimed by someone
+  var claimed = reqs.filter(function(r) { return r.claimed_by; });
+  if (claimed.length === 0) {
+    el.innerHTML = '<div class="empty">No staff performance data yet. Data appears once staff start accepting requests.</div>';
+    return;
+  }
+
+  // Group by staff name
+  var staffMap = {};
+  claimed.forEach(function(r) {
+    var name = r.claimed_by;
+    if (!staffMap[name]) {
+      staffMap[name] = { name: name, total: 0, done: 0, inProgress: 0, ratings: [], totalResponseMs: 0, responseCount: 0 };
+    }
+    staffMap[name].total++;
+    if (r.status === 'done') staffMap[name].done++;
+    if (r.status === 'in_progress') staffMap[name].inProgress++;
+    if (r.feedback_rating) staffMap[name].ratings.push(r.feedback_rating);
+    // Response time: claimed_at - created_at
+    if (r.claimed_at && r.created_at) {
+      var ms = new Date(r.claimed_at).getTime() - new Date(r.created_at).getTime();
+      if (ms > 0) { staffMap[name].totalResponseMs += ms; staffMap[name].responseCount++; }
+    }
+  });
+
+  // Sort by total requests handled desc
+  var staffList = Object.values(staffMap).sort(function(a, b) { return b.done - a.done; });
+
+  // Medal for top 3
+  var medals = ['🥇', '🥈', '🥉'];
+
+  el.innerHTML = staffList.map(function(s, idx) {
+    var avgRating = s.ratings.length ? (s.ratings.reduce(function(a, b) { return a + b; }, 0) / s.ratings.length).toFixed(1) : null;
+    var avgResponseMin = s.responseCount > 0 ? Math.round(s.totalResponseMs / s.responseCount / 60000) : null;
+    var completionRate = s.total > 0 ? Math.round((s.done / s.total) * 100) : 0;
+    var barColor = completionRate >= 80 ? '#2ecc71' : completionRate >= 50 ? '#ee9b00' : '#e63946';
+    var initial = s.name.charAt(0).toUpperCase();
+    var medal = idx < 3 ? medals[idx] : '';
+
+    return '<div style="padding:16px 0;border-bottom:1px solid #f0f0f0">' +
+      '<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">' +
+        '<div style="width:40px;height:40px;border-radius:10px;background:#e8f4f4;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#005f73;flex-shrink:0">' + initial + '</div>' +
+        '<div style="flex:1">' +
+          '<div style="display:flex;align-items:center;gap:6px">' +
+            '<span style="font-size:14px;font-weight:700;color:#0d1b1e">' + s.name + '</span>' +
+            (medal ? '<span style="font-size:16px">' + medal + '</span>' : '') +
+          '</div>' +
+          '<div style="font-size:11px;color:#aaa;margin-top:2px">' + s.done + ' completed · ' + s.total + ' total</div>' +
+        '</div>' +
+        '<div style="text-align:right;flex-shrink:0">' +
+          '<div style="font-size:20px;font-weight:700;color:' + barColor + '">' + completionRate + '%</div>' +
+          '<div style="font-size:10px;color:#aaa">completion</div>' +
+        '</div>' +
+      '</div>' +
+      // Progress bar
+      '<div style="height:6px;background:#f0f0f0;border-radius:6px;margin-bottom:10px;overflow:hidden">' +
+        '<div style="height:100%;width:' + completionRate + '%;background:' + barColor + ';border-radius:6px;transition:width 0.5s"></div>' +
+      '</div>' +
+      // Stats row
+      '<div style="display:flex;gap:12px;flex-wrap:wrap">' +
+        '<div style="background:#f9f9f9;border-radius:8px;padding:8px 12px;text-align:center;flex:1;min-width:60px">' +
+          '<div style="font-size:16px;font-weight:700;color:#0a9396">' + s.done + '</div>' +
+          '<div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:0.06em">Done</div>' +
+        '</div>' +
+        '<div style="background:#f9f9f9;border-radius:8px;padding:8px 12px;text-align:center;flex:1;min-width:60px">' +
+          '<div style="font-size:16px;font-weight:700;color:#ee9b00">' + s.inProgress + '</div>' +
+          '<div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:0.06em">Active</div>' +
+        '</div>' +
+        '<div style="background:#f9f9f9;border-radius:8px;padding:8px 12px;text-align:center;flex:1;min-width:60px">' +
+          '<div style="font-size:16px;font-weight:700;color:#f77f00">' + (avgResponseMin !== null ? avgResponseMin + 'm' : 'N/A') + '</div>' +
+          '<div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:0.06em">Avg Response</div>' +
+        '</div>' +
+        '<div style="background:#f9f9f9;border-radius:8px;padding:8px 12px;text-align:center;flex:1;min-width:60px">' +
+          '<div style="font-size:16px;font-weight:700;color:#2ecc71">' + (avgRating ? avgRating + '⭐' : 'N/A') + '</div>' +
+          '<div style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:0.06em">Avg Rating</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('') +
+  '<div style="font-size:11px;color:#aaa;text-align:center;padding-top:12px">Sorted by requests completed · 🥇🥈🥉 top performers</div>';
 }
-// Group by staff name
-var staffMap = {};
-claimed.forEach(function(r) {
-var name = r.claimed_by;
-if (!staffMap[name]) {
-staffMap[name] = {name: name, total:
-0, done: 0, inProgress: 0, ratings:
-totalResponseMs: 0, responseCount: 0};
-}
-staffMap[name].total++;
-if (r.status === 'done')
-staffMap[name].done++;
-if (r.status === 'in_progress')
-staffMap[name].inProgress++;
-(r.feedback_rating)
-staffMap[name].ratings.push(r.feedback_r
-ating);
-// Response time: claimed_at -
-created_at
-if (r.claimed_at && r.created_at) {
-var ms = new
-Date(r.claimed_at).getTime() - new
-Date(r.created_at).getTime();
-if (ms > 0) {
-staffMap[name].totalResponseMs += ms;
-staffMap[name].responseCount++; }
-}
-});
-// Sort by total requests handled desc
-var staffList =
-Object.values(staffMap).sort(function(a,
-b) { return b.done - a.done; });
-// Medal for top 3
-var medals =
-Π Π
-1 2 3 ];
-el.innerHTML = staffList.map(function(s,
-idx) {
-var avgRating = s.ratings.length ?
-(s.ratings.reduce(function(a, b) {return a
-+ b; }, 0) / s.ratings.length).toFixed(1)
-null;
-var avgResponseMin =
-s.responseCount > 0 ?
-Math.round(s.totalResponseMs /
-s.responseCount / 60000) : null;
-var completionRate = s.total > 0?
-Math.round((s.done / s.total) * 100): 0;
-var barColor = completionRate >= 80?
-'#2ecc71': completionRate >= 50 ?
-'#ee9b00' : '#e63946';
-var initial =
-s.name.charAt(0).toUpperCase();
-var medal = idx < 3? medals[idx] : ";
-return '<div style="padding:16px
-0;border-bottom:1px solid #fOfOf0">' +
-'<div style="display:flex;alignitems:center;gap:12px;marginbottom:10px">' +
-'<div
-style="width:40px;height:40px;borderradius:10px;background:#e8f4f4;display:fl
-ex;align-items:center;justifycontent:center;font-size:16px;fontweight:700;color:#005f73;flex-shrink:0">
-+ initial + '</div>'+
-'<div style="flex:1">'+
-'<div style="display:flex;alignitems:center;gap:6px">' +
-'<span style="font-size:14px;fontweight:700;color:#0d1b1e">' + s.name +
-'</span>'+
-(medal ? '<span style="fontsize:16px">' + medal + '</span>': ")
-'</div>' +
-'<div style="font-
-+
-size:11px;color:#aaa;margin-top:2px">'+
-s.done +' completed '+ s.total +' total</
-div>' +
-'</div>' +
-'<div style="text-align:right;flexshrink:0">' +
-'<div style="font-size:20px;fontweight:700;color:' + barColor +">'+
-completionRate + '%</div>' +
-'<div style="font-
-size:10px;color:#aaa">completion</div>' +
-'</div>' +
-'</div>' +
-// Progress bar
-'<div
-style="height:6px;background:#f0f0f0;bord
-er-radius:6px;marginbottom:10px;overflow:hidden">' +
-'<div style="height:100%;width:' +
-completionRate + '%;background:' +
-barColor + ';borderradius:6px;transition:width 0.5s"></div>' +
-'</div>' +
-// Stats row
-'<div style="display:flex;gap:12px;flexwrap:wrap">' +
-'<div
-style="background:#f9f9f9;borderradius:8px;padding:8px 12px;textalign:center;flex:1;min-width:60px">' +
-'<div style="font-size:16px;font-
-weight:700;color:#0a9396">' + s.done + '</
-div>' +
-'<div style="fontsize:10px;color:#aaa;texttransform:uppercase;letterspacing:0.06em">Done</div>'+
-'</div>' +
-'<div
-style="background:#f9f9f9;borderradius:8px;padding:8px 12px;textalign:center;flex:1;min-width:60px">' +
-'<div style="font-size:16px;fontweight:700;color:#ee9b00">' +
-s.inProgress + '</div>' +
-'<div style="fontsize:10px;color:#aaa;texttransform:uppercase;letterspacing:0.06em">Active</div>' +
-'</div>' +
-'<div
-style="background:#f9f9f9;border-
-radius:8px;padding:8px 12px;textalign:center;flex:1;min-width:60px">' +
-'<div style="font-size:16px;fontweight:700;color:#f77f00">' +
-(avgResponseMin !== null ?
-avgResponseMin + 'm': 'N/A') + '</div>' +
-'<div style="fontsize:10px;color:#aaa;texttransform:uppercase;letterspacing:0.06em">Avg Response</div>' +
-'</div>' +
-'<div
-style="background:#f9f9f9;borderradius:8px;padding:8px 12px;textalign:center;flex:1;min-width:60px">' +
-'<div style="font-size:16px;fontweight:700;color:#2ecc71">' + (avgRating
-? avgRating +'': 'N/A') + '</div>' +
-'<div style="fontsize:10px;color:#aaa;texttransform:uppercase;letter-
-spacing:0.06em">Avg Rating</div>' +
-'</div>' +
-'</div>' +
-'</div>';
-}).join(") +
-'<div style="fontsize:11px;color:#aaa;textalign:center;padding-top:12px">Sorted by
-requests completed
-performers</div>';
-VV
-3 top
-}
-*/
-TABS
-*/
+
+/* ═══════════════════════════════════════════════
+   TABS
+═══════════════════════════════════════════════ */
 function showTab(name) {
-var names =
-['overview',requests' rooms'/staff',analytics
+  var names = ['overview','requests','rooms','staff','analytics','announce','maintenance','guestoptions'];
+  document.querySelectorAll('.tab').forEach(function(t, i) { t.classList.toggle('active', names[i] === name); });
+  document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('panel-' + name).classList.add('active');
+  if (name === 'rooms') loadRooms();
+  if (name === 'staff') loadStaff();
+  if (name === 'maintenance') loadMaintenance();
+  if (name === 'guestoptions') loadGuestOptions();
+  if (name === 'announce') loadAnnouncements();
 }
-announce'maintenance',guestoptions'];
-document.querySelectorAll('.tab').forEach(
-function(t, i) {t.classList.toggle('active',
-names[i] === name); });
-document.querySelectorAll('.tabpanel').forEach(function(p) {
-p.classList.remove('active'); });
-document.getElementByld('panel-' +
-name).classList.add('active');
-if (name === 'rooms') loadRooms();
-if (name === 'staff') loadStaff();
-if (name === 'maintenance')
-loadMaintenance();
-if (name === 'guestoptions')
-loadGuestOptions();
-if (name === 'announce')
-loadAnnouncements();
-MAINTENANCE
-/*
-}
+
+/* ═══════════════════════════════════════════════
+   MAINTENANCE
+═══════════════════════════════════════════════ */
 function loadMaintenance() {
-fetch('/maintenance?hotel_id=' +
-hodData.hotel_id + '&department=' +
-encodeURIComponent(hodData.dept))
-.then(function(r) {return r.json();
-}).then(function(data) {
-if (!Array.isArray(data)) return;
-renderMaintenance(data);
-}).catch(function() {
-document.getElementByld('mainturgent').innerHTML = '<div
-class="empty">Could not load tasks</div>';
-});
-function addMaintenance Task() {
-var title =
-document.getElementByld('mainttitle').value.trim();
-var desc =
-document.getElementByld('maintdesc').value.trim();
-var freq =
-document.getElementByld('maintfreq').value;
-if (!title) {alert('Enter a task title!'); return;
+  fetch('/maintenance?hotel_id=' + hodData.hotel_id + '&department=' + encodeURIComponent(hodData.dept))
+    .then(function(r) { return r.json(); }).then(function(data) {
+      if (!Array.isArray(data)) return;
+      renderMaintenance(data);
+    }).catch(function() {
+      document.getElementById('maint-urgent').innerHTML = '<div class="empty">Could not load tasks</div>';
+    });
 }
-var now = new Date(), nextDue = new
-Date(now);
-if (freq === 'daily')
-nextDue.setDate(nextDue.getDate() + 1);
-else if (freq === 'weekly')
-nextDue.setDate(nextDue.getDate() + 7);
-else
-nextDue.setMonth(nextDue.getMonth() +
-1);
-fetch('/maintenance', {
-method: 'POST', headers: {'ContentType':'application/json'},
-body:
-JSON.stringify({hotel_id:hodData.hotel_id,
-department:hodData.dept,title:title,descript
-ion:desc,frequency:freq,next_due:nextDue.
-tolSOString(),created_by:hodData.name})
-}).then(function(r) { return r.json();
-}).then(function(data) {
-if (data.error) {alert(data.error); return; }
-document.getElementByld('mainttitle').value = ";
-document.getElementByld('maintdesc').value = ":
-var msg =
-document.getElementByld('maint-msg');
-msg.textContent = Task added: ' +
-title +'('+ freq + ')';
-msg.className = 'msg-box msgsuccess';
-setTimeout(function() {msg.className
-= 'msg-box'; }, 3000);
-loadMaintenance();
-});
+
+function addMaintenanceTask() {
+  var title = document.getElementById('maint-title').value.trim();
+  var desc = document.getElementById('maint-desc').value.trim();
+  var freq = document.getElementById('maint-freq').value;
+  if (!title) { alert('Enter a task title!'); return; }
+  var now = new Date(), nextDue = new Date(now);
+  if (freq === 'daily') nextDue.setDate(nextDue.getDate() + 1);
+  else if (freq === 'weekly') nextDue.setDate(nextDue.getDate() + 7);
+  else nextDue.setMonth(nextDue.getMonth() + 1);
+  fetch('/maintenance', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({hotel_id:hodData.hotel_id,department:hodData.dept,title:title,description:desc,frequency:freq,next_due:nextDue.toISOString(),created_by:hodData.name})
+  }).then(function(r) { return r.json(); }).then(function(data) {
+    if (data.error) { alert(data.error); return; }
+    document.getElementById('maint-title').value = '';
+    document.getElementById('maint-desc').value = '';
+    var msg = document.getElementById('maint-msg');
+    msg.textContent = '✅ Task added: ' + title + ' (' + freq + ')';
+    msg.className = 'msg-box msg-success';
+    setTimeout(function() { msg.className = 'msg-box'; }, 3000);
+    loadMaintenance();
+  });
 }
-function markTaskDone(id, freq( }
-var now = new Date(), nextDue = new
-Date(now);
-if (freq === 'daily')
-nextDue.setDate(nextDue.getDate() + 1);
-else if (freq === 'weekly')
-nextDue.setDate(nextDue.getDate() + 7);
-else
-nextDue.setMonth(nextDue.getMonth()
-1);
-fetch('/maintenance/' + id + '/done', {
-method: 'POST', headers: {'ContentType':'application/json'},
-body:
-+
-JSON.stringify({last_done:now.tolSOString
-(),next_due:nextDue.tolSOString()})
-}).then(function() { loadMaintenance(); });
+
+function markTaskDone(id, freq) {
+  var now = new Date(), nextDue = new Date(now);
+  if (freq === 'daily') nextDue.setDate(nextDue.getDate() + 1);
+  else if (freq === 'weekly') nextDue.setDate(nextDue.getDate() + 7);
+  else nextDue.setMonth(nextDue.getMonth() + 1);
+  fetch('/maintenance/' + id + '/done', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({last_done:now.toISOString(),next_due:nextDue.toISOString()})
+  }).then(function() { loadMaintenance(); });
 }
-function delete Task(id) {
-if (!confirm('Delete this task?')) return;
-fetch('/maintenance/'+ id,
-{method:'DELETE'}).then(function() {
-loadMaintenance(); });
+
+function deleteTask(id) {
+  if (!confirm('Delete this task?')) return;
+  fetch('/maintenance/' + id, {method:'DELETE'}).then(function() { loadMaintenance(); });
+}
+
 function renderMaintenance(tasks) {
-var now = new Date();
-var today = new Date(now.getFullYear(),
-now.getMonth(), now.getDate());
-function getDueBadge(task) {
-if (!task.next_due) return '<span
-class="due-badge due-upcoming">No
-due date</span>';
-var due = new Date(task.next_due);
-var dueDay = new
-Date(due.getFullYear(), due.getMonth(),
-due.getDate());
-if (dueDay < today) return '<span
-class="due-badge due-overdue">
-Overdue</span>';
-if (dueDay.getTime() ===
-!
-today.getTime()) return '<span class="duebadge due-today"> JUL
-17 Due Today</span>';
-var diff = Math.ceil((dueDay - today) /
-(1000*60*60*24));
-return '<span class="due-badge dueupcoming">
+  var now = new Date();
+  var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  function getDueBadge(task) {
+    if (!task.next_due) return '<span class="due-badge due-upcoming">No due date</span>';
+    var due = new Date(task.next_due);
+    var dueDay = new Date(due.getFullYear(), due.getMonth(), due.getDate());
+    if (dueDay < today) return '<span class="due-badge due-overdue">⚠️ Overdue</span>';
+    if (dueDay.getTime() === today.getTime()) return '<span class="due-badge due-today">📅 Due Today</span>';
+    var diff = Math.ceil((dueDay - today) / (1000*60*60*24));
+    return '<span class="due-badge due-upcoming">✅ Due in ' + diff + ' day' + (diff > 1 ? 's' : '') + '</span>';
+  }
+  function taskHTML(task) {
+    var freqClass = 'freq-' + task.frequency;
+    var lastDone = task.last_done ? 'Last done: ' + new Date(task.last_done).toLocaleDateString('en-IN',{day:'numeric',month:'short'}) : 'Never done';
+    return '<div class="maint-item">' +
+      '<div class="maint-top"><div><div class="maint-title-txt">' + task.title + '</div>' + (task.description ? '<div class="maint-desc-txt">' + task.description + '</div>' : '') + '</div>' +
+      '<div style="display:flex;gap:6px;align-items:center"><span class="freq-pill ' + freqClass + '">' + task.frequency + '</span>' + getDueBadge(task) + '</div></div>' +
+      '<div class="maint-meta"><span>' + lastDone + '</span><span>By: ' + task.created_by + '</span>' +
+      '<button class="btn-mark-done" onclick="markTaskDone(' + task.id + ',\'' + task.frequency + '\')">✓ Mark Done</button>' +
+      '<button class="btn-delete-task" onclick="deleteTask(' + task.id + ')">✕</button></div></div>';
+  }
+  var urgent = tasks.filter(function(t) {
+    if (!t.next_due) return false;
+    var due = new Date(t.next_due);
+    var dueDay = new Date(due.getFullYear(), due.getMonth(), due.getDate());
+    return dueDay <= today;
+  });
+  document.getElementById('maint-urgent').innerHTML = urgent.length ? urgent.map(taskHTML).join('') : '<div class="empty">✅ No overdue tasks!</div>';
+  ['daily','weekly','monthly'].forEach(function(freq) {
+    var filtered = tasks.filter(function(t) { return t.frequency === freq; });
+    document.getElementById('maint-' + freq).innerHTML = filtered.length ? filtered.map(taskHTML).join('') : '<div class="empty">No ' + freq + ' tasks</div>';
+  });
 }
-Due in ' + diff +'day' + (diff
-1? 's': ") + '</span>';
-function taskHTML(task) {
-var freqClass = 'freq-'+ task.frequency;
-var lastDone = task.last_done? 'Last
-done: '+ new
-Date(task.last_done).toLocaleDateString(
-en-IN',{day:'numeric', month:'short'}) :
-:
-'Never done';
-return '<div class="maint-item">' +
-'<div class="maint-top"><div><div
-class="maint-title-txt">' + task.title + '</
-div>' + (task.description? '<div
-class="maint-desc-txt">'+
-task.description + '</div>' : ") + '</div>' +
-'<div style="display:flex;gap:6px;alignitems:center"><span class="freq-pill'+
-freqClass + ">' + task.frequency + '</
-span>' + getDueBadge(task) + '</div></
-div>' +
-'<div class="maint-meta"><span>' +
-lastDone + '</span><span>By: ' +
-task.created_by + '</span> +
-'<button class="btn-mark-done"
-onclick="markTaskDone(' + task.id + ',\" +
-task.frequency + '\')">✓ Mark Done</
-button>'+
-'<button class="btn-delete-task"
-onclick="deleteTask('+ task.id + ')">X</
-button></div></div>';
-}
-var urgent = tasks.filter(function(t) {
-if (!t.next_due) return false;
-var due = new Date(t.next_due);
-var dueDay = new
-Date(due.getFullYear(), due.getMonth(),
-due.getDate());
-});
-return dueDay <= today;
-document.getElementByld('mainturgent').innerHTML = urgent.length?
-urgent.map(taskHTML).join(") : '<div
-class="empty">
-div>';
-No overdue tasks!</
-['daily''weekly''monthly'].forEach(function(f
-req) {
-var filtered = tasks.filter(function(t) {
-return t.frequency === freq; });
-document.getElementByld('maint-'+
-freq).innerHTML = filtered.length?
-filtered.map(taskHTML).join(") : '<div
-class="empty">No ' + freq + ' tasks</div>';
-});
-}
-/*
-GUEST OPTIONS - per department
+
+/* ═══════════════════════════════════════════════
+   GUEST OPTIONS — per department
+═══════════════════════════════════════════════ */
 var DEPT_DEFAULT_OPTIONS = {
-'Housekeeping': [
-{key: 'Extra Towels', label:' Extra
-Towels'},
-{key: 'Extra Pillow', label:' Extra
-Pillow'},
-{key: 'Water Bottles', label:'
-Bottles'},
-{ key: 'Clean Room',
-Room'},
-Water
-label: ' Clean
-{key: 'Extra Blanket', label: ' Extra
-Blanket'},
-{key: 'Toiletries', label:' Toiletries' }
-1,
-'Room Service':
-{key: 'Breakfast', label: ' Breakfast'
-},
-{key: 'Coffee',
-{key: 'Tea',
-{key: 'Water',
-{key: 'Snacks',
-label:'Coffee'},
-label: 'Tea'},
-label:' Water'},
-label:' Snacks'},
-{key: 'Ice Bucket', label: ' Ice
-Bucket'}
-],
-'Maintenance':
-{key: 'AC Issue', label: AC Issue'},
-{key: 'Hot Water', label:' Hot
-Water'},
-{key: 'Light Bulb', label: Light
-Bulb'},
-{key: 'TV Issue', label: TV Issue' },
-{key: 'WiFi Help', label: WiFi Help'
-}
-{key: 'Door Lock', label:' Door
-Lock'}
-.
-'Front Desk':
-{key: 'Wake Up Call', label:
-Wake Up Call'},
-{key: 'Luggage Help',
-Luggage Help'},
-label:
-{key: label: 'Late Checkout Info',
-Late Checkout Info'}
-{key: 'Airport Transfer & Local Cab',
-label:'Airport Transfer & Local Cab'}
-{key: 'Room Upgradation Info', label:
-↑ Room Upgradation Info'},
-{key: 'Room Decoration Info', label:
-Room Decoration Info'},
-{key: 'Private Dinner Info',
-Private Dinner Info' },
-label:
-{key: 'Extend Stay Info',
-Extend Stay Info'},
-label: JUL
-17
-{key: 'Bike Rent Info',
-Bike Rent Info'},
-label:
-{key: 'Adventure Activities Info', label:
-Adventure Activities Info'},
-{key: 'SPA Booking Info',
-SPA Booking Info'}
-label:
-var currentDeptOptions = ]; // enabled
-keys for this dept
-var customDeptOptions = [; // custom
-added by this HOD: [{key, label, sla}]
-var optionSlaMap = {}; // {key:
-slaMinutes } - tracks SLA for ALL options
-var fullDeptOptions = {}; // full saved
-object from DB
+  'Housekeeping': [
+    { key: 'Extra Towels', label: '🛁 Extra Towels' },
+    { key: 'Extra Pillow', label: '🛏️ Extra Pillow' },
+    { key: 'Water Bottles', label: '💧 Water Bottles' },
+    { key: 'Clean Room', label: '🧹 Clean Room' },
+    { key: 'Extra Blanket', label: '🛌 Extra Blanket' },
+    { key: 'Toiletries', label: '🧴 Toiletries' }
+  ],
+  'Room Service': [
+    { key: 'Breakfast', label: '🍳 Breakfast' },
+    { key: 'Coffee', label: '☕ Coffee' },
+    { key: 'Tea', label: '🍵 Tea' },
+    { key: 'Water', label: '💧 Water' },
+    { key: 'Snacks', label: '🍪 Snacks' },
+    { key: 'Ice Bucket', label: '🧊 Ice Bucket' }
+  ],
+  'Maintenance': [
+    { key: 'AC Issue', label: '❄️ AC Issue' },
+    { key: 'Hot Water', label: '♨️ Hot Water' },
+    { key: 'Light Bulb', label: '💡 Light Bulb' },
+    { key: 'TV Issue', label: '📺 TV Issue' },
+    { key: 'WiFi Help', label: '📶 WiFi Help' },
+    { key: 'Door Lock', label: '🔑 Door Lock' }
+  ],
+  'Front Desk': [
+    { key: 'Wake Up Call', label: '⏰ Wake Up Call' },
+    { key: 'Luggage Help', label: '🧳 Luggage Help' },
+    { key: 'Late Checkout Info', label: '🕐 Late Checkout Info' },
+    { key: 'Airport Transfer & Local Cab', label: '🚕 Airport Transfer & Local Cab' },
+    { key: 'Room Upgradation Info', label: '⬆️ Room Upgradation Info' },
+    { key: 'Room Decoration Info', label: '🌸 Room Decoration Info' },
+    { key: 'Private Dinner Info', label: '🍽️ Private Dinner Info' },
+    { key: 'Extend Stay Info', label: '📅 Extend Stay Info' },
+    { key: 'Bike Rent Info', label: '🏍️ Bike Rent Info' },
+    { key: 'Adventure Activities Info', label: '🏄 Adventure Activities Info' },
+    { key: 'SPA Booking Info', label: '💆 SPA Booking Info' }
+  ]
+};
+
+var currentDeptOptions = []; // enabled keys for this dept
+var customDeptOptions = []; // custom added by this HOD: [{key, label, sla}]
+var optionSlaMap = {}; // { key: slaMinutes } — tracks SLA for ALL options
+var fullDeptOptions = {}; // full saved object from DB
+
 // Default SLA per option key
 var DEFAULT_OPTION_SLA = {
-'Extra Towels': 5, 'Extra Pillow': 5, 'Water
-Bottles': 5,
-'Clean Room': 30, 'Extra Blanket': 5,
-'Toiletries': 10,
-'Breakfast': 20, 'Coffee': 10, 'Tea': 10,
-'Water': 5,
-'Snacks': 10, 'Ice Bucket': 5,
-'AC Issue': 20, 'Hot Water': 15, 'Light Bulb':
-10,
-'TV Issue': 15, 'WiFi Help': 10, 'Door Lock':
-10,
-'Wake Up Call': 2, 'Luggage Help': 5, 'Late
-Checkout Info': 5,
-'Airport Transfer & Local Cab': 10, 'Room
-Upgradation Info': 5,
-'Room Decoration Info': 30, 'Private
-Dinner Info': 10,
-'Extend Stay Info': 5, 'Bike Rent Info': 5,
-'Adventure Activities Info': 5, 'SPA
-Booking Info': 5
-function loadGuestOptions() {
-fetch('/hotels').then(function(r) { return
-r.json(); }).then(function(hotels) {
-var hotel = hotels.find(function(h) {
-return h.hotel_id === hodData.hotel_id; });
-fullDeptOptions = (hotel &&
-hotel.dept_guest_options) ?
-hotel.dept_guest_options: {};
-var dept = hodData.dept;
-var saved = fullDeptOptions[dept];
-var defaults =
-(DEPT_DEFAULT_OPTIONS[dept] ||
-]).map(function(o) { return o.key; });
-if (saved) {
-currentDeptOptions = saved.enabled
-defaults;
-customDeptOptions = (saved.custom ||
-).map(function(c) {
-return {key: c.key, label: c.label, sla:
-c.sla || 15};
-}
-});
-// Load saved SLA map
-optionSlaMap = saved.slaMap || {0;
-customDeptOptions.forEach(function(c) {
-if (currentDeptOptions.indexOf(c.key)
-=== -1) currentDeptOptions.push(c.key);
-if (!optionSlaMap[c.key])
-optionSlaMap[c.key] = c.sla || 15;
-});
-} else {
-}
-currentDeptOptions = defaults;
-customDeptOptions = ;
-optionSlaMap = {};
-renderGuestOptionsList();
-}).catch(function() {
-renderGuestOptionsList(); });
-function getSla(key) {
-if (optionSlaMap[key] !== undefined)
-return optionSlaMap[key];
-return DEFAULT_OPTION_SLA[key] || 15;
-}
-function renderGuestOptionsList() {
-var dept = hodData.dept;
-var defaults
-DEPT_DEFAULT_OPTIONS[dept] || 0;
-var list = document.getElementByld('golist');
-var html = '<div style="fontsize:11px;color:#0a9396;fontweight:700;texttransform:uppercase;letterspacing:0.08em;marginbottom:8px">Default Options - Toggle &
-Set SLA Time</div>';
-defaults.forEach(function(opt) {
-var isEnabled =
-currentDeptOptions.indexOf(opt.key) !==
--1;
-html += optionRowHTML(opt.key,
-opt.label, isEnabled, false, getSla(opt.key));
-});
-if (customDeptOptions.length > 0) {
-html += '<div style="fontsize:11px;color:#ee9b00;fontweight:700;texttransform:uppercase;letterspacing:0.08em;margin:14px 0 8px">Your
-Custom Options</div>';
-customDeptOptions.forEach(function(opt)
-}
-var isEnabled =
-currentDeptOptions.indexOf(opt.key) !==
--1;
-html += optionRowHTML(opt.key,
-opt.label, isEnabled, true, getSla(opt.key));
-});
-}
-list.innerHTML = html;
-}
-function optionRowHTML(key, label,
-isEnabled, isCustom, sla) {
-var safeKey = key.replace(/'/g, "\\");
-return '<div style="display:flex;flexdirection:column;gap:8px;padding:12px
-14px;background:' +
-(isEnabled ? '#e8f4f4' : '#f9f9f9') +
-';border-radius:12px;border:1.5px solid '+
-(isEnabled ? '#0a9396' : '#eee') +
-';margin-bottom:8px">' +
-// Top row: label + delete + toggle
-'<div style="display:flex;alignitems:center;gap:8px">' +
-'<span style="font-size:14px;fontweight:' + (isEnabled? '600': '400') +
-';color:' + (isEnabled? '#005f73': '#888')
-';flex:1">' +
-+
-label +
-(isCustom?'<span style="fontsize:10px;background:#fff3cd;color:#8a60
-00;padding:1px 6px;borderradius:10px;margin-left:4px">Custom</
-span>': ") +
-'</span>'+
-(isCustom? '<button
-onclick="removeCustomDeptOption(\" +
-safeKey + \'("
-style="background:#fde8ea;color:#e63946
-;border:none;borderradius:6px;padding:4px 8px;fontsize:11px;cursor:pointer;flexshrink:0">X</button>': ") +
-'<label
-style="position:relative;display:inlineblock;width:46px;height:26px;cursor:pointe
-r;flex-shrink:0">' +
-'<input type="checkbox"' + (isEnabled
-? 'checked': ") +'data-key=" + key + ""
-onchange="toggleDeptOption(this)"
-style="opacity:0;width:0;height:0">' +
-'<span
-style="position:absolute;inset:0;backgroun
-d:' + (isEnabled ? '#0a9396': '#ddd') +
-';border-radius:26px;transition:0.3s"></
-span>' +
-'<span
-style="position:absolute;top:3px;left:'
-(isEnabled? '23px': '3px') +
-+
-';width:20px;height:20px;background:white;
-border-radius:50%;transition:0.3s;boxshadow:0 1px 3px rgba(0,0,0,0.2)"></
-span>' +
-'</label>'+
-'</div>' +
-// Bottom row: SLA input (only show
-when enabled)
-(isEnabled?
-'<div style="display:flex;align-
-items:center;gap:8px;paddingtop:4px;border-top:1px solid
-rgba(10,147,150,0.12)">' +
-'<span style="fontsize:11px;color:#0a9396;fontweight:600' SLA Time:</span>'+
-'<input type="number" min="1"
-max="999" value=" + sla + " data-slakey=" + key + "
-onchange="updateSla(this)"'+
-'style="width:64px;padding:5px
-8px;border:1.5px solid #0a9396;borderradius:8px;font-size:13px;fontweight:700;color:#005f73;textalign:center;outline:none;background:white
-">' +
-'<span style="fontsize:12px;color:#888">minutes</span>'+
-'<span style="fontsize:11px;color:#aaa;marginleft:4px">Guest sees: "Ready in' + sla +'
-}
-min"</span>' +
-'</div>' : ") +
-'</div>';
-}
-function updateSla(input) {
-var key = input.getAttribute('data-slakey');
-var val = parselnt(input.value);
-if (isNaN(val) ||val < 1) val = 1;
-if (val > 999) val = 999;
-input.value = val;
-optionSlaMap[key] = val;
-// Update preview text inline
-var preview =
-input.parentElement.querySelector('span:la
-st-child');
-if (preview) preview.textContent = 'Guest
-sees: "Ready in '+ val + ' min";
-function toggleDeptOption(checkbox) {
-var key = checkbox.getAttribute('datakey');
-if (checkbox.checked) {
-if (currentDeptOptions.indexOf(key)
-=== -1) currentDeptOptions.push(key);
-} else {
-currentDeptOptions
-currentDeptOptions.filter(function(k) {
-}
-return k !== key; });
-}
-renderGuestOptionsList();
-function addCustomOption() {
-var emoji =
-document.getElementByld('customoption-emoji').value.trim();
-var text =
-document.getElementByld('custom-
-option-text').value.trim();
-var slaVal =
-parselnt(document.getElementByld('custo
-m-option-sla').value) || 15;
-if (!text) { alert('Please enter a service
-name.); return; }
-var label = (emoji ? emoji +'':" '( +
-text;
-var key = 'CUSTOM::'+ text +':'+
-Date.now();
-customDeptOptions.push({ key: key,
-label: label, sla: slaVal });
-currentDeptOptions.push(key);
-optionSlaMap[key] = slaVal;
-document.getElementByld('customoption-emoji').value = ";
-document.getElementByld('customoption-text').value = ";
-document.getElementByld('customoption-sla').value = '15';
-renderGuestOptionsList();
-}
-function removeCustomDeptOption(key) {
-customDeptOptions =
-customDeptOptions.filter(function(c) {
-return c.key !== key; });
-currentDeptOptions =
-currentDeptOptions.filter(function(k) {
-}
-return k !== key; });
-delete optionSlaMap[key];
-renderGuestOptionsList();
-function saveGuestOptions() {
-var dept = hodData.dept;
-fullDeptOptions[dept] = {
-enabled: currentDeptOptions,
-slaMap: optionSlaМар,
-custom:
-customDeptOptions.map(function(c) {
-return {key: c.key, label: c.label, sla:
-optionSlaMap[c.key] || c.sla || 15 }; })
+  'Extra Towels': 5, 'Extra Pillow': 5, 'Water Bottles': 5,
+  'Clean Room': 30, 'Extra Blanket': 5, 'Toiletries': 10,
+  'Breakfast': 20, 'Coffee': 10, 'Tea': 10, 'Water': 5,
+  'Snacks': 10, 'Ice Bucket': 5,
+  'AC Issue': 20, 'Hot Water': 15, 'Light Bulb': 10,
+  'TV Issue': 15, 'WiFi Help': 10, 'Door Lock': 10,
+  'Wake Up Call': 2, 'Luggage Help': 5, 'Late Checkout Info': 5,
+  'Airport Transfer & Local Cab': 10, 'Room Upgradation Info': 5,
+  'Room Decoration Info': 30, 'Private Dinner Info': 10,
+  'Extend Stay Info': 5, 'Bike Rent Info': 5,
+  'Adventure Activities Info': 5, 'SPA Booking Info': 5
 };
-fetch('/hotels/' + hodData.hotel_id + '/
-dept-guest-options', {
-method: 'POST',
-headers: {'Content-Type': 'application/
-json'},
-body: JSON.stringify({
-dept_guest_options: fullDeptOptions })
-}).then(function(r)
-}).then(function() {
-var msg =
-{ return r.json();
-document.getElementByld('go-msg');
-msg.textContent = Saved!'+
-currentDeptOptions.length + ' option(s)
-with custom SLA times.;
-msg.className = 'msg-box msgsuccess';
-setTimeout(function() {msg.className
-= 'msg-box'; }, 4000);
-}).catch(function() {
+
+function loadGuestOptions() {
+  fetch('/hotels').then(function(r) { return r.json(); }).then(function(hotels) {
+    var hotel = hotels.find(function(h) { return h.hotel_id === hodData.hotel_id; });
+    fullDeptOptions = (hotel && hotel.dept_guest_options) ? hotel.dept_guest_options : {};
+    var dept = hodData.dept;
+    var saved = fullDeptOptions[dept];
+    var defaults = (DEPT_DEFAULT_OPTIONS[dept] || []).map(function(o) { return o.key; });
+
+    if (saved) {
+      currentDeptOptions = saved.enabled || defaults;
+      customDeptOptions = (saved.custom || []).map(function(c) {
+        return { key: c.key, label: c.label, sla: c.sla || 15 };
+      });
+      // Load saved SLA map
+      optionSlaMap = saved.slaMap || {};
+      customDeptOptions.forEach(function(c) {
+        if (currentDeptOptions.indexOf(c.key) === -1) currentDeptOptions.push(c.key);
+        if (!optionSlaMap[c.key]) optionSlaMap[c.key] = c.sla || 15;
+      });
+    } else {
+      currentDeptOptions = defaults;
+      customDeptOptions = [];
+      optionSlaMap = {};
+    }
+    renderGuestOptionsList();
+  }).catch(function() { renderGuestOptionsList(); });
 }
-var msg =
-document.getElementByld('go-msg');
-msg.textContent = 'X Failed to save.
-Try again.;
-msg.className = 'msg-box msgsuccess';
-msg.style.background = '#fde8ea';
-msg.style.color = '#e63946';
-setTimeout(function() {msg.className
-= 'msg-box'; }, 3000);
-/*
-});
-ANNOUNCEMENTS
+
+function getSla(key) {
+  if (optionSlaMap[key] !== undefined) return optionSlaMap[key];
+  return DEFAULT_OPTION_SLA[key] || 15;
+}
+
+function renderGuestOptionsList() {
+  var dept = hodData.dept;
+  var defaults = DEPT_DEFAULT_OPTIONS[dept] || [];
+  var list = document.getElementById('go-list');
+  var html = '<div style="font-size:11px;color:#0a9396;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Default Options — Toggle & Set SLA Time</div>';
+  defaults.forEach(function(opt) {
+    var isEnabled = currentDeptOptions.indexOf(opt.key) !== -1;
+    html += optionRowHTML(opt.key, opt.label, isEnabled, false, getSla(opt.key));
+  });
+  if (customDeptOptions.length > 0) {
+    html += '<div style="font-size:11px;color:#ee9b00;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin:14px 0 8px">Your Custom Options</div>';
+    customDeptOptions.forEach(function(opt) {
+      var isEnabled = currentDeptOptions.indexOf(opt.key) !== -1;
+      html += optionRowHTML(opt.key, opt.label, isEnabled, true, getSla(opt.key));
+    });
+  }
+  list.innerHTML = html;
+}
+
+function optionRowHTML(key, label, isEnabled, isCustom, sla) {
+  var safeKey = key.replace(/'/g, "\\'");
+  return '<div style="display:flex;flex-direction:column;gap:8px;padding:12px 14px;background:' +
+    (isEnabled ? '#e8f4f4' : '#f9f9f9') + ';border-radius:12px;border:1.5px solid ' +
+    (isEnabled ? '#0a9396' : '#eee') + ';margin-bottom:8px">' +
+
+    // Top row: label + delete + toggle
+    '<div style="display:flex;align-items:center;gap:8px">' +
+      '<span style="font-size:14px;font-weight:' + (isEnabled ? '600' : '400') + ';color:' + (isEnabled ? '#005f73' : '#888') + ';flex:1">' +
+        label +
+        (isCustom ? ' <span style="font-size:10px;background:#fff3cd;color:#8a6000;padding:1px 6px;border-radius:10px;margin-left:4px">Custom</span>' : '') +
+      '</span>' +
+      (isCustom ? '<button onclick="removeCustomDeptOption(\'' + safeKey + '\')" style="background:#fde8ea;color:#e63946;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;flex-shrink:0">✕</button>' : '') +
+      '<label style="position:relative;display:inline-block;width:46px;height:26px;cursor:pointer;flex-shrink:0">' +
+        '<input type="checkbox" ' + (isEnabled ? 'checked' : '') + ' data-key="' + key + '" onchange="toggleDeptOption(this)" style="opacity:0;width:0;height:0">' +
+        '<span style="position:absolute;inset:0;background:' + (isEnabled ? '#0a9396' : '#ddd') + ';border-radius:26px;transition:0.3s"></span>' +
+        '<span style="position:absolute;top:3px;left:' + (isEnabled ? '23px' : '3px') + ';width:20px;height:20px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></span>' +
+      '</label>' +
+    '</div>' +
+
+    // Bottom row: SLA input (only show when enabled)
+    (isEnabled ?
+    '<div style="display:flex;align-items:center;gap:8px;padding-top:4px;border-top:1px solid rgba(10,147,150,0.12)">' +
+      '<span style="font-size:11px;color:#0a9396;font-weight:600">⏱ SLA Time:</span>' +
+      '<input type="number" min="1" max="999" value="' + sla + '" data-sla-key="' + key + '" onchange="updateSla(this)" ' +
+        'style="width:64px;padding:5px 8px;border:1.5px solid #0a9396;border-radius:8px;font-size:13px;font-weight:700;color:#005f73;text-align:center;outline:none;background:white">' +
+      '<span style="font-size:12px;color:#888">minutes</span>' +
+      '<span style="font-size:11px;color:#aaa;margin-left:4px">Guest sees: "Ready in ' + sla + ' min"</span>' +
+    '</div>' : '') +
+
+  '</div>';
+}
+
+function updateSla(input) {
+  var key = input.getAttribute('data-sla-key');
+  var val = parseInt(input.value);
+  if (isNaN(val) || val < 1) val = 1;
+  if (val > 999) val = 999;
+  input.value = val;
+  optionSlaMap[key] = val;
+  // Update preview text inline
+  var preview = input.parentElement.querySelector('span:last-child');
+  if (preview) preview.textContent = 'Guest sees: "Ready in ' + val + ' min"';
+}
+
+function toggleDeptOption(checkbox) {
+  var key = checkbox.getAttribute('data-key');
+  if (checkbox.checked) {
+    if (currentDeptOptions.indexOf(key) === -1) currentDeptOptions.push(key);
+  } else {
+    currentDeptOptions = currentDeptOptions.filter(function(k) { return k !== key; });
+  }
+  renderGuestOptionsList();
+}
+
+function addCustomOption() {
+  var emoji = document.getElementById('custom-option-emoji').value.trim();
+  var text = document.getElementById('custom-option-text').value.trim();
+  var slaVal = parseInt(document.getElementById('custom-option-sla').value) || 15;
+  if (!text) { alert('Please enter a service name.'); return; }
+  var label = (emoji ? emoji + ' ' : '✨ ') + text;
+  var key = 'CUSTOM::' + text + '::' + Date.now();
+  customDeptOptions.push({ key: key, label: label, sla: slaVal });
+  currentDeptOptions.push(key);
+  optionSlaMap[key] = slaVal;
+  document.getElementById('custom-option-emoji').value = '';
+  document.getElementById('custom-option-text').value = '';
+  document.getElementById('custom-option-sla').value = '15';
+  renderGuestOptionsList();
+}
+
+function removeCustomDeptOption(key) {
+  customDeptOptions = customDeptOptions.filter(function(c) { return c.key !== key; });
+  currentDeptOptions = currentDeptOptions.filter(function(k) { return k !== key; });
+  delete optionSlaMap[key];
+  renderGuestOptionsList();
+}
+
+function saveGuestOptions() {
+  var dept = hodData.dept;
+  fullDeptOptions[dept] = {
+    enabled: currentDeptOptions,
+    slaMap: optionSlaMap,
+    custom: customDeptOptions.map(function(c) { return { key: c.key, label: c.label, sla: optionSlaMap[c.key] || c.sla || 15 }; })
+  };
+  fetch('/hotels/' + hodData.hotel_id + '/dept-guest-options', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ dept_guest_options: fullDeptOptions })
+  }).then(function(r) { return r.json(); }).then(function() {
+    var msg = document.getElementById('go-msg');
+    msg.textContent = '✅ Saved! ' + currentDeptOptions.length + ' option(s) with custom SLA times.';
+    msg.className = 'msg-box msg-success';
+    setTimeout(function() { msg.className = 'msg-box'; }, 4000);
+  }).catch(function() {
+    var msg = document.getElementById('go-msg');
+    msg.textContent = '❌ Failed to save. Try again.';
+    msg.className = 'msg-box msg-success';
+    msg.style.background = '#fde8ea'; msg.style.color = '#e63946';
+    setTimeout(function() { msg.className = 'msg-box'; }, 3000);
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   ANNOUNCEMENTS
+═══════════════════════════════════════════════ */
 function previewAnn(val) {
-var prev =
-/*
-document.getElementByld('ann-preview');
-if (val.trim()) {
-document.getElementByld('ann-previewtext').textContent = val; prev.style.display
-= 'flex'; }
-else {prev.style.display = 'none'; }
-{
+  var prev = document.getElementById('ann-preview');
+  if (val.trim()) { document.getElementById('ann-preview-text').textContent = val; prev.style.display = 'flex'; }
+  else { prev.style.display = 'none'; }
+}
+
 function postAnnouncement() {
-var msg =
-document.getElementByld('anninput').value.trim();
-if (!msg) {alert('Please type an
-announcement first.); return; }
-fetch('/announcements', {
-method: 'POST', headers: {'ContentType': 'application/json'},
-body: JSON.stringify({hotel_id:
-hodData.hotel_id, message: msg })
-}).then(function(r) {return r.json();
-}).then(function(data) {
-if (data.error) { alert(data.error); return; }
-document.getElementByld('anninput').value = ";
-document.getElementByld('annpreview').style.display = 'none';
-var m = document.getElementByld('annmsg');
-m.textContent =
-see it now.!;
-Posted! Guests will
-m.className = 'msg-box msgsuccess';
-setTimeout(function() {m.className
-'msg-box';}, 4000);
+  var msg = document.getElementById('ann-input').value.trim();
+  if (!msg) { alert('Please type an announcement first.'); return; }
+  fetch('/announcements', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ hotel_id: hodData.hotel_id, message: msg })
+  }).then(function(r) { return r.json(); }).then(function(data) {
+    if (data.error) { alert(data.error); return; }
+    document.getElementById('ann-input').value = '';
+    document.getElementById('ann-preview').style.display = 'none';
+    var m = document.getElementById('ann-msg');
+    m.textContent = '✅ Posted! Guests will see it now.';
+    m.className = 'msg-box msg-success';
+    setTimeout(function() { m.className = 'msg-box'; }, 4000);
+    loadAnnouncements();
+  });
 }
-});
-loadAnnouncements();
+
 function loadAnnouncements() {
-fetch('/announcements?hotel_id='+
-hodData.hotel_id)
-.then(function(r) { return r.json(); })
-=
-.then(function(list) {
-var el =
-document.getElementByld('ann-list');
-0( {
-if (!Array.isArray(list) || list.length =
-el.innerHTML = '<div
-class="empty">No announcements yet</
-div>'; return;
+  fetch('/announcements?hotel_id=' + hodData.hotel_id)
+    .then(function(r) { return r.json(); })
+    .then(function(list) {
+      var el = document.getElementById('ann-list');
+      if (!Array.isArray(list) || list.length === 0) {
+        el.innerHTML = '<div class="empty">No announcements yet</div>'; return;
+      }
+      el.innerHTML = list.map(function(a) {
+        var time = new Date(a.created_at).toLocaleString('en-IN', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+        var badge = a.is_active
+          ? '<span style="background:#d1fae5;color:#065f46;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500">🟢 Live</span>'
+          : '<span style="background:#f0f0f0;color:#999;padding:2px 8px;border-radius:10px;font-size:11px">Off</span>';
+        var toggleBtn = a.is_active
+          ? '<button onclick="toggleAnn('+a.id+',false)" style="padding:5px 10px;background:#fff3cd;color:#8a6000;border:none;border-radius:6px;font-size:11px;cursor:pointer">Turn Off</button>'
+          : '<button onclick="toggleAnn('+a.id+',true)" style="padding:5px 10px;background:#d1fae5;color:#065f46;border:none;border-radius:6px;font-size:11px;cursor:pointer">Turn On</button>';
+        return '<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:14px 0;border-bottom:1px solid #f0f0f0;gap:10px">' +
+          '<div><div style="font-size:14px;color:#333;line-height:1.5;flex:1">' + a.message + '</div>' +
+          '<div style="font-size:11px;color:#aaa;margin-top:4px">' + badge + '&nbsp;&nbsp;' + time + '</div></div>' +
+          '<div style="display:flex;gap:6px;flex-shrink:0">' + toggleBtn +
+          '<button onclick="deleteAnn('+a.id+')" style="padding:5px 10px;background:#fde8ea;color:#e63946;border:none;border-radius:6px;font-size:11px;cursor:pointer">✕</button>' +
+          '</div></div>';
+      }).join('');
+    }).catch(function() {
+      document.getElementById('ann-list').innerHTML = '<div class="empty">Could not load</div>';
+    });
 }
-el.innerHTML = list.map(function(a) {
-var time = new
-Date(a.created_at).toLocaleString('en-IN',
-{day:'numeric', month:'short', hour:'2-
-digit', minute:'2-digit' });
-var badge = a.is_active
-? '<span
-style="background:#d1fae5;color:#065f46;
-padding:2px 8px;border-radius:10px;fontsize:11px;font-weight:500"> Live</
-span>
-: '<span
-style="background:#f0f0f0;color:#999;pad
-ding:2px 8px;border-radius:10px;fontsize:11px">Off</span>';
-var toggleBtn = a.is_active
-?'<button
-onclick="toggleAnn('+a.id+',false)"
-style="padding:5px
-10px;background:#fff3cd;color:#8a6000;b
-order:none;border-radius:6px;fontsize:11px;cursor:pointer">Turn Off</
-button>
-'<button
-onclick="toggleAnn('+a.id+',true)"
-style="padding:5px
-10px;background:#d1fae5;color:#065f46;b
-order:none;border-radius:6px;fontsize:11px;cursor:pointer">Turn On</
-button>';
-return '<div style="display:flex;justifycontent:space-between;align-items:flexstart;padding:14px 0;border-bottom:1px
-solid #f0f0f0;gap:10px">' +
-'<div><div style="fontsize:14px;color:#333;lineheight:1.5;flex:1">' + a.message + '</div>
-+
-'<div style="fontsize:11px;color:#aaa;margin-top:4px">' +
-badge + '&nbsp;&nbsp;' + time + '</div>/
-div>' +
-'<div style="display:flex;gap:6px;flexshrink:0">' + toggleBtn +
-'<button
-onclick="deleteAnn('+a.id+')"
-style="padding:5px
-10px;background:#fde8ea;color:#e63946;
-border:none;border-radius:6px;fontsize:11px;cursor:pointer">\</button>' +
-'</div></div>';
-}).join(");
-}).catch(function() {
-document.getElementByld('ann-
-list').innerHTML = '<div
-class="empty">Could not load</div>';
-});
-}
+
 function toggleAnn(id, active) {
-fetch('/announcements/' + id + '/toggle', {
-method: 'POST', headers: {'ContentType': 'application/json'},
-})
+  fetch('/announcements/' + id + '/toggle', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ is_active: active })
+  }).then(function() { loadAnnouncements(); });
 }
-body: JSON.stringify({is_active: active
-}).then(function() {
-loadAnnouncements(); });
+
 function deleteAnn(id) {
-if (!confirm('Delete this announcement?'))
-return;
-fetch('/announcements/' + id, {method:
-'DELETE' }).then(function() {
-loadAnnouncements(); });
+  if (!confirm('Delete this announcement?')) return;
+  fetch('/announcements/' + id, { method: 'DELETE' }).then(function() { loadAnnouncements(); });
 }
-/*
-AUTO LOGIN FROM STORAGE
-*/
+
+/* ═══════════════════════════════════════════════
+   AUTO LOGIN FROM STORAGE
+═══════════════════════════════════════════════ */
 window.onload = function() {
-var stored =
-localStorage.getItem('welco_hod');
-if (stored) {
-try {
-hodData = JSON.parse(stored);
-// Re-verify session is still valid by
-fetching hotel data
-fetch('/hod?hotel_id=' +
-hodData.hotel_id)
-.then(function(r) { return r.json(); })
-.then(function() { startApp(); })
-.catch(function() {
-localStorage.removeltem('welco_hod'); });
-} catch(e) {
-localStorage.removeltem('welco_hod'); }
-}
+  var stored = localStorage.getItem('welco_hod');
+  if (stored) {
+    try {
+      hodData = JSON.parse(stored);
+      // Re-verify session is still valid by fetching hotel data
+      fetch('/hod?hotel_id=' + hodData.hotel_id)
+        .then(function(r) { return r.json(); })
+        .then(function() { startApp(); })
+        .catch(function() { localStorage.removeItem('welco_hod'); });
+    } catch(e) { localStorage.removeItem('welco_hod'); }
+  }
 };
 </script>
 </body>

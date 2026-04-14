@@ -1,8 +1,8 @@
-"<!DOCTYPE html>
-<html lang=\"en\">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset=\"UTF-8\">
-  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welco - Guest Services</title>
   <style>
     :root { --brand: #1a1a2e; }
@@ -42,9 +42,7 @@
     .categories { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
     .cat-btn { padding: 14px 10px; border: 2px solid #eee; border-radius: 12px; background: white; cursor: pointer; font-size: 14px; text-align: center; transition: all 0.2s; color: #333; }
     .cat-btn.selected { border-color: var(--brand); background: var(--brand); color: white; }
-    .cat-btn.disabled { opacity: 0.5; cursor: not-allowed; background: #f5f5f5; }
 
-    /* QUICK OPTIONS — now dynamic */
     .quick-section { margin-bottom: 14px; display: none; }
     .quick-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
     .quick-items { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -52,7 +50,6 @@
     .quick-item:hover { background: var(--brand); color: white; border-color: var(--brand); }
     .quick-item.selected { background: var(--brand); color: white; border-color: var(--brand); }
 
-    /* GUEST SERVICES — shown when Front Desk selected */
     .services-section { margin-bottom: 14px; display: none; }
     .services-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
     .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -61,12 +58,28 @@
     .service-item.selected { background: var(--brand); color: white; border-color: var(--brand); }
     .no-services { font-size: 13px; color: #aaa; text-align: center; padding: 12px; }
 
+    /* CLOSED BANNER — inside card */
+    .dept-closed-box {
+      display: none;
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border-radius: 16px;
+      padding: 28px 20px;
+      text-align: center;
+      margin-bottom: 14px;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+    .dept-closed-box .closed-moon { font-size: 44px; margin-bottom: 10px; }
+    .dept-closed-box .closed-title { font-size: 17px; font-weight: 700; color: white; margin-bottom: 8px; }
+    .dept-closed-box .closed-msg { font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.6; margin-bottom: 12px; }
+    .dept-closed-box .closed-timing { background: rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px; font-size: 13px; font-weight: 600; color: #ffd166; }
+
     .eta-badge { display: none; background: #fff8e6; border: 1px solid #ffd166; border-radius: 8px; padding: 8px 12px; margin-bottom: 12px; font-size: 13px; color: #8a6000; text-align: center; }
     textarea { width: 100%; padding: 12px; border: 1.5px solid #ddd; border-radius: 10px; font-size: 14px; resize: none; height: 80px; font-family: sans-serif; transition: border-color 0.2s; }
     textarea:focus { outline: none; border-color: var(--brand); }
     .submit-btn { width: 100%; padding: 15px; background: var(--brand); color: white; border: none; border-radius: 12px; font-size: 16px; cursor: pointer; margin-top: 12px; font-weight: bold; transition: opacity 0.2s; }
     .submit-btn:active { opacity: 0.85; }
-    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
     .success { background: #e8f5e9; color: #2e7d32; padding: 14px; border-radius: 10px; margin-top: 12px; display: none; font-size: 14px; text-align: center; }
     .tracking-card { background: rgba(255,255,255,0.96); border-radius: 20px; padding: 28px; width: 100%; max-width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); display: none; text-align: center; }
     .tracking-icon { font-size: 52px; margin-bottom: 12px; animation: pulse 2s infinite; }
@@ -98,97 +111,105 @@
 </head>
 <body>
 
-  <div class=\"header\">
-    <div class=\"hotel-photo-bg\">
-      <img id=\"hotel-photo-bg-img\" src=\"\" alt=\"\">
+  <div class="header">
+    <div class="hotel-photo-bg">
+      <img id="hotel-photo-bg-img" src="" alt="">
     </div>
-    <div class=\"header-inner\">
-      <h1 id=\"hotel-name\">🏨 Welco</h1>
-      <p id=\"room-label\">Loading...</p>
-      <div class=\"welcome-msg\" id=\"welcome-msg\" style=\"display:none\">👋 Welcome! We're here to help.</div>
+    <div class="header-inner">
+      <h1 id="hotel-name">🏨 Welco</h1>
+      <p id="room-label">Loading...</p>
+      <div class="welcome-msg" id="welcome-msg" style="display:none">👋 Welcome! We're here to help.</div>
     </div>
   </div>
 
-  <div class=\"announcement-banner\" id=\"announcement-banner\">
-    <span class=\"ann-icon\">📢</span>
-    <span id=\"announcement-text\"></span>
-    <button class=\"ann-dismiss\" onclick=\"document.getElementById('announcement-banner').style.display='none'\">✕ Dismiss</button>
+  <div class="announcement-banner" id="announcement-banner">
+    <span class="ann-icon">📢</span>
+    <span id="announcement-text"></span>
+    <button class="ann-dismiss" onclick="document.getElementById('announcement-banner').style.display='none'">✕ Dismiss</button>
   </div>
 
-  <div class=\"container\">
+  <div class="container">
 
-    <div class=\"card\" id=\"request-card\">
+    <div class="card" id="request-card">
       <h2>How can we help you?</h2>
-      <div class=\"categories\">
-        <button class=\"cat-btn\" onclick=\"selectCat(this, 'Housekeeping')\">🛏️ Housekeeping</button>
-        <button class=\"cat-btn\" onclick=\"selectCat(this, 'Room Service')\">🍽️ Room Service</button>
-        <button class=\"cat-btn\" onclick=\"selectCat(this, 'Maintenance')\">🔧 Maintenance</button>
-        <button class=\"cat-btn\" onclick=\"selectCat(this, 'Front Desk')\">🛎️ Front Desk</button>
+      <div class="categories">
+        <button class="cat-btn" onclick="selectCat(this, 'Housekeeping')">🛏️ Housekeeping</button>
+        <button class="cat-btn" onclick="selectCat(this, 'Room Service')">🍽️ Room Service</button>
+        <button class="cat-btn" onclick="selectCat(this, 'Maintenance')">🔧 Maintenance</button>
+        <button class="cat-btn" onclick="selectCat(this, 'Front Desk')">🛎️ Front Desk</button>
       </div>
 
-      <!-- Quick items for Housekeeping / Room Service / Maintenance -->
-      <div class=\"quick-section\" id=\"quick-section\">
-        <div class=\"quick-label\">Quick Requests — Tap to add</div>
-        <div class=\"quick-items\" id=\"quick-items\"></div>
+      <!-- CLOSED BANNER — shown inside card when dept is closed -->
+      <div class="dept-closed-box" id="dept-closed-box">
+        <div class="closed-moon">🌙</div>
+        <div class="closed-title" id="closed-title">Department is Closed</div>
+        <div class="closed-msg" id="closed-msg">We're currently closed. Please try again during our service hours.</div>
+        <div class="closed-timing" id="closed-timing" style="display:none"></div>
       </div>
 
-      <!-- Guest services for Front Desk — loaded from hotel settings -->
-      <div class=\"services-section\" id=\"services-section\">
-        <div class=\"services-label\">Quick Requests — Tap to add</div>
-        <div class=\"services-grid\" id=\"services-grid\"></div>
+      <!-- Quick items (legacy, hidden for now) -->
+      <div class="quick-section" id="quick-section">
+        <div class="quick-label">Quick Requests — Tap to add</div>
+        <div class="quick-items" id="quick-items"></div>
       </div>
 
-      <div class=\"eta-badge\" id=\"eta-badge\">⏱ Usually ready in <strong id=\"eta-time\">10 mins</strong></div>
+      <!-- Services grid — loaded from HOD settings -->
+      <div class="services-section" id="services-section">
+        <div class="services-label">Quick Requests — Tap to add</div>
+        <div class="services-grid" id="services-grid"></div>
+      </div>
 
-      <textarea id=\"message\" placeholder=\"Describe your request... (optional)\"></textarea>
-      <button class=\"submit-btn\" onclick=\"submitRequest()\">Send Request 🚀</button>
-      <div class=\"success\" id=\"success\">✅ Request sent! Tracking your request below...</div>
+      <div class="eta-badge" id="eta-badge">⏱ Usually ready in <strong id="eta-time">10 mins</strong></div>
+
+      <textarea id="message" placeholder="Describe your request... (optional)"></textarea>
+      <button class="submit-btn" id="submit-btn" onclick="submitRequest()">Send Request 🚀</button>
+      <div class="success" id="success">✅ Request sent! Tracking your request below...</div>
     </div>
 
-    <div class=\"tracking-card\" id=\"tracking-card\">
-      <div class=\"tracking-icon\" id=\"tracking-icon\">📋</div>
-      <div class=\"tracking-title\" id=\"tracking-title\">Request Received!</div>
-      <div class=\"tracking-sub\" id=\"tracking-sub\">Your request has been sent to our staff. We'll be with you shortly.</div>
-      <div class=\"tracking-status\">
-        <div class=\"status-step active\" id=\"step-1\">
-          <div class=\"step-icon\">📋</div>
-          <div class=\"step-text\">Request received</div>
-          <div class=\"step-check\">✓</div>
+    <div class="tracking-card" id="tracking-card">
+      <div class="tracking-icon" id="tracking-icon">📋</div>
+      <div class="tracking-title" id="tracking-title">Request Received!</div>
+      <div class="tracking-sub" id="tracking-sub">Your request has been sent to our staff. We'll be with you shortly.</div>
+      <div class="tracking-status">
+        <div class="status-step active" id="step-1">
+          <div class="step-icon">📋</div>
+          <div class="step-text">Request received</div>
+          <div class="step-check">✓</div>
         </div>
-        <div class=\"status-step\" id=\"step-2\">
-          <div class=\"step-icon\">👷</div>
-          <div class=\"step-text\">Staff assigned</div>
-          <div class=\"step-check\" id=\"check-2\">⏳</div>
+        <div class="status-step" id="step-2">
+          <div class="step-icon">👷</div>
+          <div class="step-text">Staff assigned</div>
+          <div class="step-check" id="check-2">⏳</div>
         </div>
-        <div class=\"status-step\" id=\"step-3\">
-          <div class=\"step-icon\">✅</div>
-          <div class=\"step-text\">Completed</div>
-          <div class=\"step-check\" id=\"check-3\">⏳</div>
+        <div class="status-step" id="step-3">
+          <div class="step-icon">✅</div>
+          <div class="step-text">Completed</div>
+          <div class="step-check" id="check-3">⏳</div>
         </div>
       </div>
-      <div class=\"eta-bar\"><div class=\"eta-fill\" id=\"eta-fill\"></div></div>
-      <div class=\"eta-text\" id=\"eta-track-text\">Estimated: ~10 minutes</div>
-      <button class=\"new-request-btn\" onclick=\"newRequest()\">+ New Request</button>
+      <div class="eta-bar"><div class="eta-fill" id="eta-fill"></div></div>
+      <div class="eta-text" id="eta-track-text">Estimated: ~10 minutes</div>
+      <button class="new-request-btn" onclick="newRequest()">+ New Request</button>
     </div>
 
-    <div class=\"feedback-card\" id=\"feedback-card\">
+    <div class="feedback-card" id="feedback-card">
       <h2>How did we do? ⭐</h2>
       <p>Your request has been completed!<br>We'd love your feedback.</p>
-      <div class=\"stars\" id=\"stars\">
-        <span onclick=\"setRating(1)\">⭐</span>
-        <span onclick=\"setRating(2)\">⭐</span>
-        <span onclick=\"setRating(3)\">⭐</span>
-        <span onclick=\"setRating(4)\">⭐</span>
-        <span onclick=\"setRating(5)\">⭐</span>
+      <div class="stars" id="stars">
+        <span onclick="setRating(1)">⭐</span>
+        <span onclick="setRating(2)">⭐</span>
+        <span onclick="setRating(3)">⭐</span>
+        <span onclick="setRating(4)">⭐</span>
+        <span onclick="setRating(5)">⭐</span>
       </div>
-      <p id=\"rating-label\" style=\"margin-bottom:12px;color:#1a1a2e;font-weight:bold;font-size:16px\"></p>
-      <textarea class=\"comment-box\" id=\"comment\" placeholder=\"Any suggestions? (optional)\"></textarea>
-      <button class=\"feedback-btn\" onclick=\"submitFeedback()\">Submit Feedback</button>
+      <p id="rating-label" style="margin-bottom:12px;color:#1a1a2e;font-weight:bold;font-size:16px"></p>
+      <textarea class="comment-box" id="comment" placeholder="Any suggestions? (optional)"></textarea>
+      <button class="feedback-btn" onclick="submitFeedback()">Submit Feedback</button>
     </div>
 
-    <div class=\"thankyou\" id=\"thankyou\">
+    <div class="thankyou" id="thankyou">
       🙏 Thank you for your feedback!<br><br>
-      <span style=\"font-size:14px;color:#555\">Enjoy your stay at <span id=\"hotel-name-ty\"></span></span>
+      <span style="font-size:14px;color:#555">Enjoy your stay at <span id="hotel-name-ty"></span></span>
     </div>
 
   </div>
@@ -203,13 +224,14 @@
     var roomNumber = null;
     var selectedQuicks = [];
     var hotelData = null;
+    var deptGuestOptions = {};
+    var currentCatSlaMap = {};
+    var deptIsClosed = false; // track if current selected dept is closed
 
     var params = new URLSearchParams(window.location.search);
     hotelId = params.get('hotel_id') || params.get('hotel') || 'hotel_001';
     roomId = params.get('room_id') || null;
     roomNumber = params.get('room') || '101';
-
-    var deptGuestOptions = {};
 
     var DEPT_DEFAULTS = {
       'Housekeeping': ['Extra Towels','Extra Pillow','Water Bottles','Clean Room','Extra Blanket','Toiletries'],
@@ -233,12 +255,6 @@
       'SPA Booking Info':'💆 SPA Booking Info'
     };
 
-    var quickOptions = {
-      'Housekeeping': ['Extra Towels 🛁', 'Extra Pillow 🛏️', 'Water Bottles 💧', 'Clean Room 🧹', 'Extra Blanket 🛌', 'Toiletries 🧴'],
-      'Room Service': ['Breakfast 🍳', 'Coffee ☕', 'Tea 🍵', 'Water 💧', 'Snacks 🍪', 'Ice Bucket 🧊'],
-      'Maintenance': ['AC Issue ❄️', 'Hot Water ♨️', 'Light Bulb 💡', 'TV Issue 📺', 'WiFi Help 📶', 'Door Lock 🔑']
-    };
-
     var etaMap = {
       'Housekeeping': '10–15 mins',
       'Room Service': '15–20 mins',
@@ -246,8 +262,7 @@
       'Front Desk': '5–10 mins'
     };
 
-    var currentCatSlaMap = {};
-
+    // ─── BRANDING ───────────────────────────────────────────
     async function loadBranding() {
       try {
         if (roomId) {
@@ -262,7 +277,6 @@
         if (hotel) {
           hotelData = hotel;
           document.documentElement.style.setProperty('--brand', hotel.colour || '#1a1a2e');
-
           if (hotel.logo_url) {
             document.body.style.backgroundImage = 'url(' + hotel.logo_url + ')';
             document.body.style.backgroundSize = 'cover';
@@ -281,11 +295,7 @@
           document.getElementById('hotel-name-ty').textContent = hotel.name;
           document.title = 'Welco — ' + hotel.name;
           document.getElementById('welcome-msg').style.display = 'inline-block';
-
-          if (hotel.dept_guest_options) {
-            deptGuestOptions = hotel.dept_guest_options;
-          }
-
+          if (hotel.dept_guest_options) deptGuestOptions = hotel.dept_guest_options;
           loadAnnouncement();
         } else {
           document.getElementById('hotel-name').textContent = '🏨 Welco';
@@ -313,17 +323,22 @@
 
     loadBranding();
 
+    // ─── CATEGORY SELECT ─────────────────────────────────────
     async function selectCat(btn, cat) {
       document.querySelectorAll('.cat-btn').forEach(function(b) { b.classList.remove('selected'); });
       btn.classList.add('selected');
       selectedCategory = cat;
       selectedQuicks = [];
+      deptIsClosed = false;
 
+      // Hide everything first
+      document.getElementById('dept-closed-box').style.display = 'none';
       document.getElementById('quick-section').style.display = 'none';
       document.getElementById('services-section').style.display = 'none';
       document.getElementById('eta-badge').style.display = 'none';
+      document.getElementById('submit-btn').disabled = false;
 
-      // CRITICAL FIX: Always re-fetch latest hotel data
+      // Always fetch fresh hotel data
       try {
         var hotelRes = await fetch('/hotels');
         var hotels = await hotelRes.json();
@@ -333,51 +348,45 @@
         }
       } catch(e) {}
 
-      // Check service hours
       var savedDeptFull = deptGuestOptions[cat];
+
+      // ── CHECK IF DEPT IS CLOSED ──
       if (savedDeptFull && savedDeptFull.hours) {
         var h = savedDeptFull.hours;
-        
-        // Check if manually set to closed
+        var closed = false;
+
+        // Manual toggle OFF
         if (h.isOpen === false) {
-          showClosedBanner(h, cat);
-          return;
-        }
-        
-        // Check time-based closing
-        var now = new Date();
-        var curMins = now.getHours() * 60 + now.getMinutes();
-        if (h.openTime && h.closeTime) {
+          closed = true;
+        } else if (h.openTime && h.closeTime) {
+          // Time-based check
+          var now = new Date();
+          var curMins = now.getHours() * 60 + now.getMinutes();
           var openParts  = h.openTime.split(':');
           var closeParts = h.closeTime.split(':');
           var openMins   = parseInt(openParts[0]) * 60 + parseInt(openParts[1]);
           var closeMins  = parseInt(closeParts[0]) * 60 + parseInt(closeParts[1]);
-          if (curMins < openMins || curMins >= closeMins) {
-            showClosedBanner(h, cat);
-            return;
-          }
+          if (curMins < openMins || curMins >= closeMins) closed = true;
+        }
+
+        if (closed) {
+          deptIsClosed = true;
+          showClosedBox(cat, h);
+          document.getElementById('submit-btn').disabled = true;
+          return;
         }
       }
 
-      // Clear any closed banner
-      var existing = document.getElementById('closed-banner');
-      if (existing) existing.remove();
-
-      // Load slaMap for this dept
+      // ── DEPT IS OPEN — load options ──
       currentCatSlaMap = (savedDeptFull && savedDeptFull.slaMap) ? savedDeptFull.slaMap : {};
-
       renderDeptServices(cat);
       document.getElementById('services-section').style.display = 'block';
       document.getElementById('eta-time').textContent = etaMap[cat] || '10 mins';
       document.getElementById('eta-badge').style.display = 'block';
     }
 
-    function showClosedBanner(h, cat) {
-      // Remove existing banner
-      var existing = document.getElementById('closed-banner');
-      if (existing) existing.remove();
-
-      // Format times nicely
+    // ─── SHOW CLOSED BOX ────────────────────────────────────
+    function showClosedBox(cat, h) {
       function fmt(t) {
         if (!t) return '';
         var p = t.split(':');
@@ -387,79 +396,55 @@
         return hr + (mn > 0 ? ':' + String(mn).padStart(2,'0') : '') + ' ' + ampm;
       }
 
-      var msg = (h.closedMsg) || 'We\'re currently closed. Please try again during our service hours.';
-      var timingText = (h.openTime && h.closeTime)
-        ? '⏰ Service hours: ' + fmt(h.openTime) + ' – ' + fmt(h.closeTime)
-        : '';
+      var deptEmojis = {'Housekeeping':'🛏️','Room Service':'🍽️','Maintenance':'🔧','Front Desk':'🛎️'};
+      document.getElementById('closed-title').textContent = (deptEmojis[cat] || '') + ' ' + cat + ' is Closed Right Now';
+      document.getElementById('closed-msg').textContent = h.closedMsg || "We're currently closed. Please try again during our service hours.";
 
-      var banner = document.createElement('div');
-      banner.id = 'closed-banner';
-      banner.style.cssText = 'background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:16px;padding:24px;text-align:center;margin-top:8px;margin-bottom:12px';
-      banner.innerHTML =
-        '<div style=\"font-size:48px;margin-bottom:12px\">🌙</div>' +
-        '<div style=\"font-size:18px;font-weight:700;color:white;margin-bottom:8px\">' + cat + ' is Closed</div>' +
-        '<div style=\"font-size:13px;color:rgba(255,255,255,0.75);line-height:1.6;margin-bottom:12px\">' + msg + '</div>' +
-        (timingText ? '<div style=\"background:rgba(255,255,255,0.1);border-radius:10px;padding:10px 16px;font-size:13px;font-weight:600;color:#ffd166\">' + timingText + '</div>' : '');
+      var timingEl = document.getElementById('closed-timing');
+      if (h.openTime && h.closeTime) {
+        timingEl.textContent = '⏰ Service hours: ' + fmt(h.openTime) + ' – ' + fmt(h.closeTime);
+        timingEl.style.display = 'block';
+      } else {
+        timingEl.style.display = 'none';
+      }
 
-      var servicesSection = document.getElementById('services-section');
-      servicesSection.parentNode.insertBefore(banner, servicesSection);
-      
-      // Disable submit button when closed
-      document.getElementById('message').disabled = true;
-      var submitBtn = document.querySelector('.submit-btn');
-      submitBtn.disabled = true;
-      submitBtn.style.opacity = '0.5';
+      document.getElementById('dept-closed-box').style.display = 'block';
     }
 
-    function getOptionSla(key) {
-      if (currentCatSlaMap[key] !== undefined) return currentCatSlaMap[key];
-      var DEFAULTS = {
-        'Extra Towels':5,'Extra Pillow':5,'Water Bottles':5,'Clean Room':30,
-        'Extra Blanket':5,'Toiletries':10,'Breakfast':20,'Coffee':10,'Tea':10,
-        'Water':5,'Snacks':10,'Ice Bucket':5,'AC Issue':20,'Hot Water':15,
-        'Light Bulb':10,'TV Issue':15,'WiFi Help':10,'Door Lock':10,
-        'Wake Up Call':2,'Luggage Help':5,'Late Checkout Info':5,
-        'Airport Transfer & Local Cab':10,'Room Upgradation Info':5,
-        'Room Decoration Info':30,'Private Dinner Info':10,'Extend Stay Info':5,
-        'Bike Rent Info':5,'Adventure Activities Info':5,'SPA Booking Info':5
-      };
-      return DEFAULTS[key] || 15;
-    }
-
+    // ─── RENDER SERVICES (only enabled options) ──────────────
     function renderDeptServices(cat) {
       var grid = document.getElementById('services-grid');
       grid.innerHTML = '';
 
       var savedDept = deptGuestOptions[cat];
-
-      // CRITICAL FIX: Only show enabled options
       var enabledKeys, customItems;
 
       if (savedDept && savedDept.enabled !== undefined) {
-        // HOD has configured - use ONLY enabled options
-        enabledKeys  = savedDept.enabled.filter(function(k){ return k.indexOf('CUSTOM::') !== 0; });
-        customItems  = (savedDept.custom || []).filter(function(c){
+        // HOD has saved settings — show ONLY what is in enabled list
+        // Standard keys: anything NOT starting with CUSTOM::
+        enabledKeys = savedDept.enabled.filter(function(k) {
+          return k.indexOf('CUSTOM::') !== 0;
+        });
+        // Custom items: only those whose key is in enabled list
+        customItems = (savedDept.custom || []).filter(function(c) {
           return savedDept.enabled.indexOf(c.key) !== -1;
         });
       } else {
-        // Never configured - show all defaults
-        enabledKeys  = DEPT_DEFAULTS[cat] || [];
-        customItems  = [];
+        // HOD never configured — show all defaults
+        enabledKeys = DEPT_DEFAULTS[cat] || [];
+        customItems = [];
       }
 
-      // CRITICAL: If enabled array is empty or all options disabled, show message
       if (enabledKeys.length === 0 && customItems.length === 0) {
-        grid.innerHTML = '<div class=\"no-services\" style=\"grid-column:1/-1\">No quick options available. Please describe your request below.</div>';
+        grid.innerHTML = '<div class="no-services" style="grid-column:1/-1">No quick options available. Please describe your request below.</div>';
         return;
       }
 
-      // Show only enabled standard options
       enabledKeys.forEach(function(key) {
         var label = DEPT_DEFAULT_LABELS[key] || key;
         addServiceBtn(grid, key, label);
       });
 
-      // Show only enabled custom options
       customItems.forEach(function(c) {
         addServiceBtn(grid, c.key, c.label);
       });
@@ -486,8 +471,7 @@
           var allBtns = document.querySelectorAll('.service-item.selected');
           var maxSla = 0;
           allBtns.forEach(function(b) {
-            var k = b.getAttribute('data-key');
-            var s = getOptionSla(k);
+            var s = getOptionSla(b.getAttribute('data-key'));
             if (s > maxSla) maxSla = s;
           });
           document.getElementById('eta-time').textContent = maxSla + ' mins';
@@ -498,6 +482,35 @@
       grid.appendChild(el);
     }
 
+    // ─── SLA HELPERS ─────────────────────────────────────────
+    var OPTION_SLA_DEFAULTS = {
+      'Extra Towels':5,'Extra Pillow':5,'Water Bottles':5,'Clean Room':30,
+      'Extra Blanket':5,'Toiletries':10,'Breakfast':20,'Coffee':10,'Tea':10,
+      'Water':5,'Snacks':10,'Ice Bucket':5,'AC Issue':20,'Hot Water':15,
+      'Light Bulb':10,'TV Issue':15,'WiFi Help':10,'Door Lock':10,
+      'Wake Up Call':2,'Luggage Help':5,'Late Checkout Info':5,
+      'Airport Transfer & Local Cab':10,'Room Upgradation Info':5,
+      'Room Decoration Info':30,'Private Dinner Info':10,'Extend Stay Info':5,
+      'Bike Rent Info':5,'Adventure Activities Info':5,'SPA Booking Info':5
+    };
+
+    function getOptionSla(key) {
+      if (currentCatSlaMap[key] !== undefined) return currentCatSlaMap[key];
+      return OPTION_SLA_DEFAULTS[key] || 15;
+    }
+
+    function getMaxSla() {
+      var allBtns = document.querySelectorAll('.service-item.selected');
+      if (allBtns.length === 0) return 15;
+      var maxSla = 0;
+      allBtns.forEach(function(b) {
+        var s = getOptionSla(b.getAttribute('data-key'));
+        if (s > maxSla) maxSla = s;
+      });
+      return maxSla || 15;
+    }
+
+    // ─── FEEDBACK ────────────────────────────────────────────
     function setRating(r) {
       selectedRating = r;
       var labels = ['', '😞 Poor', '😐 Fair', '🙂 Good', '😊 Great', '🤩 Excellent!'];
@@ -507,43 +520,16 @@
       });
     }
 
-    function getMaxSla() {
-      var allBtns = document.querySelectorAll('.service-item.selected');
-      if (allBtns.length === 0) return 15;
-      var maxSla = 0;
-      allBtns.forEach(function(b) {
-        var k = b.getAttribute('data-key');
-        var s = getOptionSla(k);
-        if (s > maxSla) maxSla = s;
-      });
-      return maxSla || 15;
-    }
-
+    // ─── SUBMIT ──────────────────────────────────────────────
     async function submitRequest() {
-      if (!selectedCategory) {
-        alert('Please select a category first!');
-        return;
-      }
-      
-      // CRITICAL FIX: Block submission if closed banner showing
-      if (document.getElementById('closed-banner')) {
-        alert('This service is currently closed. Please try again during service hours.');
-        return;
-      }
-      
+      if (!selectedCategory) { alert('Please select a category first!'); return; }
+      if (deptIsClosed) { alert('This service is currently closed. Please try again during service hours.'); return; }
       var message = document.getElementById('message').value || selectedQuicks.join(', ');
       try {
         var res = await fetch('/requests', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            hotel_id: hotelId, 
-            room_id: roomId, 
-            room_number: roomNumber, 
-            category: selectedCategory, 
-            message: message, 
-            sla_minutes: getMaxSla() 
-          })
+          body: JSON.stringify({ hotel_id: hotelId, room_id: roomId, room_number: roomNumber, category: selectedCategory, message: message, sla_minutes: getMaxSla() })
         });
         var data = await res.json();
         if (data && data.id) {
@@ -554,27 +540,20 @@
             showTracking(selectedCategory, message);
           }, 1500);
           document.getElementById('message').value = '';
-          document.getElementById('message').disabled = false;
-          document.querySelector('.submit-btn').disabled = false;
-          document.querySelector('.submit-btn').style.opacity = '1';
           document.querySelectorAll('.cat-btn').forEach(function(b) { b.classList.remove('selected'); });
           document.querySelectorAll('.quick-item, .service-item').forEach(function(q) { q.classList.remove('selected'); });
-          selectedCategory = ''; 
-          selectedQuicks = [];
+          selectedCategory = ''; selectedQuicks = []; deptIsClosed = false;
           pollInterval = setInterval(checkIfDone, 5000);
-        } else { 
-          alert('Something went wrong. Please try again.'); 
-        }
-      } catch(e) { 
-        alert('Could not send request. Please try again.'); 
-      }
+        } else { alert('Something went wrong. Please try again.'); }
+      } catch(e) { alert('Could not send request. Please try again.'); }
     }
 
+    // ─── TRACKING ────────────────────────────────────────────
     function showTracking(category, message) {
       var icons = { 'Housekeeping': '🛏️', 'Room Service': '🍽️', 'Maintenance': '🔧', 'Front Desk': '🛎️' };
       document.getElementById('tracking-icon').textContent = icons[category] || '📋';
       document.getElementById('tracking-title').textContent = category + ' Request Sent!';
-      document.getElementById('tracking-sub').textContent = message ? '\"' + message + '\"' : 'Your request has been sent to our team.';
+      document.getElementById('tracking-sub').textContent = message ? '"' + message + '"' : 'Your request has been sent to our team.';
       document.getElementById('eta-track-text').textContent = 'Estimated: ' + (etaMap[category] || '10–15 mins');
       document.getElementById('tracking-card').style.display = 'block';
       setTimeout(function() { document.getElementById('eta-fill').style.width = '60%'; }, 500);
@@ -619,31 +598,25 @@
       document.getElementById('tracking-card').style.display = 'none';
       document.getElementById('request-card').style.display = 'block';
       document.getElementById('success').style.display = 'none';
+      document.getElementById('dept-closed-box').style.display = 'none';
       document.getElementById('quick-section').style.display = 'none';
       document.getElementById('services-section').style.display = 'none';
       document.getElementById('eta-badge').style.display = 'none';
+      document.getElementById('submit-btn').disabled = false;
       document.getElementById('eta-fill').style.width = '10%';
       document.getElementById('step-2').classList.remove('active');
       document.getElementById('step-3').classList.remove('active', 'done');
       document.getElementById('check-2').textContent = '⏳';
       document.getElementById('check-3').textContent = '⏳';
       currentRequestId = null;
-      
-      // Re-enable submit
-      document.getElementById('message').disabled = false;
-      document.querySelector('.submit-btn').disabled = false;
-      document.querySelector('.submit-btn').style.opacity = '1';
+      deptIsClosed = false;
     }
 
     async function submitFeedback() {
-      if (!selectedRating) {
-        alert('Please select a star rating!');
-        return;
-      }
+      if (!selectedRating) { alert('Please select a star rating!'); return; }
       var comment = document.getElementById('comment').value;
       await fetch('/requests/' + currentRequestId + '/feedback', {
-        method: 'POST', 
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ rating: selectedRating, feedback_comments: comment })
       });
       document.getElementById('feedback-card').style.display = 'none';

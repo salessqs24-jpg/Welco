@@ -340,12 +340,20 @@ function updateDutyUI(){
 
 function toggleDuty(){
   var newStatus=!isOnDuty;
-  fetch('/staff/'+loggedInStaffDbId+'/duty',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({is_on_duty:newStatus})})
+  authFetch('/staff/'+loggedInStaffDbId+'/duty',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({is_on_duty:newStatus})})
   .then(function(r){return r.json();}).then(function(d){
     if(d.error){alert(d.error);return;}
     isOnDuty=newStatus; updateDutyUI();
     if(isOnDuty) showNotifBar(true);
   }).catch(function(){alert('Connection error. Try again.');});
+}
+
+function authFetch(url, options) {
+  options = options || {};
+  options.headers = options.headers || {};
+  var token = localStorage.getItem('welco_token');
+  if (token) options.headers['Authorization'] = 'Bearer ' + token;
+  return fetch(url, options);
 }
 
 function doLogout(){
@@ -389,11 +397,11 @@ function loadTasks(){
 
     // Department colors — left border + badge background
     var deptConfig = {
-      'Housekeeping':  { color: '#4361EE', bg: '#eef0fd', emoji: '🛏️' },
-      'Room Service':  { color: '#F77F00', bg: '#fff3e0', emoji: '🍽️' },
-      'Maintenance':   { color: '#e63946', bg: '#fde8ea', emoji: '🔧' },
-      'Front Desk':    { color: '#9B5DE5', bg: '#f3eefe', emoji: '🛎️' },
-      'General':       { color: '#0a9396', bg: '#e8f4f4', emoji: '👤' }
+      'Housekeeping': { color: '#4361EE', bg: '#eef0fd', emoji: '🛏️' },
+      'Room Service': { color: '#F77F00', bg: '#fff3e0', emoji: '🍽️' },
+      'Maintenance': { color: '#e63946', bg: '#fde8ea', emoji: '🔧' },
+      'Front Desk': { color: '#9B5DE5', bg: '#f3eefe', emoji: '🛎️' },
+      'General': { color: '#0a9396', bg: '#e8f4f4', emoji: '👤' }
     };
 
     list.innerHTML=filtered.map(function(r){
@@ -438,11 +446,11 @@ function claimTask(id){
 function cancelClaim(){ pendingClaimId=null; document.getElementById('offduty-modal').classList.remove('open'); }
 function confirmClaim(){ document.getElementById('offduty-modal').classList.remove('open'); if(pendingClaimId!==null){doClaimTask(pendingClaimId);pendingClaimId=null;} }
 function doClaimTask(id){
-  fetch('/requests/'+id+'/claim',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({claimed_by:loggedInStaff})})
+  authFetch('/requests/'+id+'/claim',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({claimed_by:loggedInStaff})})
   .then(function(r){return r.json();}).then(function(d){if(d.error){alert('Error: '+d.error);return;}loadTasks();}).catch(function(){alert('Connection error');});
 }
 function markDone(id){
-  fetch('/requests/'+id+'/complete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})}).then(function(){loadTasks();});
+  authFetch('/requests/'+id+'/complete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})}).then(function(){loadTasks();});
 }
 function showLoginErr(msg){ var e=document.getElementById('login-error'); e.textContent=msg; e.style.display='block'; }
 </script>

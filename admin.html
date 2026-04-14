@@ -491,6 +491,15 @@ if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw-admin.js
 /* ═══════════════════════════════════════════════
    LOGIN / LOGOUT
 ═══════════════════════════════════════════════ */
+// Authenticated fetch — adds JWT token to every request
+function authFetch(url, options) {
+  options = options || {};
+  options.headers = options.headers || {};
+  var token = localStorage.getItem('welco_token');
+  if (token) options.headers['Authorization'] = 'Bearer ' + token;
+  return fetch(url, options);
+}
+
 function doLogin() {
   var email = document.getElementById('l-email').value.trim();
   var password = document.getElementById('l-password').value;
@@ -530,6 +539,7 @@ function attemptLogin(email, password, btn, attempt) {
     if (!hotel) { showErr('No hotel found for this account.'); return; }
     localStorage.setItem('welco_admin_hotel', JSON.stringify(hotel));
     localStorage.setItem('welco_admin_hotels', JSON.stringify(allHotels));
+    if (res.d.token) localStorage.setItem('welco_token', res.d.token);
     startApp();
   })
   .catch(function(err) {
@@ -554,6 +564,7 @@ function showErr(msg) {
 function doLogout() {
   localStorage.removeItem('welco_admin_hotel');
   localStorage.removeItem('welco_admin_hotels');
+  localStorage.removeItem('welco_token');
   allHotels = [];
   hotel = null;
   document.getElementById('app-screen').style.display = 'none';
@@ -748,7 +759,7 @@ function addRoom() {
   var num = document.getElementById('new-room-num').value.trim();
   var floor = document.getElementById('new-room-floor').value || 1;
   if (!num) { alert('Enter a room number!'); return; }
-  fetch('/rooms', {
+  authFetch('/rooms', {
     method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({hotel_id:hotel.hotel_id, room_number:num, floor:parseInt(floor), is_active:true})
   }).then(function(){ document.getElementById('new-room-num').value=''; document.getElementById('new-room-floor').value=''; loadRooms(); loadOverview(); });
@@ -794,7 +805,7 @@ function addBulkRooms() {
       loadRooms(); loadOverview();
       return;
     }
-    fetch('/rooms', {
+    authFetch('/rooms', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify(rooms[index])
     }).then(function(r) { return r.json(); }).then(function(d) {
@@ -808,7 +819,7 @@ function addBulkRooms() {
 
 function deleteRoom(id) {
   if (!confirm('Delete this room?')) return;
-  fetch('/rooms/'+id, {method:'DELETE'}).then(function(){ loadRooms(); loadOverview(); });
+  authFetch('/rooms/'+id, {method:'DELETE'}).then(function(){ loadRooms(); loadOverview(); });
 }
 
 /* ═══════════════════════════════════════════════
@@ -848,7 +859,7 @@ function addStaff() {
   var pin = document.getElementById('new-staff-pin').value.trim();
   var dept = document.getElementById('new-staff-dept').value;
   if (!name || pin.length !== 4) { alert('Enter a full name and exactly 4-digit PIN'); return; }
-  fetch('/staff', {
+  authFetch('/staff', {
     method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({hotel_id:hotel.hotel_id, name:name, pin:pin, department:dept})
   }).then(function(r){return r.json();}).then(function(data){
@@ -865,7 +876,7 @@ function addStaff() {
 
 function removeStaff(id) {
   if (!confirm('Remove this staff member? They will no longer be able to login.')) return;
-  fetch('/staff/'+id, {method:'DELETE'}).then(function(){ loadStaff(); });
+  authFetch('/staff/'+id, {method:'DELETE'}).then(function(){ loadStaff(); });
 }
 
 /* ═══════════════════════════════════════════════
@@ -880,7 +891,7 @@ function previewAnn(val) {
 function postAnnouncement() {
   var msg = document.getElementById('ann-input').value.trim();
   if (!msg) { alert('Please type an announcement first.'); return; }
-  fetch('/announcements', {
+  authFetch('/announcements', {
     method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({hotel_id:hotel.hotel_id, message:msg})
   }).then(function(r){return r.json();}).then(function(data){
@@ -916,13 +927,13 @@ function loadAnnouncements() {
 }
 
 function toggleAnn(id, active) {
-  fetch('/announcements/'+id+'/toggle', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({is_active:active})})
+  authFetch('/announcements/'+id+'/toggle', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({is_active:active})})
     .then(function(){ loadAnnouncements(); });
 }
 
 function deleteAnn(id) {
   if (!confirm('Delete this announcement?')) return;
-  fetch('/announcements/'+id, {method:'DELETE'}).then(function(){ loadAnnouncements(); });
+  authFetch('/announcements/'+id, {method:'DELETE'}).then(function(){ loadAnnouncements(); });
 }
 
 /* ═══════════════════════════════════════════════
@@ -1078,7 +1089,7 @@ function saveSettings() {
   if (!name) { alert('Hotel name cannot be empty.'); return; }
   var payload = { name:name, city:city, colour:colour };
   if (pendingLogoBase64 !== null) payload.logo_url = pendingLogoBase64;
-  fetch('/hotels/'+hotel.hotel_id+'/update', {
+  authFetch('/hotels/'+hotel.hotel_id+'/update', {
     method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify(payload)
   }).then(function(r){
@@ -1222,7 +1233,7 @@ function toggleHodPerm(checkbox) {
       if (!hod) return;
       var perms = hod.permissions || {announcements:true,schedule:true,guest_options:true,staff:true,analytics:true};
       perms[permKey] = isOn;
-      return fetch('/hod/'+hodId+'/permissions', {
+      return authFetch('/hod/'+hodId+'/permissions', {
         method:'POST', headers:{'Content-Type':'application/json'},
         body:JSON.stringify({permissions:perms})
       });
@@ -1236,7 +1247,7 @@ function addHOD() {
   var dept = document.getElementById('new-hod-dept').value;
   var pin = document.getElementById('new-hod-pin').value.trim();
   if (!name || pin.length !== 4) { alert('Enter full name and exactly 4-digit PIN'); return; }
-  fetch('/hod', {
+  authFetch('/hod', {
     method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({hotel_id:hotel.hotel_id, name:name, department:dept, pin:pin})
   }).then(function(r){return r.json();}).then(function(data){
@@ -1253,7 +1264,7 @@ function addHOD() {
 
 function removeHOD(id) {
   if (!confirm('Remove this HOD?')) return;
-  fetch('/hod/'+id, {method:'DELETE'}).then(function(){ loadHOD(); });
+  authFetch('/hod/'+id, {method:'DELETE'}).then(function(){ loadHOD(); });
 }
 
 /* ═══════════════════════════════════════════════

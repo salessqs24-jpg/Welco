@@ -40,6 +40,41 @@ async function checkPassword(plain, hashed) {
 }
 function signToken(payload) { return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' }); }
 
+// ── CORS ─────────────────────────────────────────────────────────────────────
+app.use(function(req, res, next) {
+  var allowed = ['https://welco.onrender.com', 'http://localhost:3000'];
+  var origin = req.headers.origin;
+  if (!origin || allowed.indexOf(origin) !== -1) {
+    res.setHeader('Access-Control-Allow-Origin', origin || '*');
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,DELETE,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+  if (req.method === 'OPTIONS') return res.sendStatus(200);
+  next();
+});
+
+// ── JWT MIDDLEWARE ────────────────────────────────────────────────────────────
+function verifyToken(req, res, next) {
+  // Allow guest portal to submit requests without token
+  var publicRoutes = [
+    '/health', '/hotels', '/rooms', '/announcements', '/requests'
+  ];
+  // Check if it's a public GET route
+  if (req.method === 'GET' && publicRoutes.some(function(r){ return req.path.startsWith(r); })) {
+    return next();
+  }
+  var auth = req.headers.authorization;
+  if (!auth || !auth.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Not authenticated. Please login again.' });
+  }
+  try {
+    req.user = jwt.verify(auth.split(' ')[1], JWT_SECRET);
+    next();
+  } catch(e) {
+    return res.status(401).json({ error: 'Session expired. Please login again.' });
+  }
+}
+
 function generateHotelCode(name) {
   var base = name.toUpperCase().replace(/[^A-Z]/g,'').substring(0,3);
   while (base.length < 3) base += 'X';
@@ -160,19 +195,19 @@ app.get('/hotels', async (req,res) => {
   if (error) return res.status(500).json({ error:error.message });
   res.json(data);
 });
-app.post('/hotels/:hotel_id/dept-guest-options', async (req,res) => {
+app.post('/hotels/:hotel_id/dept-guest-options', verifyToken, async (req,res) => {
   const { dept_guest_options } = req.body;
   const { data,error } = await supabase.from('hotels').update({ dept_guest_options }).eq('hotel_id',req.params.hotel_id).select().single();
   if (error) return res.status(500).json({ error:error.message });
   res.json(data);
 });
-app.post('/hotels/:hotel_id/guest-options', async (req,res) => {
+app.post('/hotels/:hotel_id/guest-options', verifyToken, async (req,res) => {
   const { guest_options } = req.body;
   const { data,error } = await supabase.from('hotels').update({ guest_options }).eq('hotel_id',req.params.hotel_id).select().single();
   if (error) return res.status(500).json({ error:error.message });
   res.json(data);
 });
-app.post('/hotels/:hotel_id/update', async (req,res) => {
+app.post('/hotels/:hotel_id/update', verifyToken, async (req,res) => {
   const name=sanitize(req.body.name), city=sanitize(req.body.city||''), colour=sanitize(req.body.colour||''), emoji=req.body.emoji||'', logo_url=req.body.logo_url;
   const { data,error } = await supabase.from('hotels').update({ name,city,colour,emoji,logo_url }).eq('hotel_id',req.params.hotel_id).select().single();
   if (error) return res.status(500).json({ error:error.message });
@@ -187,13 +222,13 @@ app.get('/rooms', async (req,res) => {
   if (error) return res.status(500).json({ error:error.message });
   res.json(data);
 });
-app.post('/rooms', async (req,res) => {
+app.post('/rooms', verifyToken, async (req,res) => {
   const { hotel_id } = req.body, room_number=sanitize(req.body.room_number), floor=parseInt(req.body.floor)||1, is_active=req.body.is_active!==false;
   const { data,error } = await supabase.from('rooms').insert([{ hotel_id,room_number,floor,is_active }]).select().single();
   if (error) return res.status(500).json({ error:error.message });
   res.json(data);
 });
-app.delete('/rooms/:id', async (req,res) => {
+app.delete('/rooms/:id', verifyToken, async (req,res) => {
   const { error } = await supabase.from('rooms').delete().eq('id',req.params.id);
   if (error) return res.status(500).json({ error:error.message });
   res.json({ success:true });
@@ -207,7 +242,7 @@ app.get('/staff', async (req,res) => {
   if (error) return res.status(500).json({ error:error.message });
   res.json(data);
 });
-app.post('/staff', async (req,res) => {
+app.post('/staff', verifyToken, async (req,res) => {
   const { hotel_id } = req.body, name=sanitize(req.body.name), pin=sanitize(req.body.pin), department=sanitize(req.body.department||'General');
   if (pin.length!==4||!/^\d{4}$/.test(pin)) return res.status(400).json({ error:'PIN must be exactly 4 digits.' });
   const { data:hotelData } = await supabase.from('hotels').select('hotel_code').eq('hotel_id',hotel_id).single();
@@ -216,14 +251,14 @@ app.post('/staff', async (req,res) => {
   if (error) return res.status(500).json({ error:error.message });
   res.json(data);
 });
-app.post('/staff/:id/duty', async (req,res) => {
+app.post('/staff/:id/duty', verifyToken, async (req,res) => {
   const { is_on_duty } = req.body, now=new Date().toISOString(), update={ is_on_duty };
   if (is_on_duty) update.clocked_in_at=now; else update.clocked_out_at=now;
   const { data,error } = await supabase.from('staff').update(update).eq('id',req.params.id).select().single();
   if (error) return res.status(500).json({ error:error.message });
   res.json(data);
 });
-app.delete('/staff/:id', async (req,res) => {
+app.delete('/staff/:id', verifyToken, async (req,res) => {
   const { error } = await supabase.from('staff').delete().eq('id',req.params.id);
   if (error) return res.status(500).json({ error:error.message });
   res.json({ success:true });
@@ -234,7 +269,8 @@ app.post('/staff/verify', async (req,res) => {
   if (staff_id) query=query.eq('staff_id',staff_id); else query=query.eq('hotel_id',hotel_id).eq('name',name);
   const { data } = await query.maybeSingle();
   if (!data) return res.status(401).json({ error:'Invalid Staff ID or PIN.' });
-  res.json({ success:true, staff:data });
+  var token = signToken({ staff_id: data.id, hotel_id: data.hotel_id, dept: data.department });
+  res.json({ success:true, staff:data, token });
 });
 
 // HOD
@@ -243,7 +279,7 @@ app.get('/hod', async (req,res) => {
   if (error) return res.status(500).json({ error:error.message });
   res.json(data);
 });
-app.post('/hod', async (req,res) => {
+app.post('/hod', verifyToken, async (req,res) => {
   const { hotel_id } = req.body, name=sanitize(req.body.name), department=sanitize(req.body.department), pin=sanitize(req.body.pin);
   if (!hotel_id||!name||!department||!pin) return res.status(400).json({ error:'All fields required.' });
   if (pin.length!==4||!/^\d{4}$/.test(pin)) return res.status(400).json({ error:'PIN must be exactly 4 digits.' });
@@ -253,13 +289,13 @@ app.post('/hod', async (req,res) => {
   if (error) return res.status(500).json({ error:error.message });
   res.json(data);
 });
-app.post('/hod/:id/permissions', async (req,res) => {
+app.post('/hod/:id/permissions', verifyToken, async (req,res) => {
   const { permissions } = req.body;
   const { data,error } = await supabase.from('hod').update({ permissions }).eq('id',req.params.id).select().single();
   if (error) return res.status(500).json({ error:error.message });
   res.json(data);
 });
-app.delete('/hod/:id', async (req,res) => {
+app.delete('/hod/:id', verifyToken, async (req,res) => {
   const { error } = await supabase.from('hod').delete().eq('id',req.params.id);
   if (error) return res.status(500).json({ error:error.message });
   res.json({ success:true });
@@ -271,7 +307,8 @@ app.post('/hod/verify', async (req,res) => {
   if (!hotel) return res.status(401).json({ error:'Invalid hotel code.' });
   const { data:hod } = await supabase.from('hod').select('*').eq('hotel_id',hotel.hotel_id).eq('name',name).eq('pin',pin).eq('is_active',true).maybeSingle();
   if (!hod) return res.status(401).json({ error:'Invalid name or PIN.' });
-  res.json({ success:true, hod:{ ...hod, hotel } });
+  var token = signToken({ hod_id: hod.id, hotel_id: hotel.hotel_id, dept: hod.department });
+  res.json({ success:true, hod:{ ...hod, hotel }, token });
 });
 
 // REQUESTS
@@ -288,13 +325,13 @@ app.post('/requests', async (req,res) => {
   if (error) return res.status(500).json({ error:error.message });
   res.json(data);
 });
-app.post('/requests/:id/claim', async (req,res) => {
+app.post('/requests/:id/claim', verifyToken, async (req,res) => {
   const claimed_by=sanitize(req.body.claimed_by||'');
   const { data,error } = await supabase.from('requests').update({ status:'in_progress',claimed_by,claimed_at:new Date().toISOString() }).eq('id',req.params.id).select().single();
   if (error) return res.status(500).json({ error:error.message });
   res.json(data);
 });
-app.post('/requests/:id/complete', async (req,res) => {
+app.post('/requests/:id/complete', verifyToken, async (req,res) => {
   const { data,error } = await supabase.from('requests').update({ status:'done',completed_at:new Date().toISOString() }).eq('id',req.params.id).select().single();
   if (error) return res.status(500).json({ error:error.message });
   res.json(data);
@@ -315,7 +352,7 @@ app.get('/announcements', async (req,res) => {
   if (error) return res.status(500).json({ error:error.message });
   res.json(data);
 });
-app.post('/announcements', async (req,res) => {
+app.post('/announcements', verifyToken, async (req,res) => {
   const { hotel_id } = req.body, message=sanitize(req.body.message||'');
   if (!message) return res.status(400).json({ error:'Message required.' });
   await supabase.from('announcements').update({ is_active:false }).eq('hotel_id',hotel_id);
@@ -323,12 +360,12 @@ app.post('/announcements', async (req,res) => {
   if (error) return res.status(500).json({ error:error.message });
   res.json(data);
 });
-app.delete('/announcements/:id', async (req,res) => {
+app.delete('/announcements/:id', verifyToken, async (req,res) => {
   const { error } = await supabase.from('announcements').delete().eq('id',req.params.id);
   if (error) return res.status(500).json({ error:error.message });
   res.json({ success:true });
 });
-app.post('/announcements/:id/toggle', async (req,res) => {
+app.post('/announcements/:id/toggle', verifyToken, async (req,res) => {
   const { is_active } = req.body;
   const { data,error } = await supabase.from('announcements').update({ is_active }).eq('id',req.params.id).select().single();
   if (error) return res.status(500).json({ error:error.message });
@@ -344,20 +381,20 @@ app.get('/maintenance', async (req,res) => {
   if (error) return res.status(500).json({ error:error.message });
   res.json(data);
 });
-app.post('/maintenance', async (req,res) => {
+app.post('/maintenance', verifyToken, async (req,res) => {
   const { hotel_id,next_due } = req.body, department=sanitize(req.body.department||''), title=sanitize(req.body.title||''), description=sanitize(req.body.description||''), frequency=sanitize(req.body.frequency||'daily'), created_by=sanitize(req.body.created_by||'');
   if (!title) return res.status(400).json({ error:'Title required.' });
   const { data,error } = await supabase.from('maintenance_tasks').insert([{ hotel_id,department,title,description,frequency,next_due,created_by,is_active:true }]).select().single();
   if (error) return res.status(500).json({ error:error.message });
   res.json(data);
 });
-app.post('/maintenance/:id/done', async (req,res) => {
+app.post('/maintenance/:id/done', verifyToken, async (req,res) => {
   const { last_done,next_due } = req.body;
   const { data,error } = await supabase.from('maintenance_tasks').update({ last_done,next_due }).eq('id',req.params.id).select().single();
   if (error) return res.status(500).json({ error:error.message });
   res.json(data);
 });
-app.delete('/maintenance/:id', async (req,res) => {
+app.delete('/maintenance/:id', verifyToken, async (req,res) => {
   const { error } = await supabase.from('maintenance_tasks').update({ is_active:false }).eq('id',req.params.id);
   if (error) return res.status(500).json({ error:error.message });
   res.json({ success:true });

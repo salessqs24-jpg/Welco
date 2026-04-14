@@ -34,8 +34,9 @@ function sanitize(str) {
 const SALT_ROUNDS = 10;
 async function hashPassword(plain) { return bcrypt.hash(plain, SALT_ROUNDS); }
 async function checkPassword(plain, hashed) {
-  if (!hashed || !hashed.startsWith('$2')) return plain === hashed;
-  return bcrypt.compare(plain, hashed);
+  if (!hashed) return false;
+  if (!hashed.startsWith('$2')) return String(plain) === String(hashed);
+  try { return await bcrypt.compare(String(plain), hashed); } catch(e) { return false; }
 }
 function signToken(payload) { return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' }); }
 

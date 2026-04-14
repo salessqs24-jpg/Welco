@@ -26,18 +26,16 @@ app.use('/staff/verify', loginLimiter);
 app.use(express.json({ limit: '5mb' }));
 
 // Serve static files but block direct access to server files
-app.use(function(req, res, next) {
-  // Block direct access to server-side files
-  if (req.path === '/index.js' || req.path === '/.env' || req.path === '/package.json' || req.path === '/package-lock.json') {
-    return res.status(403).send('Forbidden');
+// Serve static files with index.js protection
+app.use(express.static(__dirname, {
+  index: 'index.html',
+  setHeaders: function(res, path) {
+    // Block server files
+    if (path.endsWith('index.js') || path.endsWith('.env') || path.endsWith('package.json')) {
+      res.status(403);
+    }
   }
-  next();
-});
-
-// Root route — always serve landing page
-app.get('/', (req, res) => res.sendFile(__dirname + '/index.html'));
-
-app.use(express.static(__dirname));
+}));
 
 function sanitize(str) {
   if (!str) return '';
@@ -98,7 +96,7 @@ function generateStaffId(hotelCode) { return (hotelCode||'WLC')+'-'+Math.floor(M
 app.get('/health', (req,res) => res.json({ status:'ok', ts:Date.now() }));
 
 // Root route — serve landing page
-app.get('/', (req,res) => res.sendFile(__dirname + '/index.html'));
+
 
 // OWNER SIGNUP
 app.post('/owner/signup', async (req,res) => {

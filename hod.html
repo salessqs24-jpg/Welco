@@ -1633,24 +1633,37 @@ function updateServiceStatusLabel() {
   var label = document.getElementById('service-status-label');
   var bg = document.getElementById('toggle-bg');
   var knob = document.getElementById('toggle-knob');
+  var sub = label.nextElementSibling;
   label.textContent = isOpen ? '🟢 Service is Open' : '🔴 Service is Closed';
+  if (sub) sub.textContent = isOpen ? 'Guests can currently send requests' : 'Guests will see a closed message';
   bg.style.background = isOpen ? '#2ecc71' : '#e63946';
   knob.style.left = isOpen ? '28px' : '4px';
+  // Update row background
+  var row = document.getElementById('service-status-label').closest('div[style*="padding:16px"]');
+  if (row) row.style.background = isOpen ? '#f0fdf4' : '#fef2f2';
 }
 
 function loadServiceHours() {
   fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
     var hotel = hotels.find(function(h){ return h.hotel_id === hodData.hotel_id; });
-    if (!hotel || !hotel.dept_guest_options) return;
+    if (!hotel || !hotel.dept_guest_options) {
+      updateServiceStatusLabel();
+      return;
+    }
     var saved = hotel.dept_guest_options[hodData.dept];
-    if (!saved || !saved.hours) return;
+    if (!saved || !saved.hours) {
+      updateServiceStatusLabel();
+      return;
+    }
     var h = saved.hours;
-    document.getElementById('service-open-toggle').checked = h.isOpen !== false;
+    // Set checkbox state FIRST then update visuals
+    document.getElementById('service-open-toggle').checked = (h.isOpen !== false);
     if (h.openTime) document.getElementById('service-open-time').value = h.openTime;
     if (h.closeTime) document.getElementById('service-close-time').value = h.closeTime;
     if (h.closedMsg) document.getElementById('service-closed-msg').value = h.closedMsg;
+    // Force visual update after setting state
     updateServiceStatusLabel();
-  }).catch(function(){});
+  }).catch(function(){ updateServiceStatusLabel(); });
 }
 
 function saveServiceHours() {

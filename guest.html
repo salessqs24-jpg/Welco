@@ -199,7 +199,7 @@
     var hotelId = null;
     var roomId = null;
     var roomNumber = null;
-    var selectedQuicks = [];  // now an ARRAY for multi-select
+    var selectedQuicks = []; // now an ARRAY for multi-select
     var hotelData = null;
 
     var params = new URLSearchParams(window.location.search);
@@ -212,9 +212,9 @@
 
     var DEPT_DEFAULTS = {
       'Housekeeping': ['Extra Towels','Extra Pillow','Water Bottles','Clean Room','Extra Blanket','Toiletries'],
-      'Room Service':  ['Breakfast','Coffee','Tea','Water','Snacks','Ice Bucket'],
-      'Maintenance':   ['AC Issue','Hot Water','Light Bulb','TV Issue','WiFi Help','Door Lock'],
-      'Front Desk':    ['Wake Up Call','Luggage Help','Late Checkout Info','Airport Transfer & Local Cab','Room Upgradation Info','Room Decoration Info','Private Dinner Info','Extend Stay Info','Bike Rent Info','Adventure Activities Info','SPA Booking Info']
+      'Room Service': ['Breakfast','Coffee','Tea','Water','Snacks','Ice Bucket'],
+      'Maintenance': ['AC Issue','Hot Water','Light Bulb','TV Issue','WiFi Help','Door Lock'],
+      'Front Desk': ['Wake Up Call','Luggage Help','Late Checkout Info','Airport Transfer & Local Cab','Room Upgradation Info','Room Decoration Info','Private Dinner Info','Extend Stay Info','Bike Rent Info','Adventure Activities Info','SPA Booking Info']
     };
 
     var DEPT_DEFAULT_LABELS = {
@@ -327,17 +327,76 @@
 
       document.getElementById('quick-section').style.display = 'none';
       document.getElementById('services-section').style.display = 'none';
+      document.getElementById('eta-badge').style.display = 'none';
+
+      // Check service hours
+      var savedDeptFull = deptGuestOptions[cat];
+      if (savedDeptFull && savedDeptFull.hours) {
+        var h = savedDeptFull.hours;
+        if (h.isOpen === false) {
+          // Department is manually closed
+          showClosedBanner(h, cat);
+          return;
+        }
+        // Check time-based closing
+        var now = new Date();
+        var curMins = now.getHours() * 60 + now.getMinutes();
+        if (h.openTime && h.closeTime) {
+          var openParts = h.openTime.split(':');
+          var closeParts = h.closeTime.split(':');
+          var openMins = parseInt(openParts[0]) * 60 + parseInt(openParts[1]);
+          var closeMins = parseInt(closeParts[0]) * 60 + parseInt(closeParts[1]);
+          if (curMins < openMins || curMins >= closeMins) {
+            showClosedBanner(h, cat);
+            return;
+          }
+        }
+      }
+
+      // Clear any closed banner
+      var existing = document.getElementById('closed-banner');
+      if (existing) existing.remove();
 
       // Load slaMap for this dept
-      var savedDeptFull = deptGuestOptions[cat];
       currentCatSlaMap = (savedDeptFull && savedDeptFull.slaMap) ? savedDeptFull.slaMap : {};
 
       renderDeptServices(cat);
       document.getElementById('services-section').style.display = 'block';
-
-      // Default ETA for the category
       document.getElementById('eta-time').textContent = etaMap[cat] || '10 mins';
       document.getElementById('eta-badge').style.display = 'block';
+    }
+
+    function showClosedBanner(h, cat) {
+      // Remove existing banner
+      var existing = document.getElementById('closed-banner');
+      if (existing) existing.remove();
+
+      // Format times nicely
+      function fmt(t) {
+        if (!t) return '';
+        var p = t.split(':');
+        var hr = parseInt(p[0]), mn = parseInt(p[1]);
+        var ampm = hr >= 12 ? 'PM' : 'AM';
+        hr = hr % 12 || 12;
+        return hr + (mn > 0 ? ':' + String(mn).padStart(2,'0') : '') + ' ' + ampm;
+      }
+
+      var msg = (h.closedMsg) || 'We\'re currently closed. Please try again during our service hours.';
+      var timingText = (h.openTime && h.closeTime)
+        ? '⏰ Service hours: ' + fmt(h.openTime) + ' – ' + fmt(h.closeTime)
+        : '';
+
+      var banner = document.createElement('div');
+      banner.id = 'closed-banner';
+      banner.style.cssText = 'background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:16px;padding:24px;text-align:center;margin-top:8px;margin-bottom:12px';
+      banner.innerHTML =
+        '<div style="font-size:48px;margin-bottom:12px">🌙</div>' +
+        '<div style="font-size:18px;font-weight:700;color:white;margin-bottom:8px">' + cat + ' is Closed</div>' +
+        '<div style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.6;margin-bottom:12px">' + msg + '</div>' +
+        (timingText ? '<div style="background:rgba(255,255,255,0.1);border-radius:10px;padding:10px 16px;font-size:13px;font-weight:600;color:#ffd166">' + timingText + '</div>' : '');
+
+      var servicesSection = document.getElementById('services-section');
+      servicesSection.parentNode.insertBefore(banner, servicesSection);
     }
 
     function getOptionSla(key) {
@@ -364,12 +423,12 @@
       var enabledKeys, customItems;
 
       if (savedDept && savedDept.enabled) {
-        enabledKeys  = savedDept.enabled;
-        customItems  = savedDept.custom || [];
+        enabledKeys = savedDept.enabled;
+        customItems = savedDept.custom || [];
       } else {
         // fallback to defaults
-        enabledKeys  = DEPT_DEFAULTS[cat] || [];
-        customItems  = [];
+        enabledKeys = DEPT_DEFAULTS[cat] || [];
+        customItems = [];
       }
 
       if (enabledKeys.length === 0 && customItems.length === 0) {
@@ -449,6 +508,11 @@
 
     async function submitRequest() {
       if (!selectedCategory) return alert('Please select a category first!');
+      // Block if closed banner showing
+      if (document.getElementById('closed-banner')) {
+        alert('This service is currently closed. Please try again during service hours.');
+        return;
+      }
       var message = document.getElementById('message').value || selectedQuicks.join(', ');
       try {
         var res = await fetch('/requests', {

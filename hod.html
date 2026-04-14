@@ -396,6 +396,47 @@
 
     <!-- ══ GUEST OPTIONS ══ -->
     <div class="tab-panel" id="panel-guestoptions">
+
+      <!-- SERVICE HOURS -->
+      <div class="card" style="border:2px solid #e63946">
+        <div class="card-title">🕐 Service Hours</div>
+        <div class="card-sub">Control when guests can send requests to your department. When closed, guests see a "We're Closed" message with your timings.</div>
+        <div class="msg-box" id="hours-msg"></div>
+
+        <!-- Open/Closed toggle -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:16px;background:#f9f9f9;border-radius:12px;margin-bottom:14px">
+          <div>
+            <div style="font-size:15px;font-weight:700;color:#0d1b1e" id="service-status-label">🟢 Service is Open</div>
+            <div style="font-size:12px;color:#aaa;margin-top:2px">Guests can currently send requests</div>
+          </div>
+          <label style="position:relative;display:inline-block;width:56px;height:30px;cursor:pointer;flex-shrink:0">
+            <input type="checkbox" id="service-open-toggle" checked onchange="updateServiceStatusLabel()" style="opacity:0;width:0;height:0">
+            <span id="toggle-bg" style="position:absolute;inset:0;background:#2ecc71;border-radius:30px;transition:0.3s"></span>
+            <span id="toggle-knob" style="position:absolute;top:4px;left:28px;width:22px;height:22px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></span>
+          </label>
+        </div>
+
+        <!-- Open/Close times -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+          <div>
+            <div style="font-size:11px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Opens At</div>
+            <input type="time" id="service-open-time" value="07:00" style="width:100%;padding:10px 12px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:15px;font-weight:700;outline:none;color:#005f73">
+          </div>
+          <div>
+            <div style="font-size:11px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Closes At</div>
+            <input type="time" id="service-close-time" value="23:00" style="width:100%;padding:10px 12px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:15px;font-weight:700;outline:none;color:#e63946">
+          </div>
+        </div>
+
+        <!-- Custom closed message -->
+        <div style="margin-bottom:14px">
+          <div style="font-size:11px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Message Shown to Guests When Closed</div>
+          <input type="text" id="service-closed-msg" value="We're currently closed. Please try again during our service hours." style="width:100%;padding:10px 12px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:13px;outline:none">
+        </div>
+
+        <button onclick="saveServiceHours()" style="width:100%;padding:12px;background:#e63946;color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer">💾 Save Service Hours</button>
+      </div>
+
       <div class="card">
         <div class="card-title">🎯 Guest Quick Options</div>
         <div class="card-sub">Toggle which services guests see under <strong>Front Desk</strong> quick requests. Only enabled options appear for guests.</div>
@@ -953,7 +994,7 @@ function showTab(name) {
   if (name === 'rooms') loadRooms();
   if (name === 'staff') loadStaff();
   if (name === 'maintenance') loadMaintenance();
-  if (name === 'guestoptions') loadGuestOptions();
+  if (name === 'guestoptions') { loadGuestOptions(); loadServiceHours(); }
   if (name === 'announce') loadAnnouncements();
 }
 
@@ -1558,6 +1599,62 @@ function downloadExcel(reqs, staffList, title, dateRange, by, at, total, done, p
   a.download = 'Welco_' + hodData.dept.replace(' ','_') + '_Report_' + from + '_to_' + to + '.xls';
   a.click();
   URL.revokeObjectURL(url);
+}
+
+/* ═══════════════════════════════════════════════
+   SERVICE HOURS
+═══════════════════════════════════════════════ */
+function updateServiceStatusLabel() {
+  var isOpen = document.getElementById('service-open-toggle').checked;
+  var label = document.getElementById('service-status-label');
+  var bg = document.getElementById('toggle-bg');
+  var knob = document.getElementById('toggle-knob');
+  label.textContent = isOpen ? '🟢 Service is Open' : '🔴 Service is Closed';
+  bg.style.background = isOpen ? '#2ecc71' : '#e63946';
+  knob.style.left = isOpen ? '28px' : '4px';
+}
+
+function loadServiceHours() {
+  fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
+    var hotel = hotels.find(function(h){ return h.hotel_id === hodData.hotel_id; });
+    if (!hotel || !hotel.dept_guest_options) return;
+    var saved = hotel.dept_guest_options[hodData.dept];
+    if (!saved || !saved.hours) return;
+    var h = saved.hours;
+    document.getElementById('service-open-toggle').checked = h.isOpen !== false;
+    if (h.openTime) document.getElementById('service-open-time').value = h.openTime;
+    if (h.closeTime) document.getElementById('service-close-time').value = h.closeTime;
+    if (h.closedMsg) document.getElementById('service-closed-msg').value = h.closedMsg;
+    updateServiceStatusLabel();
+  }).catch(function(){});
+}
+
+function saveServiceHours() {
+  var isOpen = document.getElementById('service-open-toggle').checked;
+  var openTime = document.getElementById('service-open-time').value;
+  var closeTime = document.getElementById('service-close-time').value;
+  var closedMsg = document.getElementById('service-closed-msg').value.trim();
+
+  // Merge into fullDeptOptions
+  if (!fullDeptOptions[hodData.dept]) fullDeptOptions[hodData.dept] = {};
+  fullDeptOptions[hodData.dept].hours = { isOpen, openTime, closeTime, closedMsg };
+
+  fetch('/hotels/' + hodData.hotel_id + '/dept-guest-options', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ dept_guest_options: fullDeptOptions })
+  }).then(function(r){ return r.json(); }).then(function(){
+    var msg = document.getElementById('hours-msg');
+    msg.textContent = isOpen
+      ? '✅ Service marked OPEN. Guests can send requests.'
+      : '✅ Service marked CLOSED (' + openTime + ' – ' + closeTime + '). Guests will see closed message.';
+    msg.className = 'msg-box msg-success';
+    setTimeout(function(){ msg.className = 'msg-box'; }, 4000);
+  }).catch(function(){
+    var msg = document.getElementById('hours-msg');
+    msg.textContent = '❌ Failed to save. Try again.';
+    msg.className = 'msg-box msg-success';
+    msg.style.background = '#fde8ea'; msg.style.color = '#e63946';
+  });
 }
 
 /* ═══════════════════════════════════════════════

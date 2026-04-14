@@ -84,6 +84,9 @@ function generateStaffId(hotelCode) { return (hotelCode||'WLC')+'-'+Math.floor(M
 
 app.get('/health', (req,res) => res.json({ status:'ok', ts:Date.now() }));
 
+// Root route — serve landing page
+app.get('/', (req,res) => res.sendFile(__dirname + '/index.html'));
+
 // OWNER SIGNUP
 app.post('/owner/signup', async (req,res) => {
   const name=sanitize(req.body.name), email=sanitize(req.body.email).toLowerCase(), password=req.body.password;
@@ -238,6 +241,7 @@ app.delete('/rooms/:id', verifyToken, async (req,res) => {
 app.get('/staff', async (req,res) => {
   let query=supabase.from('staff').select('*');
   if (req.query.hotel_id) query=query.eq('hotel_id',req.query.hotel_id);
+  if (req.query.department) query=query.eq('department',req.query.department);
   const { data,error } = await query;
   if (error) return res.status(500).json({ error:error.message });
   res.json(data);

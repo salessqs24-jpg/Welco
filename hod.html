@@ -256,7 +256,7 @@
     <div class="tab-panel" id="panel-staff">
       <div class="card">
         <div class="card-title">Add Staff Member</div>
-        <div class="card-sub">Staff will get a unique Staff ID — share it with them for login</div>
+        <div class="card-sub">Staff will be added to your department: <strong id="staff-dept-label"></strong>. They get a unique Staff ID for login.</div>
         <div class="add-row">
           <input type="text" id="new-staff-name" placeholder="Full name e.g. Rahul">
           <input type="text" id="new-staff-pin" placeholder="4-digit PIN" maxlength="4" style="max-width:110px">
@@ -577,6 +577,7 @@ function startApp() {
   document.getElementById('t-dept-badge').textContent = (deptEmojis[hodData.dept] || '') + ' ' + hodData.dept;
   document.getElementById('ov-dept-label').textContent = hodData.dept;
   document.getElementById('req-dept-title').textContent = hodData.dept;
+  document.getElementById('staff-dept-label').textContent = hodData.dept;
   document.querySelector('.topbar').style.background = 'linear-gradient(90deg, ' + color + 'dd, ' + color + '88)';
 
   loadAll();
@@ -773,10 +774,12 @@ function deleteRoom(id) {
    STAFF
 ═══════════════════════════════════════════════ */
 function loadStaff() {
-  fetch('/staff?hotel_id=' + hodData.hotel_id).then(function(r) { return r.json(); }).then(function(staff) {
+  // Only fetch staff for THIS HOD's department
+  fetch('/staff?hotel_id=' + hodData.hotel_id + '&department=' + encodeURIComponent(hodData.dept))
+    .then(function(r) { return r.json(); }).then(function(staff) {
     if (!Array.isArray(staff)) return;
     document.getElementById('staff-list').innerHTML = staff.length === 0
-      ? '<div class="empty">No staff added yet.</div>'
+      ? '<div class="empty">No staff added yet for ' + hodData.dept + '.</div>'
       : staff.map(function(s) {
           var isOn = !!s.is_on_duty;
           var clockInfo = '';
@@ -824,14 +827,15 @@ function addStaff() {
   var name = document.getElementById('new-staff-name').value.trim();
   var pin = document.getElementById('new-staff-pin').value.trim();
   if (!name || pin.length !== 4) { alert('Enter full name and 4-digit PIN'); return; }
-  authFetch('/staff', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hodData.hotel_id,name:name,pin:pin})})
+  // Auto-assign staff to HOD's own department
+  authFetch('/staff', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hodData.hotel_id,name:name,pin:pin,department:hodData.dept})})
     .then(function(r) { return r.json(); }).then(function(data) {
       if (data.error) { alert(data.error); return; }
       document.getElementById('new-staff-name').value = '';
       document.getElementById('new-staff-pin').value = '';
       var msg = document.getElementById('staff-msg');
       var staffId = data.staff_id || 'Check list below';
-      msg.innerHTML = '✅ <strong>'+name+'</strong> added!<br>Staff ID: <strong style="font-family:monospace;letter-spacing:1px;color:#005f73">'+staffId+'</strong> &nbsp; PIN: <strong>'+pin+'</strong><br><span style="font-size:11px;color:#666">Share this Staff ID with '+name+' for login</span>';
+      msg.innerHTML = '✅ <strong>'+name+'</strong> added to <strong>'+hodData.dept+'</strong>!<br>Staff ID: <strong style="font-family:monospace;letter-spacing:1px;color:#005f73">'+staffId+'</strong> &nbsp; PIN: <strong>'+pin+'</strong><br><span style="font-size:11px;color:#666">Share this Staff ID with '+name+' for login</span>';
       msg.className = 'msg-box msg-success';
       setTimeout(function(){ msg.className='msg-box'; }, 8000);
       loadStaff();

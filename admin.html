@@ -249,6 +249,7 @@
           <!-- items injected by renderHotelDropdown() -->
         </div>
       </div>
+      <button onclick="openAddHotelModal()" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.35);color:white;padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;white-space:nowrap;font-family:sans-serif">➕ Add Hotel</button>
       <button class="logout-btn" onclick="doLogout()">Logout</button>
     </div>
   </div>
@@ -463,6 +464,42 @@
   </div><!-- /content -->
 </div><!-- /app-screen -->
 
+<!-- ADD HOTEL MODAL -->
+<div class="modal" id="add-hotel-modal">
+  <div class="modal-box" style="max-width:420px;text-align:left;padding:28px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <div>
+        <div style="font-size:18px;font-weight:700;color:#0d1b1e">🏨 Add New Hotel</div>
+        <div style="font-size:12px;color:#aaa;margin-top:3px">Added to your existing account</div>
+      </div>
+      <span onclick="closeAddHotelModal()" style="cursor:pointer;font-size:22px;color:#aaa;line-height:1">✕</span>
+    </div>
+    <div class="msg-box" id="add-hotel-msg"></div>
+    <div style="margin-bottom:12px">
+      <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:6px;font-weight:600">Hotel Name</label>
+      <input type="text" id="ah-modal-name" placeholder="Hotel name" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div>
+        <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:6px;font-weight:600">City</label>
+        <input type="text" id="ah-modal-city" placeholder="City" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none">
+      </div>
+      <div>
+        <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:6px;font-weight:600">Rooms</label>
+        <input type="number" id="ah-modal-rooms" placeholder="e.g. 20" min="0" max="500" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none">
+      </div>
+    </div>
+    <div style="margin-bottom:20px">
+      <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:6px;font-weight:600">Brand Colour</label>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="color" id="ah-modal-colorpicker" value="#005f73" oninput="document.getElementById('ah-modal-colortext').value=this.value" style="width:48px;height:44px;border-radius:8px;border:1.5px solid #e0ddd8;padding:3px;cursor:pointer">
+        <input type="text" id="ah-modal-colortext" value="#005f73" style="flex:1;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none">
+      </div>
+    </div>
+    <button onclick="submitAddHotel(this)" style="width:100%;padding:14px;background:#005f73;color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer">➕ Add Hotel to My Account</button>
+  </div>
+</div>
+
 <!-- QR MODAL -->
 <div class="modal" id="qr-modal">
   <div class="modal-box">
@@ -582,15 +619,11 @@ function startApp() {
     if (stored) allHotels = JSON.parse(stored);
   } catch(e) {}
 
-  // Hotel switcher — show only when owner has 2+ hotels
+  // Hotel switcher — always show so user can add more hotels
   var sw = document.getElementById('hotel-switcher');
-  if (allHotels.length > 1) {
-    sw.style.display = 'block';
-    document.getElementById('switcher-label').textContent = hotel.name;
-    renderHotelDropdown();
-  } else {
-    sw.style.display = 'none';
-  }
+  sw.style.display = 'block';
+  document.getElementById('switcher-label').textContent = hotel.name;
+  renderHotelDropdown();
 
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app-screen').style.display = 'block';
@@ -639,7 +672,10 @@ function renderHotelDropdown() {
   var addBtn = document.createElement('div');
   addBtn.className = 'hotel-dropdown-add';
   addBtn.innerHTML = '<span>➕</span><span>Add New Hotel</span>';
-  addBtn.onclick = function() { window.location.href = '/signup.html'; };
+  addBtn.onclick = function() {
+    document.getElementById('hotel-switcher').classList.remove('open');
+    openAddHotelModal();
+  };
   dd.appendChild(addBtn);
 }
 
@@ -1337,6 +1373,75 @@ function adminToggleService(dept, setOpen) {
   }).then(function(r){ return r.json(); }).then(function(){
     loadAdminServiceControls();
   }).catch(function(){ alert('Failed to update. Try again.'); });
+}
+
+/* ═══════════════════════════════════════════════
+   ADD HOTEL MODAL
+═══════════════════════════════════════════════ */
+function openAddHotelModal() {
+  document.getElementById('ah-modal-name').value = '';
+  document.getElementById('ah-modal-city').value = '';
+  document.getElementById('ah-modal-rooms').value = '';
+  document.getElementById('ah-modal-colortext').value = '#005f73';
+  document.getElementById('ah-modal-colorpicker').value = '#005f73';
+  document.getElementById('add-hotel-msg').className = 'msg-box';
+  document.getElementById('add-hotel-modal').classList.add('open');
+}
+
+function closeAddHotelModal() {
+  document.getElementById('add-hotel-modal').classList.remove('open');
+}
+
+function submitAddHotel(btn) {
+  var name = document.getElementById('ah-modal-name').value.trim();
+  var city = document.getElementById('ah-modal-city').value.trim();
+  var rooms = parseInt(document.getElementById('ah-modal-rooms').value) || 0;
+  var colour = document.getElementById('ah-modal-colortext').value.trim() || '#005f73';
+  var msg = document.getElementById('add-hotel-msg');
+
+  if (!name) { msg.textContent = 'Please enter a hotel name.'; msg.className = 'msg-box msg-error'; return; }
+
+  btn.textContent = 'Adding...'; btn.disabled = true;
+
+  // Get owner_id from current hotel
+  fetch('/hotels')
+    .then(function(r){ return r.json(); })
+    .then(function(hotels) {
+      var current = hotels.find(function(h){ return h.hotel_id === hotel.hotel_id; });
+      var owner_id = current ? current.owner_id : null;
+      if (!owner_id) throw new Error('Owner ID not found.');
+
+      return authFetch('/owner/add-hotel', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ owner_id: owner_id, hotelName: name, city: city, roomCount: rooms, colour: colour, emoji: '🏨' })
+      });
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      btn.textContent = '➕ Add Hotel to My Account'; btn.disabled = false;
+      if (data.error) { msg.textContent = data.error; msg.className = 'msg-box msg-error'; return; }
+
+      // Add new hotel to allHotels list
+      allHotels.push(data.hotel);
+      localStorage.setItem('welco_admin_hotels', JSON.stringify(allHotels));
+
+      msg.textContent = '✅ ' + name + ' added! Switching now...';
+      msg.className = 'msg-box msg-success';
+
+      setTimeout(function() {
+        closeAddHotelModal();
+        // Switch to new hotel
+        hotel = data.hotel;
+        localStorage.setItem('welco_admin_hotel', JSON.stringify(hotel));
+        startApp();
+      }, 1500);
+    })
+    .catch(function(e) {
+      btn.textContent = '➕ Add Hotel to My Account'; btn.disabled = false;
+      msg.textContent = e.message || 'Failed to add hotel. Try again.';
+      msg.className = 'msg-box msg-error';
+    });
 }
 
 /* ═══════════════════════════════════════════════

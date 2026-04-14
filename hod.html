@@ -994,7 +994,17 @@ function showTab(name) {
   if (name === 'rooms') loadRooms();
   if (name === 'staff') loadStaff();
   if (name === 'maintenance') loadMaintenance();
-  if (name === 'guestoptions') { loadGuestOptions(); loadServiceHours(); }
+  if (name === 'guestoptions') {
+    loadGuestOptions();
+    // Only load service hours if HOD has permission
+    var serviceCard = document.querySelector('#panel-guestoptions .card[style*="e63946"]');
+    if (hodData.permissions && hodData.permissions['service_hours'] === false) {
+      if (serviceCard) serviceCard.style.display = 'none';
+    } else {
+      if (serviceCard) serviceCard.style.display = 'block';
+      loadServiceHours();
+    }
+  }
   if (name === 'announce') loadAnnouncements();
 }
 

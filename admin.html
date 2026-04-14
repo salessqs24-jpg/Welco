@@ -1162,13 +1162,14 @@ function loadHOD() {
         { key:'announcements', label:'📢 Announcements', desc:'Can post hotel announcements' },
         { key:'schedule', label:'🔧 Scheduling', desc:'Can manage maintenance tasks' },
         { key:'guest_options', label:'🎯 Guest Options', desc:'Can edit quick request options' },
+        { key:'service_hours', label:'🕐 Service Hours', desc:'Can open/close their department service' },
         { key:'staff', label:'👷 Staff Mgmt', desc:'Can add/remove staff members' },
         { key:'analytics', label:'📊 Analytics', desc:'Can view analytics & reports' }
       ];
 
       el.innerHTML = list.map(function(h) {
         var color = deptColors[h.department] || '#005f73';
-        var perms = h.permissions || {announcements:true,schedule:true,guest_options:true,staff:true,analytics:true};
+        var perms = h.permissions || {announcements:true,schedule:true,guest_options:true,service_hours:true,staff:true,analytics:true};
 
         var permToggles = PERMS.map(function(p) {
           var isOn = perms[p.key] !== false;

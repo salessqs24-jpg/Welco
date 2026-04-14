@@ -24,6 +24,19 @@ app.use('/hod/verify',   loginLimiter);
 app.use('/staff/verify', loginLimiter);
 
 app.use(express.json({ limit: '5mb' }));
+
+// Serve static files but block direct access to server files
+app.use(function(req, res, next) {
+  // Block direct access to server-side files
+  if (req.path === '/index.js' || req.path === '/.env' || req.path === '/package.json' || req.path === '/package-lock.json') {
+    return res.status(403).send('Forbidden');
+  }
+  next();
+});
+
+// Root route — always serve landing page
+app.get('/', (req, res) => res.sendFile(__dirname + '/index.html'));
+
 app.use(express.static(__dirname));
 
 function sanitize(str) {

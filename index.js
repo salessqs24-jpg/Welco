@@ -13,8 +13,8 @@ const JWT_SECRET = process.env.JWT_SECRET || 'welco_super_secret_jwt_2026';
 
 app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }));
 
-const loginLimiter = rateLimit({ windowMs: 15*60*1000, max: 10, message: { error: 'Too many login attempts. Please wait 15 minutes.' } });
-const apiLimiter   = rateLimit({ windowMs: 60*1000,    max: 200, message: { error: 'Too many requests.' } });
+const loginLimiter = rateLimit({ windowMs: 15*60*1000, max: 10, message: { error: 'Too many login attempts. Please wait 15 minutes.' }, validate: { xForwardedForHeader: false } });
+const apiLimiter   = rateLimit({ windowMs: 60*1000,    max: 200, message: { error: 'Too many requests.' }, validate: { xForwardedForHeader: false } });
 
 app.use('/login',        loginLimiter);
 app.use('/signup',       loginLimiter);

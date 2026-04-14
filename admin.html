@@ -344,6 +344,11 @@
           <button onclick="copyHotelCode()" id="copy-code-btn" style="padding:10px 18px;background:#005f73;color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0">📋 Copy Code</button>
         </div>
       </div>
+      <div class="card" style="border:2px solid #e63946">
+        <div class="card-title">🕐 Department Service Control</div>
+        <div class="card-sub">Open or close any department instantly. Guests will see a "We're Closed" message when a department is closed.</div>
+        <div id="admin-service-controls"><div class="loading">Loading...</div></div>
+      </div>
       <div class="card">
         <div class="card-title">Department HODs</div>
         <div class="card-sub">One HOD per department. They login at <strong>welco.onrender.com/hod.html</strong></div>
@@ -692,7 +697,7 @@ function showTab(name) {
   if (name==='reports') loadReports();
   if (name==='rooms') loadRooms();
   if (name==='feedback') loadFeedback();
-  if (name==='hod') { loadHOD(); document.getElementById('hod-hotel-code').textContent = hotel.hotel_code || 'N/A'; }
+  if (name==='hod') { loadHOD(); loadAdminServiceControls(); document.getElementById('hod-hotel-code').textContent = hotel.hotel_code || 'N/A'; }
 }
 
 /* ═══════════════════════════════════════════════
@@ -1248,6 +1253,78 @@ function addHOD() {
 function removeHOD(id) {
   if (!confirm('Remove this HOD?')) return;
   fetch('/hod/'+id, {method:'DELETE'}).then(function(){ loadHOD(); });
+}
+
+/* ═══════════════════════════════════════════════
+   ADMIN SERVICE CONTROL
+═══════════════════════════════════════════════ */
+var adminDeptOptions = {};
+
+function loadAdminServiceControls() {
+  fetch('/hotels')
+    .then(function(r){ return r.json(); })
+    .then(function(hotels){
+      var h = hotels.find(function(x){ return x.hotel_id === hotel.hotel_id; });
+      adminDeptOptions = (h && h.dept_guest_options) ? h.dept_guest_options : {};
+
+      var depts = [
+        { key:'Housekeeping', emoji:'🛏️', color:'#4361EE' },
+        { key:'Room Service', emoji:'🍽️', color:'#F77F00' },
+        { key:'Maintenance', emoji:'🔧', color:'#e63946' },
+        { key:'Front Desk', emoji:'🛎️', color:'#9B5DE5' }
+      ];
+
+      var el = document.getElementById('admin-service-controls');
+      el.innerHTML = depts.map(function(d) {
+        var saved = adminDeptOptions[d.key] || {};
+        var hours = saved.hours || {};
+        var isOpen = hours.isOpen !== false;
+        var openTime = hours.openTime || '07:00';
+        var closeTime = hours.closeTime || '23:00';
+
+        return '<div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:'+(isOpen?'#f0fdf4':'#fff5f5')+';border-radius:12px;border:1.5px solid '+(isOpen?'#86efac':'#fca5a5')+';margin-bottom:10px">' +
+          '<div style="display:flex;align-items:center;gap:10px">' +
+            '<div style="font-size:22px">'+d.emoji+'</div>' +
+            '<div>' +
+              '<div style="font-size:14px;font-weight:700;color:#0d1b1e">'+d.key+'</div>' +
+              '<div style="font-size:11px;color:#aaa;margin-top:2px">' +
+                (isOpen ? '🟢 Open · ' : '🔴 Closed · ') +
+                formatTime12(openTime)+' – '+formatTime12(closeTime) +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div style="display:flex;gap:8px;align-items:center">' +
+            '<button onclick="adminToggleService(\''+d.key+'\','+(!isOpen)+')" style="padding:8px 16px;background:'+(isOpen?'#fde8ea':'#d1fae5')+';color:'+(isOpen?'#e63946':'#065f46')+';border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">' +
+              (isOpen ? '🔴 Close Now' : '🟢 Open Now') +
+            '</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }).catch(function(){
+      document.getElementById('admin-service-controls').innerHTML = '<div class="empty">Could not load</div>';
+    });
+}
+
+function formatTime12(t) {
+  if (!t) return '';
+  var p = t.split(':');
+  var hr = parseInt(p[0]), mn = parseInt(p[1]);
+  var ampm = hr >= 12 ? 'PM' : 'AM';
+  hr = hr % 12 || 12;
+  return hr + (mn > 0 ? ':' + String(mn).padStart(2,'0') : '') + ' ' + ampm;
+}
+
+function adminToggleService(dept, setOpen) {
+  if (!adminDeptOptions[dept]) adminDeptOptions[dept] = {};
+  if (!adminDeptOptions[dept].hours) adminDeptOptions[dept].hours = { openTime:'07:00', closeTime:'23:00', closedMsg:"We're currently closed. Please try again during our service hours." };
+  adminDeptOptions[dept].hours.isOpen = setOpen;
+
+  fetch('/hotels/' + hotel.hotel_id + '/dept-guest-options', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ dept_guest_options: adminDeptOptions })
+  }).then(function(r){ return r.json(); }).then(function(){
+    loadAdminServiceControls();
+  }).catch(function(){ alert('Failed to update. Try again.'); });
 }
 
 /* ═══════════════════════════════════════════════

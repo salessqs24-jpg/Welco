@@ -319,7 +319,7 @@
 
     loadBranding();
 
-    function selectCat(btn, cat) {
+    async function selectCat(btn, cat) {
       document.querySelectorAll('.cat-btn').forEach(function(b) { b.classList.remove('selected'); });
       btn.classList.add('selected');
       selectedCategory = cat;
@@ -329,12 +329,21 @@
       document.getElementById('services-section').style.display = 'none';
       document.getElementById('eta-badge').style.display = 'none';
 
-      // Check service hours
+      // Always re-fetch latest hotel data to get current service hours
+      try {
+        var hotelRes = await fetch('/hotels');
+        var hotels = await hotelRes.json();
+        var latestHotel = hotels.find(function(h) { return h.hotel_id === hotelId; });
+        if (latestHotel && latestHotel.dept_guest_options) {
+          deptGuestOptions = latestHotel.dept_guest_options;
+        }
+      } catch(e) {}
+
+      // Check service hours with fresh data
       var savedDeptFull = deptGuestOptions[cat];
       if (savedDeptFull && savedDeptFull.hours) {
         var h = savedDeptFull.hours;
         if (h.isOpen === false) {
-          // Department is manually closed
           showClosedBanner(h, cat);
           return;
         }

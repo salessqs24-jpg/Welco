@@ -65,13 +65,14 @@ app.post('/owner/signup', async (req,res) => {
 
 // OWNER LOGIN
 app.post('/owner/login', async (req,res) => {
-  const email=sanitize(req.body.email).toLowerCase(), password=req.body.password;
-  const { data:owner } = await supabase.from('owners').select('*').eq('email',email).maybeSingle();
+  const emailRaw=sanitize(req.body.email), password=req.body.password;
+  let { data:owner } = await supabase.from('owners').select('*').eq('email',emailRaw).maybeSingle();
+  if (!owner) { const { data:o2 } = await supabase.from('owners').select('*').eq('email',emailRaw.toLowerCase()).maybeSingle(); owner=o2; }
   if (!owner) return res.status(401).json({ error:'Invalid email or password.' });
   if (!await checkPassword(password, owner.password)) return res.status(401).json({ error:'Invalid email or password.' });
   if (!owner.password.startsWith('$2')) { const h=await hashPassword(password); await supabase.from('owners').update({ password:h }).eq('id',owner.id); }
   const { data:hotels } = await supabase.from('hotels').select('*').eq('owner_id',owner.id).order('created_at',{ ascending:true });
-  res.json({ owner, hotels:hotels||[], token:signToken({ owner_id:owner.id, email }) });
+  res.json({ owner, hotels:hotels||[], token:signToken({ owner_id:owner.id, email:owner.email }) });
 });
 
 // ADD HOTEL

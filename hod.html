@@ -522,6 +522,18 @@ function startApp() {
   document.getElementById('req-dept-title').textContent = hodData.dept;
   document.getElementById('staff-dept-label').textContent = hodData.dept;
   document.querySelector('.topbar').style.background = 'linear-gradient(90deg, ' + color + 'dd, ' + color + '88)';
+  // Apply hotel photo as full page background
+  if (h.logo_url) {
+    document.body.style.backgroundImage = 'url(' + h.logo_url + ')';
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
+    document.body.style.backgroundAttachment = 'fixed';
+  } else {
+    document.body.style.backgroundImage = "url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80')";
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
+    document.body.style.backgroundAttachment = 'fixed';
+  }
   loadAll();
   refreshInterval = setInterval(loadAll, 10000);
   applyHodPermissions();

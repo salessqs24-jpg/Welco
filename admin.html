@@ -627,6 +627,18 @@ function startApp() {
   document.getElementById('set-colortext').value = hotel.colour || '#0a9396';
   document.getElementById('set-colorpicker').value = hotel.colour || '#0a9396';
   applyLogoOrEmoji(hotel.logo_url, null);
+  // Apply hotel photo as full page background
+  if (hotel.logo_url) {
+    document.body.style.backgroundImage = 'url(' + hotel.logo_url + ')';
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
+    document.body.style.backgroundAttachment = 'fixed';
+  } else {
+    document.body.style.backgroundImage = "url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80')";
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
+    document.body.style.backgroundAttachment = 'fixed';
+  }
   pendingLogoBase64 = null;
   showTab('overview');
   loadOverview();

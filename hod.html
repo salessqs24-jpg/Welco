@@ -533,12 +533,19 @@ function applyHodPermissions() {
     if (!hod || !hod.permissions) return;
     var perms = hod.permissions;
     hodData.permissions = perms;
-    var permTabMap = [null,null,null,'staff','analytics','announce','schedule','guest_options'];
+    localStorage.setItem('welco_hod', JSON.stringify(hodData));
+    var permTabMap = [null,null,null,'staff','analytics','announcements','schedule','guest_options'];
     document.querySelectorAll('.tab').forEach(function(tab, i) {
       var permKey = permTabMap[i];
       if (permKey && perms[permKey] === false) tab.style.display = 'none';
       else tab.style.display = '';
     });
+    // Hide service hours card if no permission
+    var serviceCard = document.querySelector ? null : null;
+    setTimeout(function() {
+      var sc = document.querySelector('#panel-guestoptions .card[style*="e63946"]');
+      if (sc) sc.style.display = (perms['service_hours'] === false) ? 'none' : 'block';
+    }, 100);
   }).catch(function(){});
 }
 
@@ -693,7 +700,7 @@ function renderStaffPerformance(reqs){
 
 /* ═══ TABS ═══ */
 function showTab(name) {
-  var permMap={'staff':'staff','analytics':'analytics','announce':'announce','maintenance':'schedule','guestoptions':'guest_options'};
+  var permMap={'staff':'staff','analytics':'analytics','announce':'announcements','maintenance':'schedule','guestoptions':'guest_options'};
   var requiredPerm=permMap[name];
   if(requiredPerm&&hodData.permissions&&hodData.permissions[requiredPerm]===false){alert('⛔ Access Denied');return;}
   var names=['overview','requests','rooms','staff','analytics','announce','maintenance','guestoptions'];

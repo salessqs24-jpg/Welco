@@ -151,7 +151,6 @@
   </div>
 </div>
 
-<!-- Off-duty warning modal -->
 <div class="modal-overlay" id="offduty-modal">
   <div class="modal-box">
     <div class="modal-icon">⚠️</div>
@@ -180,7 +179,6 @@
     </div>
   </div>
 
-  <!-- DUTY STATUS BAR -->
   <div class="duty-bar off-duty" id="duty-bar">
     <div class="duty-info">
       <div class="duty-dot off" id="duty-dot"></div>
@@ -206,7 +204,6 @@
     <div class="filter-tab" onclick="setFilter('done')">✅ Done</div>
   </div>
 
-  <!-- Department color legend -->
   <div style="display:flex;gap:10px;flex-wrap:wrap;padding:8px 16px;background:white;border-bottom:1px solid #eee;font-size:11px">
     <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:3px;background:#4361EE;display:inline-block"></span>🛏️ Housekeeping</span>
     <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:3px;background:#F77F00;display:inline-block"></span>🍽️ Room Service</span>
@@ -261,13 +258,11 @@ function sendPush(title,body){
   });
 }
 
-/* PIN */
 function addPin(n){ if(pin.length<4){pin+=n;updateDots();} }
 function deletePin(){ pin=pin.slice(0,-1);updateDots(); }
 function clearPin(){ pin='';updateDots(); }
 function updateDots(){ for(var i=0;i<4;i++) document.getElementById('dot-'+i).classList.toggle('filled',i<pin.length); }
 
-/* LOGIN */
 function doLogin(){
   var sid=document.getElementById('staff-id-input').value.trim().toUpperCase();
   var btn=document.getElementById('login-btn');
@@ -275,6 +270,7 @@ function doLogin(){
   if(pin.length!==4){showLoginErr('Please enter your 4-digit PIN.');return;}
   attemptLogin(sid,pin,btn,1);
 }
+
 function attemptLogin(sid,pinVal,btn,attempt){
   var msgs=['Verifying…','Server waking up… (30s)','Almost there…'];
   btn.textContent=msgs[Math.min(attempt-1,msgs.length-1)]; btn.disabled=true;
@@ -287,7 +283,7 @@ function attemptLogin(sid,pinVal,btn,attempt){
     var s=res.d.staff;
     currentHotelId=s.hotel_id; loggedInStaff=s.name; loggedInStaffDbId=s.id; isOnDuty=!!s.is_on_duty;
     fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
-      var h=hotels.find(function(h){return h.hotel_id===currentHotelId;})||{};
+      var h=hotels.find(function(x){return x.hotel_id===currentHotelId;})||{};
       applyBranding(h);
     }).catch(function(){applyBranding({});});
     document.getElementById('login-error').style.display='none';
@@ -310,15 +306,36 @@ function attemptLogin(sid,pinVal,btn,attempt){
 function applyBranding(hotel){
   var c=hotel.colour||'#0a9396';
   document.getElementById('dash-header').style.background='linear-gradient(90deg,'+c+'dd,'+c+'88)';
-  if(hotel.logo_url){document.getElementById('dash-header-logo').src=hotel.logo_url;document.getElementById('dash-header-logo').style.display='block';document.getElementById('dash-header-emoji').style.display='none';}
-  else{document.getElementById('dash-header-logo').style.display='none';document.getElementById('dash-header-emoji').style.display='inline';document.getElementById('dash-header-emoji').textContent=hotel.emoji||'🏨';}
+
+  // ── Apply hotel photo as full page background ──
+  if(hotel.logo_url){
+    document.body.style.backgroundImage='url('+hotel.logo_url+')';
+    document.body.style.backgroundSize='cover';
+    document.body.style.backgroundPosition='center';
+    document.body.style.backgroundAttachment='fixed';
+  } else {
+    document.body.style.backgroundImage="url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80')";
+    document.body.style.backgroundSize='cover';
+    document.body.style.backgroundPosition='center';
+    document.body.style.backgroundAttachment='fixed';
+  }
+
+  if(hotel.logo_url){
+    document.getElementById('dash-header-logo').src=hotel.logo_url;
+    document.getElementById('dash-header-logo').style.display='block';
+    document.getElementById('dash-header-emoji').style.display='none';
+  } else {
+    document.getElementById('dash-header-logo').style.display='none';
+    document.getElementById('dash-header-emoji').style.display='inline';
+    document.getElementById('dash-header-emoji').textContent=hotel.emoji||'🏨';
+  }
   document.getElementById('dash-hotel').textContent=hotel.name||'Hotel';
+
   fetch('/announcements?hotel_id='+currentHotelId).then(function(r){return r.json();}).then(function(data){
     if(Array.isArray(data)){var a=data.find(function(x){return x.is_active;});if(a){document.getElementById('staff-announcement-text').textContent=a.message;document.getElementById('staff-announcement').style.display='block';}}
   }).catch(function(){});
 }
 
-/* DUTY */
 function updateDutyUI(){
   var bar=document.getElementById('duty-bar'),dot=document.getElementById('duty-dot');
   var lbl=document.getElementById('duty-label'),sub=document.getElementById('duty-sub'),btn=document.getElementById('clock-btn');
@@ -361,6 +378,8 @@ function doLogout(){
   document.getElementById('login-screen').style.display='flex';
   document.getElementById('dashboard-screen').style.display='none';
   document.getElementById('notif-status-bar').style.display='none';
+  // Reset background to default on logout
+  document.body.style.backgroundImage="url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80')";
   pin='';clearPin();document.getElementById('staff-id-input').value='';
   knownRequestIds=null;currentHotelId='';loggedInStaffDbId=null;isOnDuty=false;
 }
@@ -395,7 +414,6 @@ function loadTasks(){
     var list=document.getElementById('task-list');
     if(filtered.length===0){list.innerHTML='<div class="empty-state"><div class="icon">🎉</div><p>'+(currentFilter==='all'?'No requests yet!':'No '+currentFilter.replace('_',' ')+' requests')+'</p></div>';return;}
 
-    // Department colors — left border + badge background
     var deptConfig = {
       'Housekeeping': { color: '#4361EE', bg: '#eef0fd', emoji: '🛏️' },
       'Room Service': { color: '#F77F00', bg: '#fff3e0', emoji: '🍽️' },
@@ -409,32 +427,22 @@ function loadTasks(){
       var remaining=Math.max(0,SLA-elapsed),pct=Math.max(0,(remaining/SLA)*100);
       var mins=Math.floor(remaining),secs=Math.floor((remaining-mins)*60);
       var tc=pct>50?'':pct>25?'warning':'urgent';
-      var isDone = r.status==='done';
-      var isUrgent = pct===0 && !isDone;
+      var isDone=r.status==='done';
+      var isUrgent=pct===0&&!isDone;
       var ta=Math.floor(elapsed)>0?Math.floor(elapsed)+'m ago':'Just now';
-
-      var dept = deptConfig[r.category] || deptConfig['General'];
-      var borderColor = isDone ? '#2ecc71' : isUrgent ? '#e63946' : dept.color;
-      var cardBg = isDone ? 'rgba(255,255,255,0.7)' : dept.bg;
-
+      var dept=deptConfig[r.category]||deptConfig['General'];
+      var borderColor=isDone?'#2ecc71':isUrgent?'#e63946':dept.color;
+      var cardBg=isDone?'rgba(255,255,255,0.7)':dept.bg;
       var act='';
       if(r.status==='pending') act='<button class="btn-accept" onclick="claimTask('+r.id+')" style="background:'+dept.color+'">👋 Accept</button>';
       else if(r.status==='in_progress') act='<span class="claimed-badge">✅ '+(r.claimed_by||'Staff')+'</span><button class="btn-done" onclick="markDone('+r.id+')">Mark Done ✓</button>';
       else act='<button class="btn-done" disabled>✅ Completed</button>';
-
       return '<div class="task-card" style="border-left:4px solid '+borderColor+';background:'+cardBg+(isDone?';opacity:0.65':'')+'">' +
-        '<div class="task-top">'+
-          '<span class="task-room">Room '+(r.room_number||'?')+'</span>'+
-          '<span class="task-cat" style="background:'+dept.color+'">'+dept.emoji+' '+(r.category||'General')+'</span>'+
-        '</div>'+
+        '<div class="task-top"><span class="task-room">Room '+(r.room_number||'?')+'</span><span class="task-cat" style="background:'+dept.color+'">'+dept.emoji+' '+(r.category||'General')+'</span></div>'+
         '<div class="task-msg">'+(r.message||'No details')+'</div>'+
         '<div class="task-time">🕐 '+ta+'</div>'+
-        (r.status!=='done'?
-          '<div class="task-sla'+(pct<25?' urgent-text':'')+'">⏱ '+mins+'m '+secs+'s remaining</div>'+
-          '<div class="timer-bar"><div class="timer-fill '+tc+'" style="width:'+pct+'%"></div></div>'
-        :'')+
-        '<div class="task-actions">'+act+'</div>'+
-      '</div>';
+        (r.status!=='done'?'<div class="task-sla'+(pct<25?' urgent-text':'')+'">⏱ '+mins+'m '+secs+'s remaining</div><div class="timer-bar"><div class="timer-fill '+tc+'" style="width:'+pct+'%"></div></div>':'')+
+        '<div class="task-actions">'+act+'</div></div>';
     }).join('');
   }).catch(function(){});
 }

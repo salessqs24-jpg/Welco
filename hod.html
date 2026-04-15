@@ -728,8 +728,8 @@ function addMaintenanceTask(){
     setTimeout(function(){msg.className='msg-box';},3000); loadMaintenance();
   });
 }
-function markTaskDone(id,freq){var now=new Date(),nextDue=new Date(now);if(freq==='daily')nextDue.setDate(nextDue.getDate()+1);else if(freq==='weekly')nextDue.setDate(nextDue.getDate()+7);else nextDue.setMonth(nextDue.getMonth()+1);fetch('/maintenance/'+id+'/done',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({last_done:now.toISOString(),next_due:nextDue.toISOString()})}).then(function(){loadMaintenance();});}
-function deleteTask(id){if(!confirm('Delete this task?'))return;fetch('/maintenance/'+id,{method:'DELETE'}).then(function(){loadMaintenance();});}
+function markTaskDone(id,freq){var now=new Date(),nextDue=new Date(now);if(freq==='daily')nextDue.setDate(nextDue.getDate()+1);else if(freq==='weekly')nextDue.setDate(nextDue.getDate()+7);else nextDue.setMonth(nextDue.getMonth()+1);authFetch('/maintenance/'+id+'/done',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({last_done:now.toISOString(),next_due:nextDue.toISOString()})}).then(function(){loadMaintenance();});}
+function deleteTask(id){if(!confirm('Delete this task?'))return;authFetch('/maintenance/'+id,{method:'DELETE'}).then(function(){loadMaintenance();});}
 function renderMaintenance(tasks){
   var now=new Date(); var today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
   function getDueBadge(task){if(!task.next_due)return '<span class="due-badge due-upcoming">No due date</span>';var due=new Date(task.next_due);var dueDay=new Date(due.getFullYear(),due.getMonth(),due.getDate());if(dueDay<today)return '<span class="due-badge due-overdue">⚠️ Overdue</span>';if(dueDay.getTime()===today.getTime())return '<span class="due-badge due-today">📅 Due Today</span>';var diff=Math.ceil((dueDay-today)/(1000*60*60*24));return '<span class="due-badge due-upcoming">✅ Due in '+diff+' day'+(diff>1?'s':'')+'</span>';}

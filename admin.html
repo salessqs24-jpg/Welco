@@ -489,7 +489,7 @@
             </div>
             <div class="logo-upload-text">
               <strong>Upload your hotel photo</strong>
-              <span>JPG, PNG or WebP · Max 1 MB</span>
+              <span>JPG, PNG or WebP · Auto compressed</span>
             </div>
             <button class="logo-upload-btn" type="button" onclick="event.stopPropagation();document.getElementById('logo-file-input').click()">Choose</button>
           </div>
@@ -676,12 +676,31 @@ function applyLogoOrEmoji(logoUrl, emoji) {
   else{imgEl.style.display='none';emojiEl.textContent='🏨';emojiEl.style.display='block';previewImg.style.display='none';previewEmoji.textContent='🏨';previewEmoji.style.display='block';removeBtn.style.display='none';}
 }
 function handleLogoUpload(event) {
-  var file=event.target.files[0];if(!file)return;
+  var file=event.target.files[0]; if(!file)return;
   var note=document.getElementById('logo-size-note');
-  if(file.size>1024*1024){note.textContent='⚠️ Image is large ('+( file.size/1024/1024).toFixed(1)+' MB). Recommended: under 1 MB.';note.style.color='#e67e00';}
-  else{note.textContent='✅ '+file.name+' ready — click Save Changes to apply.';note.style.color='#065f46';}
+  note.textContent='⏳ Processing image...'; note.style.color='#888';
   var reader=new FileReader();
-  reader.onload=function(e){pendingLogoBase64=e.target.result;applyLogoOrEmoji(pendingLogoBase64,hotel.emoji);};
+  reader.onload=function(e){
+    var img=new Image();
+    img.onload=function(){
+      // Compress using canvas — max width 1200px, quality 0.75
+      var maxW=1200, maxH=900;
+      var w=img.width, h=img.height;
+      if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
+      if(h>maxH){w=Math.round(w*maxH/h);h=maxH;}
+      var canvas=document.createElement('canvas');
+      canvas.width=w; canvas.height=h;
+      var ctx=canvas.getContext('2d');
+      ctx.drawImage(img,0,0,w,h);
+      var compressed=canvas.toDataURL('image/jpeg',0.75);
+      var kb=Math.round(compressed.length*0.75/1024);
+      pendingLogoBase64=compressed;
+      applyLogoOrEmoji(compressed, hotel.emoji);
+      note.textContent='✅ '+file.name+' ready (compressed to ~'+kb+'KB) — click Save Changes to apply.';
+      note.style.color='#065f46';
+    };
+    img.src=e.target.result;
+  };
   reader.readAsDataURL(file);
 }
 function removeLogo(){pendingLogoBase64='';applyLogoOrEmoji(null,null);document.getElementById('logo-size-note').textContent='Photo will be removed when you click Save Changes.';document.getElementById('logo-size-note').style.color='#888';document.getElementById('logo-file-input').value='';}

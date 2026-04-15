@@ -323,6 +323,19 @@
 
     loadBranding();
 
+    // Re-fetch hotel settings every 5 seconds so HOD changes reflect instantly
+    setInterval(async function() {
+      if (document.getElementById('request-card').style.display === 'none') return; // don't refresh if tracking
+      try {
+        var hotelRes = await fetch('/hotels');
+        var hotels = await hotelRes.json();
+        var latest = hotels.find(function(h) { return h.hotel_id === hotelId; });
+        if (latest && latest.dept_guest_options) {
+          deptGuestOptions = latest.dept_guest_options;
+        }
+      } catch(e) {}
+    }, 5000);
+
     // ─── CATEGORY SELECT ─────────────────────────────────────
     async function selectCat(btn, cat) {
       document.querySelectorAll('.cat-btn').forEach(function(b) { b.classList.remove('selected'); });

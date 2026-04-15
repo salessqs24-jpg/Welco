@@ -562,7 +562,7 @@ function applyHodPermissions() {
 }
 
 function loadAll() {
-  fetch('/requests?hotel_id=' + hodData.hotel_id).then(function(r) { return r.json(); }).then(function(data) {
+  fetch('/requests?hotel_id=' + hodData.hotel_id + '&days=30').then(function(r) { return r.json(); }).then(function(data) {
     if (!Array.isArray(data)) return;
     deptRequests = data.filter(function(r) { return r.category === hodData.dept; });
     checkSLAAlerts(deptRequests); renderOverview(deptRequests); renderRequests(); renderAnalytics(deptRequests);

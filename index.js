@@ -25,12 +25,9 @@ app.use('/staff/verify', loginLimiter);
 
 app.use(express.json({ limit: '5mb' }));
 
-// Serve static files but block direct access to server files
-// Serve static files with index.js protection
 app.use(express.static(__dirname, {
   index: 'index.html',
   setHeaders: function(res, path) {
-    // Block server files
     if (path.endsWith('index.js') || path.endsWith('.env') || path.endsWith('package.json')) {
       res.status(403);
     }
@@ -51,7 +48,6 @@ async function checkPassword(plain, hashed) {
 }
 function signToken(payload) { return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' }); }
 
-// ── CORS ─────────────────────────────────────────────────────────────────────
 app.use(function(req, res, next) {
   var allowed = ['https://welco.onrender.com', 'http://localhost:3000'];
   var origin = req.headers.origin;
@@ -64,13 +60,8 @@ app.use(function(req, res, next) {
   next();
 });
 
-// ── JWT MIDDLEWARE ────────────────────────────────────────────────────────────
 function verifyToken(req, res, next) {
-  // Allow guest portal to submit requests without token
-  var publicRoutes = [
-    '/health', '/hotels', '/rooms', '/announcements', '/requests'
-  ];
-  // Check if it's a public GET route
+  var publicRoutes = ['/health', '/hotels', '/rooms', '/announcements', '/requests'];
   if (req.method === 'GET' && publicRoutes.some(function(r){ return req.path.startsWith(r); })) {
     return next();
   }
@@ -94,9 +85,6 @@ function generateHotelCode(name) {
 function generateStaffId(hotelCode) { return (hotelCode||'WLC')+'-'+Math.floor(Math.random()*9000+1000); }
 
 app.get('/health', (req,res) => res.json({ status:'ok', ts:Date.now() }));
-
-// Root route — serve landing page
-
 
 // OWNER SIGNUP
 app.post('/owner/signup', async (req,res) => {
@@ -326,14 +314,61 @@ app.post('/hod/verify', async (req,res) => {
   res.json({ success:true, hod:{ ...hod, hotel }, token });
 });
 
-// REQUESTS
+// ═══════════════════════════════════════════════════════════
+// REQUESTS — OPTIMIZED WITH DATE FILTER
+// Default: last 7 days (for staff/HOD live polling — fast!)
+// ?days=30  → last 30 days (HOD analytics)
+// ?all=true → all time (admin reports/CSV download only)
+// Active (pending/in_progress) requests always included
+// regardless of date — staff never miss live requests
+// ═══════════════════════════════════════════════════════════
 app.get('/requests', async (req,res) => {
-  let query=supabase.from('requests').select('*').order('created_at',{ ascending:false });
-  if (req.query.hotel_id) query=query.eq('hotel_id',req.query.hotel_id);
-  const { data,error } = await query;
-  if (error) return res.status(500).json({ error:error.message });
-  res.json(data);
+  const hotel_id = req.query.hotel_id;
+
+  // Full history — only for admin reports
+  if (req.query.all === 'true') {
+    let query = supabase.from('requests').select('*').order('created_at', { ascending: false });
+    if (hotel_id) query = query.eq('hotel_id', hotel_id);
+    const { data, error } = await query;
+    if (error) return res.status(500).json({ error: error.message });
+    return res.json(data);
+  }
+
+  // Default: last N days (7 for live, 30 for analytics)
+  var days = parseInt(req.query.days) || 7;
+  if (days > 90) days = 90; // hard cap — no more than 90 days at once
+  var cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - days);
+  var cutoffISO = cutoff.toISOString();
+
+  // Query 1: recent requests within date range
+  let recentQuery = supabase.from('requests').select('*')
+    .order('created_at', { ascending: false })
+    .gte('created_at', cutoffISO);
+  if (hotel_id) recentQuery = recentQuery.eq('hotel_id', hotel_id);
+
+  // Query 2: any active requests older than cutoff (so staff don't miss them)
+  let activeQuery = supabase.from('requests').select('*')
+    .in('status', ['pending', 'in_progress'])
+    .lt('created_at', cutoffISO)
+    .order('created_at', { ascending: false });
+  if (hotel_id) activeQuery = activeQuery.eq('hotel_id', hotel_id);
+
+  const [recentResult, activeResult] = await Promise.all([recentQuery, activeQuery]);
+
+  if (recentResult.error) return res.status(500).json({ error: recentResult.error.message });
+
+  // Merge: recent + old active (no duplicates)
+  var recentData = recentResult.data || [];
+  var activeData = activeResult.data || [];
+  var recentIds = new Set(recentData.map(function(r){ return r.id; }));
+  var extraActive = activeData.filter(function(r){ return !recentIds.has(r.id); });
+  var merged = recentData.concat(extraActive);
+  merged.sort(function(a,b){ return new Date(b.created_at) - new Date(a.created_at); });
+
+  res.json(merged);
 });
+
 app.post('/requests', async (req,res) => {
   const { hotel_id } = req.body, room_number=sanitize(req.body.room_number||''), category=sanitize(req.body.category||''), message=sanitize(req.body.message||''), sla_minutes=parseInt(req.body.sla_minutes)||15;
   const { data,error } = await supabase.from('requests').insert([{ hotel_id,room_number,category,message,status:'pending',sla_minutes }]).select().single();

@@ -793,7 +793,7 @@ function setRptToday(){var t=new Date().toISOString().split('T')[0];document.get
 function setRptMonth(){var now=new Date();var first=new Date(now.getFullYear(),now.getMonth(),1).toISOString().split('T')[0];var last=new Date(now.getFullYear(),now.getMonth()+1,0).toISOString().split('T')[0];document.getElementById('rpt-from').value=first;document.getElementById('rpt-to').value=last;}
 
 function loadReports() {
-  fetch('/requests?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(reqs){
+  fetch('/requests?hotel_id='+hotel.hotel_id+'&all=true').then(function(r){return r.json();}).then(function(reqs){
     if(!Array.isArray(reqs))return;
 
     // Filter by date

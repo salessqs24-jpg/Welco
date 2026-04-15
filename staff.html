@@ -1,6 +1,41 @@
+<!--
+  ╔═══════════════════════════════════════════════════════╗
+  ║           © 2026 WELCO TECHNOLOGIES                   ║
+  ║           ALL RIGHTS RESERVED                         ║
+  ║                                                       ║
+  ║  This software is proprietary and confidential.       ║
+  ║  Unauthorized copying, modification, distribution,    ║
+  ║  or use of this software, via any medium, is          ║
+  ║  strictly prohibited without written permission.      ║
+  ║                                                       ║
+  ║  Welco® is a registered trademark.                    ║
+  ║  Patent pending. Protected by copyright law.          ║
+  ╚═══════════════════════════════════════════════════════╝
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+  <script>
+    /* © 2026 Welco™ - Protected Source */
+    (function(){
+      var _0x4a2b=function(){};
+      try{
+        var d=new Date();
+        if(d.getFullYear()<2026){}
+      }catch(e){}
+      // Disable right-click
+      document.addEventListener('contextmenu',function(e){e.preventDefault();});
+      // Detect devtools open
+      var threshold=160;
+      setInterval(function(){
+        if(window.outerWidth-window.innerWidth>threshold||window.outerHeight-window.innerHeight>threshold){
+          // devtools detected - do nothing but could add protection here
+        }
+      },1000);
+    })();
+  </script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welco Staff</title>
@@ -10,12 +45,10 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Welco Staff">
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-  <script>
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    OneSignalDeferred.push(async function(OneSignal) {
-      await OneSignal.init({ appId: "20e9e447-6ecd-488d-bdf2-c9c2e81bdee9", notifyButton: { enable: false }, allowLocalhostAsSecureOrigin: true });
-    });
-  </script>
+  <script>window.OneSignalDeferred = window.OneSignalDeferred || [];
+ OneSignalDeferred.push(async function(OneSignal) {
+ await OneSignal.init({ appId: "20e9e447-6ecd-488d-bdf2-c9c2e81bdee9", notifyButton: { enable: false }, allowLocalhostAsSecureOrigin: true });
+ });</script>
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:sans-serif; background:#f0f2f5 url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80') center/cover fixed no-repeat; min-height:100vh; }
@@ -114,6 +147,24 @@
     .refresh-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
     .refresh-btn { background:#f0f2f5; border:none; border-radius:8px; padding:6px 12px; font-size:12px; color:#666; cursor:pointer; }
   </style>
+
+  <script>(function(){
+ var _0x='© 2026 Welco Technologies. All Rights Reserved.';
+ console.log('%c'+_0x,'color:#005f73;font-size:14px;font-weight:bold;');
+ console.log('%cStop!','color:#e63946;font-size:40px;font-weight:bold;');
+ console.log('%cThis is a browser feature for developers. If someone told you to copy-paste something here, it is a scam.','color:#333;font-size:14px;');
+ document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+ var threshold = 160;
+ setInterval(function(){
+ if(window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold){
+ document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#1a1a2e;color:white;font-size:20px;font-family:sans-serif;text-align:center;padding:20px">' +
+ '<div><div style="font-size:60px;margin-bottom:20px">🔒</div>' +
+ '<div style="font-weight:bold;margin-bottom:10px">© 2026 Welco Technologies</div>' +
+ '<div style="font-size:14px;opacity:0.7">Developer tools detected.<br>This software is protected.</div></div></div>';
+ }
+ }, 1000);
+ })();</script>
+  <script src="/welco-protect.js"></script>
 </head>
 <body>
 
@@ -220,247 +271,236 @@
   </div>
 </div>
 
-<script>
-var pin='', loggedInStaff='', loggedInStaffDbId=null, isOnDuty=false;
+<script>var pin='', loggedInStaff='', loggedInStaffDbId=null, isOnDuty=false;
 var currentHotelId='', currentFilter='all', knownRequestIds=null;
 var refreshInterval=null, audioCtx=null, pendingClaimId=null;
-
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(function(){});
 window.addEventListener('load', function(){
-  if ('Notification' in window && Notification.permission==='default') document.getElementById('notif-prompt').style.display='block';
+ if ('Notification' in window && Notification.permission==='default') document.getElementById('notif-prompt').style.display='block';
 });
-
 function enablePush(){
-  document.getElementById('notif-prompt').style.display='none';
-  OneSignalDeferred.push(async function(OS){ try{ await OS.Notifications.requestPermission(); showNotifBar(OS.Notifications.permission); }catch(e){} });
+ document.getElementById('notif-prompt').style.display='none';
+ OneSignalDeferred.push(async function(OS){ try{ await OS.Notifications.requestPermission(); showNotifBar(OS.Notifications.permission); }catch(e){} });
 }
 function skipPush(){ document.getElementById('notif-prompt').style.display='none'; }
 function showNotifBar(granted){
-  var b=document.getElementById('notif-status-bar');
-  if(granted){ b.textContent='🔔 Push notifications ON!'; b.className='notif-status-bar granted'; b.style.display='block'; setTimeout(function(){b.style.display='none';},4000); }
-  else{ b.textContent='🔕 Tap here to enable push notifications'; b.className='notif-status-bar'; b.style.display='block'; }
+ var b=document.getElementById('notif-status-bar');
+ if(granted){ b.textContent='🔔 Push notifications ON!'; b.className='notif-status-bar granted'; b.style.display='block'; setTimeout(function(){b.style.display='none';},4000); }
+ else{ b.textContent='🔕 Tap here to enable push notifications'; b.className='notif-status-bar'; b.style.display='block'; }
 }
 function playChime(){
-  try{
-    if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-    [523,659,784].forEach(function(f,i){
-      var o=audioCtx.createOscillator(),g=audioCtx.createGain();
-      o.connect(g); g.connect(audioCtx.destination); o.type='sine'; o.frequency.value=f;
-      var t=audioCtx.currentTime+i*0.15;
-      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.35,t+0.05); g.gain.exponentialRampToValueAtTime(0.001,t+0.7);
-      o.start(t); o.stop(t+0.7);
-    });
-  }catch(e){}
+ try{
+ if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+ [523,659,784].forEach(function(f,i){
+ var o=audioCtx.createOscillator(),g=audioCtx.createGain();
+ o.connect(g); g.connect(audioCtx.destination); o.type='sine'; o.frequency.value=f;
+ var t=audioCtx.currentTime+i*0.15;
+ g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.35,t+0.05); g.gain.exponentialRampToValueAtTime(0.001,t+0.7);
+ o.start(t); o.stop(t+0.7);
+ });
+ }catch(e){}
 }
 function sendPush(title,body){
-  OneSignalDeferred.push(async function(OS){
-    try{ if(!OS.Notifications.permission)return; var r=await navigator.serviceWorker.ready; r.showNotification(title,{body:body,icon:'/favicon.ico',vibrate:[200,100,200],tag:'welco-req',renotify:true}); }catch(e){}
-  });
+ OneSignalDeferred.push(async function(OS){
+ try{ if(!OS.Notifications.permission)return; var r=await navigator.serviceWorker.ready; r.showNotification(title,{body:body,icon:'/favicon.ico',vibrate:[200,100,200],tag:'welco-req',renotify:true}); }catch(e){}
+ });
 }
-
 function addPin(n){ if(pin.length<4){pin+=n;updateDots();} }
 function deletePin(){ pin=pin.slice(0,-1);updateDots(); }
 function clearPin(){ pin='';updateDots(); }
 function updateDots(){ for(var i=0;i<4;i++) document.getElementById('dot-'+i).classList.toggle('filled',i<pin.length); }
-
 function doLogin(){
-  var sid=document.getElementById('staff-id-input').value.trim().toUpperCase();
-  var btn=document.getElementById('login-btn');
-  if(!sid){showLoginErr('Please enter your Staff ID.');return;}
-  if(pin.length!==4){showLoginErr('Please enter your 4-digit PIN.');return;}
-  attemptLogin(sid,pin,btn,1);
+ var sid=document.getElementById('staff-id-input').value.trim().toUpperCase();
+ var btn=document.getElementById('login-btn');
+ if(!sid){showLoginErr('Please enter your Staff ID.');return;}
+ if(pin.length!==4){showLoginErr('Please enter your 4-digit PIN.');return;}
+ attemptLogin(sid,pin,btn,1);
 }
-
 function attemptLogin(sid,pinVal,btn,attempt){
-  var msgs=['Verifying…','Server waking up… (30s)','Almost there…'];
-  btn.textContent=msgs[Math.min(attempt-1,msgs.length-1)]; btn.disabled=true;
-  var ctrl=new AbortController(), tid=setTimeout(function(){ctrl.abort();},70000);
-  fetch('/staff/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({staff_id:sid,pin:pinVal}),signal:ctrl.signal})
-  .then(function(r){clearTimeout(tid);return r.json().then(function(d){return{ok:r.ok,d:d};});})
-  .then(function(res){
-    btn.textContent='Login to Dashboard'; btn.disabled=false;
-    if(!res.ok){showLoginErr(res.d.error||'Invalid Staff ID or PIN.');clearPin();return;}
-    var s=res.d.staff;
-    currentHotelId=s.hotel_id; loggedInStaff=s.name; loggedInStaffDbId=s.id; isOnDuty=!!s.is_on_duty;
-    fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
-      var h=hotels.find(function(x){return x.hotel_id===currentHotelId;})||{};
-      applyBranding(h);
-    }).catch(function(){applyBranding({});});
-    document.getElementById('login-error').style.display='none';
-    document.getElementById('login-screen').style.display='none';
-    document.getElementById('dashboard-screen').style.display='block';
-    document.getElementById('dash-staff').textContent='👋 '+s.name+(s.department?' · '+s.department:'');
-    updateDutyUI();
-    try{audioCtx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}
-    OneSignalDeferred.push(async function(OS){if(!OS.Notifications.permission)showNotifBar(false);});
-    loadTasks();
-    refreshInterval=setInterval(loadTasks,5000);
-  })
-  .catch(function(){
-    clearTimeout(tid);
-    if(attempt<3){setTimeout(function(){attemptLogin(sid,pinVal,btn,attempt+1);},5000);}
-    else{btn.textContent='Login to Dashboard';btn.disabled=false;showLoginErr('Server taking too long. Wait 1 min and try again.');}
-  });
+ var msgs=['Verifying…','Server waking up… (30s)','Almost there…'];
+ btn.textContent=msgs[Math.min(attempt-1,msgs.length-1)]; btn.disabled=true;
+ var ctrl=new AbortController(), tid=setTimeout(function(){ctrl.abort();},70000);
+ fetch('/staff/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({staff_id:sid,pin:pinVal}),signal:ctrl.signal})
+ .then(function(r){clearTimeout(tid);return r.json().then(function(d){return{ok:r.ok,d:d};});})
+ .then(function(res){
+ btn.textContent='Login to Dashboard'; btn.disabled=false;
+ if(!res.ok){showLoginErr(res.d.error||'Invalid Staff ID or PIN.');clearPin();return;}
+ var s=res.d.staff;
+ currentHotelId=s.hotel_id; loggedInStaff=s.name; loggedInStaffDbId=s.id; isOnDuty=!!s.is_on_duty;
+ fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
+ var h=hotels.find(function(x){return x.hotel_id===currentHotelId;})||{};
+ applyBranding(h);
+ }).catch(function(){applyBranding({});});
+ document.getElementById('login-error').style.display='none';
+ document.getElementById('login-screen').style.display='none';
+ document.getElementById('dashboard-screen').style.display='block';
+ document.getElementById('dash-staff').textContent='👋 '+s.name+(s.department?' · '+s.department:'');
+ updateDutyUI();
+ try{audioCtx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}
+ OneSignalDeferred.push(async function(OS){if(!OS.Notifications.permission)showNotifBar(false);});
+ loadTasks();
+ refreshInterval=setInterval(loadTasks,5000);
+ })
+ .catch(function(){
+ clearTimeout(tid);
+ if(attempt<3){setTimeout(function(){attemptLogin(sid,pinVal,btn,attempt+1);},5000);}
+ else{btn.textContent='Login to Dashboard';btn.disabled=false;showLoginErr('Server taking too long. Wait 1 min and try again.');}
+ });
 }
-
 function applyBranding(hotel){
-  var c=hotel.colour||'#0a9396';
-  document.getElementById('dash-header').style.background='linear-gradient(90deg,'+c+'dd,'+c+'88)';
-
-  // ── Apply hotel photo as full page background ──
-  if(hotel.logo_url){
-    document.body.style.backgroundImage='url('+hotel.logo_url+')';
-    document.body.style.backgroundSize='cover';
-    document.body.style.backgroundPosition='center';
-    document.body.style.backgroundAttachment='fixed';
-  } else {
-    document.body.style.backgroundImage="url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80')";
-    document.body.style.backgroundSize='cover';
-    document.body.style.backgroundPosition='center';
-    document.body.style.backgroundAttachment='fixed';
-  }
-
-  if(hotel.logo_url){
-    document.getElementById('dash-header-logo').src=hotel.logo_url;
-    document.getElementById('dash-header-logo').style.display='block';
-    document.getElementById('dash-header-emoji').style.display='none';
-  } else {
-    document.getElementById('dash-header-logo').style.display='none';
-    document.getElementById('dash-header-emoji').style.display='inline';
-    document.getElementById('dash-header-emoji').textContent=hotel.emoji||'🏨';
-  }
-  document.getElementById('dash-hotel').textContent=hotel.name||'Hotel';
-
-  fetch('/announcements?hotel_id='+currentHotelId).then(function(r){return r.json();}).then(function(data){
-    if(Array.isArray(data)){var a=data.find(function(x){return x.is_active;});if(a){document.getElementById('staff-announcement-text').textContent=a.message;document.getElementById('staff-announcement').style.display='block';}}
-  }).catch(function(){});
+ var c=hotel.colour||'#0a9396';
+ document.getElementById('dash-header').style.background='linear-gradient(90deg,'+c+'dd,'+c+'88)';
+ if(hotel.logo_url){
+ document.body.style.backgroundImage='url('+hotel.logo_url+')';
+ document.body.style.backgroundSize='cover';
+ document.body.style.backgroundPosition='center';
+ document.body.style.backgroundAttachment='fixed';
+ } else {
+ document.body.style.backgroundImage="url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80')";
+ document.body.style.backgroundSize='cover';
+ document.body.style.backgroundPosition='center';
+ document.body.style.backgroundAttachment='fixed';
+ }
+ if(hotel.logo_url){
+ document.getElementById('dash-header-logo').src=hotel.logo_url;
+ document.getElementById('dash-header-logo').style.display='block';
+ document.getElementById('dash-header-emoji').style.display='none';
+ } else {
+ document.getElementById('dash-header-logo').style.display='none';
+ document.getElementById('dash-header-emoji').style.display='inline';
+ document.getElementById('dash-header-emoji').textContent=hotel.emoji||'🏨';
+ }
+ document.getElementById('dash-hotel').textContent=hotel.name||'Hotel';
+ fetch('/announcements?hotel_id='+currentHotelId).then(function(r){return r.json();}).then(function(data){
+ if(Array.isArray(data)){var a=data.find(function(x){return x.is_active;});if(a){document.getElementById('staff-announcement-text').textContent=a.message;document.getElementById('staff-announcement').style.display='block';}}
+ }).catch(function(){});
 }
-
 function updateDutyUI(){
-  var bar=document.getElementById('duty-bar'),dot=document.getElementById('duty-dot');
-  var lbl=document.getElementById('duty-label'),sub=document.getElementById('duty-sub'),btn=document.getElementById('clock-btn');
-  var rl=document.getElementById('req-label');
-  if(isOnDuty){
-    bar.className='duty-bar on-duty'; dot.className='duty-dot on';
-    lbl.className='duty-label on'; lbl.textContent='🟢 On Duty';
-    sub.textContent='You will receive push notifications for new requests';
-    btn.className='clock-btn out'; btn.textContent='Clock Out';
-    rl.textContent='Live Requests';
-  } else {
-    bar.className='duty-bar off-duty'; dot.className='duty-dot off';
-    lbl.className='duty-label off'; lbl.textContent='🔴 Off Duty';
-    sub.textContent='Clock in to receive push notifications';
-    btn.className='clock-btn in'; btn.textContent='Clock In';
-    rl.textContent='Live Requests (notifications paused)';
-  }
+ var bar=document.getElementById('duty-bar'),dot=document.getElementById('duty-dot');
+ var lbl=document.getElementById('duty-label'),sub=document.getElementById('duty-sub'),btn=document.getElementById('clock-btn');
+ var rl=document.getElementById('req-label');
+ if(isOnDuty){
+ bar.className='duty-bar on-duty'; dot.className='duty-dot on';
+ lbl.className='duty-label on'; lbl.textContent='🟢 On Duty';
+ sub.textContent='You will receive push notifications for new requests';
+ btn.className='clock-btn out'; btn.textContent='Clock Out';
+ rl.textContent='Live Requests';
+ } else {
+ bar.className='duty-bar off-duty'; dot.className='duty-dot off';
+ lbl.className='duty-label off'; lbl.textContent='🔴 Off Duty';
+ sub.textContent='Clock in to receive push notifications';
+ btn.className='clock-btn in'; btn.textContent='Clock In';
+ rl.textContent='Live Requests (notifications paused)';
+ }
 }
-
 function toggleDuty(){
-  var newStatus=!isOnDuty;
-  authFetch('/staff/'+loggedInStaffDbId+'/duty',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({is_on_duty:newStatus})})
-  .then(function(r){return r.json();}).then(function(d){
-    if(d.error){alert(d.error);return;}
-    isOnDuty=newStatus; updateDutyUI();
-    if(isOnDuty) showNotifBar(true);
-  }).catch(function(){alert('Connection error. Try again.');});
+ var newStatus=!isOnDuty;
+ authFetch('/staff/'+loggedInStaffDbId+'/duty',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({is_on_duty:newStatus})})
+ .then(function(r){return r.json();}).then(function(d){
+ if(d.error){alert(d.error);return;}
+ isOnDuty=newStatus; updateDutyUI();
+ if(isOnDuty) showNotifBar(true);
+ }).catch(function(){alert('Connection error. Try again.');});
 }
-
 function authFetch(url, options) {
-  options = options || {};
-  options.headers = options.headers || {};
-  var token = localStorage.getItem('welco_token');
-  if (token) options.headers['Authorization'] = 'Bearer ' + token;
-  return fetch(url, options);
+ options = options || {};
+ options.headers = options.headers || {};
+ var token = localStorage.getItem('welco_token');
+ if (token) options.headers['Authorization'] = 'Bearer ' + token;
+ return fetch(url, options);
 }
-
 function doLogout(){
-  clearInterval(refreshInterval);
-  document.getElementById('login-screen').style.display='flex';
-  document.getElementById('dashboard-screen').style.display='none';
-  document.getElementById('notif-status-bar').style.display='none';
-  // Reset background to default on logout
-  document.body.style.backgroundImage="url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80')";
-  pin='';clearPin();document.getElementById('staff-id-input').value='';
-  knownRequestIds=null;currentHotelId='';loggedInStaffDbId=null;isOnDuty=false;
+ clearInterval(refreshInterval);
+ document.getElementById('login-screen').style.display='flex';
+ document.getElementById('dashboard-screen').style.display='none';
+ document.getElementById('notif-status-bar').style.display='none';
+ document.body.style.backgroundImage="url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80')";
+ pin='';clearPin();document.getElementById('staff-id-input').value='';
+ knownRequestIds=null;currentHotelId='';loggedInStaffDbId=null;isOnDuty=false;
 }
-
 function setFilter(f){
-  currentFilter=f;
-  document.querySelectorAll('.filter-tab').forEach(function(t,i){t.classList.toggle('active',['all','pending','in_progress','done'][i]===f);});
-  loadTasks();
+ currentFilter=f;
+ document.querySelectorAll('.filter-tab').forEach(function(t,i){t.classList.toggle('active',['all','pending','in_progress','done'][i]===f);});
+ loadTasks();
 }
-
 function checkNewRequests(data){
-  var ids=data.map(function(r){return r.id;}).join(',');
-  if(knownRequestIds===null){knownRequestIds=ids;return;}
-  if(ids!==knownRequestIds){
-    var newOnes=data.filter(function(r){return r.status==='pending'&&!knownRequestIds.includes(String(r.id));});
-    if(newOnes.length>0&&isOnDuty){
-      playChime();
-      newOnes.forEach(function(r){sendPush('🔔 New Request — Room '+(r.room_number||'?'),(r.category||'General')+': '+(r.message||'No details'));});
-    }
-    knownRequestIds=ids;
-  }
+ var ids=data.map(function(r){return r.id;}).join(',');
+ if(knownRequestIds===null){knownRequestIds=ids;return;}
+ if(ids!==knownRequestIds){
+ var newOnes=data.filter(function(r){return r.status==='pending'&&!knownRequestIds.includes(String(r.id));});
+ if(newOnes.length>0&&isOnDuty){
+ playChime();
+ newOnes.forEach(function(r){sendPush('🔔 New Request — Room '+(r.room_number||'?'),(r.category||'General')+': '+(r.message||'No details'));});
+ }
+ knownRequestIds=ids;
+ }
 }
-
 function loadTasks(){
-  fetch('/requests?hotel_id='+currentHotelId).then(function(r){return r.json();}).then(function(data){
-    if(!Array.isArray(data))return;
-    var pending=data.filter(function(r){return r.status==='pending';}).length;
-    var badge=document.getElementById('pending-count');
-    badge.textContent=pending+' pending'; badge.className='notif-badge'+(pending===0?' zero':'');
-    checkNewRequests(data);
-    var filtered=currentFilter==='all'?data:data.filter(function(r){return r.status===currentFilter;});
-    var list=document.getElementById('task-list');
-    if(filtered.length===0){list.innerHTML='<div class="empty-state"><div class="icon">🎉</div><p>'+(currentFilter==='all'?'No requests yet!':'No '+currentFilter.replace('_',' ')+' requests')+'</p></div>';return;}
-
-    var deptConfig = {
-      'Housekeeping': { color: '#4361EE', bg: '#eef0fd', emoji: '🛏️' },
-      'Room Service': { color: '#F77F00', bg: '#fff3e0', emoji: '🍽️' },
-      'Maintenance': { color: '#e63946', bg: '#fde8ea', emoji: '🔧' },
-      'Front Desk': { color: '#9B5DE5', bg: '#f3eefe', emoji: '🛎️' },
-      'General': { color: '#0a9396', bg: '#e8f4f4', emoji: '👤' }
-    };
-
-    list.innerHTML=filtered.map(function(r){
-      var SLA=r.sla_minutes||15,elapsed=(Date.now()-new Date(r.created_at).getTime())/60000;
-      var remaining=Math.max(0,SLA-elapsed),pct=Math.max(0,(remaining/SLA)*100);
-      var mins=Math.floor(remaining),secs=Math.floor((remaining-mins)*60);
-      var tc=pct>50?'':pct>25?'warning':'urgent';
-      var isDone=r.status==='done';
-      var isUrgent=pct===0&&!isDone;
-      var ta=Math.floor(elapsed)>0?Math.floor(elapsed)+'m ago':'Just now';
-      var dept=deptConfig[r.category]||deptConfig['General'];
-      var borderColor=isDone?'#2ecc71':isUrgent?'#e63946':dept.color;
-      var cardBg=isDone?'rgba(255,255,255,0.7)':dept.bg;
-      var act='';
-      if(r.status==='pending') act='<button class="btn-accept" onclick="claimTask('+r.id+')" style="background:'+dept.color+'">👋 Accept</button>';
-      else if(r.status==='in_progress') act='<span class="claimed-badge">✅ '+(r.claimed_by||'Staff')+'</span><button class="btn-done" onclick="markDone('+r.id+')">Mark Done ✓</button>';
-      else act='<button class="btn-done" disabled>✅ Completed</button>';
-      return '<div class="task-card" style="border-left:4px solid '+borderColor+';background:'+cardBg+(isDone?';opacity:0.65':'')+'">' +
-        '<div class="task-top"><span class="task-room">Room '+(r.room_number||'?')+'</span><span class="task-cat" style="background:'+dept.color+'">'+dept.emoji+' '+(r.category||'General')+'</span></div>'+
-        '<div class="task-msg">'+(r.message||'No details')+'</div>'+
-        '<div class="task-time">🕐 '+ta+'</div>'+
-        (r.status!=='done'?'<div class="task-sla'+(pct<25?' urgent-text':'')+'">⏱ '+mins+'m '+secs+'s remaining</div><div class="timer-bar"><div class="timer-fill '+tc+'" style="width:'+pct+'%"></div></div>':'')+
-        '<div class="task-actions">'+act+'</div></div>';
-    }).join('');
-  }).catch(function(){});
+ fetch('/requests?hotel_id='+currentHotelId).then(function(r){return r.json();}).then(function(data){
+ if(!Array.isArray(data))return;
+ var pending=data.filter(function(r){return r.status==='pending';}).length;
+ var badge=document.getElementById('pending-count');
+ badge.textContent=pending+' pending'; badge.className='notif-badge'+(pending===0?' zero':'');
+ checkNewRequests(data);
+ var filtered=currentFilter==='all'?data:data.filter(function(r){return r.status===currentFilter;});
+ var list=document.getElementById('task-list');
+ if(filtered.length===0){list.innerHTML='<div class="empty-state"><div class="icon">🎉</div><p>'+(currentFilter==='all'?'No requests yet!':'No '+currentFilter.replace('_',' ')+' requests')+'</p></div>';return;}
+ var deptConfig = {
+ 'Housekeeping': { color: '#4361EE', bg: '#eef0fd', emoji: '🛏️' },
+ 'Room Service': { color: '#F77F00', bg: '#fff3e0', emoji: '🍽️' },
+ 'Maintenance': { color: '#e63946', bg: '#fde8ea', emoji: '🔧' },
+ 'Front Desk': { color: '#9B5DE5', bg: '#f3eefe', emoji: '🛎️' },
+ 'General': { color: '#0a9396', bg: '#e8f4f4', emoji: '👤' }
+ };
+ list.innerHTML=filtered.map(function(r){
+ var SLA=r.sla_minutes||15,elapsed=(Date.now()-new Date(r.created_at).getTime())/60000;
+ var remaining=Math.max(0,SLA-elapsed),pct=Math.max(0,(remaining/SLA)*100);
+ var mins=Math.floor(remaining),secs=Math.floor((remaining-mins)*60);
+ var tc=pct>50?'':pct>25?'warning':'urgent';
+ var isDone=r.status==='done';
+ var isUrgent=pct===0&&!isDone;
+ var ta=Math.floor(elapsed)>0?Math.floor(elapsed)+'m ago':'Just now';
+ var dept=deptConfig[r.category]||deptConfig['General'];
+ var borderColor=isDone?'#2ecc71':isUrgent?'#e63946':dept.color;
+ var cardBg=isDone?'rgba(255,255,255,0.7)':dept.bg;
+ var act='';
+ if(r.status==='pending') act='<button class="btn-accept" onclick="claimTask('+r.id+')" style="background:'+dept.color+'">👋 Accept</button>';
+ else if(r.status==='in_progress') act='<span class="claimed-badge">✅ '+(r.claimed_by||'Staff')+'</span><button class="btn-done" onclick="markDone('+r.id+')">Mark Done ✓</button>';
+ else act='<button class="btn-done" disabled>✅ Completed</button>';
+ return '<div class="task-card" style="border-left:4px solid '+borderColor+';background:'+cardBg+(isDone?';opacity:0.65':'')+'">' +
+ '<div class="task-top"><span class="task-room">Room '+(r.room_number||'?')+'</span><span class="task-cat" style="background:'+dept.color+'">'+dept.emoji+' '+(r.category||'General')+'</span></div>'+
+ '<div class="task-msg">'+(r.message||'No details')+'</div>'+
+ '<div class="task-time">🕐 '+ta+'</div>'+
+ (r.status!=='done'?'<div class="task-sla'+(pct<25?' urgent-text':'')+'">⏱ '+mins+'m '+secs+'s remaining</div><div class="timer-bar"><div class="timer-fill '+tc+'" style="width:'+pct+'%"></div></div>':'')+
+ '<div class="task-actions">'+act+'</div></div>';
+ }).join('');
+ }).catch(function(){});
 }
-
 function claimTask(id){
-  if(!isOnDuty){ pendingClaimId=id; document.getElementById('offduty-modal').classList.add('open'); return; }
-  doClaimTask(id);
+ if(!isOnDuty){ pendingClaimId=id; document.getElementById('offduty-modal').classList.add('open'); return; }
+ doClaimTask(id);
 }
 function cancelClaim(){ pendingClaimId=null; document.getElementById('offduty-modal').classList.remove('open'); }
 function confirmClaim(){ document.getElementById('offduty-modal').classList.remove('open'); if(pendingClaimId!==null){doClaimTask(pendingClaimId);pendingClaimId=null;} }
 function doClaimTask(id){
-  authFetch('/requests/'+id+'/claim',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({claimed_by:loggedInStaff})})
-  .then(function(r){return r.json();}).then(function(d){if(d.error){alert('Error: '+d.error);return;}loadTasks();}).catch(function(){alert('Connection error');});
+ authFetch('/requests/'+id+'/claim',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({claimed_by:loggedInStaff})})
+ .then(function(r){return r.json();}).then(function(d){if(d.error){alert('Error: '+d.error);return;}loadTasks();}).catch(function(){alert('Connection error');});
 }
 function markDone(id){
-  authFetch('/requests/'+id+'/complete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})}).then(function(){loadTasks();});
+ authFetch('/requests/'+id+'/complete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})}).then(function(){loadTasks();});
 }
-function showLoginErr(msg){ var e=document.getElementById('login-error'); e.textContent=msg; e.style.display='block'; }
-</script>
+function showLoginErr(msg){ var e=document.getElementById('login-error'); e.textContent=msg; e.style.display='block'; }</script>
+
+  <!-- COPYRIGHT -->
+  <div style="text-align:center;padding:12px;font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:0.05em;background:rgba(0,0,0,0.2)">
+    © 2026 Welco Technologies. All rights reserved. Unauthorized use prohibited.
+  </div>
+
+  <!-- Welco Copyright Footer -->
+  <div style="text-align:center;padding:16px;font-size:11px;color:rgba(255,255,255,0.4);position:relative;z-index:1;margin-top:auto">
+    © 2026 <strong>Welco™</strong> · All Rights Reserved · Built in India 🇮🇳<br>
+    Unauthorized copying or distribution is prohibited.
+  </div>
+
 </body>
 </html>

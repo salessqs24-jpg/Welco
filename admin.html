@@ -1,6 +1,41 @@
+<!--
+  ╔═══════════════════════════════════════════════════════╗
+  ║ © 2026 WELCO TECHNOLOGIES ║
+  ║ ALL RIGHTS RESERVED ║
+  ║ ║
+  ║ This software is proprietary and confidential. ║
+  ║ Unauthorized copying, modification, distribution, ║
+  ║ or use of this software, via any medium, is ║
+  ║ strictly prohibited without written permission. ║
+  ║ ║
+  ║ Welco® is a registered trademark. ║
+  ║ Patent pending. Protected by copyright law. ║
+  ╚═══════════════════════════════════════════════════════╝
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+  <script>
+    /* © 2026 Welco™ - Protected Source */
+    (function(){
+      var _0x4a2b=function(){};
+      try{
+        var d=new Date();
+        if(d.getFullYear()<2026){}
+      }catch(e){}
+      // Disable right-click
+      document.addEventListener('contextmenu',function(e){e.preventDefault();});
+      // Detect devtools open
+      var threshold=160;
+      setInterval(function(){
+        if(window.outerWidth-window.innerWidth>threshold||window.outerHeight-window.innerHeight>threshold){
+          // devtools detected - do nothing but could add protection here
+        }
+      },1000);
+    })();
+  </script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welco Admin</title>
@@ -173,6 +208,24 @@
     .loading { text-align: center; padding: 40px; color: #aaa; }
     select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; outline: none; background: white; }
   </style>
+
+  <script>(function(){
+ var _0x='© 2026 Welco Technologies. All Rights Reserved.';
+ console.log('%c'+_0x,'color:#005f73;font-size:14px;font-weight:bold;');
+ console.log('%cStop!','color:#e63946;font-size:40px;font-weight:bold;');
+ console.log('%cThis is a browser feature for developers. If someone told you to copy-paste something here, it is a scam.','color:#333;font-size:14px;');
+ document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+ var threshold = 160;
+ setInterval(function(){
+ if(window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold){
+ document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#1a1a2e;color:white;font-size:20px;font-family:sans-serif;text-align:center;padding:20px">' +
+ '<div><div style="font-size:60px;margin-bottom:20px">🔒</div>' +
+ '<div style="font-weight:bold;margin-bottom:10px">© 2026 Welco Technologies</div>' +
+ '<div style="font-size:14px;opacity:0.7">Developer tools detected.<br>This software is protected.</div></div></div>';
+ }
+ }, 1000);
+ })();</script>
+  <script src="/welco-protect.js"></script>
 </head>
 <body>
 
@@ -550,456 +603,406 @@
   </div>
 </div>
 
-<script>
-var hotel = null;
+<script>var hotel = null;
 var allHotels = [];
 var currentQRRoom = '';
 var LIVE_URL = 'https://welco.onrender.com';
 var pendingLogoBase64 = null;
-var rptAllRequests = []; // store for CSV download
+var rptAllRequests = []; 
 var rptCharts = {};
-
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw-admin.js').catch(function(){});
-
 function authFetch(url, options) {
-  options = options || {};
-  options.headers = options.headers || {};
-  var token = localStorage.getItem('welco_token');
-  if (token) options.headers['Authorization'] = 'Bearer ' + token;
-  return fetch(url, options);
+ options = options || {};
+ options.headers = options.headers || {};
+ var token = localStorage.getItem('welco_token');
+ if (token) options.headers['Authorization'] = 'Bearer ' + token;
+ return fetch(url, options);
 }
-
-/* ═══ LOGIN ═══ */
 function doLogin() {
-  var email = document.getElementById('l-email').value.trim();
-  var password = document.getElementById('l-password').value;
-  var btn = document.querySelector('.login-btn');
-  if (!email || !password) { showErr('Please enter email and password.'); return; }
-  attemptLogin(email, password, btn, 1);
+ var email = document.getElementById('l-email').value.trim();
+ var password = document.getElementById('l-password').value;
+ var btn = document.querySelector('.login-btn');
+ if (!email || !password) { showErr('Please enter email and password.'); return; }
+ attemptLogin(email, password, btn, 1);
 }
-
 function attemptLogin(email, password, btn, attempt) {
-  var messages = ['Logging in…', 'Server waking up… (30s)', 'Almost there…'];
-  btn.textContent = messages[Math.min(attempt - 1, messages.length - 1)];
-  btn.disabled = true;
-  var controller = new AbortController();
-  var timeoutId = setTimeout(function() { controller.abort(); }, 70000);
-  fetch('/login', {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: email, password: password }), signal: controller.signal
-  }).then(function(r) {
-    clearTimeout(timeoutId);
-    return r.json().then(function(d) { return { ok: r.ok, d: d }; });
-  }).then(function(res) {
-    btn.textContent = 'Login to Admin'; btn.disabled = false;
-    if (!res.ok) { showErr(res.d.error || 'Invalid email or password.'); return; }
-    allHotels = res.d.hotels || (res.d.hotel ? [res.d.hotel] : []);
-    hotel = res.d.hotel || allHotels[0] || null;
-    if (!hotel) { showErr('No hotel found for this account.'); return; }
-    localStorage.setItem('welco_admin_hotel', JSON.stringify(hotel));
-    localStorage.setItem('welco_admin_hotels', JSON.stringify(allHotels));
-    if (res.d.token) localStorage.setItem('welco_token', res.d.token);
-    startApp();
-  }).catch(function() {
-    clearTimeout(timeoutId);
-    if (attempt < 3) { setTimeout(function() { attemptLogin(email, password, btn, attempt + 1); }, 5000); }
-    else { btn.textContent = 'Login to Admin'; btn.disabled = false; showErr('Server timeout. Wait 1 min and try again.'); }
-  });
+ var messages = ['Logging in…', 'Server waking up… (30s)', 'Almost there…'];
+ btn.textContent = messages[Math.min(attempt - 1, messages.length - 1)];
+ btn.disabled = true;
+ var controller = new AbortController();
+ var timeoutId = setTimeout(function() { controller.abort(); }, 70000);
+ fetch('/login', {
+ method: 'POST', headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ email: email, password: password }), signal: controller.signal
+ }).then(function(r) {
+ clearTimeout(timeoutId);
+ return r.json().then(function(d) { return { ok: r.ok, d: d }; });
+ }).then(function(res) {
+ btn.textContent = 'Login to Admin'; btn.disabled = false;
+ if (!res.ok) { showErr(res.d.error || 'Invalid email or password.'); return; }
+ allHotels = res.d.hotels || (res.d.hotel ? [res.d.hotel] : []);
+ hotel = res.d.hotel || allHotels[0] || null;
+ if (!hotel) { showErr('No hotel found for this account.'); return; }
+ localStorage.setItem('welco_admin_hotel', JSON.stringify(hotel));
+ localStorage.setItem('welco_admin_hotels', JSON.stringify(allHotels));
+ if (res.d.token) localStorage.setItem('welco_token', res.d.token);
+ startApp();
+ }).catch(function() {
+ clearTimeout(timeoutId);
+ if (attempt < 3) { setTimeout(function() { attemptLogin(email, password, btn, attempt + 1); }, 5000); }
+ else { btn.textContent = 'Login to Admin'; btn.disabled = false; showErr('Server timeout. Wait 1 min and try again.'); }
+ });
 }
-
 function showErr(msg) { var el = document.getElementById('login-err'); el.textContent = msg; el.style.display = 'block'; }
 function doLogout() { localStorage.removeItem('welco_admin_hotel'); localStorage.removeItem('welco_admin_hotels'); localStorage.removeItem('welco_token'); allHotels = []; hotel = null; document.getElementById('app-screen').style.display = 'none'; document.getElementById('login-screen').style.display = 'flex'; document.getElementById('login-err').style.display = 'none'; }
-
-/* ═══ APP START ═══ */
 function startApp() {
-  try { var stored = localStorage.getItem('welco_admin_hotels'); if (stored) allHotels = JSON.parse(stored); } catch(e) {}
-  var sw = document.getElementById('hotel-switcher'); sw.style.display = 'block';
-  document.getElementById('switcher-label').textContent = hotel.name;
-  renderHotelDropdown();
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('app-screen').style.display = 'block';
-  document.getElementById('t-name').textContent = hotel.name;
-  document.getElementById('t-city').textContent = hotel.city || '';
-  document.documentElement.style.setProperty('--brand', hotel.colour || '#005f73');
-  document.documentElement.style.setProperty('--brand2', hotel.colour || '#0a9396');
-  document.getElementById('set-name').value = hotel.name || '';
-  document.getElementById('set-city').value = hotel.city || '';
-  document.getElementById('set-colortext').value = hotel.colour || '#0a9396';
-  document.getElementById('set-colorpicker').value = hotel.colour || '#0a9396';
-  applyLogoOrEmoji(hotel.logo_url, null);
-  // Apply hotel photo as full page background
-  if (hotel.logo_url) {
-    document.body.style.backgroundImage = 'url(' + hotel.logo_url + ')';
-    document.body.style.backgroundSize = 'cover';
-    document.body.style.backgroundPosition = 'center';
-    document.body.style.backgroundAttachment = 'fixed';
-  } else {
-    document.body.style.backgroundImage = "url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80')";
-    document.body.style.backgroundSize = 'cover';
-    document.body.style.backgroundPosition = 'center';
-    document.body.style.backgroundAttachment = 'fixed';
-  }
-  pendingLogoBase64 = null;
-  showTab('overview');
-  loadOverview();
-  loadRooms();
+ try { var stored = localStorage.getItem('welco_admin_hotels'); if (stored) allHotels = JSON.parse(stored); } catch(e) {}
+ var sw = document.getElementById('hotel-switcher'); sw.style.display = 'block';
+ document.getElementById('switcher-label').textContent = hotel.name;
+ renderHotelDropdown();
+ document.getElementById('login-screen').style.display = 'none';
+ document.getElementById('app-screen').style.display = 'block';
+ document.getElementById('t-name').textContent = hotel.name;
+ document.getElementById('t-city').textContent = hotel.city || '';
+ document.documentElement.style.setProperty('--brand', hotel.colour || '#005f73');
+ document.documentElement.style.setProperty('--brand2', hotel.colour || '#0a9396');
+ document.getElementById('set-name').value = hotel.name || '';
+ document.getElementById('set-city').value = hotel.city || '';
+ document.getElementById('set-colortext').value = hotel.colour || '#0a9396';
+ document.getElementById('set-colorpicker').value = hotel.colour || '#0a9396';
+ applyLogoOrEmoji(hotel.logo_url, null);
+ if (hotel.logo_url) {
+ document.body.style.backgroundImage = 'url(' + hotel.logo_url + ')';
+ document.body.style.backgroundSize = 'cover';
+ document.body.style.backgroundPosition = 'center';
+ document.body.style.backgroundAttachment = 'fixed';
+ } else {
+ document.body.style.backgroundImage = "url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80')";
+ document.body.style.backgroundSize = 'cover';
+ document.body.style.backgroundPosition = 'center';
+ document.body.style.backgroundAttachment = 'fixed';
+ }
+ pendingLogoBase64 = null;
+ showTab('overview');
+ loadOverview();
+ loadRooms();
 }
-
-/* ═══ HOTEL SWITCHER ═══ */
 function toggleSwitcher(e) { e.stopPropagation(); document.getElementById('hotel-switcher').classList.toggle('open'); }
 function renderHotelDropdown() {
-  var dd = document.getElementById('hotel-dropdown');
-  dd.innerHTML = '<div class="hotel-dropdown-header">Your Hotels</div>';
-  allHotels.forEach(function(h) {
-    var isActive = h.hotel_id === hotel.hotel_id;
-    var item = document.createElement('div');
-    item.className = 'hotel-dropdown-item' + (isActive ? ' active' : '');
-    item.innerHTML = '<div class="h-dot" style="background:' + (h.colour || '#005f73') + '"></div><div class="h-item-text"><div class="h-item-name">' + h.name + '</div><div class="h-item-city">' + (h.city || '') + '</div></div>' + (isActive ? '<span class="h-check">✓</span>' : '');
-    item.onclick = function() { switchToHotel(h.hotel_id); };
-    dd.appendChild(item);
-  });
-  var addBtn = document.createElement('div');
-  addBtn.className = 'hotel-dropdown-add';
-  addBtn.innerHTML = '<span>➕</span><span>Add New Hotel</span>';
-  addBtn.onclick = function() { document.getElementById('hotel-switcher').classList.remove('open'); openAddHotelModal(); };
-  dd.appendChild(addBtn);
+ var dd = document.getElementById('hotel-dropdown');
+ dd.innerHTML = '<div class="hotel-dropdown-header">Your Hotels</div>';
+ allHotels.forEach(function(h) {
+ var isActive = h.hotel_id === hotel.hotel_id;
+ var item = document.createElement('div');
+ item.className = 'hotel-dropdown-item' + (isActive ? ' active' : '');
+ item.innerHTML = '<div class="h-dot" style="background:' + (h.colour || '#005f73') + '"></div><div class="h-item-text"><div class="h-item-name">' + h.name + '</div><div class="h-item-city">' + (h.city || '') + '</div></div>' + (isActive ? '<span class="h-check">✓</span>' : '');
+ item.onclick = function() { switchToHotel(h.hotel_id); };
+ dd.appendChild(item);
+ });
+ var addBtn = document.createElement('div');
+ addBtn.className = 'hotel-dropdown-add';
+ addBtn.innerHTML = '<span>➕</span><span>Add New Hotel</span>';
+ addBtn.onclick = function() { document.getElementById('hotel-switcher').classList.remove('open'); openAddHotelModal(); };
+ dd.appendChild(addBtn);
 }
 function switchToHotel(hotel_id) { var h = allHotels.find(function(x){return x.hotel_id===hotel_id;}); if(!h)return; hotel=h; localStorage.setItem('welco_admin_hotel',JSON.stringify(hotel)); document.getElementById('hotel-switcher').classList.remove('open'); document.getElementById('switcher-label').textContent=hotel.name; startApp(); }
 document.addEventListener('click', function(e) { var sw=document.getElementById('hotel-switcher'); if(sw&&!sw.contains(e.target))sw.classList.remove('open'); });
-
-/* ═══ LOGO ═══ */
 function applyLogoOrEmoji(logoUrl, emoji) {
-  var imgEl=document.getElementById('topbar-logo-img'); var emojiEl=document.getElementById('topbar-logo-emoji');
-  var previewImg=document.getElementById('logo-preview-img'); var previewEmoji=document.getElementById('logo-preview-emoji');
-  var removeBtn=document.getElementById('logo-remove-btn');
-  if(logoUrl){imgEl.src=logoUrl;imgEl.style.display='block';emojiEl.style.display='none';previewImg.src=logoUrl;previewImg.style.display='block';previewEmoji.style.display='none';removeBtn.style.display='block';}
-  else{imgEl.style.display='none';emojiEl.textContent='🏨';emojiEl.style.display='block';previewImg.style.display='none';previewEmoji.textContent='🏨';previewEmoji.style.display='block';removeBtn.style.display='none';}
+ var imgEl=document.getElementById('topbar-logo-img'); var emojiEl=document.getElementById('topbar-logo-emoji');
+ var previewImg=document.getElementById('logo-preview-img'); var previewEmoji=document.getElementById('logo-preview-emoji');
+ var removeBtn=document.getElementById('logo-remove-btn');
+ if(logoUrl){imgEl.src=logoUrl;imgEl.style.display='block';emojiEl.style.display='none';previewImg.src=logoUrl;previewImg.style.display='block';previewEmoji.style.display='none';removeBtn.style.display='block';}
+ else{imgEl.style.display='none';emojiEl.textContent='🏨';emojiEl.style.display='block';previewImg.style.display='none';previewEmoji.textContent='🏨';previewEmoji.style.display='block';removeBtn.style.display='none';}
 }
 function handleLogoUpload(event) {
-  var file=event.target.files[0]; if(!file)return;
-  var note=document.getElementById('logo-size-note');
-  note.textContent='⏳ Processing image...'; note.style.color='#888';
-  var reader=new FileReader();
-  reader.onload=function(e){
-    var img=new Image();
-    img.onload=function(){
-      // Compress using canvas — max width 1200px, quality 0.75
-      var maxW=1200, maxH=900;
-      var w=img.width, h=img.height;
-      if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
-      if(h>maxH){w=Math.round(w*maxH/h);h=maxH;}
-      var canvas=document.createElement('canvas');
-      canvas.width=w; canvas.height=h;
-      var ctx=canvas.getContext('2d');
-      ctx.drawImage(img,0,0,w,h);
-      var compressed=canvas.toDataURL('image/jpeg',0.75);
-      var kb=Math.round(compressed.length*0.75/1024);
-      pendingLogoBase64=compressed;
-      applyLogoOrEmoji(compressed, hotel.emoji);
-      note.textContent='✅ '+file.name+' ready (compressed to ~'+kb+'KB) — click Save Changes to apply.';
-      note.style.color='#065f46';
-    };
-    img.src=e.target.result;
-  };
-  reader.readAsDataURL(file);
+ var file=event.target.files[0]; if(!file)return;
+ var note=document.getElementById('logo-size-note');
+ note.textContent='⏳ Processing image...'; note.style.color='#888';
+ var reader=new FileReader();
+ reader.onload=function(e){
+ var img=new Image();
+ img.onload=function(){
+ var maxW=1200, maxH=900;
+ var w=img.width, h=img.height;
+ if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
+ if(h>maxH){w=Math.round(w*maxH/h);h=maxH;}
+ var canvas=document.createElement('canvas');
+ canvas.width=w; canvas.height=h;
+ var ctx=canvas.getContext('2d');
+ ctx.drawImage(img,0,0,w,h);
+ var compressed=canvas.toDataURL('image/jpeg',0.75);
+ var kb=Math.round(compressed.length*0.75/1024);
+ pendingLogoBase64=compressed;
+ applyLogoOrEmoji(compressed, hotel.emoji);
+ note.textContent='✅ '+file.name+' ready (compressed to ~'+kb+'KB) — click Save Changes to apply.';
+ note.style.color='#065f46';
+ };
+ img.src=e.target.result;
+ };
+ reader.readAsDataURL(file);
 }
 function removeLogo(){pendingLogoBase64='';applyLogoOrEmoji(null,null);document.getElementById('logo-size-note').textContent='Photo will be removed when you click Save Changes.';document.getElementById('logo-size-note').style.color='#888';document.getElementById('logo-file-input').value='';}
-
-/* ═══ TABS ═══ */
 function showTab(name) {
-  var names=['overview','rooms','hod','feedback','reports','settings'];
-  document.querySelectorAll('.tab').forEach(function(t,i){t.classList.toggle('active',names[i]===name);});
-  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
-  document.getElementById('panel-'+name).classList.add('active');
-  if(name==='reports')loadReports();
-  if(name==='rooms')loadRooms();
-  if(name==='feedback')loadFeedback();
-  if(name==='hod'){loadHOD();loadAdminServiceControls();document.getElementById('hod-hotel-code').textContent=hotel.hotel_code||'N/A';}
+ var names=['overview','rooms','hod','feedback','reports','settings'];
+ document.querySelectorAll('.tab').forEach(function(t,i){t.classList.toggle('active',names[i]===name);});
+ document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
+ document.getElementById('panel-'+name).classList.add('active');
+ if(name==='reports')loadReports();
+ if(name==='rooms')loadRooms();
+ if(name==='feedback')loadFeedback();
+ if(name==='hod'){loadHOD();loadAdminServiceControls();document.getElementById('hod-hotel-code').textContent=hotel.hotel_code||'N/A';}
 }
-
-/* ═══ OVERVIEW ═══ */
 function loadOverview() {
-  Promise.all([fetch('/rooms?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}),fetch('/requests?hotel_id='+hotel.hotel_id).then(function(r){return r.json();})]).then(function(res){
-    var rooms=res[0],reqs=res[1];
-    document.getElementById('s-rooms').textContent=Array.isArray(rooms)?rooms.length:0;
-    if(Array.isArray(reqs)){
-      document.getElementById('s-pending').textContent=reqs.filter(function(r){return r.status==='pending';}).length;
-      document.getElementById('s-done').textContent=reqs.filter(function(r){return r.status==='done';}).length;
-      var rated=reqs.filter(function(r){return r.feedback_rating;});
-      document.getElementById('s-rating').textContent=rated.length?(rated.reduce(function(a,r){return a+r.feedback_rating;},0)/rated.length).toFixed(1)+'⭐':'N/A';
-      document.getElementById('recent-list').innerHTML=reqs.slice(0,10).length?reqs.slice(0,10).map(reqRow).join(''):'<div class="empty">No requests yet</div>';
-    }
-  }).catch(function(){});
+ Promise.all([fetch('/rooms?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}),fetch('/requests?hotel_id='+hotel.hotel_id).then(function(r){return r.json();})]).then(function(res){
+ var rooms=res[0],reqs=res[1];
+ document.getElementById('s-rooms').textContent=Array.isArray(rooms)?rooms.length:0;
+ if(Array.isArray(reqs)){
+ document.getElementById('s-pending').textContent=reqs.filter(function(r){return r.status==='pending';}).length;
+ document.getElementById('s-done').textContent=reqs.filter(function(r){return r.status==='done';}).length;
+ var rated=reqs.filter(function(r){return r.feedback_rating;});
+ document.getElementById('s-rating').textContent=rated.length?(rated.reduce(function(a,r){return a+r.feedback_rating;},0)/rated.length).toFixed(1)+'⭐':'N/A';
+ document.getElementById('recent-list').innerHTML=reqs.slice(0,10).length?reqs.slice(0,10).map(reqRow).join(''):'<div class="empty">No requests yet</div>';
+ }
+ }).catch(function(){});
 }
-
-/* ═══ ROOMS ═══ */
 function loadRooms() {
-  fetch('/rooms?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(rooms){
-    if(!Array.isArray(rooms))return;
-    document.getElementById('rooms-count').textContent=rooms.length+' rooms total';
-    document.getElementById('rooms-grid').innerHTML=rooms.length===0?'<div class="empty" style="grid-column:1/-1">No rooms yet</div>':rooms.map(function(r){return '<div class="room-card"><div class="room-num">Room '+r.room_number+'</div><div class="room-floor">Floor '+(r.floor||1)+'</div><div class="room-actions"><button class="btn-qr" onclick="showQR(\''+hotel.hotel_id+'\',\''+r.id+'\',\''+r.room_number+'\')">QR</button><button class="btn-del" onclick="deleteRoom('+r.id+')">✕</button></div></div>';}).join('');
-  }).catch(function(){});
+ fetch('/rooms?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(rooms){
+ if(!Array.isArray(rooms))return;
+ document.getElementById('rooms-count').textContent=rooms.length+' rooms total';
+ document.getElementById('rooms-grid').innerHTML=rooms.length===0?'<div class="empty" style="grid-column:1/-1">No rooms yet</div>':rooms.map(function(r){return '<div class="room-card"><div class="room-num">Room '+r.room_number+'</div><div class="room-floor">Floor '+(r.floor||1)+'</div><div class="room-actions"><button class="btn-qr" onclick="showQR(\''+hotel.hotel_id+'\',\''+r.id+'\',\''+r.room_number+'\')">QR</button><button class="btn-del" onclick="deleteRoom('+r.id+')">✕</button></div></div>';}).join('');
+ }).catch(function(){});
 }
 function addRoom(){var num=document.getElementById('new-room-num').value.trim();var floor=document.getElementById('new-room-floor').value||1;if(!num){alert('Enter a room number!');return;}authFetch('/rooms',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hotel.hotel_id,room_number:num,floor:parseInt(floor),is_active:true})}).then(function(){document.getElementById('new-room-num').value='';document.getElementById('new-room-floor').value='';loadRooms();loadOverview();});}
 function addBulkRooms(){
-  var startVal=document.getElementById('bulk-room-start').value.trim();var endVal=document.getElementById('bulk-room-end').value.trim();var floor=parseInt(document.getElementById('bulk-room-floor').value)||1;var msg=document.getElementById('bulk-msg');
-  if(!startVal||!endVal){msg.textContent='Please enter both start and end room numbers.';msg.className='msg-box msg-error';return;}
-  var start=parseInt(startVal);var end=parseInt(endVal);
-  if(isNaN(start)||isNaN(end)){msg.textContent='Please enter numeric room numbers.';msg.className='msg-box msg-error';return;}
-  if(start>end){msg.textContent='Start must be less than end.';msg.className='msg-box msg-error';return;}
-  if(end-start>99){msg.textContent='Maximum 100 rooms at a time.';msg.className='msg-box msg-error';return;}
-  var total=end-start+1;msg.textContent='⏳ Adding '+total+' rooms...';msg.className='msg-box msg-success';
-  var rooms=[];for(var i=start;i<=end;i++)rooms.push({hotel_id:hotel.hotel_id,room_number:String(i),floor:floor,is_active:true});
-  var added=0,errors=0;
-  function addNext(index){if(index>=rooms.length){msg.textContent='✅ '+added+' rooms added'+(errors>0?' ('+errors+' already exist)':'')+' !';msg.className='msg-box msg-success';document.getElementById('bulk-room-start').value='';document.getElementById('bulk-room-end').value='';document.getElementById('bulk-room-floor').value='';loadRooms();loadOverview();return;}authFetch('/rooms',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(rooms[index])}).then(function(r){return r.json();}).then(function(d){if(d.error)errors++;else added++;addNext(index+1);}).catch(function(){errors++;addNext(index+1);});}
-  addNext(0);
+ var startVal=document.getElementById('bulk-room-start').value.trim();var endVal=document.getElementById('bulk-room-end').value.trim();var floor=parseInt(document.getElementById('bulk-room-floor').value)||1;var msg=document.getElementById('bulk-msg');
+ if(!startVal||!endVal){msg.textContent='Please enter both start and end room numbers.';msg.className='msg-box msg-error';return;}
+ var start=parseInt(startVal);var end=parseInt(endVal);
+ if(isNaN(start)||isNaN(end)){msg.textContent='Please enter numeric room numbers.';msg.className='msg-box msg-error';return;}
+ if(start>end){msg.textContent='Start must be less than end.';msg.className='msg-box msg-error';return;}
+ if(end-start>99){msg.textContent='Maximum 100 rooms at a time.';msg.className='msg-box msg-error';return;}
+ var total=end-start+1;msg.textContent='⏳ Adding '+total+' rooms...';msg.className='msg-box msg-success';
+ var rooms=[];for(var i=start;i<=end;i++)rooms.push({hotel_id:hotel.hotel_id,room_number:String(i),floor:floor,is_active:true});
+ var added=0,errors=0;
+ function addNext(index){if(index>=rooms.length){msg.textContent='✅ '+added+' rooms added'+(errors>0?' ('+errors+' already exist)':'')+' !';msg.className='msg-box msg-success';document.getElementById('bulk-room-start').value='';document.getElementById('bulk-room-end').value='';document.getElementById('bulk-room-floor').value='';loadRooms();loadOverview();return;}authFetch('/rooms',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(rooms[index])}).then(function(r){return r.json();}).then(function(d){if(d.error)errors++;else added++;addNext(index+1);}).catch(function(){errors++;addNext(index+1);});}
+ addNext(0);
 }
 function deleteRoom(id){if(!confirm('Delete this room?'))return;authFetch('/rooms/'+id,{method:'DELETE'}).then(function(){loadRooms();loadOverview();});}
-
-/* ═══ FEEDBACK ═══ */
 function loadFeedback() {
-  fetch('/requests?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(reqs){
-    if(!Array.isArray(reqs))return;
-    var rated=reqs.filter(function(r){return r.feedback_rating;});
-    var starFilter=document.getElementById('fb-filter-stars').value;
-    var commentFilter=document.getElementById('fb-filter-comment').value;
-    var filtered=rated;
-    if(starFilter)filtered=filtered.filter(function(r){return String(r.feedback_rating)===starFilter;});
-    if(commentFilter==='with')filtered=filtered.filter(function(r){return r.feedback_comments&&r.feedback_comments.trim();});
-    if(commentFilter==='without')filtered=filtered.filter(function(r){return !r.feedback_comments||!r.feedback_comments.trim();});
-    document.getElementById('fb-total').textContent=rated.length;
-    var avg=rated.length?(rated.reduce(function(a,r){return a+r.feedback_rating;},0)/rated.length).toFixed(1):'-';
-    document.getElementById('fb-avg').textContent=avg==='-'?'-':avg+' ⭐';
-    document.getElementById('fb-5star').textContent=rated.filter(function(r){return r.feedback_rating===5;}).length;
-    document.getElementById('fb-low').textContent=rated.filter(function(r){return r.feedback_rating<3;}).length;
-    document.getElementById('fb-subtitle').textContent=filtered.length+' review(s) shown';
-    var list=document.getElementById('feedback-list');
-    if(filtered.length===0){list.innerHTML='<div class="empty">No reviews match your filter</div>';return;}
-    list.innerHTML=filtered.map(function(r,idx){
-      var stars='';for(var i=1;i<=5;i++)stars+=i<=r.feedback_rating?'⭐':'☆';
-      var time=new Date(r.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
-      var comment=r.feedback_comments?r.feedback_comments.trim():'';
-      var bgColor=r.feedback_rating>=4?'#f0fdf4':r.feedback_rating===3?'#fffbeb':'#fef2f2';
-      var borderColor=r.feedback_rating>=4?'#86efac':r.feedback_rating===3?'#fde68a':'#fca5a5';
-      var copyText=stars+' — '+hotel.name+'\n'+(comment?'"'+comment+'"\n':'')+'Room '+(r.room_number||'?')+' · '+(r.category||'')+' · '+time;
-      return '<div style="background:'+bgColor+';border:1.5px solid '+borderColor+';border-radius:14px;padding:16px;margin-bottom:12px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap;gap:8px"><div><div style="font-size:22px;margin-bottom:4px">'+stars+'</div><div style="font-size:12px;color:#555">Room '+(r.room_number||'?')+' · '+(r.category||'General')+'</div></div><div style="text-align:right"><div style="font-size:11px;color:#aaa">'+time+'</div>'+(r.claimed_by?'<div style="font-size:11px;color:#888;margin-top:2px">👷 '+r.claimed_by+'</div>':'')+'</div></div>'+(comment?'<div style="background:white;border-radius:10px;padding:12px 14px;font-size:14px;color:#333;line-height:1.6;margin-bottom:12px;font-style:italic">"'+comment+'"</div>':'<div style="font-size:12px;color:#aaa;margin-bottom:12px;font-style:italic">No written comment</div>')+'<div style="display:flex;gap:8px;flex-wrap:wrap"><button onclick="copyFbText(\''+encodeURIComponent(copyText)+'\')" style="padding:8px 16px;background:#005f73;color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">📋 Copy</button></div></div>';
-    }).join('');
-  }).catch(function(){document.getElementById('feedback-list').innerHTML='<div class="empty">Could not load</div>';});
+ fetch('/requests?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(reqs){
+ if(!Array.isArray(reqs))return;
+ var rated=reqs.filter(function(r){return r.feedback_rating;});
+ var starFilter=document.getElementById('fb-filter-stars').value;
+ var commentFilter=document.getElementById('fb-filter-comment').value;
+ var filtered=rated;
+ if(starFilter)filtered=filtered.filter(function(r){return String(r.feedback_rating)===starFilter;});
+ if(commentFilter==='with')filtered=filtered.filter(function(r){return r.feedback_comments&&r.feedback_comments.trim();});
+ if(commentFilter==='without')filtered=filtered.filter(function(r){return !r.feedback_comments||!r.feedback_comments.trim();});
+ document.getElementById('fb-total').textContent=rated.length;
+ var avg=rated.length?(rated.reduce(function(a,r){return a+r.feedback_rating;},0)/rated.length).toFixed(1):'-';
+ document.getElementById('fb-avg').textContent=avg==='-'?'-':avg+' ⭐';
+ document.getElementById('fb-5star').textContent=rated.filter(function(r){return r.feedback_rating===5;}).length;
+ document.getElementById('fb-low').textContent=rated.filter(function(r){return r.feedback_rating<3;}).length;
+ document.getElementById('fb-subtitle').textContent=filtered.length+' review(s) shown';
+ var list=document.getElementById('feedback-list');
+ if(filtered.length===0){list.innerHTML='<div class="empty">No reviews match your filter</div>';return;}
+ list.innerHTML=filtered.map(function(r,idx){
+ var stars='';for(var i=1;i<=5;i++)stars+=i<=r.feedback_rating?'⭐':'☆';
+ var time=new Date(r.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+ var comment=r.feedback_comments?r.feedback_comments.trim():'';
+ var bgColor=r.feedback_rating>=4?'#f0fdf4':r.feedback_rating===3?'#fffbeb':'#fef2f2';
+ var borderColor=r.feedback_rating>=4?'#86efac':r.feedback_rating===3?'#fde68a':'#fca5a5';
+ var copyText=stars+' — '+hotel.name+'\n'+(comment?'"'+comment+'"\n':'')+'Room '+(r.room_number||'?')+' · '+(r.category||'')+' · '+time;
+ return '<div style="background:'+bgColor+';border:1.5px solid '+borderColor+';border-radius:14px;padding:16px;margin-bottom:12px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap;gap:8px"><div><div style="font-size:22px;margin-bottom:4px">'+stars+'</div><div style="font-size:12px;color:#555">Room '+(r.room_number||'?')+' · '+(r.category||'General')+'</div></div><div style="text-align:right"><div style="font-size:11px;color:#aaa">'+time+'</div>'+(r.claimed_by?'<div style="font-size:11px;color:#888;margin-top:2px">👷 '+r.claimed_by+'</div>':'')+'</div></div>'+(comment?'<div style="background:white;border-radius:10px;padding:12px 14px;font-size:14px;color:#333;line-height:1.6;margin-bottom:12px;font-style:italic">"'+comment+'"</div>':'<div style="font-size:12px;color:#aaa;margin-bottom:12px;font-style:italic">No written comment</div>')+'<div style="display:flex;gap:8px;flex-wrap:wrap"><button onclick="copyFbText(\''+encodeURIComponent(copyText)+'\')" style="padding:8px 16px;background:#005f73;color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">📋 Copy</button></div></div>';
+ }).join('');
+ }).catch(function(){document.getElementById('feedback-list').innerHTML='<div class="empty">Could not load</div>';});
 }
 function copyFbText(enc){var text=decodeURIComponent(enc);navigator.clipboard.writeText(text).catch(function(){prompt('Copy:',text);});}
-
-/* ═══ ANALYTICS REPORTS ═══ */
 function setRptToday(){var t=new Date().toISOString().split('T')[0];document.getElementById('rpt-from').value=t;document.getElementById('rpt-to').value=t;}
 function setRptMonth(){var now=new Date();var first=new Date(now.getFullYear(),now.getMonth(),1).toISOString().split('T')[0];var last=new Date(now.getFullYear(),now.getMonth()+1,0).toISOString().split('T')[0];document.getElementById('rpt-from').value=first;document.getElementById('rpt-to').value=last;}
-
 function loadReports() {
-  fetch('/requests?hotel_id='+hotel.hotel_id+'&all=true').then(function(r){return r.json();}).then(function(reqs){
-    if(!Array.isArray(reqs))return;
-
-    // Filter by date
-    var from=document.getElementById('rpt-from').value;
-    var to=document.getElementById('rpt-to').value;
-    var filtered=reqs;
-    if(from)filtered=filtered.filter(function(r){return new Date(r.created_at)>=new Date(from+'T00:00:00');});
-    if(to)filtered=filtered.filter(function(r){return new Date(r.created_at)<=new Date(to+'T23:59:59');});
-
-    rptAllRequests=filtered;
-
-    var total=filtered.length;
-    var done=filtered.filter(function(r){return r.status==='done';}).length;
-    var pending=filtered.filter(function(r){return r.status==='pending';}).length;
-    var inprog=filtered.filter(function(r){return r.status==='in_progress';}).length;
-    var rated=filtered.filter(function(r){return r.feedback_rating;});
-    var avg=rated.length?(rated.reduce(function(a,r){return a+r.feedback_rating;},0)/rated.length).toFixed(1):'-';
-
-    document.getElementById('rpt-total').textContent=total;
-    document.getElementById('rpt-done').textContent=done;
-    document.getElementById('rpt-pending').textContent=pending;
-    document.getElementById('rpt-rating').textContent=avg==='-'?'-':avg+'⭐';
-    document.getElementById('rpt-donut-num').textContent=total;
-
-    // Status donut
-    if(rptCharts.status)rptCharts.status.destroy();
-    rptCharts.status=new Chart(document.getElementById('rpt-chart-status').getContext('2d'),{
-      type:'doughnut',
-      data:{labels:['Pending','In Progress','Done'],datasets:[{data:[pending,inprog,done],backgroundColor:['#EE9B00','#0A9396','#2ECC71'],borderWidth:0,hoverOffset:4}]},
-      options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{display:false}}}
-    });
-    document.getElementById('rpt-legend-status').innerHTML=['Pending','In Progress','Done'].map(function(l,i){return '<div class="legend-item"><div class="legend-dot" style="background:'+['#EE9B00','#0A9396','#2ECC71'][i]+'"></div>'+l+'</div>';}).join('');
-
-    // Ratings bar
-    var rCounts=[5,4,3,2,1].map(function(s){return rated.filter(function(r){return r.feedback_rating===s;}).length;});
-    if(rptCharts.ratings)rptCharts.ratings.destroy();
-    rptCharts.ratings=new Chart(document.getElementById('rpt-chart-ratings').getContext('2d'),{
-      type:'bar',
-      data:{labels:['5⭐','4⭐','3⭐','2⭐','1⭐'],datasets:[{data:rCounts,backgroundColor:['#2ECC71','#0A9396','#EE9B00','#F77F00','#E63946'],borderRadius:6,borderWidth:0}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{beginAtZero:true,ticks:{stepSize:1,font:{size:10}},grid:{color:'#f0f0f0'}}}}
-    });
-
-    // Line chart — last 14 days or date range
-    var days=[],counts=[];
-    for(var i=13;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);days.push(d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}));var ds=d.toDateString();counts.push(filtered.filter(function(r){return new Date(r.created_at).toDateString()===ds;}).length);}
-    if(rptCharts.line)rptCharts.line.destroy();
-    var dc=hotel.colour||'#0A9396';
-    rptCharts.line=new Chart(document.getElementById('rpt-chart-line').getContext('2d'),{
-      type:'line',
-      data:{labels:days,datasets:[{data:counts,borderColor:dc,backgroundColor:dc+'22',borderWidth:2.5,pointBackgroundColor:dc,pointRadius:4,fill:true,tension:0.4}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#aaa'}},y:{beginAtZero:true,ticks:{stepSize:1,font:{size:10},color:'#aaa'},grid:{color:'#f0f0f0'}}}}
-    });
-
-    // Department breakdown
-    var depts=['Housekeeping','Room Service','Maintenance','Front Desk'];
-    var deptColors={'Housekeeping':'#4361EE','Room Service':'#F77F00','Maintenance':'#E63946','Front Desk':'#9B5DE5'};
-    var deptCounts=depts.map(function(d){return filtered.filter(function(r){return r.category===d;}).length;});
-    var maxCount=Math.max.apply(null,deptCounts)||1;
-    document.getElementById('rpt-dept-bars').innerHTML=depts.map(function(d,i){
-      var pct=Math.round(deptCounts[i]/maxCount*100);
-      return '<div class="dept-bar-row"><div class="dept-bar-label">'+d.split(' ')[0]+'</div><div class="dept-bar-track"><div class="dept-bar-fill" style="width:'+pct+'%;background:'+deptColors[d]+'"></div></div><div class="dept-bar-count">'+deptCounts[i]+'</div></div>';
-    }).join('');
-
-    // Top rooms
-    var roomMap={};
-    filtered.forEach(function(r){var rn=r.room_number||'?';if(!roomMap[rn])roomMap[rn]=0;roomMap[rn]++;});
-    var topRooms=Object.entries(roomMap).sort(function(a,b){return b[1]-a[1];}).slice(0,5);
-    document.getElementById('rpt-top-rooms').innerHTML=topRooms.length===0?'<div class="empty">No data yet</div>':topRooms.map(function(entry,i){
-      var medals=['🥇','🥈','🥉','4️⃣','5️⃣'];
-      return '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f0f0f0"><span style="font-size:18px">'+medals[i]+'</span><span style="flex:1;font-size:14px;font-weight:600;color:#0d1b1e">Room '+entry[0]+'</span><span style="font-size:13px;color:#0a9396;font-weight:700">'+entry[1]+' requests</span></div>';
-    }).join('');
-
-  }).catch(function(){});
+ fetch('/requests?hotel_id='+hotel.hotel_id+'&all=true').then(function(r){return r.json();}).then(function(reqs){
+ if(!Array.isArray(reqs))return;
+ var from=document.getElementById('rpt-from').value;
+ var to=document.getElementById('rpt-to').value;
+ var filtered=reqs;
+ if(from)filtered=filtered.filter(function(r){return new Date(r.created_at)>=new Date(from+'T00:00:00');});
+ if(to)filtered=filtered.filter(function(r){return new Date(r.created_at)<=new Date(to+'T23:59:59');});
+ rptAllRequests=filtered;
+ var total=filtered.length;
+ var done=filtered.filter(function(r){return r.status==='done';}).length;
+ var pending=filtered.filter(function(r){return r.status==='pending';}).length;
+ var inprog=filtered.filter(function(r){return r.status==='in_progress';}).length;
+ var rated=filtered.filter(function(r){return r.feedback_rating;});
+ var avg=rated.length?(rated.reduce(function(a,r){return a+r.feedback_rating;},0)/rated.length).toFixed(1):'-';
+ document.getElementById('rpt-total').textContent=total;
+ document.getElementById('rpt-done').textContent=done;
+ document.getElementById('rpt-pending').textContent=pending;
+ document.getElementById('rpt-rating').textContent=avg==='-'?'-':avg+'⭐';
+ document.getElementById('rpt-donut-num').textContent=total;
+ if(rptCharts.status)rptCharts.status.destroy();
+ rptCharts.status=new Chart(document.getElementById('rpt-chart-status').getContext('2d'),{
+ type:'doughnut',
+ data:{labels:['Pending','In Progress','Done'],datasets:[{data:[pending,inprog,done],backgroundColor:['#EE9B00','#0A9396','#2ECC71'],borderWidth:0,hoverOffset:4}]},
+ options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{display:false}}}
+ });
+ document.getElementById('rpt-legend-status').innerHTML=['Pending','In Progress','Done'].map(function(l,i){return '<div class="legend-item"><div class="legend-dot" style="background:'+['#EE9B00','#0A9396','#2ECC71'][i]+'"></div>'+l+'</div>';}).join('');
+ var rCounts=[5,4,3,2,1].map(function(s){return rated.filter(function(r){return r.feedback_rating===s;}).length;});
+ if(rptCharts.ratings)rptCharts.ratings.destroy();
+ rptCharts.ratings=new Chart(document.getElementById('rpt-chart-ratings').getContext('2d'),{
+ type:'bar',
+ data:{labels:['5⭐','4⭐','3⭐','2⭐','1⭐'],datasets:[{data:rCounts,backgroundColor:['#2ECC71','#0A9396','#EE9B00','#F77F00','#E63946'],borderRadius:6,borderWidth:0}]},
+ options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{beginAtZero:true,ticks:{stepSize:1,font:{size:10}},grid:{color:'#f0f0f0'}}}}
+ });
+ var days=[],counts=[];
+ for(var i=13;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);days.push(d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}));var ds=d.toDateString();counts.push(filtered.filter(function(r){return new Date(r.created_at).toDateString()===ds;}).length);}
+ if(rptCharts.line)rptCharts.line.destroy();
+ var dc=hotel.colour||'#0A9396';
+ rptCharts.line=new Chart(document.getElementById('rpt-chart-line').getContext('2d'),{
+ type:'line',
+ data:{labels:days,datasets:[{data:counts,borderColor:dc,backgroundColor:dc+'22',borderWidth:2.5,pointBackgroundColor:dc,pointRadius:4,fill:true,tension:0.4}]},
+ options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#aaa'}},y:{beginAtZero:true,ticks:{stepSize:1,font:{size:10},color:'#aaa'},grid:{color:'#f0f0f0'}}}}
+ });
+ var depts=['Housekeeping','Room Service','Maintenance','Front Desk'];
+ var deptColors={'Housekeeping':'#4361EE','Room Service':'#F77F00','Maintenance':'#E63946','Front Desk':'#9B5DE5'};
+ var deptCounts=depts.map(function(d){return filtered.filter(function(r){return r.category===d;}).length;});
+ var maxCount=Math.max.apply(null,deptCounts)||1;
+ document.getElementById('rpt-dept-bars').innerHTML=depts.map(function(d,i){
+ var pct=Math.round(deptCounts[i]/maxCount*100);
+ return '<div class="dept-bar-row"><div class="dept-bar-label">'+d.split(' ')[0]+'</div><div class="dept-bar-track"><div class="dept-bar-fill" style="width:'+pct+'%;background:'+deptColors[d]+'"></div></div><div class="dept-bar-count">'+deptCounts[i]+'</div></div>';
+ }).join('');
+ var roomMap={};
+ filtered.forEach(function(r){var rn=r.room_number||'?';if(!roomMap[rn])roomMap[rn]=0;roomMap[rn]++;});
+ var topRooms=Object.entries(roomMap).sort(function(a,b){return b[1]-a[1];}).slice(0,5);
+ document.getElementById('rpt-top-rooms').innerHTML=topRooms.length===0?'<div class="empty">No data yet</div>':topRooms.map(function(entry,i){
+ var medals=['🥇','🥈','🥉','4️⃣','5️⃣'];
+ return '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f0f0f0"><span style="font-size:18px">'+medals[i]+'</span><span style="flex:1;font-size:14px;font-weight:600;color:#0d1b1e">Room '+entry[0]+'</span><span style="font-size:13px;color:#0a9396;font-weight:700">'+entry[1]+' requests</span></div>';
+ }).join('');
+ }).catch(function(){});
 }
-
 function downloadRptCSV(){
-  if(rptAllRequests.length===0){document.getElementById('rpt-dl-msg').textContent='⚠️ No data to download.';return;}
-  var rows=[['Date','Time','Room','Category','Request','Status','Handled By','Rating','Comment']];
-  rptAllRequests.forEach(function(r){
-    var d=new Date(r.created_at);
-    rows.push([
-      d.toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'}),
-      d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),
-      'Room '+(r.room_number||'?'),r.category||'',r.message||'',
-      r.status==='done'?'Completed':r.status==='in_progress'?'In Progress':'Pending',
-      r.claimed_by||'Unclaimed',r.feedback_rating||'',r.feedback_comments||''
-    ]);
-  });
-  function escCSV(v){if(v===null||v===undefined)return '';var s=String(v);if(s.includes(',')||s.includes('"')||s.includes('\n'))return '"'+s.replace(/"/g,'""')+'"';return s;}
-  var csv=rows.map(function(row){return row.map(escCSV).join(',');}).join('\n');
-  var blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
-  var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;
-  a.download='Welco_'+hotel.name.replace(/\s/g,'_')+'_Report.csv';a.click();URL.revokeObjectURL(url);
-  document.getElementById('rpt-dl-msg').textContent='✅ Downloaded '+rptAllRequests.length+' records.';
+ if(rptAllRequests.length===0){document.getElementById('rpt-dl-msg').textContent='⚠️ No data to download.';return;}
+ var rows=[['Date','Time','Room','Category','Request','Status','Handled By','Rating','Comment']];
+ rptAllRequests.forEach(function(r){
+ var d=new Date(r.created_at);
+ rows.push([
+ d.toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'}),
+ d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),
+ 'Room '+(r.room_number||'?'),r.category||'',r.message||'',
+ r.status==='done'?'Completed':r.status==='in_progress'?'In Progress':'Pending',
+ r.claimed_by||'Unclaimed',r.feedback_rating||'',r.feedback_comments||''
+ ]);
+ });
+ function escCSV(v){if(v===null||v===undefined)return '';var s=String(v);if(s.includes(',')||s.includes('"')||s.includes('\n'))return '"'+s.replace(/"/g,'""')+'"';return s;}
+ var csv=rows.map(function(row){return row.map(escCSV).join(',');}).join('\n');
+ var blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+ var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;
+ a.download='Welco_'+hotel.name.replace(/\s/g,'_')+'_Report.csv';a.click();URL.revokeObjectURL(url);
+ document.getElementById('rpt-dl-msg').textContent='✅ Downloaded '+rptAllRequests.length+' records.';
 }
-
 function reqRow(r){
-  var bc=r.status==='done'?'badge-done':r.status==='in_progress'?'badge-progress':'badge-pending';
-  var bt=r.status==='done'?'Done':r.status==='in_progress'?'In Progress':'Pending';
-  var time=new Date(r.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
-  return '<div class="request-row"><div class="req-top"><span class="req-room">Room '+(r.room_number||'-')+'</span><span class="req-cat">'+(r.category||'General')+'</span></div><div class="req-msg">'+(r.message||'No details')+'</div><div class="req-meta"><span class="badge '+bc+'">'+bt+'</span>'+(r.claimed_by?'<span>👷 '+r.claimed_by+'</span>':'')+(r.feedback_rating?'<span>⭐ '+r.feedback_rating+'/5</span>':'')+'<span>'+time+'</span></div></div>';
+ var bc=r.status==='done'?'badge-done':r.status==='in_progress'?'badge-progress':'badge-pending';
+ var bt=r.status==='done'?'Done':r.status==='in_progress'?'In Progress':'Pending';
+ var time=new Date(r.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+ return '<div class="request-row"><div class="req-top"><span class="req-room">Room '+(r.room_number||'-')+'</span><span class="req-cat">'+(r.category||'General')+'</span></div><div class="req-msg">'+(r.message||'No details')+'</div><div class="req-meta"><span class="badge '+bc+'">'+bt+'</span>'+(r.claimed_by?'<span>👷 '+r.claimed_by+'</span>':'')+(r.feedback_rating?'<span>⭐ '+r.feedback_rating+'/5</span>':'')+'<span>'+time+'</span></div></div>';
 }
-
-/* ═══ SETTINGS ═══ */
 function saveSettings(){
-  var name=document.getElementById('set-name').value.trim();var city=document.getElementById('set-city').value.trim();var colour=document.getElementById('set-colortext').value.trim();
-  if(!name){alert('Hotel name cannot be empty.');return;}
-  var payload={name:name,city:city,colour:colour};
-  if(pendingLogoBase64!==null)payload.logo_url=pendingLogoBase64;
-  authFetch('/hotels/'+hotel.hotel_id+'/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).then(function(r){
-    if(r.ok){var newLogo=pendingLogoBase64!==null?pendingLogoBase64:hotel.logo_url;hotel=Object.assign({},hotel,{name:name,city:city,colour:colour,logo_url:newLogo});localStorage.setItem('welco_admin_hotel',JSON.stringify(hotel));for(var i=0;i<allHotels.length;i++){if(allHotels[i].hotel_id===hotel.hotel_id){allHotels[i]=hotel;break;}}localStorage.setItem('welco_admin_hotels',JSON.stringify(allHotels));document.getElementById('t-name').textContent=name;document.getElementById('t-city').textContent=city;document.documentElement.style.setProperty('--brand',colour);applyLogoOrEmoji(hotel.logo_url,null);if(allHotels.length>1)renderHotelDropdown();pendingLogoBase64=null;var msg=document.getElementById('settings-msg');msg.textContent='✅ Settings saved!';msg.className='msg-box msg-success';setTimeout(function(){msg.className='msg-box';},3000);document.getElementById('logo-size-note').textContent='';}
-  });
+ var name=document.getElementById('set-name').value.trim();var city=document.getElementById('set-city').value.trim();var colour=document.getElementById('set-colortext').value.trim();
+ if(!name){alert('Hotel name cannot be empty.');return;}
+ var payload={name:name,city:city,colour:colour};
+ if(pendingLogoBase64!==null)payload.logo_url=pendingLogoBase64;
+ authFetch('/hotels/'+hotel.hotel_id+'/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).then(function(r){
+ if(r.ok){var newLogo=pendingLogoBase64!==null?pendingLogoBase64:hotel.logo_url;hotel=Object.assign({},hotel,{name:name,city:city,colour:colour,logo_url:newLogo});localStorage.setItem('welco_admin_hotel',JSON.stringify(hotel));for(var i=0;i<allHotels.length;i++){if(allHotels[i].hotel_id===hotel.hotel_id){allHotels[i]=hotel;break;}}localStorage.setItem('welco_admin_hotels',JSON.stringify(allHotels));document.getElementById('t-name').textContent=name;document.getElementById('t-city').textContent=city;document.documentElement.style.setProperty('--brand',colour);applyLogoOrEmoji(hotel.logo_url,null);if(allHotels.length>1)renderHotelDropdown();pendingLogoBase64=null;var msg=document.getElementById('settings-msg');msg.textContent='✅ Settings saved!';msg.className='msg-box msg-success';setTimeout(function(){msg.className='msg-box';},3000);document.getElementById('logo-size-note').textContent='';}
+ });
 }
-
-/* ═══ QR ═══ */
 function showQR(hotelId,roomId,roomNum){currentQRRoom='Room-'+roomNum;document.getElementById('qr-title').textContent='Room '+roomNum;document.getElementById('qr-sub').textContent=hotel.name;var output=document.getElementById('qr-output');output.innerHTML='';new QRCode(output,{text:LIVE_URL+'/guest.html?hotel_id='+hotelId+'&room_id='+roomId,width:180,height:180,colorDark:hotel.colour||'#005f73',colorLight:'#ffffff'});document.getElementById('qr-modal').classList.add('open');}
 function downloadQR(){var canvas=document.querySelector('#qr-output canvas');if(!canvas)return;var link=document.createElement('a');link.download='welco-'+currentQRRoom+'.png';link.href=canvas.toDataURL();link.click();}
-
-/* ═══ HOD ═══ */
 function copyHotelCode(){var code=document.getElementById('hod-hotel-code').textContent;if(!code||code==='...')return;navigator.clipboard.writeText(code).then(function(){var btn=document.getElementById('copy-code-btn');btn.textContent='✅ Copied!';setTimeout(function(){btn.textContent='📋 Copy Code';},2000);}).catch(function(){prompt('Copy this hotel code:',code);});}
-
 function loadHOD(){
-  fetch('/hod?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(list){
-    var el=document.getElementById('hod-list');
-    if(!Array.isArray(list)||list.length===0){el.innerHTML='<div class="empty">No HODs added yet.</div>';return;}
-    var deptColors={'Housekeeping':'#4361EE','Room Service':'#F77F00','Maintenance':'#E63946','Front Desk':'#9B5DE5'};
-    var deptEmojis={'Housekeeping':'🛏️','Room Service':'🍽️','Maintenance':'🔧','Front Desk':'🛎️'};
-    var PERMS=[{key:'announcements',label:'📢 Announcements'},{key:'schedule',label:'🔧 Scheduling'},{key:'guest_options',label:'🎯 Guest Options'},{key:'service_hours',label:'🕐 Service Hours'},{key:'staff',label:'👷 Staff Mgmt'},{key:'analytics',label:'📊 Analytics'}];
-    el.innerHTML=list.map(function(h){
-      var color=deptColors[h.department]||'#005f73';
-      var perms=h.permissions||{announcements:true,schedule:true,guest_options:true,service_hours:true,staff:true,analytics:true};
-      var permToggles=PERMS.map(function(p){var isOn=perms[p.key]!==false;return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:'+(isOn?'#f0fdf4':'#fafafa')+';border-radius:8px;border:1px solid '+(isOn?'#86efac':'#eee')+';margin-bottom:6px"><div style="font-size:13px;font-weight:600;color:'+(isOn?'#065f46':'#888')+'">'+p.label+'</div><label style="position:relative;display:inline-block;width:42px;height:24px;cursor:pointer;flex-shrink:0"><input type="checkbox" '+(isOn?'checked':'')+' data-hod-id="'+h.id+'" data-perm="'+p.key+'" onchange="toggleHodPerm(this)" style="opacity:0;width:0;height:0"><span style="position:absolute;inset:0;background:'+(isOn?'#0a9396':'#ddd')+';border-radius:24px;transition:0.3s"></span><span style="position:absolute;top:3px;left:'+(isOn?'21px':'3px')+';width:18px;height:18px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></span></label></div>';}).join('');
-      return '<div style="background:white;border-radius:14px;padding:16px;margin-bottom:14px;border:1px solid #eee;box-shadow:0 2px 8px rgba(0,0,0,0.06)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div style="display:flex;align-items:center;gap:10px"><div style="width:40px;height:40px;border-radius:10px;background:'+color+'20;display:flex;align-items:center;justify-content:center;font-size:20px">'+(deptEmojis[h.department]||'👤')+'</div><div><div style="font-size:15px;font-weight:700;color:#0d1b1e">'+h.name+'</div><div style="font-size:11px;color:#888;margin-top:2px">'+h.department+' · PIN: '+h.pin+'</div></div></div><button class="btn-remove" onclick="removeHOD('+h.id+')">Remove</button></div><div style="font-size:11px;color:#aaa;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Permissions</div>'+permToggles+'</div>';
-    }).join('');
-  }).catch(function(){});
+ fetch('/hod?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(list){
+ var el=document.getElementById('hod-list');
+ if(!Array.isArray(list)||list.length===0){el.innerHTML='<div class="empty">No HODs added yet.</div>';return;}
+ var deptColors={'Housekeeping':'#4361EE','Room Service':'#F77F00','Maintenance':'#E63946','Front Desk':'#9B5DE5'};
+ var deptEmojis={'Housekeeping':'🛏️','Room Service':'🍽️','Maintenance':'🔧','Front Desk':'🛎️'};
+ var PERMS=[{key:'announcements',label:'📢 Announcements'},{key:'schedule',label:'🔧 Scheduling'},{key:'guest_options',label:'🎯 Guest Options'},{key:'service_hours',label:'🕐 Service Hours'},{key:'staff',label:'👷 Staff Mgmt'},{key:'analytics',label:'📊 Analytics'}];
+ el.innerHTML=list.map(function(h){
+ var color=deptColors[h.department]||'#005f73';
+ var perms=h.permissions||{announcements:true,schedule:true,guest_options:true,service_hours:true,staff:true,analytics:true};
+ var permToggles=PERMS.map(function(p){var isOn=perms[p.key]!==false;return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:'+(isOn?'#f0fdf4':'#fafafa')+';border-radius:8px;border:1px solid '+(isOn?'#86efac':'#eee')+';margin-bottom:6px"><div style="font-size:13px;font-weight:600;color:'+(isOn?'#065f46':'#888')+'">'+p.label+'</div><label style="position:relative;display:inline-block;width:42px;height:24px;cursor:pointer;flex-shrink:0"><input type="checkbox" '+(isOn?'checked':'')+' data-hod-id="'+h.id+'" data-perm="'+p.key+'" onchange="toggleHodPerm(this)" style="opacity:0;width:0;height:0"><span style="position:absolute;inset:0;background:'+(isOn?'#0a9396':'#ddd')+';border-radius:24px;transition:0.3s"></span><span style="position:absolute;top:3px;left:'+(isOn?'21px':'3px')+';width:18px;height:18px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></span></label></div>';}).join('');
+ return '<div style="background:white;border-radius:14px;padding:16px;margin-bottom:14px;border:1px solid #eee;box-shadow:0 2px 8px rgba(0,0,0,0.06)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div style="display:flex;align-items:center;gap:10px"><div style="width:40px;height:40px;border-radius:10px;background:'+color+'20;display:flex;align-items:center;justify-content:center;font-size:20px">'+(deptEmojis[h.department]||'👤')+'</div><div><div style="font-size:15px;font-weight:700;color:#0d1b1e">'+h.name+'</div><div style="font-size:11px;color:#888;margin-top:2px">'+h.department+' · PIN: '+h.pin+'</div></div></div><button class="btn-remove" onclick="removeHOD('+h.id+')">Remove</button></div><div style="font-size:11px;color:#aaa;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Permissions</div>'+permToggles+'</div>';
+ }).join('');
+ }).catch(function(){});
 }
-
 function toggleHodPerm(checkbox){
-  var hodId=checkbox.getAttribute('data-hod-id');var permKey=checkbox.getAttribute('data-perm');var isOn=checkbox.checked;
-  fetch('/hod?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(list){
-    var hod=list.find(function(h){return String(h.id)===String(hodId);});if(!hod)return;
-    var perms=hod.permissions||{};perms[permKey]=isOn;
-    return authFetch('/hod/'+hodId+'/permissions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({permissions:perms})});
-  }).then(function(r){if(r&&r.ok)loadHOD();}).catch(function(){alert('Failed to update permission.');loadHOD();});
+ var hodId=checkbox.getAttribute('data-hod-id');var permKey=checkbox.getAttribute('data-perm');var isOn=checkbox.checked;
+ fetch('/hod?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(list){
+ var hod=list.find(function(h){return String(h.id)===String(hodId);});if(!hod)return;
+ var perms=hod.permissions||{};perms[permKey]=isOn;
+ return authFetch('/hod/'+hodId+'/permissions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({permissions:perms})});
+ }).then(function(r){if(r&&r.ok)loadHOD();}).catch(function(){alert('Failed to update permission.');loadHOD();});
 }
-
 function addHOD(){
-  var name=document.getElementById('new-hod-name').value.trim();var dept=document.getElementById('new-hod-dept').value;var pin=document.getElementById('new-hod-pin').value.trim();
-  if(!name||pin.length!==4){alert('Enter full name and exactly 4-digit PIN');return;}
-  authFetch('/hod',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hotel.hotel_id,name:name,department:dept,pin:pin})}).then(function(r){return r.json();}).then(function(data){
-    if(data.error){alert(data.error);return;}
-    document.getElementById('new-hod-name').value='';document.getElementById('new-hod-pin').value='';
-    var msg=document.getElementById('hod-msg');msg.textContent='✅ '+name+' added as HOD for '+dept+'!';msg.className='msg-box msg-success';setTimeout(function(){msg.className='msg-box';},5000);loadHOD();
-  });
+ var name=document.getElementById('new-hod-name').value.trim();var dept=document.getElementById('new-hod-dept').value;var pin=document.getElementById('new-hod-pin').value.trim();
+ if(!name||pin.length!==4){alert('Enter full name and exactly 4-digit PIN');return;}
+ authFetch('/hod',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hotel.hotel_id,name:name,department:dept,pin:pin})}).then(function(r){return r.json();}).then(function(data){
+ if(data.error){alert(data.error);return;}
+ document.getElementById('new-hod-name').value='';document.getElementById('new-hod-pin').value='';
+ var msg=document.getElementById('hod-msg');msg.textContent='✅ '+name+' added as HOD for '+dept+'!';msg.className='msg-box msg-success';setTimeout(function(){msg.className='msg-box';},5000);loadHOD();
+ });
 }
 function removeHOD(id){if(!confirm('Remove this HOD?'))return;authFetch('/hod/'+id,{method:'DELETE'}).then(function(){loadHOD();});}
-
-/* ═══ ADMIN SERVICE CONTROL ═══ */
 var adminDeptOptions={};
 function loadAdminServiceControls(){
-  fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
-    var h=hotels.find(function(x){return x.hotel_id===hotel.hotel_id;});
-    adminDeptOptions=(h&&h.dept_guest_options)?h.dept_guest_options:{};
-    var depts=[{key:'Housekeeping',emoji:'🛏️'},{key:'Room Service',emoji:'🍽️'},{key:'Maintenance',emoji:'🔧'},{key:'Front Desk',emoji:'🛎️'}];
-    var el=document.getElementById('admin-service-controls');
-    el.innerHTML=depts.map(function(d){
-      var saved=adminDeptOptions[d.key]||{};var hours=saved.hours||{};var isOpen=hours.isOpen!==false;var openTime=hours.openTime||'07:00';var closeTime=hours.closeTime||'23:00';
-      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:'+(isOpen?'#f0fdf4':'#fff5f5')+';border-radius:12px;border:1.5px solid '+(isOpen?'#86efac':'#fca5a5')+';margin-bottom:10px"><div style="display:flex;align-items:center;gap:10px"><div style="font-size:22px">'+d.emoji+'</div><div><div style="font-size:14px;font-weight:700;color:#0d1b1e">'+d.key+'</div><div style="font-size:11px;color:#aaa;margin-top:2px">'+(isOpen?'🟢 Open':'🔴 Closed')+' · '+formatTime12(openTime)+' – '+formatTime12(closeTime)+'</div></div></div><button onclick="adminToggleService(\''+d.key+'\','+(!isOpen)+')" style="padding:8px 16px;background:'+(isOpen?'#fde8ea':'#d1fae5')+';color:'+(isOpen?'#e63946':'#065f46')+';border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">'+(isOpen?'🔴 Close Now':'🟢 Open Now')+'</button></div>';
-    }).join('');
-  }).catch(function(){document.getElementById('admin-service-controls').innerHTML='<div class="empty">Could not load</div>';});
+ fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
+ var h=hotels.find(function(x){return x.hotel_id===hotel.hotel_id;});
+ adminDeptOptions=(h&&h.dept_guest_options)?h.dept_guest_options:{};
+ var depts=[{key:'Housekeeping',emoji:'🛏️'},{key:'Room Service',emoji:'🍽️'},{key:'Maintenance',emoji:'🔧'},{key:'Front Desk',emoji:'🛎️'}];
+ var el=document.getElementById('admin-service-controls');
+ el.innerHTML=depts.map(function(d){
+ var saved=adminDeptOptions[d.key]||{};var hours=saved.hours||{};var isOpen=hours.isOpen!==false;var openTime=hours.openTime||'07:00';var closeTime=hours.closeTime||'23:00';
+ return '<div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:'+(isOpen?'#f0fdf4':'#fff5f5')+';border-radius:12px;border:1.5px solid '+(isOpen?'#86efac':'#fca5a5')+';margin-bottom:10px"><div style="display:flex;align-items:center;gap:10px"><div style="font-size:22px">'+d.emoji+'</div><div><div style="font-size:14px;font-weight:700;color:#0d1b1e">'+d.key+'</div><div style="font-size:11px;color:#aaa;margin-top:2px">'+(isOpen?'🟢 Open':'🔴 Closed')+' · '+formatTime12(openTime)+' – '+formatTime12(closeTime)+'</div></div></div><button onclick="adminToggleService(\''+d.key+'\','+(!isOpen)+')" style="padding:8px 16px;background:'+(isOpen?'#fde8ea':'#d1fae5')+';color:'+(isOpen?'#e63946':'#065f46')+';border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">'+(isOpen?'🔴 Close Now':'🟢 Open Now')+'</button></div>';
+ }).join('');
+ }).catch(function(){document.getElementById('admin-service-controls').innerHTML='<div class="empty">Could not load</div>';});
 }
 function formatTime12(t){if(!t)return '';var p=t.split(':');var hr=parseInt(p[0]),mn=parseInt(p[1]);var ampm=hr>=12?'PM':'AM';hr=hr%12||12;return hr+(mn>0?':'+String(mn).padStart(2,'0'):'')+' '+ampm;}
 function adminToggleService(dept,setOpen){
-  if(!adminDeptOptions[dept])adminDeptOptions[dept]={};
-  if(!adminDeptOptions[dept].hours)adminDeptOptions[dept].hours={openTime:'07:00',closeTime:'23:00',closedMsg:"We're currently closed."};
-  adminDeptOptions[dept].hours.isOpen=setOpen;
-  fetch('/hotels/'+hotel.hotel_id+'/dept-guest-options',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({dept_guest_options:adminDeptOptions})}).then(function(r){return r.json();}).then(function(){loadAdminServiceControls();}).catch(function(){alert('Failed to update. Try again.');});
+ if(!adminDeptOptions[dept])adminDeptOptions[dept]={};
+ if(!adminDeptOptions[dept].hours)adminDeptOptions[dept].hours={openTime:'07:00',closeTime:'23:00',closedMsg:"We're currently closed."};
+ adminDeptOptions[dept].hours.isOpen=setOpen;
+ fetch('/hotels/'+hotel.hotel_id+'/dept-guest-options',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({dept_guest_options:adminDeptOptions})}).then(function(r){return r.json();}).then(function(){loadAdminServiceControls();}).catch(function(){alert('Failed to update. Try again.');});
 }
-
-/* ═══ ADD HOTEL MODAL ═══ */
 function openAddHotelModal(){document.getElementById('ah-modal-name').value='';document.getElementById('ah-modal-city').value='';document.getElementById('ah-modal-rooms').value='';document.getElementById('ah-modal-colortext').value='#005f73';document.getElementById('ah-modal-colorpicker').value='#005f73';document.getElementById('add-hotel-msg').className='msg-box';document.getElementById('add-hotel-modal').classList.add('open');}
 function closeAddHotelModal(){document.getElementById('add-hotel-modal').classList.remove('open');}
 function submitAddHotel(btn){
-  var name=document.getElementById('ah-modal-name').value.trim();var city=document.getElementById('ah-modal-city').value.trim();var rooms=parseInt(document.getElementById('ah-modal-rooms').value)||0;var colour=document.getElementById('ah-modal-colortext').value.trim()||'#005f73';var msg=document.getElementById('add-hotel-msg');
-  if(!name){msg.textContent='Please enter a hotel name.';msg.className='msg-box msg-error';return;}
-  btn.textContent='Adding...';btn.disabled=true;
-  fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
-    var current=hotels.find(function(h){return h.hotel_id===hotel.hotel_id;});var owner_id=current?current.owner_id:null;if(!owner_id)throw new Error('Owner ID not found.');
-    return authFetch('/owner/add-hotel',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({owner_id:owner_id,hotelName:name,city:city,roomCount:rooms,colour:colour,emoji:'🏨'})});
-  }).then(function(r){return r.json();}).then(function(data){
-    btn.textContent='➕ Add Hotel to My Account';btn.disabled=false;
-    if(data.error){msg.textContent=data.error;msg.className='msg-box msg-error';return;}
-    allHotels.push(data.hotel);localStorage.setItem('welco_admin_hotels',JSON.stringify(allHotels));
-    msg.textContent='✅ '+name+' added! Switching now...';msg.className='msg-box msg-success';
-    setTimeout(function(){closeAddHotelModal();hotel=data.hotel;localStorage.setItem('welco_admin_hotel',JSON.stringify(hotel));startApp();},1500);
-  }).catch(function(e){btn.textContent='➕ Add Hotel to My Account';btn.disabled=false;msg.textContent=e.message||'Failed. Try again.';msg.className='msg-box msg-error';});
+ var name=document.getElementById('ah-modal-name').value.trim();var city=document.getElementById('ah-modal-city').value.trim();var rooms=parseInt(document.getElementById('ah-modal-rooms').value)||0;var colour=document.getElementById('ah-modal-colortext').value.trim()||'#005f73';var msg=document.getElementById('add-hotel-msg');
+ if(!name){msg.textContent='Please enter a hotel name.';msg.className='msg-box msg-error';return;}
+ btn.textContent='Adding...';btn.disabled=true;
+ fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
+ var current=hotels.find(function(h){return h.hotel_id===hotel.hotel_id;});var owner_id=current?current.owner_id:null;if(!owner_id)throw new Error('Owner ID not found.');
+ return authFetch('/owner/add-hotel',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({owner_id:owner_id,hotelName:name,city:city,roomCount:rooms,colour:colour,emoji:'🏨'})});
+ }).then(function(r){return r.json();}).then(function(data){
+ btn.textContent='➕ Add Hotel to My Account';btn.disabled=false;
+ if(data.error){msg.textContent=data.error;msg.className='msg-box msg-error';return;}
+ allHotels.push(data.hotel);localStorage.setItem('welco_admin_hotels',JSON.stringify(allHotels));
+ msg.textContent='✅ '+name+' added! Switching now...';msg.className='msg-box msg-success';
+ setTimeout(function(){closeAddHotelModal();hotel=data.hotel;localStorage.setItem('welco_admin_hotel',JSON.stringify(hotel));startApp();},1500);
+ }).catch(function(e){btn.textContent='➕ Add Hotel to My Account';btn.disabled=false;msg.textContent=e.message||'Failed. Try again.';msg.className='msg-box msg-error';});
 }
-
-/* ═══ FORGOT PASSWORD ═══ */
 function showForgot(){document.getElementById('forgot-modal').style.display='flex';}
 function hideForgot(){document.getElementById('forgot-modal').style.display='none';}
 function fpFindAccount(btn){var email=document.getElementById('fp-email').value.trim();var err=document.getElementById('fp-err1');if(!email){err.textContent='Enter your email.';err.style.display='block';return;}btn.textContent='Searching…';btn.disabled=true;fetch('/owner/secret-question?email='+encodeURIComponent(email)).then(function(r){return r.json().then(function(d){return{ok:r.ok,d:d};});}).then(function(res){btn.textContent='Find My Account →';btn.disabled=false;if(!res.ok){err.textContent=res.d.error||'Account not found.';err.style.display='block';return;}err.style.display='none';document.getElementById('fp-q-text').textContent='What is your mother\'s maiden name?';document.getElementById('fp1').style.display='none';document.getElementById('fp2').style.display='block';}).catch(function(){btn.textContent='Find My Account →';btn.disabled=false;err.textContent='Connection error.';err.style.display='block';});}
 function fpReset(btn){var ans=document.getElementById('fp-ans').value.trim();var np=document.getElementById('fp-np').value;var cp=document.getElementById('fp-cp').value;var err=document.getElementById('fp-err2');var email=document.getElementById('fp-email').value.trim();if(!ans){err.textContent='Enter your secret answer.';err.style.display='block';return;}if(np.length<6){err.textContent='Password must be at least 6 characters.';err.style.display='block';return;}if(np!==cp){err.textContent='Passwords do not match.';err.style.display='block';return;}btn.textContent='Resetting…';btn.disabled=true;fetch('/owner/reset-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,secret_answer:ans,new_password:np})}).then(function(r){return r.json().then(function(d){return{ok:r.ok,d:d};});}).then(function(res){btn.textContent='Reset Password';btn.disabled=false;if(!res.ok){err.textContent=res.d.error||'Reset failed.';err.style.display='block';return;}document.getElementById('fp2').style.display='none';document.getElementById('fp3').style.display='block';}).catch(function(){btn.textContent='Reset Password';btn.disabled=false;err.textContent='Connection error.';err.style.display='block';});}
+window.onload=function(){try{var stored=localStorage.getItem('welco_admin_hotel');if(stored){hotel=JSON.parse(stored);var storedHotels=localStorage.getItem('welco_admin_hotels');if(storedHotels)allHotels=JSON.parse(storedHotels);startApp();}}catch(e){}};</script>
 
-/* ═══ AUTO LOGIN ═══ */
-window.onload=function(){try{var stored=localStorage.getItem('welco_admin_hotel');if(stored){hotel=JSON.parse(stored);var storedHotels=localStorage.getItem('welco_admin_hotels');if(storedHotels)allHotels=JSON.parse(storedHotels);startApp();}}catch(e){}};
-</script>
+  <!-- COPYRIGHT -->
+  <div style="text-align:center;padding:12px;font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:0.05em;background:rgba(0,0,0,0.2)">
+    © 2026 Welco Technologies. All rights reserved. Unauthorized use prohibited.
+  </div>
+
+  <!-- Welco Copyright Footer -->
+  <div style="text-align:center;padding:16px;font-size:11px;color:rgba(255,255,255,0.4);position:relative;z-index:1;margin-top:auto">
+    © 2026 <strong>Welco™</strong> · All Rights Reserved · Built in India 🇮🇳<br>
+    Unauthorized copying or distribution is prohibited.
+  </div>
+
 </body>
 </html>

@@ -1,3 +1,16 @@
+/*
+ * ╔═══════════════════════════════════════════════════════╗
+ * ║           © 2026 WELCO TECHNOLOGIES                   ║
+ * ║           ALL RIGHTS RESERVED                         ║
+ * ║                                                       ║
+ * ║  This software is proprietary and confidential.       ║
+ * ║  Unauthorized copying, modification, distribution,    ║
+ * ║  or use of this software is strictly prohibited.      ║
+ * ║                                                       ║
+ * ║  Welco® is a registered trademark.                    ║
+ * ╚═══════════════════════════════════════════════════════╝
+ */
+
 require('dotenv').config();
 const express    = require('express');
 const bcrypt     = require('bcryptjs');
@@ -456,5 +469,23 @@ app.get('/qr/:room_id', async (req,res) => {
   if (error) return res.status(500).json({ error:error.message });
   res.json(data);
 });
+
+
+// LEGAL
+app.get('/legal', (req,res) => res.send(`
+<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Welco Legal</title>
+<style>body{font-family:sans-serif;max-width:700px;margin:40px auto;padding:20px;color:#333}h1{color:#005f73}p{line-height:1.7}</style>
+</head><body>
+<h1>© 2026 Welco™</h1>
+<p><strong>All Rights Reserved.</strong></p>
+<p>Welco™ is a proprietary hotel management platform developed and owned by Welco Technologies, India.</p>
+<p>Unauthorized copying, reproduction, modification, distribution, or use of any part of this software, 
+its design, code, or intellectual property is strictly prohibited without written permission from Welco Technologies.</p>
+<p>Welco™ is a registered trademark. Any unauthorized use of the Welco name, logo, or brand is a violation of trademark law.</p>
+<h2>Contact</h2>
+<p>For licensing inquiries: welco.app</p>
+<p>Built with ❤️ in India 🇮🇳</p>
+</body></html>
+`));
 
 app.listen(PORT, () => console.log('Welco server running on port '+PORT));

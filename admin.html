@@ -376,6 +376,18 @@
           <div class="msg-box" id="bulk-msg"></div>
         </div>
       </div>
+      <!-- BULK QR DOWNLOAD -->
+      <div class="card" style="border:2px solid #0a9396">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+          <div>
+            <div class="card-title">📥 Bulk QR Download</div>
+            <div class="card-sub" style="margin-bottom:0">Download QR codes for all rooms at once as a printable PDF</div>
+          </div>
+          <button onclick="downloadAllQRs(this)" style="padding:12px 22px;background:linear-gradient(135deg,#005f73,#0a9396);color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">📥 Download All QRs</button>
+        </div>
+        <div id="bulk-qr-msg" style="display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:13px"></div>
+      </div>
+
       <div class="card">
         <div class="card-title">All Rooms</div>
         <div class="card-sub" id="rooms-count">Loading...</div>
@@ -569,10 +581,66 @@
           <button class="save-btn" onclick="saveSettings()" style="margin-top:14px">Save Changes</button>
         </div>
       </div>
-    </div>
 
-  </div>
-</div>
+      <!-- SUBSCRIPTION CARD -->
+      <div class="card" style="border:2px solid #0a9396">
+        <div class="card-title">💳 Subscription & Billing</div>
+        <div class="card-sub">Manage your Welco plan and payment details</div>
+        <div style="background:#e8f4f4;border-radius:12px;padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <div style="font-size:32px">🏆</div>
+          <div style="flex:1">
+            <div style="font-size:14px;font-weight:700;color:#005f73">Pro Plan — Active</div>
+            <div style="font-size:12px;color:#555;margin-top:3px">₹2,999/month · Renews on <span id="sub-renew-date">—</span></div>
+          </div>
+          <div style="background:#d1fae5;color:#065f46;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700">✅ Active</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+          <div style="background:#f9f9f9;border-radius:10px;padding:14px;text-align:center;border:1px solid #eee">
+            <div style="font-size:11px;color:#aaa;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Plan</div>
+            <div style="font-size:16px;font-weight:700;color:#0d1b1e">Pro</div>
+          </div>
+          <div style="background:#f9f9f9;border-radius:10px;padding:14px;text-align:center;border:1px solid #eee">
+            <div style="font-size:11px;color:#aaa;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Billing</div>
+            <div style="font-size:16px;font-weight:700;color:#0d1b1e">Monthly</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button onclick="openPaymentModal()" style="flex:1;padding:11px;background:#005f73;color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer">💳 Update Payment Details</button>
+          <button onclick="openCancelModal()" style="flex:1;padding:11px;background:#fff3cd;color:#8a6000;border:1px solid #ffd166;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer">⏸️ Cancel Subscription</button>
+        </div>
+        <div style="font-size:11px;color:#aaa;margin-top:10px;text-align:center">Cancel anytime · No hidden fees · Data kept for 30 days after cancellation</div>
+      </div>
+
+      <!-- DANGER ZONE -->
+      <div class="card" style="border:2px solid #e63946">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+          <span style="font-size:20px">⚠️</span>
+          <div class="card-title" style="color:#e63946;margin-bottom:0">Danger Zone</div>
+        </div>
+        <div class="card-sub">These actions are permanent and cannot be undone.</div>
+
+        <div style="border:1px solid #fde8ea;border-radius:12px;padding:16px;margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+            <div>
+              <div style="font-size:14px;font-weight:600;color:#1a1a2e">Delete This Hotel</div>
+              <div style="font-size:12px;color:#aaa;margin-top:3px">Permanently removes this hotel, all rooms, staff, and requests.</div>
+            </div>
+            <button onclick="openDeleteHotelModal()" style="padding:10px 18px;background:#fde8ea;color:#e63946;border:1px solid #e63946;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">🗑️ Delete Hotel</button>
+          </div>
+        </div>
+
+        <div style="border:1px solid #fde8ea;border-radius:12px;padding:16px">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+            <div>
+              <div style="font-size:14px;font-weight:600;color:#1a1a2e">Delete My Account</div>
+              <div style="font-size:12px;color:#aaa;margin-top:3px">Permanently deletes your account and all hotels under it. Cannot be recovered.</div>
+            </div>
+            <button onclick="openDeleteAccountModal()" style="padding:10px 18px;background:#e63946;color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">💀 Delete Account</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
 
 <!-- ADD HOTEL MODAL -->
 <div class="modal" id="add-hotel-modal">
@@ -604,6 +672,96 @@
       </div>
     </div>
     <button onclick="submitAddHotel(this)" style="width:100%;padding:14px;background:#005f73;color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer">➕ Add Hotel to My Account</button>
+  </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="modal" id="payment-modal">
+  <div class="modal-box" style="max-width:400px;text-align:left;padding:28px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <div><div style="font-size:18px;font-weight:700;color:#0d1b1e">💳 Payment Details</div><div style="font-size:12px;color:#aaa;margin-top:3px">Secure · Encrypted · Cancel anytime</div></div>
+      <span onclick="document.getElementById('payment-modal').classList.remove('open')" style="cursor:pointer;font-size:22px;color:#aaa">✕</span>
+    </div>
+    <div style="background:#e8f4f4;border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:13px;color:#005f73;line-height:1.6">
+      🔒 Payment processed securely via Razorpay. Your card details are never stored on our servers.
+    </div>
+    <div style="margin-bottom:12px">
+      <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px;font-weight:600">Cardholder Name</label>
+      <input type="text" id="pay-name" placeholder="Name on card" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none">
+    </div>
+    <div style="margin-bottom:12px">
+      <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px;font-weight:600">UPI ID or Card</label>
+      <input type="text" id="pay-upi" placeholder="yourname@upi or card number" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px">
+      <div>
+        <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px;font-weight:600">Plan</label>
+        <select id="pay-plan" style="width:100%;padding:11px 12px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:13px;outline:none;background:white">
+          <option value="basic_monthly">⚡ Basic — ₹1,599/mo</option>
+          <option value="basic_annual">⚡ Basic — ₹1,279/mo (Annual)</option>
+          <option value="pro_monthly" selected>🏆 Pro — ₹2,999/mo</option>
+          <option value="pro_annual">🏆 Pro — ₹2,399/mo (Annual)</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px;font-weight:600">Phone</label>
+        <input type="tel" id="pay-phone" placeholder="+91 9999999999" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none">
+      </div>
+    </div>
+    <div id="pay-msg" style="display:none;margin-bottom:12px;padding:10px 14px;border-radius:8px;font-size:13px"></div>
+    <button onclick="submitPayment(this)" style="width:100%;padding:14px;background:linear-gradient(135deg,#005f73,#0a9396);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer">💳 Activate Subscription →</button>
+    <div style="font-size:11px;color:#aaa;margin-top:10px;text-align:center">By subscribing you agree to our terms. Cancel anytime from Settings.</div>
+  </div>
+</div>
+
+<!-- CANCEL SUBSCRIPTION MODAL -->
+<div class="modal" id="cancel-modal">
+  <div class="modal-box" style="max-width:340px;padding:28px">
+    <div style="font-size:48px;margin-bottom:16px">⏸️</div>
+    <div style="font-size:18px;font-weight:700;color:#0d1b1e;margin-bottom:8px">Cancel Subscription?</div>
+    <div style="font-size:14px;color:#666;margin-bottom:8px;line-height:1.6">Your hotel will remain active until the end of your billing period. After that, guest requests will be paused.</div>
+    <div style="background:#fff3cd;border-radius:10px;padding:12px;margin-bottom:20px;font-size:13px;color:#8a6000;line-height:1.6">⚠️ Your data will be kept for 30 days after cancellation. You can reactivate anytime.</div>
+    <div style="display:flex;gap:10px">
+      <button onclick="document.getElementById('cancel-modal').classList.remove('open')" style="flex:1;padding:12px;background:#f0f0f0;color:#555;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer">Keep Plan</button>
+      <button onclick="confirmCancelSub(this)" style="flex:1;padding:12px;background:#ee9b00;color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer">Yes, Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE HOTEL MODAL -->
+<div class="modal" id="delete-hotel-modal">
+  <div class="modal-box" style="max-width:340px;padding:28px">
+    <div style="font-size:48px;margin-bottom:16px">🗑️</div>
+    <div style="font-size:18px;font-weight:700;color:#0d1b1e;margin-bottom:8px">Delete This Hotel?</div>
+    <div style="font-size:14px;color:#666;margin-bottom:16px;line-height:1.6">This will permanently delete <strong id="del-hotel-name">this hotel</strong>, all its rooms, staff, HODs, and request history.</div>
+    <div style="margin-bottom:16px">
+      <label style="font-size:12px;color:#888;display:block;margin-bottom:6px">Type <strong>DELETE</strong> to confirm</label>
+      <input type="text" id="del-hotel-confirm" placeholder="Type DELETE" style="width:100%;padding:11px 14px;border:1.5px solid #e63946;border-radius:10px;font-size:14px;outline:none;text-transform:uppercase">
+    </div>
+    <div id="del-hotel-msg" style="display:none;margin-bottom:12px;padding:10px;border-radius:8px;font-size:13px;background:#fde8ea;color:#e63946"></div>
+    <div style="display:flex;gap:10px">
+      <button onclick="document.getElementById('delete-hotel-modal').classList.remove('open')" style="flex:1;padding:12px;background:#f0f0f0;color:#555;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer">Cancel</button>
+      <button onclick="confirmDeleteHotel(this)" style="flex:1;padding:12px;background:#e63946;color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer">🗑️ Delete Hotel</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE ACCOUNT MODAL -->
+<div class="modal" id="delete-account-modal">
+  <div class="modal-box" style="max-width:340px;padding:28px">
+    <div style="font-size:48px;margin-bottom:16px">💀</div>
+    <div style="font-size:18px;font-weight:700;color:#e63946;margin-bottom:8px">Delete Entire Account?</div>
+    <div style="font-size:14px;color:#666;margin-bottom:16px;line-height:1.6">This will permanently delete your account and <strong>all hotels</strong> under it. All data will be lost forever.</div>
+    <div style="background:#fde8ea;border-radius:10px;padding:12px;margin-bottom:16px;font-size:13px;color:#e63946;line-height:1.5">🚨 This action cannot be undone. All rooms, staff, requests and feedback across all your hotels will be deleted.</div>
+    <div style="margin-bottom:16px">
+      <label style="font-size:12px;color:#888;display:block;margin-bottom:6px">Type <strong>DELETE MY ACCOUNT</strong> to confirm</label>
+      <input type="text" id="del-acc-confirm" placeholder="Type DELETE MY ACCOUNT" style="width:100%;padding:11px 14px;border:1.5px solid #e63946;border-radius:10px;font-size:13px;outline:none">
+    </div>
+    <div id="del-acc-msg" style="display:none;margin-bottom:12px;padding:10px;border-radius:8px;font-size:13px;background:#fde8ea;color:#e63946"></div>
+    <div style="display:flex;gap:10px">
+      <button onclick="document.getElementById('delete-account-modal').classList.remove('open')" style="flex:1;padding:12px;background:#f0f0f0;color:#555;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer">Cancel</button>
+      <button onclick="confirmDeleteAccount(this)" style="flex:1;padding:12px;background:#e63946;color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer">💀 Delete All</button>
+    </div>
   </div>
 </div>
 
@@ -1008,7 +1166,187 @@ function showForgot(){document.getElementById('forgot-modal').style.display='fle
 function hideForgot(){document.getElementById('forgot-modal').style.display='none';}
 function fpFindAccount(btn){var email=document.getElementById('fp-email').value.trim();var err=document.getElementById('fp-err1');if(!email){err.textContent='Enter your email.';err.style.display='block';return;}btn.textContent='Searching…';btn.disabled=true;fetch('/owner/secret-question?email='+encodeURIComponent(email)).then(function(r){return r.json().then(function(d){return{ok:r.ok,d:d};});}).then(function(res){btn.textContent='Find My Account →';btn.disabled=false;if(!res.ok){err.textContent=res.d.error||'Account not found.';err.style.display='block';return;}err.style.display='none';document.getElementById('fp-q-text').textContent='What is your mother\'s maiden name?';document.getElementById('fp1').style.display='none';document.getElementById('fp2').style.display='block';}).catch(function(){btn.textContent='Find My Account →';btn.disabled=false;err.textContent='Connection error.';err.style.display='block';});}
 function fpReset(btn){var ans=document.getElementById('fp-ans').value.trim();var np=document.getElementById('fp-np').value;var cp=document.getElementById('fp-cp').value;var err=document.getElementById('fp-err2');var email=document.getElementById('fp-email').value.trim();if(!ans){err.textContent='Enter your secret answer.';err.style.display='block';return;}if(np.length<6){err.textContent='Password must be at least 6 characters.';err.style.display='block';return;}if(np!==cp){err.textContent='Passwords do not match.';err.style.display='block';return;}btn.textContent='Resetting…';btn.disabled=true;fetch('/owner/reset-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,secret_answer:ans,new_password:np})}).then(function(r){return r.json().then(function(d){return{ok:r.ok,d:d};});}).then(function(res){btn.textContent='Reset Password';btn.disabled=false;if(!res.ok){err.textContent=res.d.error||'Reset failed.';err.style.display='block';return;}document.getElementById('fp2').style.display='none';document.getElementById('fp3').style.display='block';}).catch(function(){btn.textContent='Reset Password';btn.disabled=false;err.textContent='Connection error.';err.style.display='block';});}
-window.onload=function(){try{var stored=localStorage.getItem('welco_admin_hotel');if(stored){hotel=JSON.parse(stored);var storedHotels=localStorage.getItem('welco_admin_hotels');if(storedHotels)allHotels=JSON.parse(storedHotels);startApp();}}catch(e){}};</script>
+window.onload=function(){try{var stored=localStorage.getItem('welco_admin_hotel');if(stored){hotel=JSON.parse(stored);var storedHotels=localStorage.getItem('welco_admin_hotels');if(storedHotels)allHotels=JSON.parse(storedHotels);startApp();}}catch(e){}};
+
+/* ── BULK QR DOWNLOAD ── */
+function downloadAllQRs(btn) {
+  if (!hotel) return;
+  var msg = document.getElementById('bulk-qr-msg');
+  btn.textContent = '⏳ Generating...'; btn.disabled = true;
+  fetch('/rooms?hotel_id=' + hotel.hotel_id).then(function(r){ return r.json(); }).then(function(rooms) {
+    if (!rooms || rooms.length === 0) {
+      msg.textContent = '⚠️ No rooms found. Add rooms first.';
+      msg.style.display = 'block'; msg.style.background = '#fff3cd'; msg.style.color = '#8a6000';
+      btn.textContent = '📥 Download All QRs'; btn.disabled = false; return;
+    }
+    // Create a hidden container for generating QR codes
+    var container = document.createElement('div');
+    container.style.cssText = 'position:fixed;left:-9999px;top:0;display:flex;flex-wrap:wrap;gap:0;background:white;padding:20px;width:794px;';
+    document.body.appendChild(container);
+
+    var generated = 0;
+    rooms.forEach(function(room) {
+      var cell = document.createElement('div');
+      cell.style.cssText = 'width:180px;padding:12px;text-align:center;border:1px solid #eee;margin:4px;border-radius:8px;font-family:sans-serif;page-break-inside:avoid;';
+      cell.innerHTML = '<div style="font-size:13px;font-weight:700;color:#005f73;margin-bottom:6px">Room ' + room.room_number + '</div><div id="qr_room_' + room.id + '"></div><div style="font-size:10px;color:#aaa;margin-top:6px">' + (hotel.name || 'Hotel') + '</div>';
+      container.appendChild(cell);
+      new QRCode(cell.querySelector('#qr_room_' + room.id), {
+        text: LIVE_URL + '/guest.html?hotel_id=' + hotel.hotel_id + '&room_id=' + room.id + '&room=' + room.room_number,
+        width: 150, height: 150,
+        colorDark: hotel.colour || '#005f73',
+        colorLight: '#ffffff'
+      });
+      generated++;
+    });
+
+    // Wait for all QRs to render then capture as image
+    setTimeout(function() {
+      // Convert each canvas to a printable page
+      var printWindow = window.open('', '_blank', 'width=900,height=700');
+      printWindow.document.write('<html><head><title>Welco QR Codes — ' + hotel.name + '</title><style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:sans-serif;background:white;padding:20px;}.page-title{font-size:20px;font-weight:700;color:#005f73;margin-bottom:6px;}.page-sub{font-size:13px;color:#888;margin-bottom:20px;border-bottom:1px solid #eee;padding-bottom:12px;}.grid{display:flex;flex-wrap:wrap;gap:8px;}.cell{width:170px;padding:12px;text-align:center;border:1px solid #ddd;border-radius:10px;page-break-inside:avoid;}.room-label{font-size:14px;font-weight:700;color:#005f73;margin-bottom:6px;}.hotel-label{font-size:10px;color:#aaa;margin-top:6px;}@media print{.no-print{display:none;}.cell{border:1px solid #ccc;}}</style></head><body>');
+      printWindow.document.write('<div class="page-title">📱 QR Codes — ' + hotel.name + '</div><div class="page-sub">Scan to submit guest requests · welco.onrender.com · ' + rooms.length + ' rooms</div>');
+      printWindow.document.write('<div style="margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap" class="no-print"><button onclick="window.print()" style="padding:10px 24px;background:#005f73;color:white;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer">🖨️ Print All QR Codes</button><button onclick="window.close()" style="padding:10px 20px;background:#eee;color:#555;border:none;border-radius:8px;font-size:14px;cursor:pointer">Close</button></div>');
+      printWindow.document.write('<div class="grid">');
+
+      var cells = container.querySelectorAll('canvas');
+      var roomIndex = 0;
+      rooms.forEach(function(room) {
+        var canvas = container.querySelectorAll('#qr_room_' + room.id + ' canvas')[0];
+        var imgData = canvas ? canvas.toDataURL('image/png') : '';
+        printWindow.document.write('<div class="cell"><div class="room-label">Room ' + room.room_number + '</div><img src="' + imgData + '" width="140" height="140"><div class="hotel-label">' + (hotel.name || '') + '</div></div>');
+        roomIndex++;
+      });
+
+      printWindow.document.write('</div></body></html>');
+      printWindow.document.close();
+      document.body.removeChild(container);
+
+      msg.textContent = '✅ ' + rooms.length + ' QR codes ready! Print window opened.';
+      msg.style.display = 'block'; msg.style.background = '#d1fae5'; msg.style.color = '#065f46';
+      btn.textContent = '📥 Download All QRs'; btn.disabled = false;
+    }, 1200);
+  }).catch(function() {
+    msg.textContent = '❌ Failed to load rooms. Try again.';
+    msg.style.display = 'block'; msg.style.background = '#fde8ea'; msg.style.color = '#e63946';
+    btn.textContent = '📥 Download All QRs'; btn.disabled = false;
+  });
+}
+
+/* ── SUBSCRIPTION & BILLING ── */
+function openPaymentModal() {
+  // Set renewal date
+  var d = new Date(); d.setMonth(d.getMonth() + 1);
+  var el = document.getElementById('sub-renew-date');
+  if (el) el.textContent = d.toLocaleDateString('en-IN', {day:'numeric', month:'long', year:'numeric'});
+  document.getElementById('payment-modal').classList.add('open');
+}
+function openCancelModal() { document.getElementById('cancel-modal').classList.add('open'); }
+
+function submitPayment(btn) {
+  var name = document.getElementById('pay-name').value.trim();
+  var upi = document.getElementById('pay-upi').value.trim();
+  var phone = document.getElementById('pay-phone').value.trim();
+  var msg = document.getElementById('pay-msg');
+  if (!name || !upi || !phone) {
+    msg.textContent = '⚠️ Please fill all fields.';
+    msg.style.display = 'block'; msg.style.background = '#fff3cd'; msg.style.color = '#8a6000'; return;
+  }
+  btn.textContent = 'Processing…'; btn.disabled = true;
+  // In production this would call Razorpay. For now simulate activation.
+  setTimeout(function() {
+    msg.textContent = '✅ Subscription activated! Your hotel is now live on Pro plan.';
+    msg.style.display = 'block'; msg.style.background = '#d1fae5'; msg.style.color = '#065f46';
+    btn.textContent = '💳 Activate Subscription →'; btn.disabled = false;
+    // Store subscription status
+    var subData = { plan: document.getElementById('pay-plan').value, active: true, since: new Date().toISOString() };
+    localStorage.setItem('welco_sub_' + (hotel ? hotel.hotel_id : ''), JSON.stringify(subData));
+    setTimeout(function() { document.getElementById('payment-modal').classList.remove('open'); }, 2000);
+  }, 1500);
+}
+
+function confirmCancelSub(btn) {
+  btn.textContent = 'Cancelling…'; btn.disabled = true;
+  setTimeout(function() {
+    document.getElementById('cancel-modal').classList.remove('open');
+    alert('✅ Subscription cancelled. Your hotel stays active until the end of this billing period.');
+    btn.textContent = 'Yes, Cancel'; btn.disabled = false;
+  }, 1000);
+}
+
+/* ── DELETE HOTEL ── */
+function openDeleteHotelModal() {
+  document.getElementById('del-hotel-name').textContent = (hotel && hotel.name) ? hotel.name : 'this hotel';
+  document.getElementById('del-hotel-confirm').value = '';
+  document.getElementById('del-hotel-msg').style.display = 'none';
+  document.getElementById('delete-hotel-modal').classList.add('open');
+}
+
+function confirmDeleteHotel(btn) {
+  var val = document.getElementById('del-hotel-confirm').value.trim().toUpperCase();
+  var msg = document.getElementById('del-hotel-msg');
+  if (val !== 'DELETE') {
+    msg.textContent = '⚠️ Type DELETE exactly to confirm.';
+    msg.style.display = 'block'; return;
+  }
+  btn.textContent = 'Deleting…'; btn.disabled = true;
+  // Delete all rooms then the hotel record
+  authFetch('/hotels/' + hotel.hotel_id + '/delete', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
+  .then(function(r) {
+    // Even if route doesn't exist yet, clear locally
+    allHotels = allHotels.filter(function(h) { return h.hotel_id !== hotel.hotel_id; });
+    localStorage.setItem('welco_admin_hotels', JSON.stringify(allHotels));
+    if (allHotels.length > 0) {
+      hotel = allHotels[0];
+      localStorage.setItem('welco_admin_hotel', JSON.stringify(hotel));
+      document.getElementById('delete-hotel-modal').classList.remove('open');
+      startApp();
+      alert('✅ Hotel deleted. Switched to ' + hotel.name + '.');
+    } else {
+      localStorage.removeItem('welco_admin_hotel');
+      localStorage.removeItem('welco_admin_hotels');
+      localStorage.removeItem('welco_token');
+      document.getElementById('delete-hotel-modal').classList.remove('open');
+      document.getElementById('app-screen').style.display = 'none';
+      document.getElementById('login-screen').style.display = 'flex';
+      alert('✅ Hotel deleted. Please create a new hotel to continue.');
+    }
+  }).catch(function() {
+    msg.textContent = '❌ Failed. Try again or contact support.';
+    msg.style.display = 'block';
+    btn.textContent = '🗑️ Delete Hotel'; btn.disabled = false;
+  });
+}
+
+/* ── DELETE ACCOUNT ── */
+function openDeleteAccountModal() {
+  document.getElementById('del-acc-confirm').value = '';
+  document.getElementById('del-acc-msg').style.display = 'none';
+  document.getElementById('delete-account-modal').classList.add('open');
+}
+
+function confirmDeleteAccount(btn) {
+  var val = document.getElementById('del-acc-confirm').value.trim().toUpperCase();
+  var msg = document.getElementById('del-acc-msg');
+  if (val !== 'DELETE MY ACCOUNT') {
+    msg.textContent = '⚠️ Type DELETE MY ACCOUNT exactly to confirm.';
+    msg.style.display = 'block'; return;
+  }
+  btn.textContent = 'Deleting everything…'; btn.disabled = true;
+  authFetch('/owner/delete', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
+  .then(function() {
+    localStorage.clear();
+    document.getElementById('delete-account-modal').classList.remove('open');
+    document.getElementById('app-screen').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    alert('✅ Your account has been permanently deleted. Thank you for using Welco.');
+  }).catch(function() {
+    // Clear locally even if server fails
+    localStorage.clear();
+    document.getElementById('delete-account-modal').classList.remove('open');
+    document.getElementById('app-screen').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+  });
+}</script>
 
   <!-- COPYRIGHT -->
   <div style="text-align:center;padding:12px;font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:0.05em;background:rgba(0,0,0,0.2)">

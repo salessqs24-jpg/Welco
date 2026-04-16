@@ -471,7 +471,42 @@ app.get('/qr/:room_id', async (req,res) => {
 });
 
 
-// LEGAL
+// DELETE HOTEL
+app.post('/hotels/:hotel_id/delete', verifyToken, async (req,res) => {
+  const { hotel_id } = req.params;
+  try {
+    await supabase.from('requests').delete().eq('hotel_id', hotel_id);
+    await supabase.from('staff').delete().eq('hotel_id', hotel_id);
+    await supabase.from('hod').delete().eq('hotel_id', hotel_id);
+    await supabase.from('rooms').delete().eq('hotel_id', hotel_id);
+    await supabase.from('announcements').delete().eq('hotel_id', hotel_id);
+    const { error } = await supabase.from('hotels').delete().eq('hotel_id', hotel_id);
+    if (error) return res.status(500).json({ error: error.message });
+    res.json({ success: true });
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// DELETE OWNER ACCOUNT (all hotels + owner)
+app.post('/owner/delete', verifyToken, async (req,res) => {
+  const owner_id = req.user.owner_id;
+  if (!owner_id) return res.status(400).json({ error: 'Owner not identified.' });
+  try {
+    const { data: hotels } = await supabase.from('hotels').select('hotel_id').eq('owner_id', owner_id);
+    if (hotels && hotels.length > 0) {
+      for (const h of hotels) {
+        await supabase.from('requests').delete().eq('hotel_id', h.hotel_id);
+        await supabase.from('staff').delete().eq('hotel_id', h.hotel_id);
+        await supabase.from('hod').delete().eq('hotel_id', h.hotel_id);
+        await supabase.from('rooms').delete().eq('hotel_id', h.hotel_id);
+        await supabase.from('announcements').delete().eq('hotel_id', h.hotel_id);
+        await supabase.from('hotels').delete().eq('hotel_id', h.hotel_id);
+      }
+    }
+    await supabase.from('owners').delete().eq('id', owner_id);
+    res.json({ success: true });
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
 app.get('/legal', (req,res) => res.send(`
 <!DOCTYPE html><html><head><meta charset="UTF-8"><title>Welco Legal</title>
 <style>body{font-family:sans-serif;max-width:700px;margin:40px auto;padding:20px;color:#333}h1{color:#005f73}p{line-height:1.7}</style>

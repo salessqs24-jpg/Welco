@@ -262,6 +262,11 @@
       <span style="color:#888">No account? <a href="/signup.html" style="color:var(--brand2)">Sign up free</a></span>
       <a onclick="showForgot()" style="color:#e63946;cursor:pointer;font-weight:500">Forgot password?</a>
     </div>
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid #f0f0f0">
+      <a href="/demo.html" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;background:linear-gradient(135deg,#e8f4f4,#d0f0f0);color:#005f73;border:1.5px solid #0a9396;border-radius:12px;font-size:14px;font-weight:700;text-decoration:none;transition:all .2s" onmouseover="this.style.background='linear-gradient(135deg,#d0f0f0,#b8e8e8)'" onmouseout="this.style.background='linear-gradient(135deg,#e8f4f4,#d0f0f0)'">
+        🎮 Try Live Demo — No Signup Needed
+      </a>
+    </div>
   </div>
 </div>
 
@@ -301,6 +306,12 @@
 
 <!-- APP SCREEN -->
 <div id="app-screen">
+  <!-- DEMO MODE BANNER -->
+  <div id="demo-banner" style="display:none;background:linear-gradient(90deg,#ee9b00,#ca6702);color:#0d1b1e;padding:10px 20px;font-size:13px;font-weight:700;text-align:center;position:sticky;top:0;z-index:60">
+    🎮 Demo Mode — Data resets every 24 hours &nbsp;·&nbsp; No real data is saved &nbsp;
+    <a href="/signup.html" style="background:rgba(0,0,0,.2);color:#0d1b1e;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;margin-left:8px">Sign Up Free →</a>
+    <button onclick="window.location.href='/demo.html'" style="background:rgba(0,0,0,.15);color:#0d1b1e;border:none;padding:4px 12px;border-radius:20px;font-size:12px;cursor:pointer;margin-left:6px;font-weight:700">Back to Demo</button>
+  </div>
   <div class="topbar">
     <div class="topbar-left">
       <img id="topbar-logo-img" src="" alt="Hotel Logo">
@@ -837,6 +848,11 @@ function startApp() {
  renderHotelDropdown();
  document.getElementById('login-screen').style.display = 'none';
  document.getElementById('app-screen').style.display = 'block';
+ // Show demo banner if in demo mode
+ if (localStorage.getItem('welco_is_demo') === 'true') {
+   var db = document.getElementById('demo-banner');
+   if (db) db.style.display = 'block';
+ }
  document.getElementById('t-name').textContent = hotel.name;
  document.getElementById('t-city').textContent = hotel.city || '';
  document.documentElement.style.setProperty('--brand', hotel.colour || '#005f73');

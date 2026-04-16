@@ -99,6 +99,62 @@ function generateStaffId(hotelCode) { return (hotelCode||'WLC')+'-'+Math.floor(M
 
 app.get('/health', (req,res) => res.json({ status:'ok', ts:Date.now() }));
 
+// ── DEMO LOGIN ─────────────────────────────────────────────────────────────
+const DEMO_HOTEL_ID = 'hotel_demo_welco';
+
+async function ensureDemoHotel() {
+  const { data: existing } = await supabase.from('hotels').select('*').eq('hotel_id', DEMO_HOTEL_ID).maybeSingle();
+  if (existing) return existing;
+  const { data: hotel } = await supabase.from('hotels').insert([{
+    hotel_id: DEMO_HOTEL_ID, name: 'Welco Demo Hotel', city: 'Udaipur',
+    owner_id: null, colour: '#005f73', emoji: '🏨', hotel_code: 'DEMO001',
+    owner_email: 'demo@welco.app', owner_password: '',
+  }]).select().single();
+  if (!hotel) return null;
+  const rooms = [];
+  for (let i = 1; i <= 15; i++) rooms.push({ hotel_id: DEMO_HOTEL_ID, room_number: String(100+i), floor: Math.ceil(i/5), is_active: true });
+  await supabase.from('rooms').insert(rooms);
+  await supabase.from('staff').insert([
+    { hotel_id: DEMO_HOTEL_ID, name: 'Ramesh', pin: '1111', staff_id: 'DEMO001-1111', department: 'Housekeeping', is_active: true },
+    { hotel_id: DEMO_HOTEL_ID, name: 'Sunil',  pin: '2222', staff_id: 'DEMO001-2222', department: 'Room Service',  is_active: true },
+    { hotel_id: DEMO_HOTEL_ID, name: 'Vikram', pin: '3333', staff_id: 'DEMO001-3333', department: 'Maintenance',   is_active: true },
+    { hotel_id: DEMO_HOTEL_ID, name: 'Priya',  pin: '4444', staff_id: 'DEMO001-4444', department: 'Front Desk',    is_active: true },
+  ]);
+  await supabase.from('hod').insert([{ hotel_id: DEMO_HOTEL_ID, name: 'Meena', department: 'Housekeeping', pin: '0000', is_active: true }]);
+  const now = new Date();
+  await supabase.from('requests').insert([
+    { hotel_id: DEMO_HOTEL_ID, room_number: '101', category: 'Housekeeping', message: 'Extra towels and pillow please', status: 'pending',     sla_minutes: 10, created_at: new Date(now - 5*60000).toISOString() },
+    { hotel_id: DEMO_HOTEL_ID, room_number: '103', category: 'Room Service',  message: 'Chai aur biscuit chahiye',       status: 'in_progress', sla_minutes: 15, claimed_by: 'Sunil', claimed_at: new Date(now - 2*60000).toISOString(), created_at: new Date(now - 8*60000).toISOString() },
+    { hotel_id: DEMO_HOTEL_ID, room_number: '107', category: 'Maintenance',   message: 'AC is not cooling properly',     status: 'pending',     sla_minutes: 20, created_at: new Date(now - 3*60000).toISOString() },
+    { hotel_id: DEMO_HOTEL_ID, room_number: '110', category: 'Front Desk',    message: 'Airport taxi for 6 AM tomorrow', status: 'done',        sla_minutes: 5,  claimed_by: 'Priya', feedback_rating: 5, feedback_comments: 'Very prompt!', created_at: new Date(now - 60*60000).toISOString(), completed_at: new Date(now - 55*60000).toISOString() },
+    { hotel_id: DEMO_HOTEL_ID, room_number: '102', category: 'Housekeeping', message: 'Room cleaning required',          status: 'done',        sla_minutes: 30, claimed_by: 'Ramesh', feedback_rating: 4, created_at: new Date(now - 120*60000).toISOString(), completed_at: new Date(now - 100*60000).toISOString() },
+    { hotel_id: DEMO_HOTEL_ID, room_number: '105', category: 'Room Service',  message: 'Two water bottles please',       status: 'pending',     sla_minutes: 5,  created_at: new Date(now - 1*60000).toISOString() },
+  ]);
+  return hotel;
+}
+
+app.get('/demo/login', async (req,res) => {
+  try {
+    const hotel = await ensureDemoHotel();
+    if (!hotel) return res.status(500).json({ error: 'Demo hotel unavailable.' });
+    const token = signToken({ owner_id: 'demo', email: 'demo@welco.app', is_demo: true });
+    res.json({ hotel, hotels: [hotel], token, is_demo: true });
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/demo/reset', async (req,res) => {
+  try {
+    await supabase.from('requests').delete().eq('hotel_id', DEMO_HOTEL_ID);
+    await supabase.from('staff').delete().eq('hotel_id', DEMO_HOTEL_ID);
+    await supabase.from('hod').delete().eq('hotel_id', DEMO_HOTEL_ID);
+    await supabase.from('rooms').delete().eq('hotel_id', DEMO_HOTEL_ID);
+    await supabase.from('hotels').delete().eq('hotel_id', DEMO_HOTEL_ID);
+    const hotel = await ensureDemoHotel();
+    res.json({ success: true, hotel });
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+
 // OWNER SIGNUP
 app.post('/owner/signup', async (req,res) => {
   const name=sanitize(req.body.name), email=sanitize(req.body.email).toLowerCase(), password=req.body.password;

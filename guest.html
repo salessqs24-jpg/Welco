@@ -1284,16 +1284,44 @@
  if (savedDeptFull && savedDeptFull.hours) {
  var h = savedDeptFull.hours;
  var closed = false;
- if (h.isOpen === false) {
- closed = true;
+
+ // ── SERVICE HOURS LOGIC ──────────────────────────────────────
+ // isOpen = true → manually forced OPEN — always open, skip time
+ // isOpen = false → manually forced CLOSED — always closed, skip time
+ // isOpen = null/undefined → use time-based check automatically
+ if (h.isOpen === true) {
+   closed = false; // manually ON — always open
+ } else if (h.isOpen === false) {
+   // manually OFF — but only force closed if NO times set
+   // if times are set, respect them (so auto open/close still works)
+   if (h.openTime && h.closeTime) {
+     var now = new Date();
+     var curMins = now.getHours() * 60 + now.getMinutes();
+     var openParts = h.openTime.split(':');
+     var closeParts = h.closeTime.split(':');
+     var openMins = parseInt(openParts[0]) * 60 + parseInt(openParts[1]);
+     var closeMins = parseInt(closeParts[0]) * 60 + parseInt(closeParts[1]);
+     // Validate times are sensible (close must be after open)
+     if (closeMins > openMins) {
+       closed = curMins < openMins || curMins >= closeMins;
+     } else {
+       closed = true; // invalid times — treat as closed
+     }
+   } else {
+     closed = true; // no times set, manual OFF = closed
+   }
  } else if (h.openTime && h.closeTime) {
- var now = new Date();
- var curMins = now.getHours() * 60 + now.getMinutes();
- var openParts = h.openTime.split(':');
- var closeParts = h.closeTime.split(':');
- var openMins = parseInt(openParts[0]) * 60 + parseInt(openParts[1]);
- var closeMins = parseInt(closeParts[0]) * 60 + parseInt(closeParts[1]);
- if (curMins < openMins || curMins >= closeMins) closed = true;
+   // No manual toggle — use time check
+   var now = new Date();
+   var curMins = now.getHours() * 60 + now.getMinutes();
+   var openParts = h.openTime.split(':');
+   var closeParts = h.closeTime.split(':');
+   var openMins = parseInt(openParts[0]) * 60 + parseInt(openParts[1]);
+   var closeMins = parseInt(closeParts[0]) * 60 + parseInt(closeParts[1]);
+   // Validate: close must be after open, else ignore (treat as always open)
+   if (closeMins > openMins) {
+     closed = curMins < openMins || curMins >= closeMins;
+   }
  }
  if (closed) {
  deptIsClosed = true;

@@ -940,18 +940,32 @@ function saveServiceHours(){
  var openTime=document.getElementById('service-open-time').value;
  var closeTime=document.getElementById('service-close-time').value;
  var closedMsg=document.getElementById('service-closed-msg').value.trim();
+ var msg=document.getElementById('hours-msg');
+
+ // ── VALIDATE: close time must be after open time ──
+ if (openTime && closeTime) {
+   var op=openTime.split(':'), cl=closeTime.split(':');
+   var openMins=parseInt(op[0])*60+parseInt(op[1]);
+   var closeMins=parseInt(cl[0])*60+parseInt(cl[1]);
+   if (closeMins <= openMins) {
+     msg.textContent='⚠️ Close time must be after open time. e.g. Opens 07:00, Closes 23:00';
+     msg.style.background='#fff3cd'; msg.style.color='#8a6000';
+     msg.className='msg-box msg-success';
+     setTimeout(function(){msg.className='msg-box';},5000);
+     return; // stop save
+   }
+ }
+
  if(!fullDeptOptions[hodData.dept])fullDeptOptions[hodData.dept]={};
  fullDeptOptions[hodData.dept].hours={isOpen:isOpen,openTime:openTime,closeTime:closeTime,closedMsg:closedMsg};
  authFetch('/hotels/'+hodData.hotel_id+'/dept-guest-options',{
  method:'POST', headers:{'Content-Type':'application/json'},
  body:JSON.stringify({dept_guest_options:fullDeptOptions})
  }).then(function(r){return r.json();}).then(function(){
- var msg=document.getElementById('hours-msg');
- msg.textContent=isOpen?'✅ Saved! Service is now OPEN.':'✅ Saved! Service is now CLOSED ('+openTime+' – '+closeTime+').';
+ msg.textContent=isOpen?'✅ Saved! Service is now OPEN.':'✅ Saved! Auto-open '+openTime+', Auto-close '+closeTime+'.';
  msg.className='msg-box msg-success';
  setTimeout(function(){msg.className='msg-box';},4000);
  }).catch(function(){
- var msg=document.getElementById('hours-msg');
  msg.textContent='❌ Failed to save. Try again.';
  msg.style.background='#fde8ea'; msg.style.color='#e63946';
  msg.className='msg-box msg-success';

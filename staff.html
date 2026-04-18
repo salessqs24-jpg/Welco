@@ -275,8 +275,46 @@
 var currentHotelId='', currentFilter='all', knownRequestIds=null;
 var refreshInterval=null, audioCtx=null, pendingClaimId=null;
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(function(){});
+
+// ── RESTORE SESSION ON PAGE LOAD ──────────────────────────────
 window.addEventListener('load', function(){
- if ('Notification' in window && Notification.permission==='default') document.getElementById('notif-prompt').style.display='block';
+  // Try to restore saved session from localStorage
+  try {
+    var saved = localStorage.getItem('welco_staff_session');
+    if (saved) {
+      var s = JSON.parse(saved);
+      // Check session not older than 12 hours
+      var age = Date.now() - (s.savedAt || 0);
+      if (age < 12 * 60 * 60 * 1000) {
+        currentHotelId   = s.hotel_id;
+        loggedInStaff    = s.name;
+        loggedInStaffDbId = s.id;
+        isOnDuty         = !!s.is_on_duty;
+        // Restore UI
+        document.getElementById('login-screen').style.display  = 'none';
+        document.getElementById('dashboard-screen').style.display = 'block';
+        document.getElementById('dash-staff').textContent = '👋 ' + s.name + (s.department ? ' · ' + s.department : '');
+        updateDutyUI();
+        // Re-apply branding
+        fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
+          var h = hotels.find(function(x){return x.hotel_id===currentHotelId;})||{};
+          applyBranding(h);
+        }).catch(function(){applyBranding({});});
+        // Resume polling
+        loadTasks();
+        refreshInterval = setInterval(loadTasks, 5000);
+        return; // Skip showing login screen
+      } else {
+        // Session expired — clear it
+        localStorage.removeItem('welco_staff_session');
+      }
+    }
+  } catch(e) { localStorage.removeItem('welco_staff_session'); }
+
+  // No valid session — show notification prompt on login screen
+  if ('Notification' in window && Notification.permission==='default') {
+    document.getElementById('notif-prompt').style.display='block';
+  }
 });
 function enablePush(){
  document.getElementById('notif-prompt').style.display='none';
@@ -327,6 +365,17 @@ function attemptLogin(sid,pinVal,btn,attempt){
  if(!res.ok){showLoginErr(res.d.error||'Invalid Staff ID or PIN.');clearPin();return;}
  var s=res.d.staff;
  currentHotelId=s.hotel_id; loggedInStaff=s.name; loggedInStaffDbId=s.id; isOnDuty=!!s.is_on_duty;
+ // ── SAVE SESSION to localStorage so refresh doesn't log out ──
+ localStorage.setItem('welco_staff_session', JSON.stringify({
+   hotel_id:   s.hotel_id,
+   name:       s.name,
+   id:         s.id,
+   is_on_duty: !!s.is_on_duty,
+   department: s.department || '',
+   staff_id:   s.staff_id || '',
+   savedAt:    Date.now()
+ }));
+ if (res.d.token) localStorage.setItem('welco_token', res.d.token);
  fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
  var h=hotels.find(function(x){return x.hotel_id===currentHotelId;})||{};
  applyBranding(h);
@@ -400,6 +449,13 @@ function toggleDuty(){
  if(d.error){alert(d.error);return;}
  isOnDuty=newStatus; updateDutyUI();
  if(isOnDuty) showNotifBar(true);
+ // Update saved session with new duty status
+ try {
+   var saved = JSON.parse(localStorage.getItem('welco_staff_session')||'{}');
+   saved.is_on_duty = newStatus;
+   saved.savedAt = Date.now();
+   localStorage.setItem('welco_staff_session', JSON.stringify(saved));
+ } catch(e) {}
  }).catch(function(){alert('Connection error. Try again.');});
 }
 function authFetch(url, options) {
@@ -411,6 +467,9 @@ function authFetch(url, options) {
 }
 function doLogout(){
  clearInterval(refreshInterval);
+ // ── CLEAR saved session so login screen shows on next open ──
+ localStorage.removeItem('welco_staff_session');
+ localStorage.removeItem('welco_token');
  document.getElementById('login-screen').style.display='flex';
  document.getElementById('dashboard-screen').style.display='none';
  document.getElementById('notif-status-bar').style.display='none';

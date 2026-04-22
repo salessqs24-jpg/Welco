@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welco™ — Transforming Your Hotel Group</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;0,600;0,700;1,300;1,500&family=Inter:wght@300;400;500;600;700&family=DM+Mono&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:#fff;color:#0d1b1e;overflow-x:hidden;}
+
+/* ── PROGRESS BAR ── */
+.prog{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#005f73,#0a9396,#ee9b00);z-index:200;transition:width .3s;}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;background:rgba(255,255,255,.95);backdrop-filter:blur(20px);border-bottom:1px solid #f0f0f0;}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:#0d1b1e;letter-spacing:.5px;}
+.nav-logo em{color:#0a9396;font-style:normal;}
+.nav-dots{display:flex;gap:8px;}
+.ndot{width:7px;height:7px;border-radius:50%;background:#e0e0e0;cursor:pointer;transition:all .2s;}
+.ndot.on{background:#0a9396;transform:scale(1.3);}
+.nav-cta{padding:9px 20px;background:#0d1b1e;color:white;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;}
+
+/* ── SECTION BASE ── */
+.sec{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:100px 80px 80px;position:relative;overflow:hidden;}
+.sec-inner{max-width:1100px;width:100%;position:relative;z-index:2;}
+
+/* ── SLIDE COUNTER ── */
+.scount{position:fixed;bottom:24px;right:32px;font-family:'DM Mono',monospace;font-size:11px;color:#ccc;z-index:100;}
+
+/* ══════════════════════
+   SLIDE 1 — COVER
+══════════════════════ */
+.s1{background:#0d1b1e;}
+.s1::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 100%,rgba(10,147,150,.2) 0%,transparent 60%),radial-gradient(ellipse 40% 30% at 80% 20%,rgba(238,155,0,.08) 0%,transparent 50%);pointer-events:none;}
+.s1-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:64px 64px;}
+.s1-label{font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:#0a9396;margin-bottom:24px;font-weight:600;}
+.s1 h1{font-family:'Cormorant Garamond',serif;font-size:clamp(52px,7vw,88px);font-weight:300;line-height:.95;letter-spacing:-2px;color:white;margin-bottom:28px;}
+.s1 h1 strong{font-weight:600;display:block;}
+.s1 h1 em{font-style:italic;color:#0a9396;}
+.s1-sub{font-size:18px;color:rgba(255,255,255,.5);font-weight:300;line-height:1.8;max-width:560px;margin-bottom:48px;}
+.s1-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;padding-top:40px;border-top:1px solid rgba(255,255,255,.08);}
+.s1-stat-n{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:500;color:#0a9396;line-height:1;}
+.s1-stat-l{font-size:11px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.12em;margin-top:6px;font-weight:600;}
+.s1-hotels{display:flex;gap:16px;margin-bottom:48px;flex-wrap:wrap;}
+.hotel-pill{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:50px;padding:8px 16px;font-size:13px;color:rgba(255,255,255,.7);}
+.hotel-dot{width:8px;height:8px;border-radius:50%;background:#2ecc71;}
+
+/* ══════════════════════
+   SLIDE 2 — THE PROBLEM
+══════════════════════ */
+.s2{background:#fafafa;}
+.s2-head{margin-bottom:56px;}
+.tag{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#0a9396;font-weight:700;margin-bottom:14px;}
+.ttl{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,60px);font-weight:300;line-height:1.05;letter-spacing:-1.5px;margin-bottom:12px;}
+.ttl em{font-style:italic;color:#e63946;}
+.ttl-sub{font-size:16px;color:#888;font-weight:300;line-height:1.7;max-width:560px;}
+.pain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.pain{background:white;border-radius:16px;padding:28px;border:1px solid #f0f0f0;border-top:3px solid #fde8ea;transition:transform .3s;}
+.pain:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.08);}
+.pain-icon{font-size:32px;margin-bottom:14px;}
+.pain-title{font-size:15px;font-weight:700;margin-bottom:8px;color:#e63946;}
+.pain-text{font-size:13px;color:#777;line-height:1.7;margin-bottom:12px;}
+.pain-cost{display:inline-block;background:#fde8ea;color:#e63946;font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;}
+
+/* ══════════════════════
+   SLIDE 3 — REVENUE
+══════════════════════ */
+.s3{background:white;}
+.rev-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px;}
+.rev-card{border-radius:20px;padding:28px;border:1px solid #f0f0f0;transition:all .3s;position:relative;overflow:hidden;}
+.rev-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.rev-card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.08);}
+.rc1::before{background:linear-gradient(90deg,#2ecc71,transparent);}
+.rc2::before{background:linear-gradient(90deg,#0a9396,transparent);}
+.rc3::before{background:linear-gradient(90deg,#ee9b00,transparent);}
+.rc4::before{background:linear-gradient(90deg,#9b5de5,transparent);}
+.rc5::before{background:linear-gradient(90deg,#e63946,transparent);}
+.rc6::before{background:linear-gradient(90deg,#0d1b1e,transparent);}
+.rc1{background:#f0fff4;border-color:#bbf7d0;}
+.rc2{background:#f0fdf9;border-color:#b2e8e8;}
+.rc3{background:#fffbeb;border-color:#fde68a;}
+.rc4{background:#f5f3ff;border-color:#ddd6fe;}
+.rc5{background:#fff1f2;border-color:#fecdd3;}
+.rc6{background:#f8fafc;border-color:#e2e8f0;}
+.rev-icon{font-size:36px;margin-bottom:16px;}
+.rev-title{font-size:15px;font-weight:700;margin-bottom:8px;}
+.rev-text{font-size:13px;color:#666;line-height:1.7;margin-bottom:14px;}
+.rev-num{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:600;line-height:1;}
+.rc1 .rev-num{color:#16a34a;}
+.rc2 .rev-num{color:#0a9396;}
+.rc3 .rev-num{color:#ca8a04;}
+.rc4 .rev-num{color:#7c3aed;}
+.rc5 .rev-num{color:#e63946;}
+.rc6 .rev-num{color:#0d1b1e;}
+
+/* ══════════════════════
+   SLIDE 4 — CALCULATOR
+══════════════════════ */
+.s4{background:#fafafa;}
+.calc-wrap{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;margin-top:48px;}
+.calc-left{}
+.calc-title{font-size:14px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.1em;margin-bottom:20px;}
+.calc-slider-wrap{margin-bottom:24px;}
+.calc-slider-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.csl-name{font-size:13px;color:#555;font-weight:500;}
+.csl-val{font-family:'DM Mono',monospace;font-size:15px;font-weight:700;color:#0a9396;}
+.slider{width:100%;-webkit-appearance:none;height:4px;border-radius:4px;background:#e0e0e0;outline:none;cursor:pointer;}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#0a9396;cursor:pointer;box-shadow:0 2px 8px rgba(10,147,150,.4);}
+.calc-right{}
+.calc-box{background:white;border-radius:20px;padding:32px;box-shadow:0 4px 24px rgba(0,0,0,.08);border:1px solid #f0f0f0;}
+.calc-box-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#888;margin-bottom:20px;}
+.calc-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f5f5f5;font-size:14px;}
+.calc-row:last-child{border:none;}
+.calc-lbl{color:#666;}
+.calc-val{font-family:'DM Mono',monospace;font-weight:600;}
+.calc-val.pos{color:#16a34a;}
+.calc-val.neg{color:#e63946;}
+.calc-total{background:linear-gradient(135deg,#0d1b1e,#1a3640);border-radius:16px;padding:24px;margin-top:20px;display:flex;justify-content:space-between;align-items:center;}
+.calc-total-lbl{font-size:15px;font-weight:600;color:white;}
+.calc-total-val{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:600;color:#2ecc71;line-height:1;}
+.calc-roi{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px;}
+.roi-box{background:white;border-radius:12px;padding:16px;text-align:center;border:1px solid #f0f0f0;}
+.roi-n{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:#0a9396;}
+.roi-l{font-size:11px;color:#999;text-transform:uppercase;letter-spacing:.08em;margin-top:4px;}
+
+/* ══════════════════════
+   SLIDE 5 — STAFF
+══════════════════════ */
+.s5{background:white;}
+.staff-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:48px;align-items:center;}
+.staff-left{}
+.before-after{display:flex;flex-direction:column;gap:12px;}
+.ba-row{display:grid;grid-template-columns:1fr 40px 1fr;gap:0;align-items:center;}
+.ba-before{background:#fff1f2;border:1px solid #fecdd3;border-radius:12px;padding:16px;font-size:13px;color:#666;line-height:1.5;}
+.ba-before strong{color:#e63946;display:block;font-size:12px;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;}
+.ba-arrow{text-align:center;font-size:18px;color:#0a9396;font-weight:700;}
+.ba-after{background:#f0fff4;border:1px solid #bbf7d0;border-radius:12px;padding:16px;font-size:13px;color:#555;line-height:1.5;}
+.ba-after strong{color:#16a34a;display:block;font-size:12px;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;}
+.staff-right{}
+.staff-metrics{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.sm{border-radius:16px;padding:24px;text-align:center;}
+.sm1{background:#f0fdf9;border:1px solid #b2e8e8;}
+.sm2{background:#fffbeb;border:1px solid #fde68a;}
+.sm3{background:#f0fff4;border:1px solid #bbf7d0;}
+.sm4{background:#f5f3ff;border:1px solid #ddd6fe;}
+.sm-n{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:600;line-height:1;margin-bottom:8px;}
+.sm1 .sm-n{color:#0a9396;}
+.sm2 .sm-n{color:#ca8a04;}
+.sm3 .sm-n{color:#16a34a;}
+.sm4 .sm-n{color:#7c3aed;}
+.sm-l{font-size:12px;color:#666;font-weight:600;line-height:1.4;}
+
+/* ══════════════════════
+   SLIDE 6 — GUEST
+══════════════════════ */
+.s6{background:#fafafa;}
+.guest-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:48px;align-items:center;}
+.guest-steps{display:flex;flex-direction:column;gap:0;}
+.gs{display:flex;gap:20px;padding:20px 0;border-bottom:1px solid #f0f0f0;}
+.gs:last-child{border:none;}
+.gs-num{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:#0a9396;flex-shrink:0;width:40px;line-height:1;}
+.gs-title{font-size:15px;font-weight:700;margin-bottom:5px;}
+.gs-text{font-size:13px;color:#888;line-height:1.6;}
+.gs-badge{display:inline-block;margin-top:6px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;}
+.phone-demo{background:linear-gradient(145deg,#0d1b1e,#1e3a40);border-radius:28px;padding:24px 20px;box-shadow:0 32px 80px rgba(13,27,30,.2);max-width:290px;margin:0 auto;}
+.pd-header{margin-bottom:18px;}
+.pd-hotel{font-size:16px;font-weight:700;color:white;margin-bottom:4px;}
+.pd-room{font-size:12px;color:rgba(255,255,255,.4);}
+.lang-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;}
+.lang-chip{font-size:10px;padding:3px 8px;border-radius:20px;font-weight:600;}
+.lc-active{background:rgba(10,147,150,.2);color:#4dd9dc;border:1px solid rgba(10,147,150,.3);}
+.lc{background:rgba(255,255,255,.06);color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.08);}
+.pd-cats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.pd-cat{padding:12px;border-radius:10px;text-align:center;font-size:12px;font-weight:600;}
+.pdc-sel{background:linear-gradient(135deg,#005f73,#0a9396);color:white;}
+.pdc-un{background:rgba(255,255,255,.05);color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.08);}
+.pd-quick{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+.pd-q{font-size:10px;padding:5px 10px;border-radius:20px;background:rgba(10,147,150,.12);color:#4dd9dc;border:1px solid rgba(10,147,150,.2);}
+.pd-eta{background:rgba(238,155,0,.1);border:1px solid rgba(238,155,0,.2);border-radius:8px;padding:8px 12px;font-size:11px;color:#ee9b00;text-align:center;margin-bottom:12px;}
+.pd-btn{width:100%;padding:13px;background:linear-gradient(135deg,#005f73,#0a9396);border:none;border-radius:10px;color:white;font-size:13px;font-weight:700;cursor:pointer;}
+.track-box{margin-top:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px;}
+.track-title{font-size:12px;font-weight:700;color:white;margin-bottom:12px;}
+.track-steps{display:flex;flex-direction:column;gap:6px;}
+.ts{display:flex;align-items:center;gap:10px;font-size:11px;color:rgba(255,255,255,.5);}
+.ts.done{color:#2ecc71;}
+.ts.active{color:white;font-weight:600;}
+.ts-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.2);flex-shrink:0;}
+.ts.done .ts-dot{background:#2ecc71;}
+.ts.active .ts-dot{background:white;}
+
+/* ══════════════════════
+   SLIDE 7 — PORTALS
+══════════════════════ */
+.s7{background:white;}
+.portals4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:48px;}
+.p4c{border-radius:20px;padding:26px;transition:transform .3s;}
+.p4c:hover{transform:translateY(-4px);}
+.pg{background:linear-gradient(145deg,#e8f9f9,#d0f2f2);border:1px solid #a5f3f3;}
+.ps{background:linear-gradient(145deg,#f0fff4,#dcfce7);border:1px solid #bbf7d0;}
+.ph{background:linear-gradient(145deg,#fffbeb,#fef3c7);border:1px solid #fde68a;}
+.pa{background:linear-gradient(145deg,#f5f3ff,#ede9fe);border:1px solid #ddd6fe;}
+.p4c-icon{font-size:36px;margin-bottom:14px;}
+.p4c-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;margin-bottom:4px;}
+.p4c-who{font-size:10px;text-transform:uppercase;letter-spacing:.12em;opacity:.4;margin-bottom:14px;font-weight:600;}
+.p4c-feats{list-style:none;}
+.p4c-feats li{font-size:12px;color:#444;padding:5px 0;border-bottom:1px solid rgba(0,0,0,.05);display:flex;gap:8px;align-items:flex-start;line-height:1.4;}
+.p4c-feats li:last-child{border:none;}
+.p4c-feats li::before{content:'→';color:#0a9396;font-size:10px;flex-shrink:0;margin-top:2px;}
+
+/* ══════════════════════
+   SLIDE 8 — GROUP VALUE
+══════════════════════ */
+.s8{background:#fafafa;}
+.group-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:48px;align-items:start;}
+.group-left{}
+.group-table{width:100%;border-collapse:collapse;background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.06);}
+.group-table th{padding:14px 20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#999;background:#f8f8f8;text-align:left;border-bottom:1px solid #f0f0f0;}
+.group-table td{padding:14px 20px;font-size:14px;border-bottom:1px solid #f5f5f5;color:#444;}
+.group-table tr:last-child td{border:none;font-weight:700;background:#f0fdf9;color:#16a34a;}
+.group-right{}
+.group-benefits{display:flex;flex-direction:column;gap:14px;}
+.gb{background:white;border-radius:14px;padding:20px;border:1px solid #f0f0f0;display:flex;align-items:flex-start;gap:16px;}
+.gb-icon{font-size:28px;flex-shrink:0;}
+.gb-title{font-size:14px;font-weight:700;margin-bottom:4px;}
+.gb-text{font-size:12px;color:#888;line-height:1.6;}
+
+/* ══════════════════════
+   SLIDE 9 — PROOF
+══════════════════════ */
+.s9{background:white;}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px;}
+.tc{background:#fafafa;border:1px solid #f0f0f0;border-radius:20px;padding:28px;transition:all .3s;}
+.tc:hover{box-shadow:0 12px 40px rgba(0,0,0,.08);transform:translateY(-2px);}
+.tc-q{font-size:48px;font-family:'Cormorant Garamond',serif;color:#e0e0e0;line-height:1;margin-bottom:4px;}
+.tc-stars{color:#ee9b00;font-size:13px;margin-bottom:12px;}
+.tc-text{font-size:14px;color:#444;line-height:1.75;font-style:italic;margin-bottom:18px;}
+.tc-author{display:flex;align-items:center;gap:12px;}
+.tc-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#0a9396,#005f73);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:16px;}
+.tc-name{font-size:14px;font-weight:700;}
+.tc-hotel{font-size:12px;color:#0a9396;}
+.big-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:32px;}
+.bm{text-align:center;padding:24px;background:#fafafa;border:1px solid #f0f0f0;border-radius:14px;}
+.bm-n{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:600;background:linear-gradient(135deg,#0a9396,#ee9b00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:8px;}
+.bm-l{font-size:11px;color:#999;text-transform:uppercase;letter-spacing:.1em;}
+
+/* ══════════════════════
+   SLIDE 10 — PRICING
+══════════════════════ */
+.s10{background:#fafafa;}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:40px;}
+.plan{border-radius:20px;padding:32px;border:1.5px solid #f0f0f0;position:relative;transition:all .3s;}
+.plan:hover{border-color:#0a9396;box-shadow:0 12px 40px rgba(10,147,150,.1);}
+.plan.pro{background:#0d1b1e;border-color:#0d1b1e;color:white;}
+.plan-hot{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#ee9b00,#ca6702);color:white;font-size:11px;font-weight:700;padding:5px 18px;border-radius:50px;white-space:nowrap;}
+.pname{font-size:20px;font-weight:700;margin-bottom:6px;}
+.plan.pro .pname{color:white;}
+.pdesc{font-size:13px;color:#999;margin-bottom:20px;line-height:1.5;}
+.plan.pro .pdesc{color:rgba(255,255,255,.5);}
+.pprice{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:300;letter-spacing:-2px;line-height:1;margin-bottom:4px;}
+.plan.pro .pprice{color:white;}
+.pper{font-size:13px;color:#999;margin-bottom:20px;}
+.plan.pro .pper{color:rgba(255,255,255,.5);}
+.ptrial{display:inline-block;background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.2);color:#16a34a;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;margin-bottom:20px;}
+.plan.pro .ptrial{background:rgba(46,204,113,.15);color:#4ade80;}
+.pfeats{list-style:none;margin-bottom:24px;}
+.pfeats li{font-size:13px;padding:8px 0;border-bottom:1px solid #f5f5f5;display:flex;align-items:center;gap:10px;color:#555;}
+.plan.pro .pfeats li{border-color:rgba(255,255,255,.08);color:rgba(255,255,255,.8);}
+.pfeats li:last-child{border:none;}
+.pfy{color:#0a9396;font-size:14px;font-weight:700;}
+.pfn{color:#ddd;}
+.pfoff{color:#ccc;text-decoration:line-through;}
+.plan.pro .pfoff{color:rgba(255,255,255,.3);}
+.pbtn{width:100%;padding:13px;border:none;border-radius:11px;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;display:block;text-align:center;transition:all .25s;}
+.pbtn-free{background:#f5f5f5;color:#0d1b1e;}
+.pbtn-basic{background:#f0fdf9;color:#005f73;border:1.5px solid #b2e8e8;}
+.pbtn-pro{background:linear-gradient(135deg,#0a9396,#005f73);color:white;box-shadow:0 8px 24px rgba(10,147,150,.3);}
+.pbtn-pro:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(10,147,150,.4);}
+.group-discount{background:linear-gradient(135deg,#f0fdf9,#e8f9f9);border:1.5px solid #b2e8e8;border-radius:16px;padding:24px;margin-top:20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+.gd-text{flex:1;}
+.gd-title{font-size:16px;font-weight:700;color:#005f73;margin-bottom:4px;}
+.gd-sub{font-size:13px;color:#666;}
+.gd-btn{padding:12px 24px;background:#0a9396;color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;text-decoration:none;}
+
+/* ══════════════════════
+   SLIDE 11 — CLOSING
+══════════════════════ */
+.s11{background:#0d1b1e;}
+.s11::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 100%,rgba(10,147,150,.2) 0%,transparent 60%);pointer-events:none;}
+.s11-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:64px 64px;}
+.s11-inner{text-align:center;max-width:800px;margin:0 auto;}
+.s11 h2{font-family:'Cormorant Garamond',serif;font-size:clamp(44px,6vw,76px);font-weight:300;color:white;line-height:1;letter-spacing:-2px;margin-bottom:20px;}
+.s11 h2 em{font-style:italic;color:#0a9396;}
+.s11-sub{font-size:17px;color:rgba(255,255,255,.45);font-weight:300;line-height:1.8;margin-bottom:48px;max-width:520px;margin-left:auto;margin-right:auto;}
+.s11-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;}
+.s11-btn1{padding:16px 48px;background:white;color:#0d1b1e;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;transition:all .25s;}
+.s11-btn1:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,255,255,.2);}
+.s11-btn2{padding:16px 48px;border:1.5px solid rgba(255,255,255,.2);color:white;border-radius:12px;font-size:15px;font-weight:600;text-decoration:none;transition:all .25s;}
+.s11-btn2:hover{border-color:rgba(255,255,255,.5);}
+.s11-note{font-size:12px;color:rgba(255,255,255,.25);}
+.s11-url{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:rgba(10,147,150,.7);margin-top:40px;}
+.s11-copy{font-size:12px;color:rgba(255,255,255,.15);margin-top:20px;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .sec{padding:100px 28px 60px;}
+  nav{padding:0 20px;}
+  .s1-stats,.pain-grid,.rev-cards,.portals4,.testi-grid,.big-metrics,.plans{grid-template-columns:1fr 1fr!important;}
+  .calc-wrap,.staff-grid,.guest-grid,.group-grid{grid-template-columns:1fr!important;}
+  .phone-demo{display:none;}
+  .ba-row{grid-template-columns:1fr!important;}
+  .ba-arrow{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="prog" id="prog"></div>
+<nav>
+  <div class="nav-logo">Welco<em>™</em></div>
+  <div class="nav-dots" id="ndots"></div>
+  <a class="nav-cta" href="/signup.html">Start Free →</a>
+</nav>
+<div class="scount" id="scount">1 / 11</div>
+
+<!-- ══ S1: COVER ══ -->
+<section class="sec s1" id="s1">
+  <div class="s1-grid"></div>
+  <div class="sec-inner">
+    <div class="s1-label">Confidential · Hotel Group Presentation · 2026</div>
+    <h1>
+      One System.<br>
+      <strong>Every Hotel.</strong><br>
+      <em>Maximum Revenue.</em>
+    </h1>
+    <p class="s1-sub">Welco™ transforms how your hotel group handles guest requests — replacing operational chaos with data-driven efficiency, and lost revenue with measurable growth.</p>
+    <div class="s1-hotels">
+      <div class="hotel-pill"><span class="hotel-dot"></span> Kannu Hotel, Udaipur</div>
+      <div class="hotel-pill"><span class="hotel-dot"></span> DownTown Hotel, Udaipur</div>
+      <div class="hotel-pill"><span class="hotel-dot"></span> BambooSaa, Pushkar</div>
+      <div class="hotel-pill" style="border-color:rgba(238,155,0,.3);color:rgba(238,155,0,.8)">+ Your Hotels?</div>
+    </div>
+    <div class="s1-stats">
+      <div><div class="s1-stat-n">₹75K+</div><div class="s1-stat-l">Extra Revenue / Hotel / Month</div></div>
+      <div><div class="s1-stat-n">5 min</div><div class="s1-stat-l">Average Staff Response</div></div>
+      <div><div class="s1-stat-n">8</div><div class="s1-stat-l">Languages Supported</div></div>
+      <div><div class="s1-stat-n">10 min</div><div class="s1-stat-l">Full Setup Time</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S2: PROBLEM ══ -->
+<section class="sec s2" id="s2">
+  <div class="sec-inner">
+    <div class="s2-head">
+      <div class="tag">The Reality</div>
+      <h2 class="ttl">What is quietly draining<br>your hotel group <em>every day</em></h2>
+      <p class="ttl-sub">Every property in your group faces the same silent revenue leaks. Most owners don't see them until they check the numbers.</p>
+    </div>
+    <div class="pain-grid">
+      <div class="pain"><div class="pain-icon">📞</div><div class="pain-title">Missed Calls = Lost Revenue</div><div class="pain-text">Guest calls reception. No answer. Frustrated guest skips ordering room service, spa, or upgrade. Then leaves a 2-star Google review.</div><span class="pain-cost">₹500–₹2,000 lost per incident</span></div>
+      <div class="pain"><div class="pain-icon">💬</div><div class="pain-title">WhatsApp Groups Are Chaos</div><div class="pain-text">200 messages a day. Requests buried. Staff misses them. No accountability. GM has zero visibility across properties.</div><span class="pain-cost">30% requests delayed or missed</span></div>
+      <div class="pain"><div class="pain-icon">🌍</div><div class="pain-title">Language Barrier Kills Upselling</div><div class="pain-text">Foreign guests from UAE, Europe, USA can't communicate comfortably. They don't order extras. Language barriers are silent revenue killers.</div><span class="pain-cost">Foreign guests spend 40% less</span></div>
+      <div class="pain"><div class="pain-icon">📊</div><div class="pain-title">No Cross-Property Data</div><div class="pain-text">You can't compare performance across your hotels. No data on which property has best response times, highest ratings, or most complaints.</div><span class="pain-cost">Blind spots prevent growth</span></div>
+      <div class="pain"><div class="pain-icon">⭐</div><div class="pain-title">Low Ratings Cost Bookings</div><div class="pain-text">3.8 stars on Google means 30–40% fewer OTA bookings. One slow response leads to one bad review. Scale that across 5 properties.</div><span class="pain-cost">−35% OTA visibility per property</span></div>
+      <div class="pain"><div class="pain-icon">👥</div><div class="pain-title">Staff Inefficiency Wastes Money</div><div class="pain-text">Over-staffed front desks handling verbal requests that a system could manage. ₹30,000–₹60,000 per property per month in wasted salary.</div><span class="pain-cost">₹30K–₹60K wasted/hotel/month</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S3: REVENUE ══ -->
+<section class="sec s3" id="s3">
+  <div class="sec-inner">
+    <div class="tag">Revenue Impact</div>
+    <h2 class="ttl">6 direct ways Welco grows<br>your hotel group revenue</h2>
+    <p class="ttl-sub">Every feature is engineered to increase guest satisfaction — which directly translates to bookings, upsells, and loyalty.</p>
+    <div class="rev-cards">
+      <div class="rev-card rc1"><div class="rev-icon">⭐</div><div class="rev-title">Higher Rating = More Bookings</div><div class="rev-text">5-minute response time pushes Google rating from 3.8 → 4.5. Higher rating = more OTA visibility — without spending on ads.</div><div class="rev-num">+30–40% bookings</div></div>
+      <div class="rev-card rc2"><div class="rev-icon">🍽️</div><div class="rev-title">Effortless Upselling</div><div class="rev-text">Room service, spa, upgrades, decoration — all requestable with one tap. Remove friction, watch orders multiply.</div><div class="rev-num">+25–35% F&B revenue</div></div>
+      <div class="rev-card rc3"><div class="rev-icon">🌍</div><div class="rev-title">International Guests Spend More</div><div class="rev-text">8 languages means foreign guests order confidently. Arabic, French, German, Spanish — language comfort unlocks spending.</div><div class="rev-num">+40% foreign guest spend</div></div>
+      <div class="rev-card rc4"><div class="rev-icon">🔁</div><div class="rev-title">Repeat Guests & Word of Mouth</div><div class="rev-text">Exceptional service creates loyal guests. A 5% rise in repeat bookings can increase profit by 25–95% — zero marketing cost.</div><div class="rev-num">+25% profit from repeats</div></div>
+      <div class="rev-card rc5"><div class="rev-icon">💼</div><div class="rev-title">Leaner Staff Operations</div><div class="rev-text">One staff member handles more requests efficiently. Redeploy front desk to revenue-generating roles. Save ₹30K+/month.</div><div class="rev-num">−20% staff overhead</div></div>
+      <div class="rev-card rc6"><div class="rev-icon">📊</div><div class="rev-title">Data Stops Revenue Leaks</div><div class="rev-text">Know exactly which problems cost reviews. Fix them permanently. Stop losing revenue to the same issues every week.</div><div class="rev-num">Eliminate recurring losses</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S4: CALCULATOR ══ -->
+<section class="sec s4" id="s4">
+  <div class="sec-inner">
+    <div class="tag">The Numbers</div>
+    <h2 class="ttl">Calculate your hotel group's<br>extra revenue with Welco</h2>
+    <div class="calc-wrap">
+      <div class="calc-left">
+        <div class="calc-title">Adjust for your hotel group</div>
+        <div class="calc-slider-wrap">
+          <div class="calc-slider-label"><span class="csl-name">Number of Hotels</span><span class="csl-val" id="sv-hotels">3</span></div>
+          <input type="range" class="slider" id="sl-hotels" min="1" max="20" value="3" oninput="calcUpdate()">
+        </div>
+        <div class="calc-slider-wrap">
+          <div class="calc-slider-label"><span class="csl-name">Rooms per Hotel</span><span class="csl-val" id="sv-rooms">25</span></div>
+          <input type="range" class="slider" id="sl-rooms" min="10" max="100" value="25" oninput="calcUpdate()">
+        </div>
+        <div class="calc-slider-wrap">
+          <div class="calc-slider-label"><span class="csl-name">Avg Room Rate (₹/night)</span><span class="csl-val" id="sv-rate">₹3,000</span></div>
+          <input type="range" class="slider" id="sl-rate" min="1000" max="10000" step="500" value="3000" oninput="calcUpdate()">
+        </div>
+        <div class="calc-slider-wrap">
+          <div class="calc-slider-label"><span class="csl-name">Current Occupancy %</span><span class="csl-val" id="sv-occ">65%</span></div>
+          <input type="range" class="slider" id="sl-occ" min="30" max="90" value="65" oninput="calcUpdate()">
+        </div>
+        <div style="margin-top:20px;padding:16px;background:#f0fdf9;border-radius:12px;border:1px solid #b2e8e8">
+          <div style="font-size:12px;font-weight:700;color:#005f73;margin-bottom:6px">Conservative Assumptions</div>
+          <div style="font-size:12px;color:#555;line-height:1.7">+15% occupancy improvement · +25% F&B orders · ₹12,000 staff savings per hotel · Welco subscription deducted</div>
+        </div>
+      </div>
+      <div class="calc-right">
+        <div class="calc-box">
+          <div class="calc-box-title">Monthly Revenue Impact</div>
+          <div class="calc-row"><span class="calc-lbl">Extra from occupancy improvement</span><span class="calc-val pos" id="cr-occ">+ ₹0</span></div>
+          <div class="calc-row"><span class="calc-lbl">Extra F&B & room service orders</span><span class="calc-val pos" id="cr-fb">+ ₹0</span></div>
+          <div class="calc-row"><span class="calc-lbl">Staff efficiency savings</span><span class="calc-val pos" id="cr-staff">+ ₹0</span></div>
+          <div class="calc-row"><span class="calc-lbl">International guest upsell</span><span class="calc-val pos" id="cr-intl">+ ₹0</span></div>
+          <div class="calc-row"><span class="calc-lbl">Welco subscription (all hotels)</span><span class="calc-val neg" id="cr-sub">− ₹0</span></div>
+        </div>
+        <div class="calc-total">
+          <div><div class="calc-total-lbl">Net Extra Monthly Revenue</div><div style="font-size:12px;color:rgba(255,255,255,.3);margin-top:4px">Across entire hotel group</div></div>
+          <div class="calc-total-val" id="cr-total">₹0</div>
+        </div>
+        <div class="calc-roi">
+          <div class="roi-box"><div class="roi-n" id="roi-annual">₹0</div><div class="roi-l">Annual Extra</div></div>
+          <div class="roi-box"><div class="roi-n" id="roi-roi">0×</div><div class="roi-l">ROI on Welco</div></div>
+          <div class="roi-box"><div class="roi-n" id="roi-per">₹0</div><div class="roi-l">Per Hotel/Month</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S5: STAFF ══ -->
+<section class="sec s5" id="s5">
+  <div class="sec-inner">
+    <div class="tag">Staff Experience</div>
+    <h2 class="ttl">Less headache.<br>More efficiency.</h2>
+    <p class="ttl-sub">Welco doesn't replace your staff — it makes them dramatically more effective. Same people, better results.</p>
+    <div class="staff-grid">
+      <div class="staff-left">
+        <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#999;margin-bottom:20px">Before & After Welco</div>
+        <div class="before-after">
+          <div class="ba-row">
+            <div class="ba-before"><strong>❌ Before</strong>Shouting across lobby. Verbal requests. Often forgotten. Staff stressed.</div>
+            <div class="ba-arrow">→</div>
+            <div class="ba-after"><strong>✅ After</strong>Instant push notification. Clear request. SLA timer. Zero confusion.</div>
+          </div>
+          <div class="ba-row">
+            <div class="ba-before"><strong>❌ Before</strong>No accountability. Manager can't tell who is doing what or how fast.</div>
+            <div class="ba-arrow">→</div>
+            <div class="ba-after"><strong>✅ After</strong>Every action timestamped. Performance dashboard. Top staff rewarded.</div>
+          </div>
+          <div class="ba-row">
+            <div class="ba-before"><strong>❌ Before</strong>Front desk overwhelmed. Phone rings non-stop. Staff burnt out.</div>
+            <div class="ba-arrow">→</div>
+            <div class="ba-after"><strong>✅ After</strong>Requests auto-routed to right department. Front desk freed up.</div>
+          </div>
+          <div class="ba-row">
+            <div class="ba-before"><strong>❌ Before</strong>No data. Manager guesses which staff needs training or recognition.</div>
+            <div class="ba-arrow">→</div>
+            <div class="ba-after"><strong>✅ After</strong>Weekly reports show response times, completion rates per staff member.</div>
+          </div>
+        </div>
+      </div>
+      <div class="staff-right">
+        <div class="staff-metrics">
+          <div class="sm sm1"><div class="sm-n">5 min</div><div class="sm-l">Average response time (was 20+ min)</div></div>
+          <div class="sm sm2"><div class="sm-n">−75%</div><div class="sm-l">Reduction in missed requests</div></div>
+          <div class="sm sm3"><div class="sm-n">3×</div><div class="sm-l">More requests handled per staff member</div></div>
+          <div class="sm sm4"><div class="sm-n">100%</div><div class="sm-l">Accountability — every action tracked</div></div>
+        </div>
+        <div style="margin-top:16px;background:#f8fafc;border-radius:14px;padding:20px;border:1px solid #e2e8f0">
+          <div style="font-size:13px;font-weight:700;margin-bottom:8px">Staff Portal Features</div>
+          <div style="font-size:12px;color:#666;line-height:1.8">✓ Staff ID + PIN login &nbsp;·&nbsp; ✓ Clock in / Clock out &nbsp;·&nbsp; ✓ Live request feed &nbsp;·&nbsp; ✓ Push notifications &nbsp;·&nbsp; ✓ SLA countdown &nbsp;·&nbsp; ✓ Works on any phone</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S6: GUEST ══ -->
+<section class="sec s6" id="s6">
+  <div class="sec-inner">
+    <div class="tag">Guest Experience</div>
+    <h2 class="ttl">Your guests get a<br>5-star experience.</h2>
+    <p class="ttl-sub">From QR scan to completed request — guests feel they're in a world-class hotel. In their own language. In under 10 seconds.</p>
+    <div class="guest-grid">
+      <div class="guest-steps">
+        <div class="gs"><div class="gs-num">1</div><div><div class="gs-title">Scan QR in Room</div><div class="gs-text">No app download. Opens in phone browser instantly. Works on any device worldwide.</div><span class="gs-badge" style="background:#f0fdf9;color:#16a34a;border:1px solid #bbf7d0">Zero friction for guest</span></div></div>
+        <div class="gs"><div class="gs-num">2</div><div><div class="gs-title">Choose Language</div><div class="gs-text">Hindi, Gujarati, Arabic, French, German, Spanish, Italian, English. Guest feels at home.</div><span class="gs-badge" style="background:#f0fdf9;color:#0a9396;border:1px solid #b2e8e8">8 languages — no barrier</span></div></div>
+        <div class="gs"><div class="gs-num">3</div><div><div class="gs-title">Request in 10 Seconds</div><div class="gs-text">Tap department, select service, send. No typing needed. Estimated time shown instantly.</div><span class="gs-badge" style="background:#fffbeb;color:#ca8a04;border:1px solid #fde68a">10 second experience</span></div></div>
+        <div class="gs"><div class="gs-num">4</div><div><div class="gs-title">Track Live Progress</div><div class="gs-text">Guest watches: Received → Assigned → On the Way → Done. Full transparency builds trust.</div><span class="gs-badge" style="background:#f5f3ff;color:#7c3aed;border:1px solid #ddd6fe">Real-time transparency</span></div></div>
+        <div class="gs"><div class="gs-num">5</div><div><div class="gs-title">Rate the Service</div><div class="gs-text">1–5 star rating with comment. You collect feedback automatically. Fix problems before they become reviews.</div><span class="gs-badge" style="background:#fff1f2;color:#e63946;border:1px solid #fecdd3">Your private feedback first</span></div></div>
+      </div>
+      <div>
+        <div class="phone-demo">
+          <div class="pd-header"><div class="pd-hotel">🏨 Your Hotel</div><div class="pd-room">Room 304 · Rajasthan</div></div>
+          <div class="lang-row">
+            <span class="lang-chip lc-active">🇬🇧 EN</span>
+            <span class="lang-chip lc">🇮🇳 हिंदी</span>
+            <span class="lang-chip lc">🇸🇦 عربي</span>
+            <span class="lang-chip lc">🇫🇷 FR</span>
+            <span class="lang-chip lc">🇩🇪 DE</span>
+          </div>
+          <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,.7);text-align:center;margin-bottom:12px">How can we help you?</div>
+          <div class="pd-cats">
+            <div class="pd-cat pdc-sel">🛏️ Housekeeping</div>
+            <div class="pd-cat pdc-un">🍽️ Room Service</div>
+            <div class="pd-cat pdc-un">🔧 Maintenance</div>
+            <div class="pd-cat pdc-un">🛎️ Front Desk</div>
+          </div>
+          <div class="pd-quick">
+            <span class="pd-q">🛁 Extra Towels</span>
+            <span class="pd-q">🛏️ Extra Pillow</span>
+            <span class="pd-q">💧 Water</span>
+            <span class="pd-q">🧹 Clean Room</span>
+          </div>
+          <div class="pd-eta">⏱ Usually ready in <strong>8 mins</strong></div>
+          <button class="pd-btn">Send Request 🚀</button>
+          <div class="track-box">
+            <div class="track-title">📋 Request Status</div>
+            <div class="track-steps">
+              <div class="ts done"><div class="ts-dot"></div>Request received ✓</div>
+              <div class="ts active"><div class="ts-dot"></div>Staff assigned — Ramesh</div>
+              <div class="ts"><div class="ts-dot"></div>Completed</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S7: PORTALS ══ -->
+<section class="sec s7" id="s7">
+  <div class="sec-inner">
+    <div class="tag">The System</div>
+    <h2 class="ttl">Four portals. One<br>complete hotel group.</h2>
+    <p class="ttl-sub">Every person in your hotels gets a dedicated interface — built exactly for their role.</p>
+    <div class="portals4">
+      <div class="p4c pg"><div class="p4c-icon">📱</div><div class="p4c-name">Guest</div><div class="p4c-who">For Hotel Guests</div><ul class="p4c-feats"><li>QR scan — no app</li><li>8 languages</li><li>4 departments</li><li>Live tracking</li><li>Star rating</li><li>Ready time shown</li><li>Announcement banner</li></ul></div>
+      <div class="p4c ps"><div class="p4c-icon">👷</div><div class="p4c-name">Staff</div><div class="p4c-who">For Hotel Staff</div><ul class="p4c-feats"><li>PIN + ID login</li><li>Clock in/out</li><li>Live request feed</li><li>Push notifications</li><li>SLA countdown</li><li>Dept colour coding</li><li>Works on any phone</li></ul></div>
+      <div class="p4c ph"><div class="p4c-icon">🎯</div><div class="p4c-name">HOD</div><div class="p4c-who">Department Manager</div><ul class="p4c-feats"><li>Dept analytics</li><li>SLA overdue alerts</li><li>Staff performance</li><li>Service hours control</li><li>Guest options setup</li><li>Maintenance tasks</li><li>Excel reports</li></ul></div>
+      <div class="p4c pa"><div class="p4c-icon">⚙️</div><div class="p4c-name">Admin</div><div class="p4c-who">Hotel Owner / GM</div><ul class="p4c-feats"><li>Group dashboard</li><li>All hotels view</li><li>Full analytics</li><li>QR generator</li><li>Brand setup</li><li>Multi-hotel switcher</li><li>Bulk QR download</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S8: GROUP VALUE ══ -->
+<section class="sec s8" id="s8">
+  <div class="sec-inner">
+    <div class="tag">Hotel Group Advantage</div>
+    <h2 class="ttl">The more hotels you have,<br>the more Welco saves you.</h2>
+    <p class="ttl-sub">One login manages all properties. Compare performance across hotels. Identify your best and weakest performers instantly.</p>
+    <div class="group-grid">
+      <div class="group-left">
+        <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#999;margin-bottom:16px">Revenue Projection — Your Hotel Group</div>
+        <table class="group-table">
+          <thead><tr><th>Hotels</th><th>Extra/Month</th><th>Extra/Year</th><th>Welco Cost</th></tr></thead>
+          <tbody>
+            <tr><td>1 hotel</td><td style="color:#16a34a">+₹75,501</td><td style="color:#16a34a">+₹9.06L</td><td>₹2,999</td></tr>
+            <tr><td>3 hotels</td><td style="color:#16a34a">+₹2,26,503</td><td style="color:#16a34a">+₹27.18L</td><td>₹8,997</td></tr>
+            <tr><td>5 hotels</td><td style="color:#16a34a">+₹3,77,505</td><td style="color:#16a34a">+₹45.30L</td><td>₹14,995</td></tr>
+            <tr><td>10 hotels</td><td>+₹7,55,010</td><td>+₹90.60L</td><td>₹29,990</td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:12px;color:#aaa;margin-top:10px">Conservative estimates · Actual results vary by hotel type and execution</div>
+      </div>
+      <div class="group-right">
+        <div class="group-benefits">
+          <div class="gb"><div class="gb-icon">🏨</div><div><div class="gb-title">One Login — All Hotels</div><div class="gb-text">Switch between properties in one click. Monitor all hotels from a single admin dashboard. No separate logins.</div></div></div>
+          <div class="gb"><div class="gb-icon">📊</div><div><div class="gb-title">Cross-Property Analytics</div><div class="gb-text">Compare response times, ratings, and request volumes across all properties. Identify your best and worst performers.</div></div></div>
+          <div class="gb"><div class="gb-icon">⚡</div><div><div class="gb-title">Instant Group Announcements</div><div class="gb-text">Push announcements to all properties simultaneously. Festival offers, maintenance alerts, policy changes — one click.</div></div></div>
+          <div class="gb"><div class="gb-icon">💰</div><div><div class="gb-title">Group Discount Available</div><div class="gb-text">Hotels chains with 5+ properties get special pricing. Contact us for a custom group quote.</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S9: PROOF ══ -->
+<section class="sec s9" id="s9">
+  <div class="sec-inner">
+    <div class="tag">Real Results</div>
+    <h2 class="ttl">Already live across<br>Rajasthan.</h2>
+    <p class="ttl-sub">Not a prototype. Not a mockup. Welco is live and being used by real guests and staff right now.</p>
+    <div class="testi-grid">
+      <div class="tc"><div class="tc-q">"</div><div class="tc-stars">⭐⭐⭐⭐⭐</div><div class="tc-text">Guests stopped calling reception for small things. They scan and submit. Response time dropped from 20 minutes to under 5.</div><div class="tc-author"><div class="tc-av">R</div><div><div class="tc-name">Ravinder Singh</div><div class="tc-hotel">Kannu Hotel, Udaipur</div></div></div></div>
+      <div class="tc"><div class="tc-q">"</div><div class="tc-stars">⭐⭐⭐⭐⭐</div><div class="tc-text">Setup took 10 minutes. Printed QR codes, pasted in rooms, guests started using it the same evening. Staff loves how simple it is.</div><div class="tc-author"><div class="tc-av">D</div><div><div class="tc-name">Hotel Owner</div><div class="tc-hotel">DownTown Hotel, Udaipur</div></div></div></div>
+      <div class="tc"><div class="tc-q">"</div><div class="tc-stars">⭐⭐⭐⭐⭐</div><div class="tc-text">Hindi option made a huge difference. Guests from UP and Bihar feel at home. No more language confusion at all.</div><div class="tc-author"><div class="tc-av">B</div><div><div class="tc-name">Hotel Manager</div><div class="tc-hotel">BambooSaa, Pushkar</div></div></div></div>
+    </div>
+    <div class="big-metrics">
+      <div class="bm"><div class="bm-n">3+</div><div class="bm-l">Live Hotels</div></div>
+      <div class="bm"><div class="bm-n">5 min</div><div class="bm-l">Avg Response</div></div>
+      <div class="bm"><div class="bm-n">8</div><div class="bm-l">Languages</div></div>
+      <div class="bm"><div class="bm-n">10 min</div><div class="bm-l">Setup Time</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S10: PRICING ══ -->
+<section class="sec s10" id="s10">
+  <div class="sec-inner">
+    <div class="tag">Investment</div>
+    <h2 class="ttl">₹2,999/month that pays<br>back ₹75,000+</h2>
+    <p class="ttl-sub">Start free for 15 days across all your hotels. No card needed. See the results before paying anything.</p>
+    <div class="plans">
+      <div class="plan">
+        <div class="pname">🌱 Free Trial</div>
+        <div class="pdesc">Try completely free. No credit card.</div>
+        <div class="pprice"><sup style="font-size:22px">₹</sup>0</div>
+        <div class="pper">for 15 days</div>
+        <div class="ptrial">✨ No card required</div>
+        <ul class="pfeats">
+          <li><span class="pfy">✓</span>Guest QR portal</li>
+          <li><span class="pfy">✓</span>Staff login</li>
+          <li><span class="pfy">✓</span>Real-time tracking</li>
+          <li><span class="pfy">✓</span>Up to 15 rooms</li>
+          <li><span class="pfn">✕</span><span class="pfoff">Analytics</span></li>
+          <li><span class="pfn">✕</span><span class="pfoff">HOD portal</span></li>
+        </ul>
+        <a href="/signup.html" class="pbtn pbtn-free">Start Free Trial</a>
+      </div>
+      <div class="plan">
+        <div class="pname">⚡ Basic</div>
+        <div class="pdesc">Smaller properties getting started.</div>
+        <div class="pprice"><sup style="font-size:22px">₹</sup>1,599</div>
+        <div class="pper">per hotel / per month</div>
+        <div class="ptrial">🎁 15 days free</div>
+        <ul class="pfeats">
+          <li><span class="pfy">✓</span>8 languages</li>
+          <li><span class="pfy">✓</span>Up to 30 rooms</li>
+          <li><span class="pfy">✓</span>All 4 departments</li>
+          <li><span class="pfy">✓</span>Basic analytics</li>
+          <li><span class="pfn">✕</span><span class="pfoff">HOD portal</span></li>
+          <li><span class="pfn">✕</span><span class="pfoff">Unlimited rooms</span></li>
+        </ul>
+        <a href="/signup.html" class="pbtn pbtn-basic">Get Started</a>
+      </div>
+      <div class="plan pro">
+        <div class="plan-hot">⭐ Recommended for Groups</div>
+        <div class="pname">🏆 Pro</div>
+        <div class="pdesc">Full power for serious hotel groups.</div>
+        <div class="pprice"><sup style="font-size:22px">₹</sup>2,999</div>
+        <div class="pper">per hotel / per month</div>
+        <div class="ptrial">🎁 15 days free per hotel</div>
+        <ul class="pfeats">
+          <li><span class="pfy">✓</span><strong>Unlimited rooms</strong></li>
+          <li><span class="pfy">✓</span>HOD portal</li>
+          <li><span class="pfy">✓</span>Full analytics</li>
+          <li><span class="pfy">✓</span>Excel & CSV reports</li>
+          <li><span class="pfy">✓</span>Multi-hotel management</li>
+          <li><span class="pfy">✓</span>Priority support</li>
+        </ul>
+        <a href="/signup.html" class="pbtn pbtn-pro">Start Free Trial →</a>
+      </div>
+    </div>
+    <div class="group-discount">
+      <div style="font-size:32px">🏨</div>
+      <div class="gd-text">
+        <div class="gd-title">Managing 5+ hotels? Get group pricing.</div>
+        <div class="gd-sub">Custom plans for hotel chains. Volume discounts, dedicated support, and on-site training available.</div>
+      </div>
+      <a href="https://wa.me/91XXXXXXXXXX" class="gd-btn">WhatsApp for Group Rate →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ S11: CLOSING ══ -->
+<section class="sec s11" id="s11">
+  <div class="s11-grid"></div>
+  <div class="sec-inner">
+    <div class="s11-inner">
+      <div class="tag" style="color:#0a9396">The Decision</div>
+      <h2>Your competition<br>is already<br><em>moving forward.</em></h2>
+      <p class="s11-sub">Every day without Welco is a day of missed revenue, frustrated guests, and operational inefficiency across your entire hotel group.</p>
+      <div class="s11-actions">
+        <a href="/signup.html" class="s11-btn1">Start Free 15-Day Trial →</a>
+        <a href="/demo.html" class="s11-btn2">🎮 Try Live Demo</a>
+      </div>
+      <div class="s11-note">No credit card · No contracts · Cancel anytime · Setup in 10 minutes per hotel</div>
+      <div class="s11-url">usewelco.in</div>
+      <div class="s11-copy">© 2026 Welco™ · All Rights Reserved · Built in India 🇮🇳 · Confidential</div>
+    </div>
+  </div>
+</section>
+
+<script>
+  var SLIDES = ['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11'];
+  var dc = document.getElementById('ndots');
+  SLIDES.forEach(function(id,i){
+    var d=document.createElement('div');
+    d.className='ndot'+(i===0?' on':'');
+    d.onclick=function(){document.getElementById(id).scrollIntoView({behavior:'smooth'});};
+    dc.appendChild(d);
+  });
+
+  function upd(){
+    var sy=window.scrollY, dh=document.documentElement.scrollHeight-window.innerHeight;
+    document.getElementById('prog').style.width=(dh>0?(sy/dh)*100:0)+'%';
+    var cur=0;
+    SLIDES.forEach(function(id,i){var el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<=window.innerHeight*.5)cur=i;});
+    document.querySelectorAll('.ndot').forEach(function(d,i){d.classList.toggle('on',i===cur);});
+    document.getElementById('scount').textContent=(cur+1)+' / '+SLIDES.length;
+  }
+  window.addEventListener('scroll',upd,{passive:true});
+  upd();
+
+  /* ── CALCULATOR ── */
+  function fmt(n){
+    if(n>=100000)return '₹'+(n/100000).toFixed(1)+'L';
+    if(n>=1000)return '₹'+(n/1000).toFixed(0)+'K';
+    return '₹'+n;
+  }
+  function fmtFull(n){
+    return '₹'+n.toLocaleString('en-IN');
+  }
+
+  function calcUpdate(){
+    var hotels=parseInt(document.getElementById('sl-hotels').value);
+    var rooms=parseInt(document.getElementById('sl-rooms').value);
+    var rate=parseInt(document.getElementById('sl-rate').value);
+    var occ=parseInt(document.getElementById('sl-occ').value);
+
+    document.getElementById('sv-hotels').textContent=hotels;
+    document.getElementById('sv-rooms').textContent=rooms;
+    document.getElementById('sv-rate').textContent='₹'+rate.toLocaleString('en-IN');
+    document.getElementById('sv-occ').textContent=occ+'%';
+
+    // Per hotel calculations
+    var baseRevPerHotel = rooms * rate * 30 * (occ/100);
+    var occImpact = rooms * rate * 30 * 0.15; // +15% occupancy
+    var fbImpact = baseRevPerHotel * 0.12; // 12% of room rev = F&B estimate, +25% of that
+    var staffSaving = 12000;
+    var intlImpact = rooms * 800; // ~₹800 extra per room per month from intl guests
+
+    // Group totals
+    var totalOcc = occImpact * hotels;
+    var totalFb = fbImpact * hotels;
+    var totalStaff = staffSaving * hotels;
+    var totalIntl = intlImpact * hotels;
+    var totalSub = 2999 * hotels;
+    var totalNet = totalOcc + totalFb + totalStaff + totalIntl - totalSub;
+
+    document.getElementById('cr-occ').textContent='+ '+fmtFull(Math.round(totalOcc));
+    document.getElementById('cr-fb').textContent='+ '+fmtFull(Math.round(totalFb));
+    document.getElementById('cr-staff').textContent='+ '+fmtFull(totalStaff);
+    document.getElementById('cr-intl').textContent='+ '+fmtFull(Math.round(totalIntl));
+    document.getElementById('cr-sub').textContent='− '+fmtFull(totalSub);
+    document.getElementById('cr-total').textContent='+'+fmt(Math.round(totalNet));
+    document.getElementById('roi-annual').textContent=fmt(Math.round(totalNet*12));
+    document.getElementById('roi-roi').textContent=Math.round(totalNet/totalSub)+'×';
+    document.getElementById('roi-per').textContent=fmt(Math.round(totalNet/hotels));
+  }
+  calcUpdate();
+</script>
+</body>
+</html>

@@ -42,21 +42,28 @@
   <style>
     :root { --brand: #1a1a2e; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: sans-serif; min-height: 100vh; background: #1a1a2e; background-size: cover; background-position: center; background-attachment: fixed; display: flex; flex-direction: column; }
-    .header { position: relative; color: white; text-align: center; overflow: hidden; min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 0; }
-    .hotel-photo-bg { position: absolute; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); z-index: 0; overflow: hidden; }
-    .slideshow-slide { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.2s ease; }
-    .slideshow-slide.active { opacity: 0.55; }
-    .slideshow-dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; z-index: 3; }
-    .slideshow-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; transition: all .3s; }
-    .slideshow-dot.active { background: white; width: 14px; border-radius: 3px; }
-    .header-inner { position: relative; z-index: 1; padding: 20px; width: 100%; }
-    .header h1 { font-size: 24px; font-weight: bold; text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
-    .header p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+    body { font-family: sans-serif; min-height: 100vh; background: #1a1a2e; display: flex; flex-direction: column; position: relative; }
+    /* FULLSCREEN SLIDESHOW BACKGROUND */
+    #slideshow-container { position: fixed; inset: 0; z-index: 0; overflow: hidden; }
+    .slideshow-slide { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.5s ease; }
+    .slideshow-slide.active { opacity: 1; }
+    #slideshow-overlay { position: fixed; inset: 0; z-index: 1; background: linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.7) 100%); pointer-events: none; }
+    .slideshow-dots { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 10; }
+    .slideshow-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; transition: all .3s; }
+    .slideshow-dot.active { background: white; width: 18px; border-radius: 3px; }
+    /* HEADER */
+    .header { position: relative; z-index: 5; color: white; text-align: center; padding: 0; min-height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
+    .hotel-photo-bg { display: none; }
+    .header-inner { position: relative; z-index: 5; padding: 20px 20px 10px; width: 100%; }
+    .hotel-logo-circle { width: 64px; height: 64px; border-radius: 50%; background: white; border: 3px solid rgba(255,255,255,0.8); margin: 0 auto 10px; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+    .hotel-logo-circle img { width: 100%; height: 100%; object-fit: cover; }
+    .hotel-logo-emoji { font-size: 30px; }
+    .header h1 { font-size: 24px; font-weight: 800; text-shadow: 0 2px 12px rgba(0,0,0,0.8); letter-spacing: -0.5px; }
+    .header p { font-size: 13px; opacity: 0.9; margin-top: 4px; text-shadow: 0 1px 6px rgba(0,0,0,0.6); }
     .welcome-msg { font-size: 12px; margin-top: 8px; background: rgba(255,255,255,0.15); border-radius: 20px; padding: 4px 14px; display: inline-block; }
 
     /* LANGUAGE SWITCHER */
-    .lang-bar { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; padding: 10px 16px; background: rgba(0,0,0,0.3); backdrop-filter: blur(8px); position: relative; z-index: 2; }
+    .lang-bar { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; padding: 10px 16px; background: rgba(0,0,0,0.35); backdrop-filter: blur(8px); position: relative; z-index: 5; }
     .lang-btn { padding: 5px 10px; border: 1.5px solid rgba(255,255,255,0.3); border-radius: 20px; background: rgba(255,255,255,0.1); color: white; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
     .lang-btn:hover { background: rgba(255,255,255,0.25); }
     .lang-btn.active { background: white; color: #1a1a2e; border-color: white; }
@@ -64,7 +71,7 @@
     .announcement-banner { display: none; margin: 0; background: linear-gradient(90deg, #ee9b00, #ca6702); color: white; padding: 10px 16px; font-size: 13px; font-weight: 500; text-align: center; line-height: 1.5; animation: slideDown 0.4s ease; }
     .announcement-banner .ann-dismiss { background: rgba(255,255,255,0.25); border: none; color: white; border-radius: 20px; padding: 2px 10px; font-size: 11px; cursor: pointer; margin-left: 10px; vertical-align: middle; }
     @keyframes slideDown { from { opacity:0; transform: translateY(-10px); } to { opacity:1; transform: translateY(0); } }
-    .container { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 16px; min-height: calc(100vh - 90px); }
+    .container { position: relative; z-index: 5; flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 16px; min-height: calc(100vh - 90px); }
     .card { background: rgba(255,255,255,0.96); backdrop-filter: blur(12px); border-radius: 20px; padding: 24px; width: 100%; max-width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); }
     .card h2 { font-size: 17px; margin-bottom: 16px; color: #222; text-align: center; }
     .categories { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
@@ -138,9 +145,14 @@
 <body>
 
   <div class="header">
-    <div class="hotel-photo-bg" id="slideshow-container"></div>
+    <div id="slideshow-container"></div>
+    <div id="slideshow-overlay"></div>
     <div class="header-inner">
-      <h1 id="hotel-name">🏨 Welco</h1>
+      <div class="hotel-logo-circle" id="hotel-logo-circle">
+        <span class="hotel-logo-emoji" id="hotel-logo-emoji">🏨</span>
+        <img id="hotel-logo-img" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover">
+      </div>
+      <h1 id="hotel-name">Welco</h1>
       <p id="room-label">Loading...</p>
       <div class="welcome-msg" id="welcome-msg" style="display:none">👋 Welcome! We're here to help.</div>
     </div>
@@ -609,8 +621,19 @@
    document.getElementById('hotel-name').textContent = hotel.name;
  } else {
    document.body.style.background = (hotel.colour || '#1a1a2e');
-   if (container) container.style.background = (hotel.colour || '#1a1a2e') + 'dd';
-   document.getElementById('hotel-name').textContent = (hotel.emoji || '\U0001F3E8') + ' ' + hotel.name;
+   document.getElementById('hotel-name').textContent = hotel.name;
+ }
+ // Show hotel logo in circle
+ var logoImg = document.getElementById('hotel-logo-img');
+ var logoEmoji = document.getElementById('hotel-logo-emoji');
+ var logoCircle = document.getElementById('hotel-logo-circle');
+ if (logoCircle) logoCircle.style.borderColor = (hotel.colour || '#0a9396');
+ if (hotel.logo_url && logoImg) {
+   logoImg.src = hotel.logo_url;
+   logoImg.style.display = 'block';
+   if (logoEmoji) logoEmoji.style.display = 'none';
+ } else if (logoEmoji) {
+   logoEmoji.textContent = hotel.emoji || '🏨';
  }
  document.getElementById('room-label').textContent = 'Room ' + roomNumber + (hotel.city ? ' — ' + hotel.city : '');
  document.getElementById('hotel-name-ty').textContent = hotel.name;
@@ -723,21 +746,28 @@
   <style>
     :root { --brand: #1a1a2e; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: sans-serif; min-height: 100vh; background: #1a1a2e; background-size: cover; background-position: center; background-attachment: fixed; display: flex; flex-direction: column; }
-    .header { position: relative; color: white; text-align: center; overflow: hidden; min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 0; }
-    .hotel-photo-bg { position: absolute; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); z-index: 0; overflow: hidden; }
-    .slideshow-slide { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.2s ease; }
-    .slideshow-slide.active { opacity: 0.55; }
-    .slideshow-dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; z-index: 3; }
-    .slideshow-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; transition: all .3s; }
-    .slideshow-dot.active { background: white; width: 14px; border-radius: 3px; }
-    .header-inner { position: relative; z-index: 1; padding: 20px; width: 100%; }
-    .header h1 { font-size: 24px; font-weight: bold; text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
-    .header p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+    body { font-family: sans-serif; min-height: 100vh; background: #1a1a2e; display: flex; flex-direction: column; position: relative; }
+    /* FULLSCREEN SLIDESHOW BACKGROUND */
+    #slideshow-container { position: fixed; inset: 0; z-index: 0; overflow: hidden; }
+    .slideshow-slide { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.5s ease; }
+    .slideshow-slide.active { opacity: 1; }
+    #slideshow-overlay { position: fixed; inset: 0; z-index: 1; background: linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.7) 100%); pointer-events: none; }
+    .slideshow-dots { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 10; }
+    .slideshow-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; transition: all .3s; }
+    .slideshow-dot.active { background: white; width: 18px; border-radius: 3px; }
+    /* HEADER */
+    .header { position: relative; z-index: 5; color: white; text-align: center; padding: 0; min-height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
+    .hotel-photo-bg { display: none; }
+    .header-inner { position: relative; z-index: 5; padding: 20px 20px 10px; width: 100%; }
+    .hotel-logo-circle { width: 64px; height: 64px; border-radius: 50%; background: white; border: 3px solid rgba(255,255,255,0.8); margin: 0 auto 10px; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+    .hotel-logo-circle img { width: 100%; height: 100%; object-fit: cover; }
+    .hotel-logo-emoji { font-size: 30px; }
+    .header h1 { font-size: 24px; font-weight: 800; text-shadow: 0 2px 12px rgba(0,0,0,0.8); letter-spacing: -0.5px; }
+    .header p { font-size: 13px; opacity: 0.9; margin-top: 4px; text-shadow: 0 1px 6px rgba(0,0,0,0.6); }
     .welcome-msg { font-size: 12px; margin-top: 8px; background: rgba(255,255,255,0.15); border-radius: 20px; padding: 4px 14px; display: inline-block; }
 
     /* LANGUAGE SWITCHER */
-    .lang-bar { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; padding: 10px 16px; background: rgba(0,0,0,0.3); backdrop-filter: blur(8px); position: relative; z-index: 2; }
+    .lang-bar { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; padding: 10px 16px; background: rgba(0,0,0,0.35); backdrop-filter: blur(8px); position: relative; z-index: 5; }
     .lang-btn { padding: 5px 10px; border: 1.5px solid rgba(255,255,255,0.3); border-radius: 20px; background: rgba(255,255,255,0.1); color: white; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
     .lang-btn:hover { background: rgba(255,255,255,0.25); }
     .lang-btn.active { background: white; color: #1a1a2e; border-color: white; }
@@ -745,7 +775,7 @@
     .announcement-banner { display: none; margin: 0; background: linear-gradient(90deg, #ee9b00, #ca6702); color: white; padding: 10px 16px; font-size: 13px; font-weight: 500; text-align: center; line-height: 1.5; animation: slideDown 0.4s ease; }
     .announcement-banner .ann-dismiss { background: rgba(255,255,255,0.25); border: none; color: white; border-radius: 20px; padding: 2px 10px; font-size: 11px; cursor: pointer; margin-left: 10px; vertical-align: middle; }
     @keyframes slideDown { from { opacity:0; transform: translateY(-10px); } to { opacity:1; transform: translateY(0); } }
-    .container { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 16px; min-height: calc(100vh - 90px); }
+    .container { position: relative; z-index: 5; flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 16px; min-height: calc(100vh - 90px); }
     .card { background: rgba(255,255,255,0.96); backdrop-filter: blur(12px); border-radius: 20px; padding: 24px; width: 100%; max-width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); }
     .card h2 { font-size: 17px; margin-bottom: 16px; color: #222; text-align: center; }
     .categories { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
@@ -819,9 +849,14 @@
 <body>
 
   <div class="header">
-    <div class="hotel-photo-bg" id="slideshow-container"></div>
+    <div id="slideshow-container"></div>
+    <div id="slideshow-overlay"></div>
     <div class="header-inner">
-      <h1 id="hotel-name">🏨 Welco</h1>
+      <div class="hotel-logo-circle" id="hotel-logo-circle">
+        <span class="hotel-logo-emoji" id="hotel-logo-emoji">🏨</span>
+        <img id="hotel-logo-img" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover">
+      </div>
+      <h1 id="hotel-name">Welco</h1>
       <p id="room-label">Loading...</p>
       <div class="welcome-msg" id="welcome-msg" style="display:none">👋 Welcome! We're here to help.</div>
     </div>
@@ -1288,8 +1323,19 @@
    document.getElementById('hotel-name').textContent = hotel.name;
  } else {
    document.body.style.background = (hotel.colour || '#1a1a2e');
-   if (container) container.style.background = (hotel.colour || '#1a1a2e') + 'dd';
-   document.getElementById('hotel-name').textContent = (hotel.emoji || '\U0001F3E8') + ' ' + hotel.name;
+   document.getElementById('hotel-name').textContent = hotel.name;
+ }
+ // Show hotel logo in circle
+ var logoImg = document.getElementById('hotel-logo-img');
+ var logoEmoji = document.getElementById('hotel-logo-emoji');
+ var logoCircle = document.getElementById('hotel-logo-circle');
+ if (logoCircle) logoCircle.style.borderColor = (hotel.colour || '#0a9396');
+ if (hotel.logo_url && logoImg) {
+   logoImg.src = hotel.logo_url;
+   logoImg.style.display = 'block';
+   if (logoEmoji) logoEmoji.style.display = 'none';
+ } else if (logoEmoji) {
+   logoEmoji.textContent = hotel.emoji || '🏨';
  }
  document.getElementById('room-label').textContent = 'Room ' + roomNumber + (hotel.city ? ' — ' + hotel.city : '');
  document.getElementById('hotel-name-ty').textContent = hotel.name;

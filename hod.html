@@ -562,12 +562,56 @@
               </div>
             </div>
             <div>
-              <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">💬 Other FAQs</label>
+              <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">💬 Other Info</label>
               <textarea id="hod-ai-extra" placeholder="Pets not allowed, Late checkout ₹500, Luggage storage free..." style="width:100%;padding:10px 12px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;min-height:60px;resize:vertical;font-family:sans-serif"></textarea>
             </div>
           </div>
-          <div id="hod-kb-msg" class="msg-box"></div>
-          <button onclick="saveHodKb()" style="margin-top:16px;width:100%;padding:14px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer">✨ Save Knowledge Base</button>
+
+          <!-- FAQ MANAGER -->
+          <div style="margin-top:20px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+              <div>
+                <div style="font-size:14px;font-weight:700;color:#0d1b1e">❓ Custom FAQ Manager</div>
+                <div style="font-size:11px;color:#888;margin-top:2px">Add questions guests often ask — AI answers them automatically</div>
+              </div>
+              <span style="background:#f0f0ff;color:#667eea;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px" id="faq-count">0 FAQs</span>
+            </div>
+
+            <!-- FAQ LIST -->
+            <div id="faq-list" style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px"></div>
+
+            <!-- ADD NEW FAQ -->
+            <div style="background:#f8f7ff;border:1.5px dashed #c4b5fd;border-radius:14px;padding:16px">
+              <div style="font-size:12px;font-weight:700;color:#667eea;margin-bottom:10px">➕ Add New FAQ</div>
+              <div style="margin-bottom:10px">
+                <label style="font-size:10px;color:#aaa;font-weight:600;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:4px">Question guests ask</label>
+                <input type="text" id="faq-question" placeholder="e.g. What is the WiFi password?" style="width:100%;padding:10px 12px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none">
+              </div>
+              <div style="margin-bottom:12px">
+                <label style="font-size:10px;color:#aaa;font-weight:600;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:4px">Answer to give</label>
+                <textarea id="faq-answer" placeholder="e.g. The WiFi password is Welcome@2026. Network name is KannuHotel_Guest." style="width:100%;padding:10px 12px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;min-height:70px;resize:none;font-family:sans-serif"></textarea>
+              </div>
+              <button onclick="addFaq()" style="width:100%;padding:11px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer">+ Add to FAQ List</button>
+            </div>
+
+            <!-- QUICK ADD COMMON FAQs -->
+            <div style="margin-top:12px">
+              <div style="font-size:11px;color:#aaa;font-weight:600;margin-bottom:8px">⚡ Quick Add Common Questions:</div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px">
+                <button onclick="quickAddFaq('What is the WiFi password?','')" style="padding:5px 12px;background:white;border:1px solid #ddd6fe;border-radius:20px;font-size:11px;color:#667eea;cursor:pointer;font-weight:600">📶 WiFi Password</button>
+                <button onclick="quickAddFaq('What time is checkout?','')" style="padding:5px 12px;background:white;border:1px solid #ddd6fe;border-radius:20px;font-size:11px;color:#667eea;cursor:pointer;font-weight:600">⏰ Checkout Time</button>
+                <button onclick="quickAddFaq('Is breakfast included?','')" style="padding:5px 12px;background:white;border:1px solid #ddd6fe;border-radius:20px;font-size:11px;color:#667eea;cursor:pointer;font-weight:600">🍳 Breakfast</button>
+                <button onclick="quickAddFaq('What activities are available?','')" style="padding:5px 12px;background:white;border:1px solid #ddd6fe;border-radius:20px;font-size:11px;color:#667eea;cursor:pointer;font-weight:600">🎯 Activities</button>
+                <button onclick="quickAddFaq('Is there a swimming pool?','')" style="padding:5px 12px;background:white;border:1px solid #ddd6fe;border-radius:20px;font-size:11px;color:#667eea;cursor:pointer;font-weight:600">🏊 Pool</button>
+                <button onclick="quickAddFaq('How do I call reception?','')" style="padding:5px 12px;background:white;border:1px solid #ddd6fe;border-radius:20px;font-size:11px;color:#667eea;cursor:pointer;font-weight:600">📞 Reception</button>
+                <button onclick="quickAddFaq('Is there parking available?','')" style="padding:5px 12px;background:white;border:1px solid #ddd6fe;border-radius:20px;font-size:11px;color:#667eea;cursor:pointer;font-weight:600">🚗 Parking</button>
+                <button onclick="quickAddFaq('What time does the restaurant open?','')" style="padding:5px 12px;background:white;border:1px solid #ddd6fe;border-radius:20px;font-size:11px;color:#667eea;cursor:pointer;font-weight:600">🍽️ Restaurant</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="hod-kb-msg" class="msg-box" style="margin-top:12px"></div>
+          <button onclick="saveHodKb()" style="margin-top:12px;width:100%;padding:14px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer">✨ Save Knowledge Base</button>
         </div>
       </div>
     </div>
@@ -922,7 +966,60 @@ function toggleDeptOption(checkbox){var key=checkbox.getAttribute('data-key');if
 function addCustomOption(){var emoji=document.getElementById('custom-option-emoji').value.trim();var text=document.getElementById('custom-option-text').value.trim();var slaVal=parseInt(document.getElementById('custom-option-sla').value)||15;if(!text){alert('Please enter a service name.');return;}var label=(emoji?emoji+' ':'✨ ')+text;var key='CUSTOM::'+text+'::'+Date.now();customDeptOptions.push({key:key,label:label,sla:slaVal});currentDeptOptions.push(key);optionSlaMap[key]=slaVal;document.getElementById('custom-option-emoji').value='';document.getElementById('custom-option-text').value='';document.getElementById('custom-option-sla').value='15';renderGuestOptionsList();}
 function removeCustomDeptOption(key){customDeptOptions=customDeptOptions.filter(function(c){return c.key!==key;});currentDeptOptions=currentDeptOptions.filter(function(k){return k!==key;});delete optionSlaMap[key];renderGuestOptionsList();}
 
-/* ── HOD AI KNOWLEDGE BASE ── */
+/* ── FAQ MANAGER ── */
+var faqList = [];
+
+function renderFaqList() {
+  var container = document.getElementById('faq-list');
+  var counter = document.getElementById('faq-count');
+  if (!container) return;
+  if (counter) counter.textContent = faqList.length + ' FAQ' + (faqList.length !== 1 ? 's' : '');
+
+  if (faqList.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:20px;color:#aaa;font-size:13px;background:#f8f8f8;border-radius:12px">No FAQs added yet. Add your first one below ↓</div>';
+    return;
+  }
+
+  container.innerHTML = faqList.map(function(faq, i) {
+    return '<div style="background:white;border:1.5px solid #e8e8ff;border-radius:12px;padding:14px;position:relative">'
+      + '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">'
+      + '<div style="flex:1">'
+      + '<div style="font-size:13px;font-weight:700;color:#0d1b1e;margin-bottom:5px">❓ ' + faq.q + '</div>'
+      + '<div style="font-size:12px;color:#666;line-height:1.6">💬 ' + faq.a + '</div>'
+      + '</div>'
+      + '<button onclick="removeFaq('+i+')" style="background:#fde8ea;color:#e63946;border:none;border-radius:8px;padding:5px 10px;font-size:11px;cursor:pointer;font-weight:700;flex-shrink:0">Remove</button>'
+      + '</div></div>';
+  }).join('');
+}
+
+function addFaq() {
+  var q = document.getElementById('faq-question').value.trim();
+  var a = document.getElementById('faq-answer').value.trim();
+  if (!q) { alert('Please enter a question'); return; }
+  if (!a) { alert('Please enter the answer'); return; }
+  faqList.push({ q: q, a: a });
+  document.getElementById('faq-question').value = '';
+  document.getElementById('faq-answer').value = '';
+  renderFaqList();
+}
+
+function quickAddFaq(question, answer) {
+  document.getElementById('faq-question').value = question;
+  document.getElementById('faq-answer').value = answer;
+  document.getElementById('faq-question').focus();
+  // Scroll to add form
+  document.getElementById('faq-question').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function removeFaq(i) {
+  faqList.splice(i, 1);
+  renderFaqList();
+}
+
+function loadFaqList(faqs) {
+  faqList = faqs || [];
+  renderFaqList();
+}
 var hodHotelData = null;
 
 function loadHodKbFields(kb) {
@@ -943,6 +1040,8 @@ function loadHodKbFields(kb) {
     var el = document.getElementById(id);
     if (el) el.value = fields[id];
   });
+  // Load FAQs
+  loadFaqList(kb.faqs || []);
 }
 
 async function saveHodKb() {
@@ -961,6 +1060,7 @@ async function saveHodKb() {
   kb.contact = document.getElementById('hod-ai-contact').value.trim();
   kb.emergency = document.getElementById('hod-ai-emergency').value.trim();
   kb.extra = document.getElementById('hod-ai-extra').value.trim();
+  kb.faqs = faqList; // Save FAQ list
 
   try {
     var r = await authFetch('/hotels/'+hodData.hotel_id+'/update', {

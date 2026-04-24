@@ -147,6 +147,11 @@ app.post('/ai/chat', async (req, res) => {
     }
 
     // Build KB context string
+    // Build FAQ context
+    const faqContext = (kb.faqs && kb.faqs.length > 0)
+      ? '\nFREQUENTLY ASKED QUESTIONS:\n' + kb.faqs.map(function(f) { return 'Q: ' + f.q + '\nA: ' + f.a; }).join('\n\n')
+      : '';
+
     const kbContext = [
       kb.wifi_name  ? `WiFi Network: ${kb.wifi_name}` : '',
       kb.wifi       ? `WiFi Password: ${kb.wifi}` : '',
@@ -159,7 +164,7 @@ app.post('/ai/chat', async (req, res) => {
       kb.contact    ? `Reception: ${kb.contact}` : '',
       kb.emergency  ? `Emergency: ${kb.emergency}` : '',
       kb.extra      ? `Other info: ${kb.extra}` : '',
-    ].filter(Boolean).join('\n');
+    ].filter(Boolean).join('\n') + faqContext;
 
     const prompt = `You are a warm, helpful hotel concierge AI for "${hotel_name || 'our hotel'}", Room ${room_number || '?'}.
 

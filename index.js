@@ -281,8 +281,7 @@ app.post('/hotels/:hotel_id/guest-options', verifyToken, async (req,res) => {
 });
 app.post('/hotels/:hotel_id/update', verifyToken, async (req,res) => {
   const name=sanitize(req.body.name), city=sanitize(req.body.city||''), colour=sanitize(req.body.colour||''), emoji=req.body.emoji||'', logo_url=req.body.logo_url;
-  const hotel_photos = req.body.hotel_photos || [];
-  const { data,error } = await supabase.from('hotels').update({ name,city,colour,emoji,logo_url,hotel_photos }).eq('hotel_id',req.params.hotel_id).select().single();
+  const { data,error } = await supabase.from('hotels').update({ name,city,colour,emoji,logo_url }).eq('hotel_id',req.params.hotel_id).select().single();
   if (error) return res.status(500).json({ error:error.message });
   res.json(data);
 });

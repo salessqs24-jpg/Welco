@@ -905,8 +905,20 @@
       <div class="eta-badge" id="eta-badge">⏱ <span id="txt-ready">Usually ready in</span> <strong id="eta-time">10 mins</strong></div>
       <textarea id="message" id="txt-describe"></textarea>
       <div id="translate-hint" style="font-size:11px;color:#aaa;margin-top:4px;display:none">🌍 Your message will be auto-translated to English for our staff</div>
+
+      <!-- AI CHAT BUTTON -->
+      <button onclick="openAIChat()" style="width:100%;padding:11px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px">
+        ✨ Chat with AI Concierge
+      </button>
+
       <button class="submit-btn" id="submit-btn" onclick="submitRequest()" id="btn-send">Send Request 🚀</button>
       <div class="success" id="success">✅ <span id="txt-sent">Request sent!</span></div>
+
+      <!-- AI UPSELL WIDGET -->
+      <div id="upsell-widget" style="display:none;margin-top:16px;background:linear-gradient(135deg,#fff9e6,#fff3cd);border:1.5px solid #ffd166;border-radius:14px;padding:14px">
+        <div style="font-size:12px;font-weight:700;color:#ca8a04;margin-bottom:10px">✨ You might also enjoy</div>
+        <div id="upsell-offers"></div>
+      </div>
     </div>
 
     <div class="tracking-card" id="tracking-card">
@@ -1678,6 +1690,168 @@
     © 2026 <strong>Welco™</strong> · All Rights Reserved · Built in India 🇮🇳<br>
     Unauthorized copying or distribution is prohibited.
   </div>
+
+  <!-- AI CHAT MODAL -->
+  <div id="ai-chat-modal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px)">
+    <div style="position:absolute;bottom:0;left:0;right:0;background:white;border-radius:24px 24px 0 0;padding:20px;max-height:80vh;display:flex;flex-direction:column">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div>
+          <div style="font-size:16px;font-weight:800;color:#0d1b1e">✨ AI Concierge</div>
+          <div style="font-size:11px;color:#aaa">Type anything in any language</div>
+        </div>
+        <button onclick="closeAIChat()" style="background:#f0f0f0;border:none;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer">✕</button>
+      </div>
+      <div id="ai-chat-messages" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;margin-bottom:14px;max-height:40vh;min-height:100px">
+        <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:12px 16px;border-radius:16px 16px 16px 4px;font-size:14px;max-width:85%;line-height:1.5">
+          👋 Hello! I'm your AI concierge. How can I help you today? You can type in any language!
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <input id="ai-chat-input" type="text" placeholder="Type your request..." style="flex:1;padding:12px 16px;border:1.5px solid #e0e0e0;border-radius:12px;font-size:14px;outline:none" onkeydown="if(event.key==='Enter')sendAIMessage()">
+        <button onclick="sendAIMessage()" style="padding:12px 18px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:12px;font-size:18px;cursor:pointer">→</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // ── AI FEATURES ────────────────────────────────────────────────
+
+  function openAIChat() {
+    document.getElementById('ai-chat-modal').style.display = 'block';
+    document.getElementById('ai-chat-input').focus();
+    // Load upsell offers when chat opens
+    loadUpsellOffers();
+  }
+
+  function closeAIChat() {
+    document.getElementById('ai-chat-modal').style.display = 'none';
+  }
+
+  function addChatMessage(text, isUser) {
+    var msgs = document.getElementById('ai-chat-messages');
+    var div = document.createElement('div');
+    div.style.cssText = isUser
+      ? 'background:#f0f0f0;color:#0d1b1e;padding:12px 16px;border-radius:16px 16px 4px 16px;font-size:14px;max-width:85%;align-self:flex-end;margin-left:auto;line-height:1.5'
+      : 'background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:12px 16px;border-radius:16px 16px 16px 4px;font-size:14px;max-width:85%;line-height:1.5';
+    div.textContent = text;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function addTypingIndicator() {
+    var msgs = document.getElementById('ai-chat-messages');
+    var div = document.createElement('div');
+    div.id = 'ai-typing';
+    div.style.cssText = 'background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:12px 16px;border-radius:16px 16px 16px 4px;font-size:14px;max-width:85%;line-height:1.5';
+    div.textContent = '✨ Thinking...';
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function removeTypingIndicator() {
+    var el = document.getElementById('ai-typing');
+    if (el) el.remove();
+  }
+
+  async function sendAIMessage() {
+    var input = document.getElementById('ai-chat-input');
+    var text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    addChatMessage(text, true);
+    addTypingIndicator();
+
+    try {
+      var res = await fetch('/ai/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: text,
+          hotel_name: document.getElementById('hotel-name').textContent,
+          room_number: roomNumber,
+          lang: currentLang
+        })
+      });
+      var data = await res.json();
+      removeTypingIndicator();
+      addChatMessage(data.reply || 'Our team will assist you shortly!', false);
+
+      // If AI identified a service request — pre-fill and auto-submit
+      if (data.department && data.task) {
+        setTimeout(function() {
+          addChatMessage('✅ I\'ve logged this request for ' + data.department + '. Your team has been notified!', false);
+          // Auto submit as request
+          autoSubmitAIRequest(data);
+        }, 800);
+      }
+    } catch(e) {
+      removeTypingIndicator();
+      addChatMessage('Sorry, I\'m having trouble connecting. Please use the request form below.', false);
+    }
+  }
+
+  async function autoSubmitAIRequest(aiData) {
+    try {
+      await fetch('/requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          hotel_id: hotelId,
+          room_id: roomId,
+          room_number: roomNumber,
+          category: aiData.department || 'Front Desk',
+          message: aiData.english_message || aiData.task || 'Guest request via AI',
+          sla_minutes: aiData.priority === 'urgent' ? 5 : 15
+        })
+      });
+    } catch(e) {}
+  }
+
+  // SMART UPSELLING
+  async function loadUpsellOffers() {
+    if (!hotelId) return;
+    try {
+      var hour = new Date().getHours();
+      var timeOfDay = hour < 11 ? 'morning' : hour < 14 ? 'lunch time' : hour < 18 ? 'afternoon' : hour < 21 ? 'evening' : 'night';
+      var res = await fetch('/ai/upsell', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          hotel_name: document.getElementById('hotel-name').textContent,
+          room_number: roomNumber,
+          time_of_day: timeOfDay,
+          recent_requests: []
+        })
+      });
+      var data = await res.json();
+      if (data.offers && data.offers.length > 0) {
+        var widget = document.getElementById('upsell-widget');
+        var offersDiv = document.getElementById('upsell-offers');
+        offersDiv.innerHTML = data.offers.map(function(o) {
+          return '<div onclick="requestUpsell(\''+o.title+'\')" style="display:flex;align-items:center;gap:12px;padding:10px;background:white;border-radius:10px;margin-bottom:8px;cursor:pointer;border:1px solid #fde68a;transition:all .2s" onmouseover="this.style.background=\'#fffbeb\'" onmouseout="this.style.background=\'white\'">'
+            + '<span style="font-size:24px">'+o.emoji+'</span>'
+            + '<div style="flex:1"><div style="font-size:13px;font-weight:700;color:#0d1b1e">'+o.title+'</div><div style="font-size:11px;color:#888">'+o.desc+'</div></div>'
+            + '<div style="font-size:13px;font-weight:700;color:#ca8a04">'+o.price+'</div>'
+            + '</div>';
+        }).join('');
+        widget.style.display = 'block';
+      }
+    } catch(e) {}
+  }
+
+  function requestUpsell(title) {
+    // Close upsell, pre-fill chat
+    var input = document.getElementById('ai-chat-input');
+    if (input) {
+      openAIChat();
+      input.value = 'I would like to order: ' + title;
+      sendAIMessage();
+    }
+  }
+
+  // Load upsell after portal loads
+  setTimeout(loadUpsellOffers, 3000);
+  </script>
 
 </body>
 </html>

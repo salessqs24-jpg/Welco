@@ -98,6 +98,115 @@ function generateHotelCode(name) {
 }
 function generateStaffId(hotelCode) { return (hotelCode||'WLC')+'-'+Math.floor(Math.random()*9000+1000); }
 
+// ── GEMINI AI ─────────────────────────────────────────────────────────────────
+const GEMINI_KEY = process.env.GEMINI_API_KEY;
+const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=';
+
+async function askGemini(prompt) {
+  const https = require('https');
+  return new Promise((resolve, reject) => {
+    const body = JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: { temperature: 0.7, maxOutputTokens: 512 }
+    });
+    const url = GEMINI_URL + GEMINI_KEY;
+    const reqOpts = new URL(url);
+    const options = {
+      hostname: reqOpts.hostname,
+      path: reqOpts.pathname + reqOpts.search,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) }
+    };
+    const req = https.request(options, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try {
+          const json = JSON.parse(data);
+          const text = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
+          resolve(text.trim());
+        } catch(e) { reject(e); }
+      });
+    });
+    req.on('error', reject);
+    req.write(body);
+    req.end();
+  });
+}
+
+// 1. AI GUEST CHATBOT
+app.post('/ai/chat', async (req, res) => {
+  const { message, hotel_name, room_number } = req.body;
+  if (!message) return res.status(400).json({ error: 'Message required' });
+  try {
+    const prompt = `You are a helpful hotel concierge AI for "${hotel_name || 'our hotel'}", Room ${room_number || '?'}.
+A guest sent this message (may be in any language): "${message}"
+Respond in JSON only (no markdown, no backticks):
+{"reply":"A warm helpful reply to guest in their same language (max 2 sentences)","department":"one of: Housekeeping, Room Service, Maintenance, Front Desk, or null if just greeting","task":"Short English task for staff (max 10 words)","priority":"normal or urgent","english_message":"English translation of guest message"}`;
+    const raw = await askGemini(prompt);
+    const clean = raw.replace(/```json|```/g, '').trim();
+    res.json(JSON.parse(clean));
+  } catch(e) {
+    res.json({ reply: "Thank you! Our team will assist you shortly.", department: "Front Desk", task: message.substring(0,60), priority: "normal", english_message: message });
+  }
+});
+
+// 2. SMART UPSELLING
+app.post('/ai/upsell', async (req, res) => {
+  const { hotel_name, room_number, time_of_day, recent_requests } = req.body;
+  try {
+    const prompt = `You are a hotel upselling AI for "${hotel_name}". Room: ${room_number}, Time: ${time_of_day || 'afternoon'}, Recent requests: ${JSON.stringify(recent_requests || [])}.
+Suggest 2 upsell offers in JSON only:
+{"offers":[{"emoji":"🍳","title":"Short title","desc":"One line","price":"₹XXX"},{"emoji":"💆","title":"Short title","desc":"One line","price":"₹XXX"}]}
+Make relevant to time of day and Indian hotel. Prices in INR.`;
+    const raw = await askGemini(prompt);
+    const clean = raw.replace(/```json|```/g, '').trim();
+    res.json(JSON.parse(clean));
+  } catch(e) {
+    res.json({ offers: [{ emoji:'🍳', title:'Breakfast in Bed', desc:'Fresh Indian breakfast to your room', price:'₹350' },{ emoji:'💆', title:'Spa Package', desc:'60 min relaxing massage', price:'₹1,200' }]});
+  }
+});
+
+// 3. AI ANALYTICS
+app.post('/ai/analytics', async (req, res) => {
+  const { question, hotel_name, requests_summary } = req.body;
+  if (!question) return res.status(400).json({ error: 'Question required' });
+  try {
+    const prompt = `You are a hotel analytics AI for "${hotel_name}". Data: ${JSON.stringify(requests_summary || {})}. Owner question: "${question}". Answer in 2-3 sentences, plain English, actionable.`;
+    const answer = await askGemini(prompt);
+    res.json({ answer });
+  } catch(e) {
+    res.json({ answer: 'Unable to analyze right now. Please try again.' });
+  }
+});
+
+// 4. SMART ROUTING
+app.post('/ai/route', async (req, res) => {
+  const { message } = req.body;
+  if (!message) return res.status(400).json({ error: 'Message required' });
+  try {
+    const prompt = `Classify this hotel guest request. Message: "${message}". Reply JSON only: {"department":"Housekeeping|Room Service|Maintenance|Front Desk","priority":"normal|urgent","english":"English translation"}. Urgent=safety/medical/no power/flooding.`;
+    const raw = await askGemini(prompt);
+    const clean = raw.replace(/```json|```/g, '').trim();
+    res.json(JSON.parse(clean));
+  } catch(e) {
+    res.json({ department: 'Front Desk', priority: 'normal', english: message });
+  }
+});
+
+// 5. STAFF RESPONSE SUGGESTIONS
+app.post('/ai/suggest-response', async (req, res) => {
+  const { request_message, department, staff_name, hotel_name } = req.body;
+  try {
+    const prompt = `Hotel staff response helper. Hotel: ${hotel_name}, Staff: ${staff_name}, Dept: ${department}. Guest request: "${request_message}". Write 3 short warm responses in JSON only: {"suggestions":["~10 word friendly response","~10 word professional response","~12 word response with ETA"]}`;
+    const raw = await askGemini(prompt);
+    const clean = raw.replace(/```json|```/g, '').trim();
+    res.json(JSON.parse(clean));
+  } catch(e) {
+    res.json({ suggestions: ['On my way! Will be there shortly 🙏','Noted! Taking care of this right away.','Your request is accepted. Ready in 5 minutes!']});
+  }
+});
+
 app.get('/health', (req,res) => res.json({ status:'ok', ts:Date.now() }));
 
 // ── DEMO LOGIN ─────────────────────────────────────────────────────────────

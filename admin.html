@@ -556,6 +556,28 @@
         <div id="rpt-dl-msg" style="font-size:12px;color:#aaa;text-align:center;margin-top:8px"></div>
       </div>
 
+      <!-- AI ANALYTICS -->
+      <div class="card" style="border:2px solid #667eea;background:linear-gradient(135deg,#f8f7ff,#f0f0ff)">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+          <span style="font-size:24px">✨</span>
+          <div>
+            <div class="card-title" style="color:#667eea;margin-bottom:0">AI Analytics Assistant</div>
+            <div class="card-sub" style="margin:0">Ask any question about your hotel data</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+          <button onclick="askAI('Which department had most complaints this week?')" style="padding:6px 12px;background:white;border:1px solid #667eea;border-radius:20px;font-size:11px;color:#667eea;cursor:pointer;font-weight:600">📊 Most complaints?</button>
+          <button onclick="askAI('What time do most requests come in?')" style="padding:6px 12px;background:white;border:1px solid #667eea;border-radius:20px;font-size:11px;color:#667eea;cursor:pointer;font-weight:600">⏰ Peak hours?</button>
+          <button onclick="askAI('How is guest satisfaction this week?')" style="padding:6px 12px;background:white;border:1px solid #667eea;border-radius:20px;font-size:11px;color:#667eea;cursor:pointer;font-weight:600">⭐ Satisfaction?</button>
+          <button onclick="askAI('Which staff member is performing best?')" style="padding:6px 12px;background:white;border:1px solid #667eea;border-radius:20px;font-size:11px;color:#667eea;cursor:pointer;font-weight:600">👷 Top staff?</button>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <input type="text" id="ai-question-input" placeholder="Ask anything about your hotel..." style="flex:1;padding:11px 14px;border:1.5px solid #667eea;border-radius:10px;font-size:13px;outline:none" onkeydown="if(event.key==='Enter')askAI()">
+          <button onclick="askAI()" style="padding:11px 18px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer">Ask →</button>
+        </div>
+        <div id="ai-answer" style="display:none;background:white;border-radius:12px;padding:16px;font-size:14px;color:#0d1b1e;line-height:1.7;border:1px solid #e0e0ff"></div>
+      </div>
+
     </div>
 
     <!-- SETTINGS -->
@@ -1255,7 +1277,38 @@ function fpFindAccount(btn){var email=document.getElementById('fp-email').value.
 function fpReset(btn){var ans=document.getElementById('fp-ans').value.trim();var np=document.getElementById('fp-np').value;var cp=document.getElementById('fp-cp').value;var err=document.getElementById('fp-err2');var email=document.getElementById('fp-email').value.trim();if(!ans){err.textContent='Enter your secret answer.';err.style.display='block';return;}if(np.length<6){err.textContent='Password must be at least 6 characters.';err.style.display='block';return;}if(np!==cp){err.textContent='Passwords do not match.';err.style.display='block';return;}btn.textContent='Resetting…';btn.disabled=true;fetch('/owner/reset-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,secret_answer:ans,new_password:np})}).then(function(r){return r.json().then(function(d){return{ok:r.ok,d:d};});}).then(function(res){btn.textContent='Reset Password';btn.disabled=false;if(!res.ok){err.textContent=res.d.error||'Reset failed.';err.style.display='block';return;}document.getElementById('fp2').style.display='none';document.getElementById('fp3').style.display='block';}).catch(function(){btn.textContent='Reset Password';btn.disabled=false;err.textContent='Connection error.';err.style.display='block';});}
 window.onload=function(){try{var stored=localStorage.getItem('welco_admin_hotel');if(stored){hotel=JSON.parse(stored);var storedHotels=localStorage.getItem('welco_admin_hotels');if(storedHotels)allHotels=JSON.parse(storedHotels);startApp();}}catch(e){}};
 
-/* ── HOTEL PHOTOS SLIDESHOW ── */
+/* ── AI ANALYTICS ── */
+async function askAI(question) {
+  var input = document.getElementById('ai-question-input');
+  var q = question || (input && input.value.trim());
+  if (!q) { if(input) input.focus(); return; }
+  if (input) input.value = q;
+
+  var answerDiv = document.getElementById('ai-answer');
+  answerDiv.style.display = 'block';
+  answerDiv.innerHTML = '<span style="color:#667eea">✨ Analyzing your hotel data...</span>';
+
+  // Build summary from current report data
+  var summary = {
+    hotel: hotel ? hotel.name : '',
+    total_requests: document.getElementById('rpt-total') ? document.getElementById('rpt-total').textContent : 'unknown',
+    avg_response: document.getElementById('rpt-avg') ? document.getElementById('rpt-avg').textContent : 'unknown',
+    rating: document.getElementById('rpt-rating') ? document.getElementById('rpt-rating').textContent : 'unknown'
+  };
+
+  try {
+    var res = await authFetch('/ai/analytics', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: q, hotel_name: hotel ? hotel.name : '', requests_summary: summary })
+    });
+    var data = await res.json();
+    answerDiv.innerHTML = '✨ ' + (data.answer || 'Unable to analyze right now.');
+    if (input) input.value = '';
+  } catch(e) {
+    answerDiv.innerHTML = '❌ AI unavailable. Check API key in Render environment.';
+  }
+}
 var hotelPhotos = [];
 
 function renderPhotoUrls() {

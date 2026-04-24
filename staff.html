@@ -1,15 +1,15 @@
 <!--
   ╔═══════════════════════════════════════════════════════╗
-  ║           © 2026 WELCO TECHNOLOGIES                   ║
-  ║           ALL RIGHTS RESERVED                         ║
-  ║                                                       ║
-  ║  This software is proprietary and confidential.       ║
-  ║  Unauthorized copying, modification, distribution,    ║
-  ║  or use of this software, via any medium, is          ║
-  ║  strictly prohibited without written permission.      ║
-  ║                                                       ║
-  ║  Welco® is a registered trademark.                    ║
-  ║  Patent pending. Protected by copyright law.          ║
+  ║ © 2026 WELCO TECHNOLOGIES ║
+  ║ ALL RIGHTS RESERVED ║
+  ║ ║
+  ║ This software is proprietary and confidential. ║
+  ║ Unauthorized copying, modification, distribution, ║
+  ║ or use of this software, via any medium, is ║
+  ║ strictly prohibited without written permission. ║
+  ║ ║
+  ║ Welco® is a registered trademark. ║
+  ║ Patent pending. Protected by copyright law. ║
   ╚═══════════════════════════════════════════════════════╝
 -->
 <!DOCTYPE html>
@@ -286,12 +286,12 @@ window.addEventListener('load', function(){
       // Check session not older than 12 hours
       var age = Date.now() - (s.savedAt || 0);
       if (age < 12 * 60 * 60 * 1000) {
-        currentHotelId   = s.hotel_id;
-        loggedInStaff    = s.name;
+        currentHotelId = s.hotel_id;
+        loggedInStaff = s.name;
         loggedInStaffDbId = s.id;
-        isOnDuty         = !!s.is_on_duty;
+        isOnDuty = !!s.is_on_duty;
         // Restore UI
-        document.getElementById('login-screen').style.display  = 'none';
+        document.getElementById('login-screen').style.display = 'none';
         document.getElementById('dashboard-screen').style.display = 'block';
         document.getElementById('dash-staff').textContent = '👋 ' + s.name + (s.department ? ' · ' + s.department : '');
         updateDutyUI();
@@ -367,13 +367,13 @@ function attemptLogin(sid,pinVal,btn,attempt){
  currentHotelId=s.hotel_id; loggedInStaff=s.name; loggedInStaffDbId=s.id; isOnDuty=!!s.is_on_duty;
  // ── SAVE SESSION to localStorage so refresh doesn't log out ──
  localStorage.setItem('welco_staff_session', JSON.stringify({
-   hotel_id:   s.hotel_id,
-   name:       s.name,
-   id:         s.id,
+   hotel_id: s.hotel_id,
+   name: s.name,
+   id: s.id,
    is_on_duty: !!s.is_on_duty,
    department: s.department || '',
-   staff_id:   s.staff_id || '',
-   savedAt:    Date.now()
+   staff_id: s.staff_id || '',
+   savedAt: Date.now()
  }));
  if (res.d.token) localStorage.setItem('welco_token', res.d.token);
  fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
@@ -546,7 +546,50 @@ function doClaimTask(id){
  .then(function(r){return r.json();}).then(function(d){if(d.error){alert('Error: '+d.error);return;}loadTasks();}).catch(function(){alert('Connection error');});
 }
 function markDone(id){
- authFetch('/requests/'+id+'/complete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})}).then(function(){loadTasks();});
+ // Get the request message for AI suggestion
+ var card = document.querySelector('[data-request-id="'+id+'"]');
+ var msg = card ? card.getAttribute('data-message') : '';
+ authFetch('/requests/'+id+'/complete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})}).then(function(){
+   loadTasks();
+   // Show AI response suggestion
+   if (msg) showAISuggestion(msg);
+ });
+}
+
+function showAISuggestion(requestMsg) {
+  fetch('/ai/suggest-response', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      request_message: requestMsg,
+      staff_name: loggedInStaff,
+      hotel_name: currentHotelId,
+      department: 'Hotel Staff'
+    })
+  }).then(function(r){ return r.json(); }).then(function(data) {
+    if (!data.suggestions || !data.suggestions.length) return;
+    // Show a subtle toast with suggestion
+    var toast = document.createElement('div');
+    toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#0d1b1e;color:white;border-radius:16px;padding:16px 20px;z-index:999;width:90%;max-width:360px;box-shadow:0 8px 32px rgba(0,0,0,.3)';
+    toast.innerHTML = '<div style="font-size:11px;color:#0a9396;font-weight:700;margin-bottom:8px;text-transform:uppercase;letter-spacing:.1em">✨ AI Suggested Reply</div>'
+      + data.suggestions.slice(0,2).map(function(s,i){
+          return '<div onclick="copyReply(\''+s.replace(/'/g,'\\\'')+'\')" style="background:rgba(255,255,255,.08);border-radius:8px;padding:8px 12px;margin-bottom:6px;font-size:13px;cursor:pointer;transition:all .2s" onmouseover="this.style.background=\'rgba(10,147,150,.3)\'" onmouseout="this.style.background=\'rgba(255,255,255,.08)\'">'
+          + s + '</div>';
+        }).join('')
+      + '<button onclick="this.parentElement.remove()" style="width:100%;padding:8px;background:rgba(255,255,255,.1);color:white;border:none;border-radius:8px;margin-top:4px;cursor:pointer;font-size:12px">Dismiss</button>';
+    document.body.appendChild(toast);
+    setTimeout(function(){ if(toast.parentElement) toast.remove(); }, 8000);
+  }).catch(function(){});
+}
+
+function copyReply(text) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(function(){
+      alert('✅ Copied! Paste it in WhatsApp or SMS to the guest.');
+    });
+  } else {
+    alert('Reply: ' + text);
+  }
 }
 function showLoginErr(msg){ var e=document.getElementById('login-error'); e.textContent=msg; e.style.display='block'; }</script>
 

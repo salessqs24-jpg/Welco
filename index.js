@@ -100,7 +100,7 @@ function generateStaffId(hotelCode) { return (hotelCode||'WLC')+'-'+Math.floor(M
 
 // ── GEMINI AI ─────────────────────────────────────────────────────────────────
 const GEMINI_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=';
+const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=';
 
 async function askGemini(prompt) {
   const url = GEMINI_URL + GEMINI_KEY;

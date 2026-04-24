@@ -258,6 +258,7 @@
     <div class="tab" onclick="showTab('announce')">📢 Announce</div>
     <div class="tab" onclick="showTab('maintenance')">🔧 Schedule</div>
     <div class="tab" onclick="showTab('guestoptions')">🎯 Guest Options</div>
+    <div class="tab" id="ai-kb-tab" style="display:none" onclick="showTab('aikb')">✨ AI Knowledge</div>
   </div>
 
   <div class="content">
@@ -505,6 +506,72 @@
       </div>
     </div>
 
+    <!-- AI KNOWLEDGE BASE PANEL -->
+    <div class="tab-panel" id="panel-aikb">
+      <div class="card" id="aikb-locked" style="display:none;text-align:center;padding:40px">
+        <div style="font-size:48px;margin-bottom:16px">🔒</div>
+        <div style="font-size:16px;font-weight:700;color:#0d1b1e;margin-bottom:8px">Access Restricted</div>
+        <div style="font-size:13px;color:#888">The hotel admin has not granted permission to edit the AI Knowledge Base. Please contact your hotel admin.</div>
+      </div>
+      <div id="aikb-content" style="display:none">
+        <div class="card" style="border:2px solid #667eea">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+            <div style="width:40px;height:40px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px">✨</div>
+            <div>
+              <div class="card-title" style="color:#667eea;margin-bottom:0">AI Concierge Knowledge Base</div>
+              <div class="card-sub" style="margin:0">Fill in hotel info — AI answers guests automatically</div>
+            </div>
+          </div>
+          <div style="display:grid;gap:14px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <div>
+                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">📶 WiFi Network</label>
+                <input type="text" id="hod-ai-wifi-name" placeholder="Network name" style="width:100%;padding:10px 12px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;margin-bottom:8px">
+                <input type="text" id="hod-ai-wifi" placeholder="Password" style="width:100%;padding:10px 12px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;font-family:monospace">
+              </div>
+              <div>
+                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">⏰ Check-in / Out</label>
+                <input type="time" id="hod-ai-checkin" style="width:100%;padding:10px 12px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;margin-bottom:8px">
+                <input type="time" id="hod-ai-checkout" style="width:100%;padding:10px 12px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none">
+              </div>
+            </div>
+            <div>
+              <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">🏊 Facilities</label>
+              <textarea id="hod-ai-facilities" placeholder="Swimming pool 7AM-9PM, Spa 10AM-8PM, Gym 6AM-10PM..." style="width:100%;padding:10px 12px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;min-height:70px;resize:vertical;font-family:sans-serif"></textarea>
+            </div>
+            <div>
+              <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">🎯 Activities & Prices</label>
+              <textarea id="hod-ai-activities" placeholder="Camel safari ₹800/person 4PM, Boat ride ₹500 6AM-7PM..." style="width:100%;padding:10px 12px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;min-height:70px;resize:vertical;font-family:sans-serif"></textarea>
+            </div>
+            <div>
+              <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">🍽️ Restaurant & Food</label>
+              <textarea id="hod-ai-restaurant" placeholder="Breakfast 7-10AM ₹350, Lunch 12-3PM ₹500, Dinner 7-11PM ₹700, Room service 24/7" style="width:100%;padding:10px 12px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;min-height:70px;resize:vertical;font-family:sans-serif"></textarea>
+            </div>
+            <div>
+              <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">🚗 Transport</label>
+              <textarea id="hod-ai-transport" placeholder="Airport 45 min ₹600, Railway 20 min ₹300, City center 10 min walk" style="width:100%;padding:10px 12px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;min-height:60px;resize:vertical;font-family:sans-serif"></textarea>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <div>
+                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">📞 Reception</label>
+                <input type="tel" id="hod-ai-contact" placeholder="+91 98765 43210" style="width:100%;padding:10px 12px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none">
+              </div>
+              <div>
+                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">🚨 Emergency</label>
+                <input type="tel" id="hod-ai-emergency" placeholder="+91 98765 43211" style="width:100%;padding:10px 12px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none">
+              </div>
+            </div>
+            <div>
+              <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">💬 Other FAQs</label>
+              <textarea id="hod-ai-extra" placeholder="Pets not allowed, Late checkout ₹500, Luggage storage free..." style="width:100%;padding:10px 12px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;min-height:60px;resize:vertical;font-family:sans-serif"></textarea>
+            </div>
+          </div>
+          <div id="hod-kb-msg" class="msg-box"></div>
+          <button onclick="saveHodKb()" style="margin-top:16px;width:100%;padding:14px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer">✨ Save Knowledge Base</button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -549,8 +616,15 @@ function attemptHodLogin(hotelCode, name, pin, btn, attempt) {
  if (!res.ok) { showErr(res.d.error || 'Invalid credentials.'); return; }
  var hotel = res.d.hod.hotel || {};
  hodData = { hotel_id: hotel.hotel_id, hotel: hotel, name: name, dept: res.d.hod.department };
+ hodHotelData = hotel; // Store full hotel data for KB access
  localStorage.setItem('welco_hod', JSON.stringify(hodData));
  if (res.d.token) localStorage.setItem('welco_token', res.d.token);
+ // Show AI KB tab if admin permitted
+ var kb = hotel.ai_kb || {};
+ if (kb.hod_can_edit) {
+   var kbTab = document.getElementById('ai-kb-tab');
+   if (kbTab) kbTab.style.display = 'flex';
+ }
  startApp();
  })
  .catch(function() {
@@ -753,6 +827,14 @@ function renderStaffPerformance(reqs){
  }).join('')+'<div style="font-size:11px;color:#aaa;text-align:center;padding-top:12px">🥇🥈🥉 top performers</div>';
 }
 function showTab(name) {
+  // Show/hide AI KB tab based on permission
+  if (name === 'aikb') {
+    var kb = hodHotelData && hodHotelData.ai_kb ? hodHotelData.ai_kb : {};
+    var allowed = kb.hod_can_edit || false;
+    document.getElementById('aikb-locked').style.display = allowed ? 'none' : 'block';
+    document.getElementById('aikb-content').style.display = allowed ? 'block' : 'none';
+    if (allowed) loadHodKbFields(kb);
+  }
  var permMap={'staff':'staff','analytics':'analytics','announce':'announcements','maintenance':'schedule','guestoptions':'guest_options'};
  var requiredPerm=permMap[name];
  if(requiredPerm&&hodData.permissions&&hodData.permissions[requiredPerm]===false){alert('⛔ Access Denied');return;}
@@ -839,6 +921,60 @@ function updateSla(input){var key=input.getAttribute('data-sla-key');var val=par
 function toggleDeptOption(checkbox){var key=checkbox.getAttribute('data-key');if(checkbox.checked){if(currentDeptOptions.indexOf(key)===-1)currentDeptOptions.push(key);}else{currentDeptOptions=currentDeptOptions.filter(function(k){return k!==key;});}renderGuestOptionsList();}
 function addCustomOption(){var emoji=document.getElementById('custom-option-emoji').value.trim();var text=document.getElementById('custom-option-text').value.trim();var slaVal=parseInt(document.getElementById('custom-option-sla').value)||15;if(!text){alert('Please enter a service name.');return;}var label=(emoji?emoji+' ':'✨ ')+text;var key='CUSTOM::'+text+'::'+Date.now();customDeptOptions.push({key:key,label:label,sla:slaVal});currentDeptOptions.push(key);optionSlaMap[key]=slaVal;document.getElementById('custom-option-emoji').value='';document.getElementById('custom-option-text').value='';document.getElementById('custom-option-sla').value='15';renderGuestOptionsList();}
 function removeCustomDeptOption(key){customDeptOptions=customDeptOptions.filter(function(c){return c.key!==key;});currentDeptOptions=currentDeptOptions.filter(function(k){return k!==key;});delete optionSlaMap[key];renderGuestOptionsList();}
+
+/* ── HOD AI KNOWLEDGE BASE ── */
+var hodHotelData = null;
+
+function loadHodKbFields(kb) {
+  var fields = {
+    'hod-ai-wifi-name': kb.wifi_name || '',
+    'hod-ai-wifi': kb.wifi || '',
+    'hod-ai-checkin': kb.checkin || '',
+    'hod-ai-checkout': kb.checkout || '',
+    'hod-ai-facilities': kb.facilities || '',
+    'hod-ai-activities': kb.activities || '',
+    'hod-ai-restaurant': kb.restaurant || '',
+    'hod-ai-transport': kb.transport || '',
+    'hod-ai-contact': kb.contact || '',
+    'hod-ai-emergency': kb.emergency || '',
+    'hod-ai-extra': kb.extra || ''
+  };
+  Object.keys(fields).forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.value = fields[id];
+  });
+}
+
+async function saveHodKb() {
+  var msg = document.getElementById('hod-kb-msg');
+  msg.textContent = '⏳ Saving...'; msg.className = 'msg-box msg-success';
+  var kb = hodHotelData && hodHotelData.ai_kb ? JSON.parse(JSON.stringify(hodHotelData.ai_kb)) : {};
+  // Update KB with HOD values
+  kb.wifi_name = document.getElementById('hod-ai-wifi-name').value.trim();
+  kb.wifi = document.getElementById('hod-ai-wifi').value.trim();
+  kb.checkin = document.getElementById('hod-ai-checkin').value.trim();
+  kb.checkout = document.getElementById('hod-ai-checkout').value.trim();
+  kb.facilities = document.getElementById('hod-ai-facilities').value.trim();
+  kb.activities = document.getElementById('hod-ai-activities').value.trim();
+  kb.restaurant = document.getElementById('hod-ai-restaurant').value.trim();
+  kb.transport = document.getElementById('hod-ai-transport').value.trim();
+  kb.contact = document.getElementById('hod-ai-contact').value.trim();
+  kb.emergency = document.getElementById('hod-ai-emergency').value.trim();
+  kb.extra = document.getElementById('hod-ai-extra').value.trim();
+
+  try {
+    var r = await authFetch('/hotels/'+hodData.hotel_id+'/update', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({name: hodHotelData.name, city: hodHotelData.city, colour: hodHotelData.colour, ai_kb: kb})
+    });
+    if (r.ok) {
+      if (hodHotelData) hodHotelData.ai_kb = kb;
+      msg.textContent = '✅ Knowledge base saved! AI will now use this info.';
+    } else { msg.textContent = '❌ Save failed. Try again.'; }
+  } catch(e) { msg.textContent = '❌ Connection error.'; }
+  setTimeout(function(){ msg.className='msg-box'; }, 4000);
+}
+
 function saveGuestOptions(){
  var dept=hodData.dept;
  fullDeptOptions[dept]={enabled:currentDeptOptions,slaMap:optionSlaMap,custom:customDeptOptions.map(function(c){return{key:c.key,label:c.label,sla:optionSlaMap[c.key]||c.sla||15};})};

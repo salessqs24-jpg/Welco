@@ -623,53 +623,141 @@
           <p class="logo-size-note" id="logo-size-note"></p>
           <input type="file" id="logo-file-input" accept="image/jpeg,image/png,image/webp" onchange="handleLogoUpload(event)">
 
-          <!-- AI KNOWLEDGE BASE -->
-          <div style="background:linear-gradient(135deg,#f8f7ff,#f0f0ff);border:1.5px solid #667eea;border-radius:14px;padding:18px;margin-top:16px;margin-bottom:14px">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
-              <span style="font-size:20px">✨</span>
-              <div>
-                <div style="font-size:14px;font-weight:700;color:#667eea">AI Concierge Knowledge Base</div>
-                <div style="font-size:11px;color:#888;margin-top:2px">AI uses this to auto-answer guests without disturbing staff</div>
-              </div>
-            </div>
-            <div style="display:grid;gap:12px">
-              <div>
-                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">📶 WiFi Password</label>
-                <input type="text" id="ai-wifi" placeholder="e.g. WelcomeGuest2026" style="width:100%;padding:10px 14px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;font-family:monospace">
-              </div>
-              <div>
-                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">⏰ Check-in / Check-out Time</label>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-                  <input type="text" id="ai-checkin" placeholder="e.g. 12:00 PM" style="padding:10px 14px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none">
-                  <input type="text" id="ai-checkout" placeholder="e.g. 11:00 AM" style="padding:10px 14px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none">
+          <!-- AI KNOWLEDGE BASE — PROFESSIONAL DESIGN -->
+          <div style="margin-top:20px;margin-bottom:14px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+              <div style="display:flex;align-items:center;gap:10px">
+                <div style="width:40px;height:40px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">✨</div>
+                <div>
+                  <div style="font-size:15px;font-weight:700;color:#0d1b1e">AI Concierge Knowledge Base</div>
+                  <div style="font-size:12px;color:#888">Auto-answers guest questions 24/7 without disturbing staff</div>
                 </div>
               </div>
-              <div>
-                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">🏊 Hotel Facilities</label>
-                <textarea id="ai-facilities" placeholder="e.g. Swimming pool (7AM-9PM), Spa (10AM-8PM), Restaurant (7AM-11PM), Gym (6AM-10PM), Rooftop lounge (4PM-12AM)" style="width:100%;padding:10px 14px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;min-height:70px;resize:vertical;font-family:sans-serif"></textarea>
-              </div>
-              <div>
-                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">🎯 Activities & Experiences</label>
-                <textarea id="ai-activities" placeholder="e.g. Camel safari (₹800/person, 4PM), Boat ride on lake (₹500, 6AM-7PM), Cooking class (₹1200, 11AM), City tour (₹1500, 9AM)" style="width:100%;padding:10px 14px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;min-height:70px;resize:vertical;font-family:sans-serif"></textarea>
-              </div>
-              <div>
-                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">🍽️ Restaurant & Menu Info</label>
-                <textarea id="ai-restaurant" placeholder="e.g. Breakfast (7-10AM): ₹350 buffet. Lunch (12-3PM): ₹500. Dinner (7-11PM): ₹700. Room service available 24/7. Specialty: Rajasthani thali ₹450" style="width:100%;padding:10px 14px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;min-height:70px;resize:vertical;font-family:sans-serif"></textarea>
-              </div>
-              <div>
-                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">📍 Location & Transport</label>
-                <textarea id="ai-transport" placeholder="e.g. Airport: 45 min (₹600 taxi). Railway station: 20 min (₹300). City center: 10 min walk. Auto rickshaw available at gate." style="width:100%;padding:10px 14px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;min-height:70px;resize:vertical;font-family:sans-serif"></textarea>
-              </div>
-              <div>
-                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">📞 Contact & Emergency</label>
-                <input type="text" id="ai-contact" placeholder="e.g. Reception: +91 98765 43210, Emergency: +91 98765 43211" style="width:100%;padding:10px 14px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none">
-              </div>
-              <div>
-                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">💬 Anything Else Guests Often Ask</label>
-                <textarea id="ai-extra" placeholder="e.g. Pets not allowed. Late checkout available at ₹500 extra. Luggage storage available. Currency exchange at reception." style="width:100%;padding:10px 14px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;min-height:60px;resize:vertical;font-family:sans-serif"></textarea>
+              <div style="display:flex;align-items:center;gap:8px;background:#f0fdf9;border:1px solid #b2e8e8;border-radius:10px;padding:8px 14px">
+                <span style="font-size:12px;font-weight:600;color:#005f73">HOD can edit</span>
+                <label style="position:relative;display:inline-block;width:38px;height:22px;cursor:pointer">
+                  <input type="checkbox" id="hod-kb-permission" style="opacity:0;width:0;height:0" onchange="saveHodKbPermission()">
+                  <span style="position:absolute;inset:0;background:#ccc;border-radius:22px;transition:.3s" id="hod-kb-toggle-bg"></span>
+                  <span style="position:absolute;top:3px;left:3px;width:16px;height:16px;background:white;border-radius:50%;transition:.3s;box-shadow:0 1px 4px rgba(0,0,0,.2)" id="hod-kb-toggle-knob"></span>
+                </label>
               </div>
             </div>
-            <div style="font-size:11px;color:#aaa;margin-top:10px">💡 The more you fill, the smarter the AI gets. Guests get instant answers without calling reception.</div>
+
+            <!-- PROGRESS INDICATOR -->
+            <div style="background:#f8f8f8;border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px">
+              <div style="flex:1">
+                <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+                  <span style="font-size:12px;font-weight:600;color:#555">Knowledge Base Completion</span>
+                  <span style="font-size:12px;font-weight:700;color:#667eea" id="kb-score">0%</span>
+                </div>
+                <div style="height:6px;background:#e0e0e0;border-radius:6px;overflow:hidden">
+                  <div id="kb-progress-bar" style="height:100%;background:linear-gradient(90deg,#667eea,#764ba2);border-radius:6px;width:0%;transition:width .5s"></div>
+                </div>
+              </div>
+              <div style="font-size:20px" id="kb-emoji">😴</div>
+            </div>
+
+            <!-- KB CARDS GRID -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" id="kb-cards-grid">
+
+              <!-- WIFI -->
+              <div style="background:white;border:1.5px solid #e8e8ff;border-radius:14px;padding:16px;transition:border-color .2s" onfocusin="this.style.borderColor='#667eea'" onfocusout="this.style.borderColor='#e8e8ff'">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                  <div style="width:32px;height:32px;background:#f0f0ff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px">📶</div>
+                  <div style="font-size:13px;font-weight:700;color:#0d1b1e">WiFi</div>
+                </div>
+                <label style="font-size:10px;color:#aaa;font-weight:600;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:4px">Network Name</label>
+                <input type="text" id="ai-wifi-name" placeholder="e.g. KannuHotel_Guest" oninput="updateKbProgress()" style="width:100%;padding:8px 12px;border:1px solid #eee;border-radius:8px;font-size:13px;outline:none;margin-bottom:8px">
+                <label style="font-size:10px;color:#aaa;font-weight:600;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:4px">Password</label>
+                <div style="position:relative">
+                  <input type="text" id="ai-wifi" placeholder="e.g. Welcome@2026" oninput="updateKbProgress()" style="width:100%;padding:8px 36px 8px 12px;border:1px solid #eee;border-radius:8px;font-size:13px;outline:none;font-family:monospace">
+                  <span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:14px;cursor:pointer" onclick="var i=document.getElementById('ai-wifi');i.type=i.type==='password'?'text':'password'">👁️</span>
+                </div>
+              </div>
+
+              <!-- CHECK IN/OUT -->
+              <div style="background:white;border:1.5px solid #e8e8ff;border-radius:14px;padding:16px;transition:border-color .2s" onfocusin="this.style.borderColor='#667eea'" onfocusout="this.style.borderColor='#e8e8ff'">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                  <div style="width:32px;height:32px;background:#f0f0ff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px">⏰</div>
+                  <div style="font-size:13px;font-weight:700;color:#0d1b1e">Check-in / Out</div>
+                </div>
+                <label style="font-size:10px;color:#aaa;font-weight:600;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:4px">Check-in Time</label>
+                <input type="time" id="ai-checkin" oninput="updateKbProgress()" style="width:100%;padding:8px 12px;border:1px solid #eee;border-radius:8px;font-size:13px;outline:none;margin-bottom:8px">
+                <label style="font-size:10px;color:#aaa;font-weight:600;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:4px">Check-out Time</label>
+                <input type="time" id="ai-checkout" oninput="updateKbProgress()" style="width:100%;padding:8px 12px;border:1px solid #eee;border-radius:8px;font-size:13px;outline:none">
+              </div>
+
+              <!-- FACILITIES -->
+              <div style="background:white;border:1.5px solid #e8e8ff;border-radius:14px;padding:16px;transition:border-color .2s" onfocusin="this.style.borderColor='#667eea'" onfocusout="this.style.borderColor='#e8e8ff'">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                  <div style="width:32px;height:32px;background:#f0f0ff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px">🏊</div>
+                  <div style="font-size:13px;font-weight:700;color:#0d1b1e">Facilities</div>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px" id="facility-chips"></div>
+                <div style="display:flex;gap:6px">
+                  <input type="text" id="facility-input" placeholder="Add facility..." style="flex:1;padding:7px 10px;border:1px solid #eee;border-radius:8px;font-size:12px;outline:none" onkeydown="if(event.key==='Enter'){addFacility();event.preventDefault()}">
+                  <button onclick="addFacility()" style="padding:7px 12px;background:#667eea;color:white;border:none;border-radius:8px;font-size:12px;cursor:pointer;font-weight:700">+</button>
+                </div>
+                <input type="hidden" id="ai-facilities">
+              </div>
+
+              <!-- ACTIVITIES -->
+              <div style="background:white;border:1.5px solid #e8e8ff;border-radius:14px;padding:16px;transition:border-color .2s" onfocusin="this.style.borderColor='#667eea'" onfocusout="this.style.borderColor='#e8e8ff'">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                  <div style="width:32px;height:32px;background:#f0f0ff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px">🎯</div>
+                  <div style="font-size:13px;font-weight:700;color:#0d1b1e">Activities</div>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px" id="activity-chips"></div>
+                <div style="display:flex;gap:6px">
+                  <input type="text" id="activity-input" placeholder="Add activity + price..." style="flex:1;padding:7px 10px;border:1px solid #eee;border-radius:8px;font-size:12px;outline:none" onkeydown="if(event.key==='Enter'){addActivity();event.preventDefault()}">
+                  <button onclick="addActivity()" style="padding:7px 12px;background:#667eea;color:white;border:none;border-radius:8px;font-size:12px;cursor:pointer;font-weight:700">+</button>
+                </div>
+                <input type="hidden" id="ai-activities">
+              </div>
+
+              <!-- RESTAURANT -->
+              <div style="background:white;border:1.5px solid #e8e8ff;border-radius:14px;padding:16px;transition:border-color .2s" onfocusin="this.style.borderColor='#667eea'" onfocusout="this.style.borderColor='#e8e8ff'">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                  <div style="width:32px;height:32px;background:#f0f0ff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px">🍽️</div>
+                  <div style="font-size:13px;font-weight:700;color:#0d1b1e">Restaurant & Food</div>
+                </div>
+                <textarea id="ai-restaurant" placeholder="Breakfast 7-10AM: ₹350 buffet&#10;Lunch 12-3PM: ₹500&#10;Dinner 7-11PM: ₹700&#10;Room service: 24/7" oninput="updateKbProgress()" style="width:100%;padding:8px 12px;border:1px solid #eee;border-radius:8px;font-size:12px;outline:none;min-height:90px;resize:none;font-family:sans-serif;line-height:1.6"></textarea>
+              </div>
+
+              <!-- TRANSPORT -->
+              <div style="background:white;border:1.5px solid #e8e8ff;border-radius:14px;padding:16px;transition:border-color .2s" onfocusin="this.style.borderColor='#667eea'" onfocusout="this.style.borderColor='#e8e8ff'">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                  <div style="width:32px;height:32px;background:#f0f0ff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px">🚗</div>
+                  <div style="font-size:13px;font-weight:700;color:#0d1b1e">Transport</div>
+                </div>
+                <textarea id="ai-transport" placeholder="Airport: 45 min, ₹600 taxi&#10;Railway: 20 min, ₹300&#10;City center: 10 min walk&#10;Auto available at gate" oninput="updateKbProgress()" style="width:100%;padding:8px 12px;border:1px solid #eee;border-radius:8px;font-size:12px;outline:none;min-height:90px;resize:none;font-family:sans-serif;line-height:1.6"></textarea>
+              </div>
+
+              <!-- CONTACT -->
+              <div style="background:white;border:1.5px solid #e8e8ff;border-radius:14px;padding:16px;transition:border-color .2s;grid-column:1/-1" onfocusin="this.style.borderColor='#667eea'" onfocusout="this.style.borderColor='#e8e8ff'">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                  <div style="width:32px;height:32px;background:#f0f0ff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px">📞</div>
+                  <div style="font-size:13px;font-weight:700;color:#0d1b1e">Contact & Other Info</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                  <div>
+                    <label style="font-size:10px;color:#aaa;font-weight:600;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:4px">Reception Number</label>
+                    <input type="tel" id="ai-contact" placeholder="+91 98765 43210" oninput="updateKbProgress()" style="width:100%;padding:8px 12px;border:1px solid #eee;border-radius:8px;font-size:13px;outline:none">
+                  </div>
+                  <div>
+                    <label style="font-size:10px;color:#aaa;font-weight:600;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:4px">Emergency Number</label>
+                    <input type="tel" id="ai-emergency" placeholder="+91 98765 43211" oninput="updateKbProgress()" style="width:100%;padding:8px 12px;border:1px solid #eee;border-radius:8px;font-size:13px;outline:none">
+                  </div>
+                </div>
+                <label style="font-size:10px;color:#aaa;font-weight:600;text-transform:uppercase;letter-spacing:.1em;display:block;margin-top:10px;margin-bottom:4px">Other FAQs (pets policy, late checkout, luggage etc.)</label>
+                <textarea id="ai-extra" placeholder="e.g. Pets not allowed. Late checkout ₹500 extra. Luggage storage free. Currency exchange at reception." oninput="updateKbProgress()" style="width:100%;padding:8px 12px;border:1px solid #eee;border-radius:8px;font-size:12px;outline:none;min-height:60px;resize:none;font-family:sans-serif"></textarea>
+              </div>
+
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:12px;padding:10px 14px;background:#fffbeb;border-radius:10px;border:1px solid #fde68a">
+              <span style="font-size:16px">💡</span>
+              <span style="font-size:12px;color:#92400e">The more complete your knowledge base, the smarter the AI. Guests get instant answers 24/7 — no staff needed!</span>
+            </div>
           </div>
 
           <button class="save-btn" onclick="saveSettings()" style="margin-top:4px">Save Changes</button>
@@ -948,6 +1036,7 @@ function startApp() {
  var kb = hotel.ai_kb || {};
  var fields = ['wifi','checkin','checkout','facilities','activities','restaurant','transport','contact','extra'];
  fields.forEach(function(f){ var el=document.getElementById('ai-'+f); if(el) el.value=kb[f]||''; });
+ loadKbFields();
  document.getElementById('set-colortext').value = hotel.colour || '#0a9396';
  document.getElementById('set-colorpicker').value = hotel.colour || '#0a9396';
  applyLogoOrEmoji(hotel.logo_url, null);
@@ -1197,6 +1286,7 @@ function saveSettings(){
 
  // Save basic settings first (without photos - they're too large)
  var basicPayload={name:name,city:city,colour:colour,ai_kb:{
+   wifi_name: (document.getElementById('ai-wifi-name')||{value:''}).value.trim(),
    wifi: document.getElementById('ai-wifi').value.trim(),
    checkin: document.getElementById('ai-checkin').value.trim(),
    checkout: document.getElementById('ai-checkout').value.trim(),
@@ -1205,7 +1295,9 @@ function saveSettings(){
    restaurant: document.getElementById('ai-restaurant').value.trim(),
    transport: document.getElementById('ai-transport').value.trim(),
    contact: document.getElementById('ai-contact').value.trim(),
-   extra: document.getElementById('ai-extra').value.trim()
+   emergency: (document.getElementById('ai-emergency')||{value:''}).value.trim(),
+   extra: document.getElementById('ai-extra').value.trim(),
+   hod_can_edit: document.getElementById('hod-kb-permission') ? document.getElementById('hod-kb-permission').checked : false
  }};
  if(pendingLogoBase64!==null) basicPayload.logo_url=pendingLogoBase64;
 
@@ -1341,7 +1433,95 @@ function fpFindAccount(btn){var email=document.getElementById('fp-email').value.
 function fpReset(btn){var ans=document.getElementById('fp-ans').value.trim();var np=document.getElementById('fp-np').value;var cp=document.getElementById('fp-cp').value;var err=document.getElementById('fp-err2');var email=document.getElementById('fp-email').value.trim();if(!ans){err.textContent='Enter your secret answer.';err.style.display='block';return;}if(np.length<6){err.textContent='Password must be at least 6 characters.';err.style.display='block';return;}if(np!==cp){err.textContent='Passwords do not match.';err.style.display='block';return;}btn.textContent='Resetting…';btn.disabled=true;fetch('/owner/reset-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,secret_answer:ans,new_password:np})}).then(function(r){return r.json().then(function(d){return{ok:r.ok,d:d};});}).then(function(res){btn.textContent='Reset Password';btn.disabled=false;if(!res.ok){err.textContent=res.d.error||'Reset failed.';err.style.display='block';return;}document.getElementById('fp2').style.display='none';document.getElementById('fp3').style.display='block';}).catch(function(){btn.textContent='Reset Password';btn.disabled=false;err.textContent='Connection error.';err.style.display='block';});}
 window.onload=function(){try{var stored=localStorage.getItem('welco_admin_hotel');if(stored){hotel=JSON.parse(stored);var storedHotels=localStorage.getItem('welco_admin_hotels');if(storedHotels)allHotels=JSON.parse(storedHotels);startApp();}}catch(e){}};
 
-/* ── AI ANALYTICS ── */
+/* ── AI KNOWLEDGE BASE ── */
+var facilityList = [];
+var activityList = [];
+
+function renderChips(list, containerId, removeFunc) {
+  var c = document.getElementById(containerId);
+  if (!c) return;
+  c.innerHTML = list.map(function(item, i) {
+    return '<span style="display:inline-flex;align-items:center;gap:5px;background:#f0f0ff;border:1px solid #ddd6fe;color:#667eea;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px">'
+      + item + '<span onclick="'+removeFunc+'('+i+')" style="cursor:pointer;color:#aaa;font-size:12px">✕</span></span>';
+  }).join('');
+  document.getElementById(containerId === 'facility-chips' ? 'ai-facilities' : 'ai-activities').value = list.join(', ');
+  updateKbProgress();
+}
+
+function addFacility() {
+  var input = document.getElementById('facility-input');
+  var val = input.value.trim();
+  if (!val) return;
+  facilityList.push(val);
+  input.value = '';
+  renderChips(facilityList, 'facility-chips', 'removeFacility');
+}
+function removeFacility(i) { facilityList.splice(i,1); renderChips(facilityList,'facility-chips','removeFacility'); }
+
+function addActivity() {
+  var input = document.getElementById('activity-input');
+  var val = input.value.trim();
+  if (!val) return;
+  activityList.push(val);
+  input.value = '';
+  renderChips(activityList, 'activity-chips', 'removeActivity');
+}
+function removeActivity(i) { activityList.splice(i,1); renderChips(activityList,'activity-chips','removeActivity'); }
+
+function updateKbProgress() {
+  var fields = ['ai-wifi','ai-checkin','ai-checkout','ai-facilities','ai-activities','ai-restaurant','ai-transport','ai-contact','ai-extra'];
+  var filled = fields.filter(function(id){ var el=document.getElementById(id); return el&&el.value.trim().length>0; }).length;
+  var pct = Math.round((filled/fields.length)*100);
+  var bar = document.getElementById('kb-progress-bar');
+  var score = document.getElementById('kb-score');
+  var emoji = document.getElementById('kb-emoji');
+  if (bar) bar.style.width = pct + '%';
+  if (score) score.textContent = pct + '%';
+  if (emoji) emoji.textContent = pct < 30 ? '😴' : pct < 60 ? '🙂' : pct < 90 ? '😊' : '🤩';
+}
+
+function saveHodKbPermission() {
+  var allowed = document.getElementById('hod-kb-permission').checked;
+  var knob = document.getElementById('hod-kb-toggle-knob');
+  var bg = document.getElementById('hod-kb-toggle-bg');
+  if (knob) knob.style.transform = allowed ? 'translateX(16px)' : 'translateX(0)';
+  if (bg) bg.style.background = allowed ? '#667eea' : '#ccc';
+  // Save to hotel settings
+  if (hotel) {
+    var kb = hotel.ai_kb || {};
+    kb.hod_can_edit = allowed;
+    authFetch('/hotels/'+hotel.hotel_id+'/update', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({name:hotel.name,city:hotel.city,colour:hotel.colour,ai_kb:kb})
+    }).catch(function(){});
+  }
+}
+
+function loadKbFields() {
+  var kb = (hotel && hotel.ai_kb) || {};
+  // Simple fields
+  ['wifi','checkin','checkout','restaurant','transport','contact','extra'].forEach(function(f){
+    var el = document.getElementById('ai-'+f); if(el) el.value = kb[f]||'';
+  });
+  var emergency = document.getElementById('ai-emergency');
+  if (emergency) emergency.value = kb.emergency || '';
+  var wifiName = document.getElementById('ai-wifi-name');
+  if (wifiName) wifiName.value = kb.wifi_name || '';
+  // Chips
+  facilityList = kb.facilities ? kb.facilities.split(',').map(function(s){return s.trim();}).filter(Boolean) : [];
+  activityList = kb.activities ? kb.activities.split(',').map(function(s){return s.trim();}).filter(Boolean) : [];
+  renderChips(facilityList, 'facility-chips', 'removeFacility');
+  renderChips(activityList, 'activity-chips', 'removeActivity');
+  // HOD permission toggle
+  var hodAllowed = kb.hod_can_edit || false;
+  var checkbox = document.getElementById('hod-kb-permission');
+  if (checkbox) checkbox.checked = hodAllowed;
+  var knob = document.getElementById('hod-kb-toggle-knob');
+  var bg = document.getElementById('hod-kb-toggle-bg');
+  if (knob) knob.style.transform = hodAllowed ? 'translateX(16px)' : 'translateX(0)';
+  if (bg) bg.style.background = hodAllowed ? '#667eea' : '#ccc';
+  updateKbProgress();
+}
 async function askAI(question) {
   var input = document.getElementById('ai-question-input');
   var q = question || (input && input.value.trim());

@@ -148,14 +148,16 @@ app.post('/ai/chat', async (req, res) => {
 
     // Build KB context string
     const kbContext = [
+      kb.wifi_name  ? `WiFi Network: ${kb.wifi_name}` : '',
       kb.wifi       ? `WiFi Password: ${kb.wifi}` : '',
       kb.checkin    ? `Check-in time: ${kb.checkin}` : '',
       kb.checkout   ? `Check-out time: ${kb.checkout}` : '',
       kb.facilities ? `Facilities: ${kb.facilities}` : '',
-      kb.activities ? `Activities: ${kb.activities}` : '',
+      kb.activities ? `Activities & Experiences: ${kb.activities}` : '',
       kb.restaurant ? `Restaurant/Food: ${kb.restaurant}` : '',
       kb.transport  ? `Transport/Location: ${kb.transport}` : '',
-      kb.contact    ? `Contact: ${kb.contact}` : '',
+      kb.contact    ? `Reception: ${kb.contact}` : '',
+      kb.emergency  ? `Emergency: ${kb.emergency}` : '',
       kb.extra      ? `Other info: ${kb.extra}` : '',
     ].filter(Boolean).join('\n');
 

@@ -63,7 +63,7 @@ async function checkPassword(plain, hashed) {
 function signToken(payload) { return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' }); }
 
 app.use(function(req, res, next) {
-  var allowed = ['https://welco.onrender.com', 'http://localhost:3000'];
+  var allowed = ['https://welco.onrender.com', 'http://localhost:3000', 'https://usewelco.in'];
   var origin = req.headers.origin;
   if (!origin || allowed.indexOf(origin) !== -1) {
     res.setHeader('Access-Control-Allow-Origin', origin || '*');
@@ -98,30 +98,33 @@ function generateHotelCode(name) {
 }
 function generateStaffId(hotelCode) { return (hotelCode||'WLC')+'-'+Math.floor(Math.random()*9000+1000); }
 
-// ── GEMINI AI ─────────────────────────────────────────────────────────────────
-const GEMINI_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=';
+// ── GROQ AI ─────────────────────────────────────────────────────────────────
+const GROQ_KEY = process.env.GROQ_API_KEY;
+const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 async function askGemini(prompt) {
-  const url = GEMINI_URL + GEMINI_KEY;
-  const body = JSON.stringify({
-    contents: [{ parts: [{ text: prompt }] }],
-    generationConfig: { temperature: 0.7, maxOutputTokens: 512 }
-  });
-  const response = await fetch(url, {
+  const response = await fetch(GROQ_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: body
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + GROQ_KEY
+    },
+    body: JSON.stringify({
+      model: 'llama-3.1-8b-instant',
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0.7,
+      max_tokens: 512
+    })
   });
   const json = await response.json();
   if (json.error) {
-    console.error('Gemini API error:', JSON.stringify(json.error));
-    throw new Error(json.error.message || 'Gemini error');
+    console.error('Groq API error:', JSON.stringify(json.error));
+    throw new Error(json.error.message || 'Groq error');
   }
-  const text = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  const text = json.choices?.[0]?.message?.content || '';
   if (!text) {
-    console.error('Gemini empty response:', JSON.stringify(json));
-    throw new Error('Empty response from Gemini');
+    console.error('Groq empty response:', JSON.stringify(json));
+    throw new Error('Empty response from Groq');
   }
   return text.trim();
 }
@@ -129,9 +132,9 @@ async function askGemini(prompt) {
 app.get('/ai/test', async (req,res) => {
   try {
     const result = await askGemini('Say exactly: Welco AI is working!');
-    res.json({ success: true, response: result, key_set: !!GEMINI_KEY });
+    res.json({ success: true, response: result, key_set: !!GROQ_KEY });
   } catch(e) {
-    res.json({ success: false, error: e.message, key_set: !!GEMINI_KEY });
+    res.json({ success: false, error: e.message, key_set: !!GROQ_KEY });
   }
 });
 
@@ -140,15 +143,12 @@ app.post('/ai/chat', async (req, res) => {
   const { message, hotel_name, room_number, hotel_id } = req.body;
   if (!message) return res.status(400).json({ error: 'Message required' });
   try {
-    // Fetch hotel knowledge base for auto-answers
     let kb = {};
     if (hotel_id) {
       const { data: hotelData } = await supabase.from('hotels').select('ai_kb,name').eq('hotel_id', hotel_id).single();
       if (hotelData) { kb = hotelData.ai_kb || {}; }
     }
 
-    // Build KB context string
-    // Build FAQ context
     const faqContext = (kb.faqs && kb.faqs.length > 0)
       ? '\nFREQUENTLY ASKED QUESTIONS:\n' + kb.faqs.map(function(f) { return 'Q: ' + f.q + '\nA: ' + f.a; }).join('\n\n')
       : '';
@@ -310,7 +310,6 @@ app.get('/demo/reset', async (req,res) => {
     res.json({ success: true, hotel });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
-
 
 // OWNER SIGNUP
 app.post('/owner/signup', async (req,res) => {
@@ -541,18 +540,10 @@ app.post('/hod/verify', async (req,res) => {
   res.json({ success:true, hod:{ ...hod, hotel }, token });
 });
 
-// ═══════════════════════════════════════════════════════════
-// REQUESTS — OPTIMIZED WITH DATE FILTER
-// Default: last 7 days (for staff/HOD live polling — fast!)
-// ?days=30  → last 30 days (HOD analytics)
-// ?all=true → all time (admin reports/CSV download only)
-// Active (pending/in_progress) requests always included
-// regardless of date — staff never miss live requests
-// ═══════════════════════════════════════════════════════════
+// REQUESTS
 app.get('/requests', async (req,res) => {
   const hotel_id = req.query.hotel_id;
 
-  // Full history — only for admin reports
   if (req.query.all === 'true') {
     let query = supabase.from('requests').select('*').order('created_at', { ascending: false });
     if (hotel_id) query = query.eq('hotel_id', hotel_id);
@@ -561,20 +552,17 @@ app.get('/requests', async (req,res) => {
     return res.json(data);
   }
 
-  // Default: last N days (7 for live, 30 for analytics)
   var days = parseInt(req.query.days) || 7;
-  if (days > 90) days = 90; // hard cap — no more than 90 days at once
+  if (days > 90) days = 90;
   var cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - days);
   var cutoffISO = cutoff.toISOString();
 
-  // Query 1: recent requests within date range
   let recentQuery = supabase.from('requests').select('*')
     .order('created_at', { ascending: false })
     .gte('created_at', cutoffISO);
   if (hotel_id) recentQuery = recentQuery.eq('hotel_id', hotel_id);
 
-  // Query 2: any active requests older than cutoff (so staff don't miss them)
   let activeQuery = supabase.from('requests').select('*')
     .in('status', ['pending', 'in_progress'])
     .lt('created_at', cutoffISO)
@@ -585,7 +573,6 @@ app.get('/requests', async (req,res) => {
 
   if (recentResult.error) return res.status(500).json({ error: recentResult.error.message });
 
-  // Merge: recent + old active (no duplicates)
   var recentData = recentResult.data || [];
   var activeData = activeResult.data || [];
   var recentIds = new Set(recentData.map(function(r){ return r.id; }));
@@ -684,15 +671,12 @@ app.get('/qr/:room_id', async (req,res) => {
   res.json(data);
 });
 
-
-// HOD KB SAVE — separate route that accepts HOD tokens
+// HOD KB SAVE
 app.post('/hotels/:hotel_id/kb', verifyToken, async (req,res) => {
   try {
     const hotel_id = req.params.hotel_id;
-    // Get current hotel KB
     const { data: hotelData } = await supabase.from('hotels').select('ai_kb').eq('hotel_id', hotel_id).single();
     const currentKb = (hotelData && hotelData.ai_kb) || {};
-    // Merge new KB fields (preserve fields HOD didn't send)
     const newKb = Object.assign({}, currentKb, req.body.ai_kb || {});
     const { data, error } = await supabase.from('hotels').update({ ai_kb: newKb }).eq('hotel_id', hotel_id).select().single();
     if (error) return res.status(500).json({ error: error.message });
@@ -700,7 +684,7 @@ app.post('/hotels/:hotel_id/kb', verifyToken, async (req,res) => {
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
-
+// HOTEL PHOTOS
 app.post('/hotels/:hotel_id/photos', verifyToken, async (req,res) => {
   try {
     const hotel_photos = req.body.hotel_photos || [];
@@ -728,7 +712,7 @@ app.post('/hotels/:hotel_id/delete', verifyToken, async (req,res) => {
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
-// DELETE OWNER ACCOUNT (all hotels + owner)
+// DELETE OWNER ACCOUNT
 app.post('/owner/delete', verifyToken, async (req,res) => {
   const owner_id = req.user.owner_id;
   if (!owner_id) return res.status(400).json({ error: 'Owner not identified.' });
@@ -756,7 +740,7 @@ app.get('/legal', (req,res) => res.send(`
 <h1>© 2026 Welco™</h1>
 <p><strong>All Rights Reserved.</strong></p>
 <p>Welco™ is a proprietary hotel management platform developed and owned by Welco Technologies, India.</p>
-<p>Unauthorized copying, reproduction, modification, distribution, or use of any part of this software, 
+<p>Unauthorized copying, reproduction, modification, distribution, or use of any part of this software,
 its design, code, or intellectual property is strictly prohibited without written permission from Welco Technologies.</p>
 <p>Welco™ is a registered trademark. Any unauthorized use of the Welco name, logo, or brand is a violation of trademark law.</p>
 <h2>Contact</h2>

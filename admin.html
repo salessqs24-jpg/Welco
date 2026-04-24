@@ -1128,7 +1128,12 @@ function saveSettings(){
    headers:{'Content-Type':'application/json'},
    body:JSON.stringify(basicPayload)
  }).then(function(r){
-   if(!r.ok){ msg.textContent='❌ Save failed. Try again.'; return; }
+   if(!r.ok){
+     return r.json().then(function(e){
+       msg.textContent='❌ ' + (e.error || 'Save failed — code '+r.status);
+       msg.className='msg-box msg-success';
+     });
+   }
    // Update local hotel object
    var newLogo=pendingLogoBase64!==null?pendingLogoBase64:hotel.logo_url;
    hotel=Object.assign({},hotel,{name:name,city:city,colour:colour,logo_url:newLogo,hotel_photos:hotelPhotos});

@@ -44,8 +44,12 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: sans-serif; min-height: 100vh; background: #1a1a2e; background-size: cover; background-position: center; background-attachment: fixed; display: flex; flex-direction: column; }
     .header { position: relative; color: white; text-align: center; overflow: hidden; min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 0; }
-    .hotel-photo-bg { position: absolute; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); z-index: 0; }
-    .hotel-photo-bg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.55; display: none; }
+    .hotel-photo-bg { position: absolute; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); z-index: 0; overflow: hidden; }
+    .slideshow-slide { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.2s ease; }
+    .slideshow-slide.active { opacity: 0.55; }
+    .slideshow-dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; z-index: 3; }
+    .slideshow-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; transition: all .3s; }
+    .slideshow-dot.active { background: white; width: 14px; border-radius: 3px; }
     .header-inner { position: relative; z-index: 1; padding: 20px; width: 100%; }
     .header h1 { font-size: 24px; font-weight: bold; text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
     .header p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
@@ -134,7 +138,7 @@
 <body>
 
   <div class="header">
-    <div class="hotel-photo-bg"><img id="hotel-photo-bg-img" src="" alt=""></div>
+    <div class="hotel-photo-bg" id="slideshow-container"></div>
     <div class="header-inner">
       <h1 id="hotel-name">🏨 Welco</h1>
       <p id="room-label">Loading...</p>
@@ -512,6 +516,9 @@
  document.getElementById('cat-mt').textContent = t.cats['Maintenance'];
  document.getElementById('cat-fd').textContent = t.cats['Front Desk'];
  if (selectedCategory) renderDeptServices(selectedCategory);
+ // Show translation hint for non-English
+ var hint = document.getElementById('translate-hint');
+ if (hint) hint.style.display = (lang !== 'en') ? 'block' : 'none';
  }
  function T(key) { return (LANGS[currentLang] && LANGS[currentLang][key]) || LANGS['en'][key] || key; }
  var selectedCategory = '';
@@ -566,19 +573,44 @@
  if (hotel) {
  hotelData = hotel;
  document.documentElement.style.setProperty('--brand', hotel.colour || '#1a1a2e');
- if (hotel.logo_url) {
- document.body.style.backgroundImage = 'url(' + hotel.logo_url + ')';
- document.body.style.backgroundSize = 'cover';
- document.body.style.backgroundPosition = 'center';
- document.body.style.backgroundAttachment = 'fixed';
- var photoBg = document.getElementById('hotel-photo-bg-img');
- photoBg.src = hotel.logo_url;
- photoBg.style.display = 'block';
- document.getElementById('hotel-name').textContent = hotel.name;
+ // SLIDESHOW
+ var photos = [];
+ if (hotel.hotel_photos && hotel.hotel_photos.length > 0) { photos = hotel.hotel_photos; }
+ else if (hotel.logo_url) { photos = [hotel.logo_url]; }
+ var container = document.getElementById('slideshow-container');
+ if (container && photos.length > 0) {
+   document.body.style.background = '#1a1a2e';
+   container.innerHTML = '';
+   photos.forEach(function(url, i) {
+     var img = document.createElement('img');
+     img.src = url; img.className = 'slideshow-slide'+(i===0?' active':''); img.alt = '';
+     container.appendChild(img);
+   });
+   if (photos.length > 1) {
+     var dotsWrap = document.createElement('div');
+     dotsWrap.className = 'slideshow-dots';
+     var curSlide = 0;
+     photos.forEach(function(_, i) {
+       var dot = document.createElement('div');
+       dot.className = 'slideshow-dot'+(i===0?' active':'');
+       dot.onclick = (function(idx){ return function(){ goSlide(idx); }; })(i);
+       dotsWrap.appendChild(dot);
+     });
+     container.appendChild(dotsWrap);
+     function goSlide(n) {
+       var slides = container.querySelectorAll('.slideshow-slide');
+       var dots = container.querySelectorAll('.slideshow-dot');
+       slides[curSlide].classList.remove('active'); dots[curSlide].classList.remove('active');
+       curSlide = (n + photos.length) % photos.length;
+       slides[curSlide].classList.add('active'); dots[curSlide].classList.add('active');
+     }
+     setInterval(function(){ goSlide(curSlide+1); }, 5000);
+   }
+   document.getElementById('hotel-name').textContent = hotel.name;
  } else {
- document.body.style.background = (hotel.colour || '#1a1a2e');
- document.querySelector('.hotel-photo-bg').style.background = (hotel.colour || '#1a1a2e') + 'dd';
- document.getElementById('hotel-name').textContent = (hotel.emoji || '🏨') + ' ' + hotel.name;
+   document.body.style.background = (hotel.colour || '#1a1a2e');
+   if (container) container.style.background = (hotel.colour || '#1a1a2e') + 'dd';
+   document.getElementById('hotel-name').textContent = (hotel.emoji || '\U0001F3E8') + ' ' + hotel.name;
  }
  document.getElementById('room-label').textContent = 'Room ' + roomNumber + (hotel.city ? ' — ' + hotel.city : '');
  document.getElementById('hotel-name-ty').textContent = hotel.name;
@@ -693,8 +725,12 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: sans-serif; min-height: 100vh; background: #1a1a2e; background-size: cover; background-position: center; background-attachment: fixed; display: flex; flex-direction: column; }
     .header { position: relative; color: white; text-align: center; overflow: hidden; min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 0; }
-    .hotel-photo-bg { position: absolute; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); z-index: 0; }
-    .hotel-photo-bg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.55; display: none; }
+    .hotel-photo-bg { position: absolute; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); z-index: 0; overflow: hidden; }
+    .slideshow-slide { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.2s ease; }
+    .slideshow-slide.active { opacity: 0.55; }
+    .slideshow-dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; z-index: 3; }
+    .slideshow-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; transition: all .3s; }
+    .slideshow-dot.active { background: white; width: 14px; border-radius: 3px; }
     .header-inner { position: relative; z-index: 1; padding: 20px; width: 100%; }
     .header h1 { font-size: 24px; font-weight: bold; text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
     .header p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
@@ -783,7 +819,7 @@
 <body>
 
   <div class="header">
-    <div class="hotel-photo-bg"><img id="hotel-photo-bg-img" src="" alt=""></div>
+    <div class="hotel-photo-bg" id="slideshow-container"></div>
     <div class="header-inner">
       <h1 id="hotel-name">🏨 Welco</h1>
       <p id="room-label">Loading...</p>
@@ -833,6 +869,7 @@
 
       <div class="eta-badge" id="eta-badge">⏱ <span id="txt-ready">Usually ready in</span> <strong id="eta-time">10 mins</strong></div>
       <textarea id="message" id="txt-describe"></textarea>
+      <div id="translate-hint" style="font-size:11px;color:#aaa;margin-top:4px;display:none">🌍 Your message will be auto-translated to English for our staff</div>
       <button class="submit-btn" id="submit-btn" onclick="submitRequest()" id="btn-send">Send Request 🚀</button>
       <div class="success" id="success">✅ <span id="txt-sent">Request sent!</span></div>
     </div>
@@ -1215,19 +1252,44 @@
  if (hotel) {
  hotelData = hotel;
  document.documentElement.style.setProperty('--brand', hotel.colour || '#1a1a2e');
- if (hotel.logo_url) {
- document.body.style.backgroundImage = 'url(' + hotel.logo_url + ')';
- document.body.style.backgroundSize = 'cover';
- document.body.style.backgroundPosition = 'center';
- document.body.style.backgroundAttachment = 'fixed';
- var photoBg = document.getElementById('hotel-photo-bg-img');
- photoBg.src = hotel.logo_url;
- photoBg.style.display = 'block';
- document.getElementById('hotel-name').textContent = hotel.name;
+ // SLIDESHOW
+ var photos = [];
+ if (hotel.hotel_photos && hotel.hotel_photos.length > 0) { photos = hotel.hotel_photos; }
+ else if (hotel.logo_url) { photos = [hotel.logo_url]; }
+ var container = document.getElementById('slideshow-container');
+ if (container && photos.length > 0) {
+   document.body.style.background = '#1a1a2e';
+   container.innerHTML = '';
+   photos.forEach(function(url, i) {
+     var img = document.createElement('img');
+     img.src = url; img.className = 'slideshow-slide'+(i===0?' active':''); img.alt = '';
+     container.appendChild(img);
+   });
+   if (photos.length > 1) {
+     var dotsWrap = document.createElement('div');
+     dotsWrap.className = 'slideshow-dots';
+     var curSlide = 0;
+     photos.forEach(function(_, i) {
+       var dot = document.createElement('div');
+       dot.className = 'slideshow-dot'+(i===0?' active':'');
+       dot.onclick = (function(idx){ return function(){ goSlide(idx); }; })(i);
+       dotsWrap.appendChild(dot);
+     });
+     container.appendChild(dotsWrap);
+     function goSlide(n) {
+       var slides = container.querySelectorAll('.slideshow-slide');
+       var dots = container.querySelectorAll('.slideshow-dot');
+       slides[curSlide].classList.remove('active'); dots[curSlide].classList.remove('active');
+       curSlide = (n + photos.length) % photos.length;
+       slides[curSlide].classList.add('active'); dots[curSlide].classList.add('active');
+     }
+     setInterval(function(){ goSlide(curSlide+1); }, 5000);
+   }
+   document.getElementById('hotel-name').textContent = hotel.name;
  } else {
- document.body.style.background = (hotel.colour || '#1a1a2e');
- document.querySelector('.hotel-photo-bg').style.background = (hotel.colour || '#1a1a2e') + 'dd';
- document.getElementById('hotel-name').textContent = (hotel.emoji || '🏨') + ' ' + hotel.name;
+   document.body.style.background = (hotel.colour || '#1a1a2e');
+   if (container) container.style.background = (hotel.colour || '#1a1a2e') + 'dd';
+   document.getElementById('hotel-name').textContent = (hotel.emoji || '\U0001F3E8') + ' ' + hotel.name;
  }
  document.getElementById('room-label').textContent = 'Room ' + roomNumber + (hotel.city ? ' — ' + hotel.city : '');
  document.getElementById('hotel-name-ty').textContent = hotel.name;
@@ -1417,11 +1479,57 @@
  document.getElementById('rating-label').textContent = labels[r] || '';
  document.querySelectorAll('#stars span').forEach(function(s, i) { s.style.opacity = i < r ? '1' : '0.3'; });
  }
+ // ── AUTO-TRANSLATE typed message to English ──────────────────
+ // Maps Welco lang codes to LibreTranslate language codes
+ var LANG_MAP = { en:'en', hi:'hi', gu:'gu', es:'es', fr:'fr', de:'de', it:'it', ar:'ar' };
+
+ async function translateToEnglish(text, sourceLang) {
+   // No need to translate if already English or empty
+   if (!text || !text.trim() || sourceLang === 'en') return text;
+   var lcode = LANG_MAP[sourceLang] || 'en';
+   if (lcode === 'en') return text;
+   try {
+     // Try MyMemory free translation API (no key needed, 1000 req/day free)
+     var url = 'https://api.mymemory.translated.net/get?q=' +
+       encodeURIComponent(text) + '&langpair=' + lcode + '|en';
+     var r = await fetch(url);
+     var d = await r.json();
+     if (d && d.responseStatus === 200 && d.responseData && d.responseData.translatedText) {
+       var translated = d.responseData.translatedText;
+       // Only use if translation actually changed something
+       if (translated && translated.toLowerCase() !== text.toLowerCase()) {
+         return translated + ' [' + text + ']';
+       }
+     }
+   } catch(e) {}
+   // Fallback — return original if translation fails
+   return text;
+ }
+
  async function submitRequest() {
  if (!selectedCategory) { alert(T('howhelp')); return; }
  if (deptIsClosed) { alert(T('closedDefault')); return; }
- var message = document.getElementById('message').value ||
- selectedQuicks.map(function(k){ return getOptionLabel(k).replace(/[\u{1F000}-\u{1FFFF}]/gu,'').trim()||k; }).join(', ');
+
+ var typedMessage = document.getElementById('message').value.trim();
+ var quickMessage = selectedQuicks.map(function(k){ return getOptionLabel(k).replace(/[\u{1F000}-\u{1FFFF}]/gu,'').trim()||k; }).join(', ');
+ var rawMessage = typedMessage || quickMessage;
+
+ // Auto-translate typed text (not quick options — they're already in English internally)
+ var message = rawMessage;
+ if (typedMessage && currentLang !== 'en') {
+   try {
+     var btn = document.getElementById('submit-btn');
+     var origText = btn.textContent;
+     btn.textContent = '🌍 Translating...';
+     btn.disabled = true;
+     message = await translateToEnglish(typedMessage, currentLang);
+     btn.textContent = origText;
+     btn.disabled = false;
+   } catch(e) {
+     message = rawMessage; // fallback to original
+   }
+ }
+
  try {
  var res = await fetch('/requests', {
  method: 'POST', headers: { 'Content-Type': 'application/json' },

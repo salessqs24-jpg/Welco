@@ -574,7 +574,17 @@
             <input type="color" id="set-colorpicker" oninput="document.getElementById('set-colortext').value=this.value">
             <input type="text" id="set-colortext" placeholder="#0a9396">
           </div>
-          <label style="margin-top:6px">Hotel Photo</label>
+          <label style="margin-top:6px">Hotel Photos (Slideshow)</label>
+          <div style="background:#f0fdf9;border:1.5px solid #b2e8e8;border-radius:12px;padding:14px;margin-bottom:10px">
+            <div style="font-size:12px;color:#005f73;margin-bottom:10px;font-weight:600">📸 Add up to 5 photos — they rotate every 5 seconds in guest portal</div>
+            <div id="photo-urls-list"></div>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <input type="url" id="new-photo-url" placeholder="https://your-photo-url.jpg" style="flex:1;padding:9px 12px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:13px;outline:none">
+              <button onclick="addPhotoUrl()" style="padding:9px 16px;background:#0a9396;color:white;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">Add</button>
+            </div>
+            <div style="font-size:11px;color:#aaa;margin-top:8px">Use Google Photos, Dropbox, or any public image URL. Or upload to <a href="https://imgbb.com" target="_blank" style="color:#0a9396">imgbb.com</a> free.</div>
+          </div>
+          <label style="margin-top:6px">Hotel Photo (Single / Logo)</label>
           <div class="logo-upload-area" onclick="document.getElementById('logo-file-input').click()">
             <div class="logo-preview-wrap" id="logo-preview-wrap">
               <img id="logo-preview-img" src="" alt="" style="display:none">
@@ -853,6 +863,8 @@ function startApp() {
    var db = document.getElementById('demo-banner');
    if (db) db.style.display = 'block';
  }
+ // Load hotel photos for slideshow manager
+ loadPhotos();
  document.getElementById('t-name').textContent = hotel.name;
  document.getElementById('t-city').textContent = hotel.city || '';
  document.documentElement.style.setProperty('--brand', hotel.colour || '#005f73');
@@ -1099,7 +1111,7 @@ function reqRow(r){
 function saveSettings(){
  var name=document.getElementById('set-name').value.trim();var city=document.getElementById('set-city').value.trim();var colour=document.getElementById('set-colortext').value.trim();
  if(!name){alert('Hotel name cannot be empty.');return;}
- var payload={name:name,city:city,colour:colour};
+ var payload={name:name,city:city,colour:colour,hotel_photos:hotelPhotos};
  if(pendingLogoBase64!==null)payload.logo_url=pendingLogoBase64;
  authFetch('/hotels/'+hotel.hotel_id+'/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).then(function(r){
  if(r.ok){var newLogo=pendingLogoBase64!==null?pendingLogoBase64:hotel.logo_url;hotel=Object.assign({},hotel,{name:name,city:city,colour:colour,logo_url:newLogo});localStorage.setItem('welco_admin_hotel',JSON.stringify(hotel));for(var i=0;i<allHotels.length;i++){if(allHotels[i].hotel_id===hotel.hotel_id){allHotels[i]=hotel;break;}}localStorage.setItem('welco_admin_hotels',JSON.stringify(allHotels));document.getElementById('t-name').textContent=name;document.getElementById('t-city').textContent=city;document.documentElement.style.setProperty('--brand',colour);applyLogoOrEmoji(hotel.logo_url,null);if(allHotels.length>1)renderHotelDropdown();pendingLogoBase64=null;var msg=document.getElementById('settings-msg');msg.textContent='✅ Settings saved!';msg.className='msg-box msg-success';setTimeout(function(){msg.className='msg-box';},3000);document.getElementById('logo-size-note').textContent='';}
@@ -1184,7 +1196,49 @@ function fpFindAccount(btn){var email=document.getElementById('fp-email').value.
 function fpReset(btn){var ans=document.getElementById('fp-ans').value.trim();var np=document.getElementById('fp-np').value;var cp=document.getElementById('fp-cp').value;var err=document.getElementById('fp-err2');var email=document.getElementById('fp-email').value.trim();if(!ans){err.textContent='Enter your secret answer.';err.style.display='block';return;}if(np.length<6){err.textContent='Password must be at least 6 characters.';err.style.display='block';return;}if(np!==cp){err.textContent='Passwords do not match.';err.style.display='block';return;}btn.textContent='Resetting…';btn.disabled=true;fetch('/owner/reset-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,secret_answer:ans,new_password:np})}).then(function(r){return r.json().then(function(d){return{ok:r.ok,d:d};});}).then(function(res){btn.textContent='Reset Password';btn.disabled=false;if(!res.ok){err.textContent=res.d.error||'Reset failed.';err.style.display='block';return;}document.getElementById('fp2').style.display='none';document.getElementById('fp3').style.display='block';}).catch(function(){btn.textContent='Reset Password';btn.disabled=false;err.textContent='Connection error.';err.style.display='block';});}
 window.onload=function(){try{var stored=localStorage.getItem('welco_admin_hotel');if(stored){hotel=JSON.parse(stored);var storedHotels=localStorage.getItem('welco_admin_hotels');if(storedHotels)allHotels=JSON.parse(storedHotels);startApp();}}catch(e){}};
 
-/* ── BULK QR DOWNLOAD ── */
+/* ── HOTEL PHOTOS SLIDESHOW ── */
+var hotelPhotos = [];
+
+function renderPhotoUrls() {
+  var list = document.getElementById('photo-urls-list');
+  if (!list) return;
+  if (hotelPhotos.length === 0) {
+    list.innerHTML = '<div style="font-size:12px;color:#aaa;padding:6px 0">No photos added yet. Add your first hotel photo above.</div>';
+    return;
+  }
+  list.innerHTML = hotelPhotos.map(function(url, i) {
+    return '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f0f0f0">' +
+      '<img src="' + url + '" style="width:48px;height:36px;object-fit:cover;border-radius:6px;border:1px solid #eee" onerror="this.style.display=\'none\'">' +
+      '<div style="flex:1;font-size:11px;color:#666;word-break:break-all;line-height:1.4">' + url.substring(0, 50) + (url.length > 50 ? '...' : '') + '</div>' +
+      '<button onclick="removePhoto(' + i + ')" style="background:#fde8ea;color:#e63946;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;flex-shrink:0">✕</button>' +
+      '</div>';
+  }).join('');
+}
+
+function addPhotoUrl() {
+  var input = document.getElementById('new-photo-url');
+  var url = input.value.trim();
+  if (!url) { alert('Please enter a photo URL'); return; }
+  if (!url.startsWith('http')) { alert('Please enter a valid URL starting with http'); return; }
+  if (hotelPhotos.length >= 5) { alert('Maximum 5 photos allowed'); return; }
+  hotelPhotos.push(url);
+  input.value = '';
+  renderPhotoUrls();
+}
+
+function removePhoto(i) {
+  hotelPhotos.splice(i, 1);
+  renderPhotoUrls();
+}
+
+function loadPhotos() {
+  if (hotel && hotel.hotel_photos) {
+    hotelPhotos = hotel.hotel_photos;
+  } else {
+    hotelPhotos = [];
+  }
+  renderPhotoUrls();
+}
 function downloadAllQRs(btn) {
   if (!hotel) return;
   var msg = document.getElementById('bulk-qr-msg');

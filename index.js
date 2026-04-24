@@ -36,7 +36,8 @@ app.use('/owner/signup', loginLimiter);
 app.use('/hod/verify',   loginLimiter);
 app.use('/staff/verify', loginLimiter);
 
-app.use(express.json({ limit: '5mb' }));
+app.use(express.json({ limit: '20mb' }));
+app.use(express.urlencoded({ limit: '20mb', extended: true }));
 
 app.use(express.static(__dirname, {
   index: 'index.html',

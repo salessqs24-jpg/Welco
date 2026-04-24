@@ -633,14 +633,6 @@
                   <div style="font-size:12px;color:#888">Auto-answers guest questions 24/7 without disturbing staff</div>
                 </div>
               </div>
-              <div style="display:flex;align-items:center;gap:8px;background:#f0fdf9;border:1px solid #b2e8e8;border-radius:10px;padding:8px 14px">
-                <span style="font-size:12px;font-weight:600;color:#005f73">HOD can edit</span>
-                <label style="position:relative;display:inline-block;width:38px;height:22px;cursor:pointer">
-                  <input type="checkbox" id="hod-kb-permission" style="opacity:0;width:0;height:0" onchange="saveHodKbPermission()">
-                  <span style="position:absolute;inset:0;background:#ccc;border-radius:22px;transition:.3s" id="hod-kb-toggle-bg"></span>
-                  <span style="position:absolute;top:3px;left:3px;width:16px;height:16px;background:white;border-radius:50%;transition:.3s;box-shadow:0 1px 4px rgba(0,0,0,.2)" id="hod-kb-toggle-knob"></span>
-                </label>
-              </div>
             </div>
 
             <!-- PROGRESS INDICATOR -->
@@ -1296,8 +1288,7 @@ function saveSettings(){
    transport: document.getElementById('ai-transport').value.trim(),
    contact: document.getElementById('ai-contact').value.trim(),
    emergency: (document.getElementById('ai-emergency')||{value:''}).value.trim(),
-   extra: document.getElementById('ai-extra').value.trim(),
-   hod_can_edit: document.getElementById('hod-kb-permission') ? document.getElementById('hod-kb-permission').checked : false
+   extra: document.getElementById('ai-extra').value.trim()
  }};
  if(pendingLogoBase64!==null) basicPayload.logo_url=pendingLogoBase64;
 
@@ -1363,7 +1354,7 @@ function loadHOD(){
  if(!Array.isArray(list)||list.length===0){el.innerHTML='<div class="empty">No HODs added yet.</div>';return;}
  var deptColors={'Housekeeping':'#4361EE','Room Service':'#F77F00','Maintenance':'#E63946','Front Desk':'#9B5DE5'};
  var deptEmojis={'Housekeeping':'🛏️','Room Service':'🍽️','Maintenance':'🔧','Front Desk':'🛎️'};
- var PERMS=[{key:'announcements',label:'📢 Announcements'},{key:'schedule',label:'🔧 Scheduling'},{key:'guest_options',label:'🎯 Guest Options'},{key:'service_hours',label:'🕐 Service Hours'},{key:'staff',label:'👷 Staff Mgmt'},{key:'analytics',label:'📊 Analytics'}];
+ var PERMS=[{key:'announcements',label:'📢 Announcements'},{key:'schedule',label:'🔧 Scheduling'},{key:'guest_options',label:'🎯 Guest Options'},{key:'service_hours',label:'🕐 Service Hours'},{key:'staff',label:'👷 Staff Mgmt'},{key:'analytics',label:'📊 Analytics'},{key:'ai_kb',label:'✨ AI Knowledge Base'}];
  el.innerHTML=list.map(function(h){
  var color=deptColors[h.department]||'#005f73';
  var perms=h.permissions||{announcements:true,schedule:true,guest_options:true,service_hours:true,staff:true,analytics:true};
@@ -1480,22 +1471,7 @@ function updateKbProgress() {
   if (emoji) emoji.textContent = pct < 30 ? '😴' : pct < 60 ? '🙂' : pct < 90 ? '😊' : '🤩';
 }
 
-function saveHodKbPermission() {
-  var allowed = document.getElementById('hod-kb-permission').checked;
-  var knob = document.getElementById('hod-kb-toggle-knob');
-  var bg = document.getElementById('hod-kb-toggle-bg');
-  if (knob) knob.style.transform = allowed ? 'translateX(16px)' : 'translateX(0)';
-  if (bg) bg.style.background = allowed ? '#667eea' : '#ccc';
-  // Save to hotel settings
-  if (hotel) {
-    var kb = hotel.ai_kb || {};
-    kb.hod_can_edit = allowed;
-    authFetch('/hotels/'+hotel.hotel_id+'/update', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({name:hotel.name,city:hotel.city,colour:hotel.colour,ai_kb:kb})
-    }).catch(function(){});
-  }
-}
+// HOD KB permission now managed via HOD permissions panel
 
 function loadKbFields() {
   var kb = (hotel && hotel.ai_kb) || {};

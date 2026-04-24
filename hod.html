@@ -615,13 +615,13 @@ function attemptHodLogin(hotelCode, name, pin, btn, attempt) {
  btn.textContent = 'Login as HOD'; btn.disabled = false;
  if (!res.ok) { showErr(res.d.error || 'Invalid credentials.'); return; }
  var hotel = res.d.hod.hotel || {};
- hodData = { hotel_id: hotel.hotel_id, hotel: hotel, name: name, dept: res.d.hod.department };
- hodHotelData = hotel; // Store full hotel data for KB access
+ hodData = { hotel_id: hotel.hotel_id, hotel: hotel, name: name, dept: res.d.hod.department, permissions: res.d.hod.permissions || {} };
+ hodHotelData = hotel;
  localStorage.setItem('welco_hod', JSON.stringify(hodData));
  if (res.d.token) localStorage.setItem('welco_token', res.d.token);
- // Show AI KB tab if admin permitted
- var kb = hotel.ai_kb || {};
- if (kb.hod_can_edit) {
+ // Show AI KB tab if admin granted permission
+ var perms = res.d.hod.permissions || {};
+ if (perms.ai_kb) {
    var kbTab = document.getElementById('ai-kb-tab');
    if (kbTab) kbTab.style.display = 'flex';
  }
@@ -829,11 +829,11 @@ function renderStaffPerformance(reqs){
 function showTab(name) {
   // Show/hide AI KB tab based on permission
   if (name === 'aikb') {
-    var kb = hodHotelData && hodHotelData.ai_kb ? hodHotelData.ai_kb : {};
-    var allowed = kb.hod_can_edit || false;
+    var perms = hodData && hodData.permissions ? hodData.permissions : {};
+    var allowed = perms.ai_kb || false;
     document.getElementById('aikb-locked').style.display = allowed ? 'none' : 'block';
     document.getElementById('aikb-content').style.display = allowed ? 'block' : 'none';
-    if (allowed) loadHodKbFields(kb);
+    if (allowed && hodHotelData) loadHodKbFields(hodHotelData.ai_kb || {});
   }
  var permMap={'staff':'staff','analytics':'analytics','announce':'announcements','maintenance':'schedule','guestoptions':'guest_options'};
  var requiredPerm=permMap[name];

@@ -17,21 +17,11 @@
 <head>
 
   <script>
-    /* © 2026 Welco™ - Protected Source */
     (function(){
-      var _0x4a2b=function(){};
-      try{
-        var d=new Date();
-        if(d.getFullYear()<2026){}
-      }catch(e){}
-      // Disable right-click
       document.addEventListener('contextmenu',function(e){e.preventDefault();});
-      // Detect devtools open
       var threshold=160;
       setInterval(function(){
-        if(window.outerWidth-window.innerWidth>threshold||window.outerHeight-window.innerHeight>threshold){
-          // devtools detected - do nothing but could add protection here
-        }
+        if(window.outerWidth-window.innerWidth>threshold||window.outerHeight-window.innerHeight>threshold){}
       },1000);
     })();
   </script>
@@ -45,7 +35,6 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5 url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80') center/cover fixed no-repeat; min-height: 100vh; }
 
-    /* LOGIN */
     #login-screen { min-height: 100vh; background: linear-gradient(160deg, #005f73, #0a9396); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
     .login-card { background: white; border-radius: 20px; padding: 32px; width: 100%; max-width: 360px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
     .login-logo { font-size: 44px; text-align: center; margin-bottom: 8px; }
@@ -60,7 +49,6 @@
     .login-note { font-size: 11px; color: #aaa; text-align: center; margin-top: 12px; line-height: 1.5; }
     .hotel-code-hint { background: #e8f4f4; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #005f73; margin-bottom: 14px; }
 
-    /* APP */
     #app-screen { display: none; }
     .topbar { background: linear-gradient(90deg, var(--brand), var(--brand2)); color: white; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; }
     .topbar-left { display: flex; align-items: center; gap: 12px; }
@@ -72,32 +60,26 @@
     .dept-badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; background: rgba(255,255,255,0.2); }
     .logout-btn { background: rgba(255,255,255,0.15); border: none; color: white; padding: 6px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; }
 
-    /* ALERT BAR */
     .alert-bar { background: #e63946; color: white; padding: 10px 20px; font-size: 13px; font-weight: 600; text-align: center; display: none; animation: pulse-bg 2s infinite; }
     @keyframes pulse-bg { 0%,100%{background:#e63946} 50%{background:#c1121f} }
 
-    /* TABS */
     .tabs { display: flex; background: white; border-bottom: 1px solid #eee; overflow-x: auto; }
     .tab { padding: 13px 18px; font-size: 13px; font-weight: 500; color: #999; cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; }
     .tab.active { color: var(--brand); border-bottom-color: var(--brand); }
 
-    /* CONTENT */
     .content { padding: 16px; max-width: 900px; margin: 0 auto; padding-bottom: 40px; }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
-    /* CARDS */
     .card { background: rgba(255,255,255,0.92); border-radius: 14px; padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.12); }
     .card-title { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
     .card-sub { font-size: 12px; color: #999; margin-bottom: 16px; }
 
-    /* STATS */
     .stat-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 16px; }
     .stat-box { background: rgba(255,255,255,0.92); border-radius: 12px; padding: 16px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
     .stat-num { font-size: 32px; font-weight: 700; color: var(--brand2); }
     .stat-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
 
-    /* REQUESTS */
     .request-row { padding: 14px 0; border-bottom: 1px solid #f0f0f0; }
     .request-row:last-child { border-bottom: none; }
     .req-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
@@ -112,7 +94,6 @@
     .sla-warn { background: #fde8ea; color: #e63946; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; }
     .sla-ok { background: #d1fae5; color: #065f46; padding: 2px 8px; border-radius: 6px; font-size: 11px; }
 
-    /* ROOMS */
     .rooms-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
     .room-card { background: #f9f9f9; border-radius: 10px; padding: 14px; text-align: center; border: 1px solid #eee; }
     .room-num { font-size: 20px; font-weight: 700; color: var(--brand); }
@@ -122,22 +103,18 @@
     .add-row input { flex: 1; min-width: 80px; padding: 10px 12px; border: 1.5px solid #e0ddd8; border-radius: 8px; font-size: 14px; outline: none; }
     .btn-add { padding: 10px 18px; background: var(--brand); color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; }
 
-    /* STAFF */
     .staff-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
     .staff-row:last-child { border-bottom: none; }
     .staff-name-txt { font-size: 14px; font-weight: 500; }
     .staff-pin { font-family: monospace; font-size: 15px; font-weight: 700; color: var(--brand2); background: #e8f4f4; padding: 4px 10px; border-radius: 6px; }
     .btn-remove { background: #fde8ea; color: #e63946; border: none; border-radius: 6px; padding: 4px 10px; font-size: 11px; cursor: pointer; }
 
-    /* MSG */
     .msg-box { padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 12px; display: none; }
     .msg-success { background: #d1fae5; color: #065f46; display: block; }
 
-    /* FILTER */
     .filter-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
     select.filter-sel { padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; outline: none; background: white; }
 
-    /* CHARTS */
     .chart-wrap { height: 220px; }
     .donut-wrap { position: relative; height: 180px; }
     .donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; pointer-events: none; }
@@ -147,7 +124,6 @@
     .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #555; }
     .legend-dot { width: 9px; height: 9px; border-radius: 50%; }
 
-    /* MAINTENANCE */
     .maint-item { padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
     .maint-item:last-child { border-bottom: none; }
     .maint-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
@@ -171,46 +147,37 @@
       .stat-row { grid-template-columns: 1fr 1fr; }
       .rooms-grid { grid-template-columns: 1fr 1fr; }
     }
-  
-  /* ── Welco™ Center Watermark ── */
-  body::after {
-    content: '';
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 500px;
-    height: 500px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500'%3E%3Ctext x='50%25' y='50%25' font-family='Georgia, serif' font-size='52' font-weight='bold' fill='%23005f73' fill-opacity='0.045' text-anchor='middle' dominant-baseline='middle' transform='rotate(-20, 250, 250)'%3E%C2%A9 Welco%E2%84%A2%3C/text%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: center;
-    pointer-events: none;
-    z-index: 9998;
-  }
 
+    body::after {
+      content: '';
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 500px; height: 500px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500'%3E%3Ctext x='50%25' y='50%25' font-family='Georgia, serif' font-size='52' font-weight='bold' fill='%23005f73' fill-opacity='0.045' text-anchor='middle' dominant-baseline='middle' transform='rotate(-20, 250, 250)'%3E%C2%A9 Welco%E2%84%A2%3C/text%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: center;
+      pointer-events: none; z-index: 9998;
+    }
   </style>
 
   <script>(function(){
- var _0x='© 2026 Welco Technologies. All Rights Reserved.';
- console.log('%c'+_0x,'color:#005f73;font-size:14px;font-weight:bold;');
- console.log('%cStop!','color:#e63946;font-size:40px;font-weight:bold;');
- console.log('%cThis is a browser feature for developers. If someone told you to copy-paste something here, it is a scam.','color:#333;font-size:14px;');
- document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
- var threshold = 160;
- setInterval(function(){
- if(window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold){
- document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#1a1a2e;color:white;font-size:20px;font-family:sans-serif;text-align:center;padding:20px">' +
- '<div><div style="font-size:60px;margin-bottom:20px">🔒</div>' +
- '<div style="font-weight:bold;margin-bottom:10px">© 2026 Welco Technologies</div>' +
- '<div style="font-size:14px;opacity:0.7">Developer tools detected.<br>This software is protected.</div></div></div>';
- }
- }, 1000);
- })();</script>
+    var _0x='© 2026 Welco Technologies. All Rights Reserved.';
+    console.log('%c'+_0x,'color:#005f73;font-size:14px;font-weight:bold;');
+    console.log('%cStop!','color:#e63946;font-size:40px;font-weight:bold;');
+    console.log('%cThis is a browser feature for developers.','color:#333;font-size:14px;');
+    document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+    var threshold = 160;
+    setInterval(function(){
+      if(window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold){
+        document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#1a1a2e;color:white;font-size:20px;font-family:sans-serif;text-align:center;padding:20px"><div><div style="font-size:60px;margin-bottom:20px">🔒</div><div style="font-weight:bold;margin-bottom:10px">© 2026 Welco Technologies</div><div style="font-size:14px;opacity:0.7">Developer tools detected.<br>This software is protected.</div></div></div>';
+      }
+    }, 1000);
+  })();</script>
   <script src="/welco-protect.js"></script>
 </head>
 <body>
 
-<!-- ══════════ LOGIN ══════════ -->
+<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-logo">🎯</div>
   <div class="login-title">Welco HOD Portal</div>
@@ -229,7 +196,7 @@
   </div>
 </div>
 
-<!-- ══════════ APP ══════════ -->
+<!-- APP -->
 <div id="app-screen">
 
   <div class="topbar">
@@ -373,12 +340,12 @@
       </div>
       <div class="card">
         <div class="card-title">👷 Staff Performance</div>
-        <div class="card-sub">Individual stats for your team — based on completed requests</div>
+        <div class="card-sub">Individual stats for your team</div>
         <div id="staff-perf-list"><div class="loading">Loading...</div></div>
       </div>
       <div class="card" style="border:2px solid #0a9396">
         <div class="card-title">📥 Download Morning Report</div>
-        <div class="card-sub">Select a date range and download your department report for admin</div>
+        <div class="card-sub">Select a date range and download your department report</div>
         <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:16px">
           <div style="flex:1;min-width:130px">
             <div style="font-size:11px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">From Date</div>
@@ -451,8 +418,6 @@
 
     <!-- GUEST OPTIONS -->
     <div class="tab-panel" id="panel-guestoptions">
-
-      <!-- SERVICE HOURS -->
       <div class="card" style="border:2px solid #e63946">
         <div class="card-title">🕐 Service Hours</div>
         <div class="card-sub">Control when guests can send requests to your department.</div>
@@ -487,7 +452,7 @@
 
       <div class="card">
         <div class="card-title">🎯 Guest Quick Options</div>
-        <div class="card-sub">Toggle which services guests see. Only enabled options appear for guests.</div>
+        <div class="card-sub">Toggle which services guests see.</div>
         <div class="msg-box" id="go-msg"></div>
         <div id="go-list" style="display:flex;flex-direction:column;gap:10px;margin-top:8px"></div>
         <button onclick="saveGuestOptions()" style="margin-top:18px;width:100%;padding:14px;background:#005f73;color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer">💾 Save Guest Options</button>
@@ -506,12 +471,12 @@
       </div>
     </div>
 
-    <!-- AI KNOWLEDGE BASE PANEL -->
+    <!-- AI KNOWLEDGE BASE -->
     <div class="tab-panel" id="panel-aikb">
       <div class="card" id="aikb-locked" style="display:none;text-align:center;padding:40px">
         <div style="font-size:48px;margin-bottom:16px">🔒</div>
         <div style="font-size:16px;font-weight:700;color:#0d1b1e;margin-bottom:8px">Access Restricted</div>
-        <div style="font-size:13px;color:#888">The hotel admin has not granted permission to edit the AI Knowledge Base. Please contact your hotel admin.</div>
+        <div style="font-size:13px;color:#888">The hotel admin has not granted permission to edit the AI Knowledge Base.</div>
       </div>
       <div id="aikb-content" style="display:none">
         <div class="card" style="border:2px solid #667eea">
@@ -522,16 +487,22 @@
               <div class="card-sub" style="margin:0">Fill in hotel info — AI answers guests automatically</div>
             </div>
           </div>
-          <div style="display:grid;gap:14px">
+
+          <!-- KB LOADING INDICATOR -->
+          <div id="kb-loading" style="text-align:center;padding:20px;color:#667eea;font-size:13px;display:none">⏳ Loading saved information...</div>
+
+          <div style="display:grid;gap:14px" id="kb-fields">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
               <div>
-                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">📶 WiFi Network</label>
-                <input type="text" id="hod-ai-wifi-name" placeholder="Network name" style="width:100%;padding:10px 12px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;margin-bottom:8px">
-                <input type="text" id="hod-ai-wifi" placeholder="Password" style="width:100%;padding:10px 12px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;font-family:monospace">
+                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">📶 WiFi Network Name</label>
+                <input type="text" id="hod-ai-wifi-name" placeholder="e.g. KannuHotel_Guest" style="width:100%;padding:10px 12px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;margin-bottom:8px">
+                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">🔑 WiFi Password</label>
+                <input type="text" id="hod-ai-wifi" placeholder="e.g. Welcome@2026" style="width:100%;padding:10px 12px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;font-family:monospace">
               </div>
               <div>
-                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">⏰ Check-in / Out</label>
+                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">⏰ Check-in Time</label>
                 <input type="time" id="hod-ai-checkin" style="width:100%;padding:10px 12px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;margin-bottom:8px">
+                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">⏰ Check-out Time</label>
                 <input type="time" id="hod-ai-checkout" style="width:100%;padding:10px 12px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none">
               </div>
             </div>
@@ -544,20 +515,20 @@
               <textarea id="hod-ai-activities" placeholder="Camel safari ₹800/person 4PM, Boat ride ₹500 6AM-7PM..." style="width:100%;padding:10px 12px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;min-height:70px;resize:vertical;font-family:sans-serif"></textarea>
             </div>
             <div>
-              <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">🍽️ Restaurant & Food</label>
+              <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">🍽️ Restaurant & Food (include breakfast timings here)</label>
               <textarea id="hod-ai-restaurant" placeholder="Breakfast 7-10AM ₹350, Lunch 12-3PM ₹500, Dinner 7-11PM ₹700, Room service 24/7" style="width:100%;padding:10px 12px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;min-height:70px;resize:vertical;font-family:sans-serif"></textarea>
             </div>
             <div>
-              <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">🚗 Transport</label>
+              <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">🚗 Transport & Location</label>
               <textarea id="hod-ai-transport" placeholder="Airport 45 min ₹600, Railway 20 min ₹300, City center 10 min walk" style="width:100%;padding:10px 12px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;min-height:60px;resize:vertical;font-family:sans-serif"></textarea>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
               <div>
-                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">📞 Reception</label>
+                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">📞 Reception Number</label>
                 <input type="tel" id="hod-ai-contact" placeholder="+91 98765 43210" style="width:100%;padding:10px 12px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none">
               </div>
               <div>
-                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">🚨 Emergency</label>
+                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">🚨 Emergency Number</label>
                 <input type="tel" id="hod-ai-emergency" placeholder="+91 98765 43211" style="width:100%;padding:10px 12px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none">
               </div>
             </div>
@@ -576,11 +547,7 @@
               </div>
               <span style="background:#f0f0ff;color:#667eea;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px" id="faq-count">0 FAQs</span>
             </div>
-
-            <!-- FAQ LIST -->
             <div id="faq-list" style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px"></div>
-
-            <!-- ADD NEW FAQ -->
             <div style="background:#f8f7ff;border:1.5px dashed #c4b5fd;border-radius:14px;padding:16px">
               <div style="font-size:12px;font-weight:700;color:#667eea;margin-bottom:10px">➕ Add New FAQ</div>
               <div style="margin-bottom:10px">
@@ -593,14 +560,12 @@
               </div>
               <button onclick="addFaq()" style="width:100%;padding:11px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer">+ Add to FAQ List</button>
             </div>
-
-            <!-- QUICK ADD COMMON FAQs -->
             <div style="margin-top:12px">
               <div style="font-size:11px;color:#aaa;font-weight:600;margin-bottom:8px">⚡ Quick Add Common Questions:</div>
               <div style="display:flex;flex-wrap:wrap;gap:6px">
                 <button onclick="quickAddFaq('What is the WiFi password?','')" style="padding:5px 12px;background:white;border:1px solid #ddd6fe;border-radius:20px;font-size:11px;color:#667eea;cursor:pointer;font-weight:600">📶 WiFi Password</button>
                 <button onclick="quickAddFaq('What time is checkout?','')" style="padding:5px 12px;background:white;border:1px solid #ddd6fe;border-radius:20px;font-size:11px;color:#667eea;cursor:pointer;font-weight:600">⏰ Checkout Time</button>
-                <button onclick="quickAddFaq('Is breakfast included?','')" style="padding:5px 12px;background:white;border:1px solid #ddd6fe;border-radius:20px;font-size:11px;color:#667eea;cursor:pointer;font-weight:600">🍳 Breakfast</button>
+                <button onclick="quickAddFaq('What time is breakfast?','')" style="padding:5px 12px;background:white;border:1px solid #ddd6fe;border-radius:20px;font-size:11px;color:#667eea;cursor:pointer;font-weight:600">🍳 Breakfast</button>
                 <button onclick="quickAddFaq('What activities are available?','')" style="padding:5px 12px;background:white;border:1px solid #ddd6fe;border-radius:20px;font-size:11px;color:#667eea;cursor:pointer;font-weight:600">🎯 Activities</button>
                 <button onclick="quickAddFaq('Is there a swimming pool?','')" style="padding:5px 12px;background:white;border:1px solid #ddd6fe;border-radius:20px;font-size:11px;color:#667eea;cursor:pointer;font-weight:600">🏊 Pool</button>
                 <button onclick="quickAddFaq('How do I call reception?','')" style="padding:5px 12px;background:white;border:1px solid #ddd6fe;border-radius:20px;font-size:11px;color:#667eea;cursor:pointer;font-weight:600">📞 Reception</button>
@@ -619,367 +584,417 @@
   </div>
 </div>
 
-<script>var hodData = null;
+<script>
+var hodData = null;
 var deptRequests = [];
 var refreshInterval = null;
 var charts = {};
 var deptColors = {'Housekeeping':'#4361EE','Room Service':'#F77F00','Maintenance':'#E63946','Front Desk':'#9B5DE5'};
 var deptEmojis = {'Housekeeping':'🛏️','Room Service':'🍽️','Maintenance':'🔧','Front Desk':'🛎️'};
 var SLA_MINUTES = {'Housekeeping':5,'Room Service':30,'Maintenance':5,'Front Desk':5};
+var hodHotelData = null;
+var faqList = [];
+
 function authFetch(url, options) {
- options = options || {};
- options.headers = options.headers || {};
- var token = localStorage.getItem('welco_token');
- if (token) options.headers['Authorization'] = 'Bearer ' + token;
- return fetch(url, options);
+  options = options || {};
+  options.headers = options.headers || {};
+  var token = localStorage.getItem('welco_token');
+  if (token) options.headers['Authorization'] = 'Bearer ' + token;
+  return fetch(url, options);
 }
+
 function doLogin() {
- var hotelCode = document.getElementById('l-hotelcode').value.trim().toUpperCase();
- var name = document.getElementById('l-name').value.trim();
- var pin = document.getElementById('l-pin').value.trim();
- var btn = document.getElementById('login-btn');
- if (!hotelCode) { showErr('Enter your Hotel Code.'); return; }
- if (!name) { showErr('Enter your name exactly as set by admin.'); return; }
- if (pin.length !== 4) { showErr('PIN must be exactly 4 digits.'); return; }
- attemptHodLogin(hotelCode, name, pin, btn, 1);
+  var hotelCode = document.getElementById('l-hotelcode').value.trim().toUpperCase();
+  var name = document.getElementById('l-name').value.trim();
+  var pin = document.getElementById('l-pin').value.trim();
+  var btn = document.getElementById('login-btn');
+  if (!hotelCode) { showErr('Enter your Hotel Code.'); return; }
+  if (!name) { showErr('Enter your name exactly as set by admin.'); return; }
+  if (pin.length !== 4) { showErr('PIN must be exactly 4 digits.'); return; }
+  attemptHodLogin(hotelCode, name, pin, btn, 1);
 }
+
 function attemptHodLogin(hotelCode, name, pin, btn, attempt) {
- var messages = ['Verifying…', 'Server waking up… (30s)', 'Almost there…'];
- btn.textContent = messages[Math.min(attempt - 1, messages.length - 1)];
- btn.disabled = true;
- var controller = new AbortController();
- var timeoutId = setTimeout(function() { controller.abort(); }, 70000);
- fetch('/hod/verify', {
- method: 'POST', headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ hotel_code: hotelCode, name: name, pin: pin }),
- signal: controller.signal
- })
- .then(function(r) { clearTimeout(timeoutId); return r.json().then(function(d) { return { ok: r.ok, d: d }; }); })
- .then(function(res) {
- btn.textContent = 'Login as HOD'; btn.disabled = false;
- if (!res.ok) { showErr(res.d.error || 'Invalid credentials.'); return; }
- var hotel = res.d.hod.hotel || {};
- hodData = { hotel_id: hotel.hotel_id, hotel: hotel, name: name, dept: res.d.hod.department, permissions: res.d.hod.permissions || {} };
- hodHotelData = hotel;
- localStorage.setItem('welco_hod', JSON.stringify(hodData));
- if (res.d.token) localStorage.setItem('welco_token', res.d.token);
- // Show AI KB tab if admin granted permission
- var perms = res.d.hod.permissions || {};
- if (perms.ai_kb) {
-   var kbTab = document.getElementById('ai-kb-tab');
-   if (kbTab) kbTab.style.display = 'flex';
- }
- startApp();
- })
- .catch(function() {
- clearTimeout(timeoutId);
- if (attempt < 3) { setTimeout(function() { attemptHodLogin(hotelCode, name, pin, btn, attempt + 1); }, 5000); }
- else { btn.textContent = 'Login as HOD'; btn.disabled = false; showErr('Server timeout. Wait 1 min and try again.'); }
- });
+  var messages = ['Verifying…', 'Server waking up… (30s)', 'Almost there…'];
+  btn.textContent = messages[Math.min(attempt - 1, messages.length - 1)];
+  btn.disabled = true;
+  var controller = new AbortController();
+  var timeoutId = setTimeout(function() { controller.abort(); }, 70000);
+  fetch('/hod/verify', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ hotel_code: hotelCode, name: name, pin: pin }),
+    signal: controller.signal
+  })
+  .then(function(r) { clearTimeout(timeoutId); return r.json().then(function(d) { return { ok: r.ok, d: d }; }); })
+  .then(function(res) {
+    btn.textContent = 'Login as HOD'; btn.disabled = false;
+    if (!res.ok) { showErr(res.d.error || 'Invalid credentials.'); return; }
+    var hotel = res.d.hod.hotel || {};
+    hodData = { hotel_id: hotel.hotel_id, hotel: hotel, name: name, dept: res.d.hod.department, permissions: res.d.hod.permissions || {} };
+    hodHotelData = hotel;
+    localStorage.setItem('welco_hod', JSON.stringify(hodData));
+    if (res.d.token) localStorage.setItem('welco_token', res.d.token);
+    var perms = res.d.hod.permissions || {};
+    if (perms.ai_kb) {
+      var kbTab = document.getElementById('ai-kb-tab');
+      if (kbTab) kbTab.style.display = 'flex';
+    }
+    startApp();
+  })
+  .catch(function() {
+    clearTimeout(timeoutId);
+    if (attempt < 3) { setTimeout(function() { attemptHodLogin(hotelCode, name, pin, btn, attempt + 1); }, 5000); }
+    else { btn.textContent = 'Login as HOD'; btn.disabled = false; showErr('Server timeout. Wait 1 min and try again.'); }
+  });
 }
+
 function showErr(msg) { var el = document.getElementById('login-err'); el.textContent = msg; el.style.display = 'block'; }
+
 function doLogout() {
- clearInterval(refreshInterval);
- localStorage.removeItem('welco_hod'); localStorage.removeItem('welco_token');
- hodData = null;
- document.getElementById('app-screen').style.display = 'none';
- document.getElementById('login-screen').style.display = 'flex';
+  clearInterval(refreshInterval);
+  localStorage.removeItem('welco_hod'); localStorage.removeItem('welco_token');
+  hodData = null; hodHotelData = null;
+  document.getElementById('app-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
 }
+
 function startApp() {
- document.getElementById('login-screen').style.display = 'none';
- document.getElementById('app-screen').style.display = 'block';
- var h = hodData.hotel || {};
- var color = h.colour || '#005f73';
- if (h.logo_url) { document.getElementById('t-logo').src = h.logo_url; document.getElementById('t-logo').style.display = 'block'; document.getElementById('t-emoji').style.display = 'none'; }
- else { document.getElementById('t-emoji').textContent = h.emoji || '🏨'; }
- document.getElementById('t-name').textContent = h.name || 'Hotel';
- document.getElementById('t-sub').textContent = hodData.name + ' · HOD';
- document.getElementById('t-dept-badge').textContent = (deptEmojis[hodData.dept] || '') + ' ' + hodData.dept;
- document.getElementById('ov-dept-label').textContent = hodData.dept;
- document.getElementById('req-dept-title').textContent = hodData.dept;
- document.getElementById('staff-dept-label').textContent = hodData.dept;
- document.querySelector('.topbar').style.background = 'linear-gradient(90deg, ' + color + 'dd, ' + color + '88)';
- if (h.logo_url) {
- document.body.style.backgroundImage = 'url(' + h.logo_url + ')';
- document.body.style.backgroundSize = 'cover';
- document.body.style.backgroundPosition = 'center';
- document.body.style.backgroundAttachment = 'fixed';
- } else {
- document.body.style.backgroundImage = "url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80')";
- document.body.style.backgroundSize = 'cover';
- document.body.style.backgroundPosition = 'center';
- document.body.style.backgroundAttachment = 'fixed';
- }
- loadAll();
- refreshInterval = setInterval(loadAll, 10000);
- applyHodPermissions();
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app-screen').style.display = 'block';
+  var h = hodData.hotel || {};
+  var color = h.colour || '#005f73';
+  if (h.logo_url) { document.getElementById('t-logo').src = h.logo_url; document.getElementById('t-logo').style.display = 'block'; document.getElementById('t-emoji').style.display = 'none'; }
+  else { document.getElementById('t-emoji').textContent = h.emoji || '🏨'; }
+  document.getElementById('t-name').textContent = h.name || 'Hotel';
+  document.getElementById('t-sub').textContent = hodData.name + ' · HOD';
+  document.getElementById('t-dept-badge').textContent = (deptEmojis[hodData.dept] || '') + ' ' + hodData.dept;
+  document.getElementById('ov-dept-label').textContent = hodData.dept;
+  document.getElementById('req-dept-title').textContent = hodData.dept;
+  document.getElementById('staff-dept-label').textContent = hodData.dept;
+  document.querySelector('.topbar').style.background = 'linear-gradient(90deg, ' + color + 'dd, ' + color + '88)';
+  if (h.logo_url) {
+    document.body.style.backgroundImage = 'url(' + h.logo_url + ')';
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
+    document.body.style.backgroundAttachment = 'fixed';
+  }
+  loadAll();
+  refreshInterval = setInterval(loadAll, 10000);
+  applyHodPermissions();
 }
+
 function applyHodPermissions() {
- fetch('/hod?hotel_id=' + hodData.hotel_id).then(function(r){return r.json();}).then(function(list){
- var hod = list.find(function(h){ return h.name === hodData.name; });
- if (!hod || !hod.permissions) return;
- var perms = hod.permissions;
- hodData.permissions = perms;
- localStorage.setItem('welco_hod', JSON.stringify(hodData));
- var permTabMap = [null,null,null,'staff','analytics','announcements','schedule','guest_options'];
- document.querySelectorAll('.tab').forEach(function(tab, i) {
- var permKey = permTabMap[i];
- if (permKey && perms[permKey] === false) tab.style.display = 'none';
- else tab.style.display = '';
- });
- var serviceCard = document.querySelector ? null : null;
- setTimeout(function() {
- var sc = document.querySelector('#panel-guestoptions .card[style*="e63946"]');
- if (sc) sc.style.display = (perms['service_hours'] === false) ? 'none' : 'block';
- }, 100);
- }).catch(function(){});
+  fetch('/hod?hotel_id=' + hodData.hotel_id).then(function(r){return r.json();}).then(function(list){
+    var hod = list.find(function(h){ return h.name === hodData.name; });
+    if (!hod || !hod.permissions) return;
+    var perms = hod.permissions;
+    hodData.permissions = perms;
+    localStorage.setItem('welco_hod', JSON.stringify(hodData));
+    if (perms.ai_kb) {
+      var kbTab = document.getElementById('ai-kb-tab');
+      if (kbTab) kbTab.style.display = 'flex';
+    }
+    var permTabMap = [null,null,null,'staff','analytics','announcements','schedule','guest_options'];
+    document.querySelectorAll('.tab').forEach(function(tab, i) {
+      var permKey = permTabMap[i];
+      if (permKey && perms[permKey] === false) tab.style.display = 'none';
+      else if (tab.id !== 'ai-kb-tab') tab.style.display = '';
+    });
+  }).catch(function(){});
 }
+
 function loadAll() {
- fetch('/requests?hotel_id=' + hodData.hotel_id + '&days=30').then(function(r) { return r.json(); }).then(function(data) {
- if (!Array.isArray(data)) return;
- deptRequests = data.filter(function(r) { return r.category === hodData.dept; });
- checkSLAAlerts(deptRequests); renderOverview(deptRequests); renderRequests(); renderAnalytics(deptRequests);
- }).catch(function() {});
+  fetch('/requests?hotel_id=' + hodData.hotel_id + '&days=30').then(function(r) { return r.json(); }).then(function(data) {
+    if (!Array.isArray(data)) return;
+    deptRequests = data.filter(function(r) { return r.category === hodData.dept; });
+    checkSLAAlerts(deptRequests); renderOverview(deptRequests); renderRequests(); renderAnalytics(deptRequests);
+  }).catch(function() {});
 }
+
 function checkSLAAlerts(reqs) {
- var sla = SLA_MINUTES[hodData.dept] || 15;
- var overdue = reqs.filter(function(r) { return r.status !== 'done' && (Date.now() - new Date(r.created_at).getTime()) / 60000 > sla; });
- var bar = document.getElementById('alert-bar'); var card = document.getElementById('overdue-card');
- if (overdue.length > 0) {
- bar.style.display = 'block';
- document.getElementById('alert-msg').textContent = overdue.length + ' request(s) in ' + hodData.dept + ' have exceeded SLA!';
- card.style.display = 'block';
- document.getElementById('overdue-list').innerHTML = overdue.map(function(r) {
- var elapsed = Math.floor((Date.now() - new Date(r.created_at).getTime()) / 60000);
- return '<div class="request-row"><div class="req-top"><span class="req-room">Room ' + (r.room_number || '?') + '</span><span class="sla-warn">' + elapsed + 'm overdue</span></div><div class="req-msg">' + (r.message || 'No details') + '</div></div>';
- }).join('');
- } else { bar.style.display = 'none'; card.style.display = 'none'; }
+  var sla = SLA_MINUTES[hodData.dept] || 15;
+  var overdue = reqs.filter(function(r) { return r.status !== 'done' && (Date.now() - new Date(r.created_at).getTime()) / 60000 > sla; });
+  var bar = document.getElementById('alert-bar'); var card = document.getElementById('overdue-card');
+  if (overdue.length > 0) {
+    bar.style.display = 'block';
+    document.getElementById('alert-msg').textContent = overdue.length + ' request(s) in ' + hodData.dept + ' have exceeded SLA!';
+    card.style.display = 'block';
+    document.getElementById('overdue-list').innerHTML = overdue.map(function(r) {
+      var elapsed = Math.floor((Date.now() - new Date(r.created_at).getTime()) / 60000);
+      return '<div class="request-row"><div class="req-top"><span class="req-room">Room ' + (r.room_number || '?') + '</span><span class="sla-warn">' + elapsed + 'm overdue</span></div><div class="req-msg">' + (r.message || 'No details') + '</div></div>';
+    }).join('');
+  } else { bar.style.display = 'none'; card.style.display = 'none'; }
 }
+
 function renderOverview(reqs) {
- document.getElementById('ov-total').textContent = reqs.length;
- document.getElementById('ov-pending').textContent = reqs.filter(function(r){return r.status==='pending';}).length;
- document.getElementById('ov-progress').textContent = reqs.filter(function(r){return r.status==='in_progress';}).length;
- document.getElementById('ov-done').textContent = reqs.filter(function(r){return r.status==='done';}).length;
- var el = document.getElementById('ov-recent');
- el.innerHTML = reqs.slice(0,8).length ? reqs.slice(0,8).map(reqRow).join('') : '<div class="empty">No requests yet</div>';
+  document.getElementById('ov-total').textContent = reqs.length;
+  document.getElementById('ov-pending').textContent = reqs.filter(function(r){return r.status==='pending';}).length;
+  document.getElementById('ov-progress').textContent = reqs.filter(function(r){return r.status==='in_progress';}).length;
+  document.getElementById('ov-done').textContent = reqs.filter(function(r){return r.status==='done';}).length;
+  var el = document.getElementById('ov-recent');
+  el.innerHTML = reqs.slice(0,8).length ? reqs.slice(0,8).map(reqRow).join('') : '<div class="empty">No requests yet</div>';
 }
+
 function renderRequests() {
- var status = document.getElementById('filter-status').value;
- var dateVal = document.getElementById('filter-date').value;
- var filtered = deptRequests;
- if (status) filtered = filtered.filter(function(r){return r.status===status;});
- if (dateVal) filtered = filtered.filter(function(r){
- var d=new Date(r.created_at); var y=d.getFullYear(); var m=String(d.getMonth()+1).padStart(2,'0'); var day=String(d.getDate()).padStart(2,'0');
- return y+'-'+m+'-'+day===dateVal;
- });
- var countEl = document.getElementById('req-count');
- var label = dateVal ? new Date(dateVal).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}) : 'All time';
- countEl.textContent = filtered.length + ' request(s) — ' + label;
- document.getElementById('req-list').innerHTML = filtered.length ? filtered.map(reqRow).join('') : '<div class="empty">No requests found</div>';
+  var status = document.getElementById('filter-status').value;
+  var dateVal = document.getElementById('filter-date').value;
+  var filtered = deptRequests;
+  if (status) filtered = filtered.filter(function(r){return r.status===status;});
+  if (dateVal) filtered = filtered.filter(function(r){
+    var d=new Date(r.created_at); var y=d.getFullYear(); var m=String(d.getMonth()+1).padStart(2,'0'); var day=String(d.getDate()).padStart(2,'0');
+    return y+'-'+m+'-'+day===dateVal;
+  });
+  var countEl = document.getElementById('req-count');
+  var label = dateVal ? new Date(dateVal).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}) : 'All time';
+  countEl.textContent = filtered.length + ' request(s) — ' + label;
+  document.getElementById('req-list').innerHTML = filtered.length ? filtered.map(reqRow).join('') : '<div class="empty">No requests found</div>';
 }
+
 function setFilterToday() { document.getElementById('filter-date').value = new Date().toISOString().split('T')[0]; renderRequests(); }
 function clearDateFilter() { document.getElementById('filter-date').value = ''; renderRequests(); }
+
 function reqRow(r) {
- var sla=SLA_MINUTES[hodData.dept]||15; var elapsed=(Date.now()-new Date(r.created_at).getTime())/60000;
- var remaining=Math.max(0,sla-elapsed); var isOverdue=elapsed>sla&&r.status!=='done';
- var bc=r.status==='done'?'badge-done':r.status==='in_progress'?'badge-progress':'badge-pending';
- var bt=r.status==='done'?'Done':r.status==='in_progress'?'In Progress':'Pending';
- var time=new Date(r.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
- var catColor=deptColors[r.category]||'#005f73';
- var slaHtml=r.status!=='done'?(isOverdue?'<span class="sla-warn">⚠️ '+Math.floor(elapsed)+'m overdue</span>':'<span class="sla-ok">⏱ '+Math.floor(remaining)+'m left</span>'):'';
- return '<div class="request-row"><div class="req-top"><span class="req-room">Room '+(r.room_number||'?')+'</span><span class="req-cat" style="background:'+catColor+'">'+(r.category||'General')+'</span></div><div class="req-msg">'+(r.message||'No details')+'</div><div class="req-meta"><span class="badge '+bc+'">'+bt+'</span>'+slaHtml+(r.claimed_by?'<span>👷 '+r.claimed_by+'</span>':'')+(r.feedback_rating?'<span>⭐ '+r.feedback_rating+'/5</span>':'')+'<span>'+time+'</span></div></div>';
+  var sla=SLA_MINUTES[hodData.dept]||15; var elapsed=(Date.now()-new Date(r.created_at).getTime())/60000;
+  var remaining=Math.max(0,sla-elapsed); var isOverdue=elapsed>sla&&r.status!=='done';
+  var bc=r.status==='done'?'badge-done':r.status==='in_progress'?'badge-progress':'badge-pending';
+  var bt=r.status==='done'?'Done':r.status==='in_progress'?'In Progress':'Pending';
+  var time=new Date(r.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+  var catColor=deptColors[r.category]||'#005f73';
+  var slaHtml=r.status!=='done'?(isOverdue?'<span class="sla-warn">⚠️ '+Math.floor(elapsed)+'m overdue</span>':'<span class="sla-ok">⏱ '+Math.floor(remaining)+'m left</span>'):'';
+  return '<div class="request-row"><div class="req-top"><span class="req-room">Room '+(r.room_number||'?')+'</span><span class="req-cat" style="background:'+catColor+'">'+(r.category||'General')+'</span></div><div class="req-msg">'+(r.message||'No details')+'</div><div class="req-meta"><span class="badge '+bc+'">'+bt+'</span>'+slaHtml+(r.claimed_by?'<span>👷 '+r.claimed_by+'</span>':'')+(r.feedback_rating?'<span>⭐ '+r.feedback_rating+'/5</span>':'')+'<span>'+time+'</span></div></div>';
 }
+
 function loadRooms() {
- fetch('/rooms?hotel_id='+hodData.hotel_id).then(function(r){return r.json();}).then(function(rooms){
- if(!Array.isArray(rooms))return;
- document.getElementById('rooms-count').textContent=rooms.length+' rooms total';
- document.getElementById('rooms-grid').innerHTML=rooms.length===0?'<div class="empty" style="grid-column:1/-1">No rooms yet</div>':rooms.map(function(r){return '<div class="room-card"><div class="room-num">Room '+r.room_number+'</div><div class="room-floor">Floor '+(r.floor||1)+'</div><div><button class="btn-del" onclick="deleteRoom('+r.id+')">✕ Delete</button></div></div>';}).join('');
- });
+  fetch('/rooms?hotel_id='+hodData.hotel_id).then(function(r){return r.json();}).then(function(rooms){
+    if(!Array.isArray(rooms))return;
+    document.getElementById('rooms-count').textContent=rooms.length+' rooms total';
+    document.getElementById('rooms-grid').innerHTML=rooms.length===0?'<div class="empty" style="grid-column:1/-1">No rooms yet</div>':rooms.map(function(r){return '<div class="room-card"><div class="room-num">Room '+r.room_number+'</div><div class="room-floor">Floor '+(r.floor||1)+'</div><div><button class="btn-del" onclick="deleteRoom('+r.id+')">✕ Delete</button></div></div>';}).join('');
+  });
 }
+
 function addRoom() {
- var num=document.getElementById('new-room-num').value.trim(); var floor=document.getElementById('new-room-floor').value||1;
- if(!num){alert('Enter a room number!');return;}
- authFetch('/rooms',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hodData.hotel_id,room_number:num,floor:parseInt(floor),is_active:true})}).then(function(){
- document.getElementById('new-room-num').value=''; document.getElementById('new-room-floor').value='';
- var msg=document.getElementById('room-msg'); msg.textContent='✅ Room '+num+' added!'; msg.className='msg-box msg-success';
- setTimeout(function(){msg.className='msg-box';},3000); loadRooms();
- });
+  var num=document.getElementById('new-room-num').value.trim(); var floor=document.getElementById('new-room-floor').value||1;
+  if(!num){alert('Enter a room number!');return;}
+  authFetch('/rooms',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hodData.hotel_id,room_number:num,floor:parseInt(floor),is_active:true})}).then(function(){
+    document.getElementById('new-room-num').value=''; document.getElementById('new-room-floor').value='';
+    var msg=document.getElementById('room-msg'); msg.textContent='✅ Room '+num+' added!'; msg.className='msg-box msg-success';
+    setTimeout(function(){msg.className='msg-box';},3000); loadRooms();
+  });
 }
+
 function deleteRoom(id){if(!confirm('Delete this room?'))return;fetch('/rooms/'+id,{method:'DELETE'}).then(function(){loadRooms();});}
+
 function loadStaff() {
- fetch('/staff?hotel_id='+hodData.hotel_id+'&department='+encodeURIComponent(hodData.dept)).then(function(r){return r.json();}).then(function(staff){
- if(!Array.isArray(staff))return;
- document.getElementById('staff-list').innerHTML=staff.length===0?'<div class="empty">No staff added yet for '+hodData.dept+'.</div>':staff.map(function(s){
- var isOn=!!s.is_on_duty; var clockInfo='';
- if(isOn&&s.clocked_in_at){var mins=Math.floor((Date.now()-new Date(s.clocked_in_at).getTime())/60000);clockInfo='🟢 On duty '+(mins<60?mins+'m':Math.floor(mins/60)+'h '+(mins%60)+'m');}
- else if(!isOn&&s.clocked_out_at){clockInfo='🔴 Last seen '+new Date(s.clocked_out_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});}
- else{clockInfo='⚪ Not clocked in';}
- return '<div class="staff-row"><div style="display:flex;align-items:center;gap:10px"><div style="width:38px;height:38px;border-radius:10px;background:'+(isOn?'#d1fae5':'#f5f5f5')+';display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:'+(isOn?'#065f46':'#aaa')+';position:relative">'+(s.name||'?').charAt(0).toUpperCase()+'<div style="position:absolute;bottom:-2px;right:-2px;width:10px;height:10px;border-radius:50%;background:'+(isOn?'#2ecc71':'#ddd')+';border:2px solid white"></div></div><div><div class="staff-name-txt">'+s.name+'</div><div style="font-size:10px;color:#aaa;font-family:monospace">'+(s.staff_id||'No ID')+'</div><div style="font-size:11px;color:'+(isOn?'#065f46':'#aaa')+';margin-top:2px">'+clockInfo+'</div></div></div><div style="display:flex;gap:8px;align-items:center"><button onclick="toggleStaffDuty('+s.id+','+isOn+')" style="padding:7px 14px;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;background:'+(isOn?'#fde8ea':'#d1fae5')+';color:'+(isOn?'#c1121f':'#065f46')+'">'+(isOn?'🔴 Clock Out':'🟢 Clock In')+'</button><button class="btn-remove" onclick="removeStaff('+s.id+')">Remove</button></div></div>';
- }).join('');
- });
+  fetch('/staff?hotel_id='+hodData.hotel_id+'&department='+encodeURIComponent(hodData.dept)).then(function(r){return r.json();}).then(function(staff){
+    if(!Array.isArray(staff))return;
+    document.getElementById('staff-list').innerHTML=staff.length===0?'<div class="empty">No staff added yet for '+hodData.dept+'.</div>':staff.map(function(s){
+      var isOn=!!s.is_on_duty; var clockInfo='';
+      if(isOn&&s.clocked_in_at){var mins=Math.floor((Date.now()-new Date(s.clocked_in_at).getTime())/60000);clockInfo='🟢 On duty '+(mins<60?mins+'m':Math.floor(mins/60)+'h '+(mins%60)+'m');}
+      else if(!isOn&&s.clocked_out_at){clockInfo='🔴 Last seen '+new Date(s.clocked_out_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});}
+      else{clockInfo='⚪ Not clocked in';}
+      return '<div class="staff-row"><div style="display:flex;align-items:center;gap:10px"><div style="width:38px;height:38px;border-radius:10px;background:'+(isOn?'#d1fae5':'#f5f5f5')+';display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:'+(isOn?'#065f46':'#aaa')+';position:relative">'+(s.name||'?').charAt(0).toUpperCase()+'<div style="position:absolute;bottom:-2px;right:-2px;width:10px;height:10px;border-radius:50%;background:'+(isOn?'#2ecc71':'#ddd')+';border:2px solid white"></div></div><div><div class="staff-name-txt">'+s.name+'</div><div style="font-size:10px;color:#aaa;font-family:monospace">'+(s.staff_id||'No ID')+'</div><div style="font-size:11px;color:'+(isOn?'#065f46':'#aaa')+';margin-top:2px">'+clockInfo+'</div></div></div><div style="display:flex;gap:8px;align-items:center"><button onclick="toggleStaffDuty('+s.id+','+isOn+')" style="padding:7px 14px;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;background:'+(isOn?'#fde8ea':'#d1fae5')+';color:'+(isOn?'#c1121f':'#065f46')+'">'+(isOn?'🔴 Clock Out':'🟢 Clock In')+'</button><button class="btn-remove" onclick="removeStaff('+s.id+')">Remove</button></div></div>';
+    }).join('');
+  });
 }
+
 function toggleStaffDuty(staffId,currentlyOn){authFetch('/staff/'+staffId+'/duty',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({is_on_duty:!currentlyOn})}).then(function(r){return r.json();}).then(function(data){if(data.error){alert(data.error);return;}loadStaff();}).catch(function(){alert('Connection error');});}
+
 function addStaff(){
- var name=document.getElementById('new-staff-name').value.trim(); var pin=document.getElementById('new-staff-pin').value.trim();
- if(!name||pin.length!==4){alert('Enter full name and 4-digit PIN');return;}
- authFetch('/staff',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hodData.hotel_id,name:name,pin:pin,department:hodData.dept})}).then(function(r){return r.json();}).then(function(data){
- if(data.error){alert(data.error);return;}
- document.getElementById('new-staff-name').value=''; document.getElementById('new-staff-pin').value='';
- var msg=document.getElementById('staff-msg'); var staffId=data.staff_id||'Check list below';
- msg.innerHTML='✅ <strong>'+name+'</strong> added!<br>Staff ID: <strong style="font-family:monospace;color:#005f73">'+staffId+'</strong> PIN: <strong>'+pin+'</strong>';
- msg.className='msg-box msg-success'; setTimeout(function(){msg.className='msg-box';},8000); loadStaff();
- });
+  var name=document.getElementById('new-staff-name').value.trim(); var pin=document.getElementById('new-staff-pin').value.trim();
+  if(!name||pin.length!==4){alert('Enter full name and 4-digit PIN');return;}
+  authFetch('/staff',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hodData.hotel_id,name:name,pin:pin,department:hodData.dept})}).then(function(r){return r.json();}).then(function(data){
+    if(data.error){alert(data.error);return;}
+    document.getElementById('new-staff-name').value=''; document.getElementById('new-staff-pin').value='';
+    var msg=document.getElementById('staff-msg'); var staffId=data.staff_id||'Check list below';
+    msg.innerHTML='✅ <strong>'+name+'</strong> added!<br>Staff ID: <strong style="font-family:monospace;color:#005f73">'+staffId+'</strong> PIN: <strong>'+pin+'</strong>';
+    msg.className='msg-box msg-success'; setTimeout(function(){msg.className='msg-box';},8000); loadStaff();
+  });
 }
+
 function removeStaff(id){if(!confirm('Remove this staff member?'))return;fetch('/staff/'+id,{method:'DELETE'}).then(function(){loadStaff();});}
+
 function renderAnalytics(reqs) {
- var pending=reqs.filter(function(r){return r.status==='pending';}).length;
- var inprog=reqs.filter(function(r){return r.status==='in_progress';}).length;
- var done=reqs.filter(function(r){return r.status==='done';}).length;
- var rated=reqs.filter(function(r){return r.feedback_rating;});
- var avg=rated.length?(rated.reduce(function(s,r){return s+r.feedback_rating;},0)/rated.length).toFixed(1):'-';
- document.getElementById('an-total').textContent=reqs.length; document.getElementById('an-done').textContent=done;
- document.getElementById('an-rating').textContent=avg==='-'?'-':avg+'⭐'; document.getElementById('an-pending').textContent=pending;
- document.getElementById('donut-num').textContent=reqs.length;
- if(charts.status)charts.status.destroy();
- charts.status=new Chart(document.getElementById('chart-status').getContext('2d'),{type:'doughnut',data:{labels:['Pending','In Progress','Done'],datasets:[{data:[pending,inprog,done],backgroundColor:['#EE9B00','#0A9396','#2ECC71'],borderWidth:0,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,cutout:'70%',plugins:{legend:{display:false}}}});
- document.getElementById('legend-status').innerHTML=['Pending','In Progress','Done'].map(function(l,i){return '<div class="legend-item"><div class="legend-dot" style="background:'+['#EE9B00','#0A9396','#2ECC71'][i]+'"></div>'+l+' ('+[pending,inprog,done][i]+')</div>';}).join('');
- var rCounts=[5,4,3,2,1].map(function(s){return rated.filter(function(r){return r.feedback_rating===s;}).length;});
- if(charts.ratings)charts.ratings.destroy();
- charts.ratings=new Chart(document.getElementById('chart-ratings').getContext('2d'),{type:'bar',data:{labels:['5⭐','4⭐','3⭐','2⭐','1⭐'],datasets:[{data:rCounts,backgroundColor:['#2ECC71','#0A9396','#EE9B00','#F77F00','#E63946'],borderRadius:6,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{beginAtZero:true,ticks:{stepSize:1,font:{size:10}},grid:{color:'#f0f0f0'}}}}});
- var days=[],counts=[];
- for(var i=13;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);days.push(d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}));var ds=d.toDateString();counts.push(reqs.filter(function(r){return new Date(r.created_at).toDateString()===ds;}).length);}
- if(charts.line)charts.line.destroy();
- var dc=deptColors[hodData.dept]||'#0A9396';
- charts.line=new Chart(document.getElementById('chart-line').getContext('2d'),{type:'line',data:{labels:days,datasets:[{data:counts,borderColor:dc,backgroundColor:dc+'18',borderWidth:2.5,pointBackgroundColor:dc,pointRadius:4,fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#aaa'}},y:{beginAtZero:true,ticks:{stepSize:1,font:{size:10},color:'#aaa'},grid:{color:'#f0f0f0'}}}}});
- renderStaffPerformance(reqs);
+  var pending=reqs.filter(function(r){return r.status==='pending';}).length;
+  var inprog=reqs.filter(function(r){return r.status==='in_progress';}).length;
+  var done=reqs.filter(function(r){return r.status==='done';}).length;
+  var rated=reqs.filter(function(r){return r.feedback_rating;});
+  var avg=rated.length?(rated.reduce(function(s,r){return s+r.feedback_rating;},0)/rated.length).toFixed(1):'-';
+  document.getElementById('an-total').textContent=reqs.length; document.getElementById('an-done').textContent=done;
+  document.getElementById('an-rating').textContent=avg==='-'?'-':avg+'⭐'; document.getElementById('an-pending').textContent=pending;
+  document.getElementById('donut-num').textContent=reqs.length;
+  if(charts.status)charts.status.destroy();
+  charts.status=new Chart(document.getElementById('chart-status').getContext('2d'),{type:'doughnut',data:{labels:['Pending','In Progress','Done'],datasets:[{data:[pending,inprog,done],backgroundColor:['#EE9B00','#0A9396','#2ECC71'],borderWidth:0,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,cutout:'70%',plugins:{legend:{display:false}}}});
+  document.getElementById('legend-status').innerHTML=['Pending','In Progress','Done'].map(function(l,i){return '<div class="legend-item"><div class="legend-dot" style="background:'+['#EE9B00','#0A9396','#2ECC71'][i]+'"></div>'+l+' ('+[pending,inprog,done][i]+')</div>';}).join('');
+  var rCounts=[5,4,3,2,1].map(function(s){return rated.filter(function(r){return r.feedback_rating===s;}).length;});
+  if(charts.ratings)charts.ratings.destroy();
+  charts.ratings=new Chart(document.getElementById('chart-ratings').getContext('2d'),{type:'bar',data:{labels:['5⭐','4⭐','3⭐','2⭐','1⭐'],datasets:[{data:rCounts,backgroundColor:['#2ECC71','#0A9396','#EE9B00','#F77F00','#E63946'],borderRadius:6,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{beginAtZero:true,ticks:{stepSize:1,font:{size:10}},grid:{color:'#f0f0f0'}}}}});
+  var days=[],counts=[];
+  for(var i=13;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);days.push(d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}));var ds=d.toDateString();counts.push(reqs.filter(function(r){return new Date(r.created_at).toDateString()===ds;}).length);}
+  if(charts.line)charts.line.destroy();
+  var dc=deptColors[hodData.dept]||'#0A9396';
+  charts.line=new Chart(document.getElementById('chart-line').getContext('2d'),{type:'line',data:{labels:days,datasets:[{data:counts,borderColor:dc,backgroundColor:dc+'18',borderWidth:2.5,pointBackgroundColor:dc,pointRadius:4,fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#aaa'}},y:{beginAtZero:true,ticks:{stepSize:1,font:{size:10},color:'#aaa'},grid:{color:'#f0f0f0'}}}}});
+  renderStaffPerformance(reqs);
 }
+
 function renderStaffPerformance(reqs){
- var el=document.getElementById('staff-perf-list');
- var claimed=reqs.filter(function(r){return r.claimed_by;});
- if(claimed.length===0){el.innerHTML='<div class="empty">No staff performance data yet.</div>';return;}
- var staffMap={};
- claimed.forEach(function(r){var name=r.claimed_by;if(!staffMap[name])staffMap[name]={name:name,total:0,done:0,inProgress:0,ratings:[],totalResponseMs:0,responseCount:0};staffMap[name].total++;if(r.status==='done')staffMap[name].done++;if(r.status==='in_progress')staffMap[name].inProgress++;if(r.feedback_rating)staffMap[name].ratings.push(r.feedback_rating);if(r.claimed_at&&r.created_at){var ms=new Date(r.claimed_at).getTime()-new Date(r.created_at).getTime();if(ms>0){staffMap[name].totalResponseMs+=ms;staffMap[name].responseCount++;}}});
- var staffList=Object.values(staffMap).sort(function(a,b){return b.done-a.done;});
- var medals=['🥇','🥈','🥉'];
- el.innerHTML=staffList.map(function(s,idx){
- var avgRating=s.ratings.length?(s.ratings.reduce(function(a,b){return a+b;},0)/s.ratings.length).toFixed(1):null;
- var avgResponseMin=s.responseCount>0?Math.round(s.totalResponseMs/s.responseCount/60000):null;
- var completionRate=s.total>0?Math.round((s.done/s.total)*100):0;
- var barColor=completionRate>=80?'#2ecc71':completionRate>=50?'#ee9b00':'#e63946';
- var medal=idx<3?medals[idx]:'';
- return '<div style="padding:16px 0;border-bottom:1px solid #f0f0f0"><div style="display:flex;align-items:center;gap:12px;margin-bottom:10px"><div style="width:40px;height:40px;border-radius:10px;background:#e8f4f4;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#005f73;flex-shrink:0">'+s.name.charAt(0).toUpperCase()+'</div><div style="flex:1"><div style="display:flex;align-items:center;gap:6px"><span style="font-size:14px;font-weight:700">'+s.name+'</span>'+(medal?'<span>'+medal+'</span>':'')+'</div><div style="font-size:11px;color:#aaa;margin-top:2px">'+s.done+' completed · '+s.total+' total</div></div><div style="text-align:right"><div style="font-size:20px;font-weight:700;color:'+barColor+'">'+completionRate+'%</div><div style="font-size:10px;color:#aaa">completion</div></div></div><div style="height:6px;background:#f0f0f0;border-radius:6px;margin-bottom:10px;overflow:hidden"><div style="height:100%;width:'+completionRate+'%;background:'+barColor+';border-radius:6px"></div></div><div style="display:flex;gap:12px;flex-wrap:wrap"><div style="background:#f9f9f9;border-radius:8px;padding:8px 12px;text-align:center;flex:1"><div style="font-size:16px;font-weight:700;color:#0a9396">'+s.done+'</div><div style="font-size:10px;color:#aaa">Done</div></div><div style="background:#f9f9f9;border-radius:8px;padding:8px 12px;text-align:center;flex:1"><div style="font-size:16px;font-weight:700;color:#ee9b00">'+s.inProgress+'</div><div style="font-size:10px;color:#aaa">Active</div></div><div style="background:#f9f9f9;border-radius:8px;padding:8px 12px;text-align:center;flex:1"><div style="font-size:16px;font-weight:700;color:#f77f00">'+(avgResponseMin!==null?avgResponseMin+'m':'N/A')+'</div><div style="font-size:10px;color:#aaa">Avg Response</div></div><div style="background:#f9f9f9;border-radius:8px;padding:8px 12px;text-align:center;flex:1"><div style="font-size:16px;font-weight:700;color:#2ecc71">'+(avgRating?avgRating+'⭐':'N/A')+'</div><div style="font-size:10px;color:#aaa">Avg Rating</div></div></div></div>';
- }).join('')+'<div style="font-size:11px;color:#aaa;text-align:center;padding-top:12px">🥇🥈🥉 top performers</div>';
+  var el=document.getElementById('staff-perf-list');
+  var claimed=reqs.filter(function(r){return r.claimed_by;});
+  if(claimed.length===0){el.innerHTML='<div class="empty">No staff performance data yet.</div>';return;}
+  var staffMap={};
+  claimed.forEach(function(r){var name=r.claimed_by;if(!staffMap[name])staffMap[name]={name:name,total:0,done:0,inProgress:0,ratings:[],totalResponseMs:0,responseCount:0};staffMap[name].total++;if(r.status==='done')staffMap[name].done++;if(r.status==='in_progress')staffMap[name].inProgress++;if(r.feedback_rating)staffMap[name].ratings.push(r.feedback_rating);if(r.claimed_at&&r.created_at){var ms=new Date(r.claimed_at).getTime()-new Date(r.created_at).getTime();if(ms>0){staffMap[name].totalResponseMs+=ms;staffMap[name].responseCount++;}}});
+  var staffList=Object.values(staffMap).sort(function(a,b){return b.done-a.done;});
+  var medals=['🥇','🥈','🥉'];
+  el.innerHTML=staffList.map(function(s,idx){
+    var avgRating=s.ratings.length?(s.ratings.reduce(function(a,b){return a+b;},0)/s.ratings.length).toFixed(1):null;
+    var avgResponseMin=s.responseCount>0?Math.round(s.totalResponseMs/s.responseCount/60000):null;
+    var completionRate=s.total>0?Math.round((s.done/s.total)*100):0;
+    var barColor=completionRate>=80?'#2ecc71':completionRate>=50?'#ee9b00':'#e63946';
+    var medal=idx<3?medals[idx]:'';
+    return '<div style="padding:16px 0;border-bottom:1px solid #f0f0f0"><div style="display:flex;align-items:center;gap:12px;margin-bottom:10px"><div style="width:40px;height:40px;border-radius:10px;background:#e8f4f4;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#005f73;flex-shrink:0">'+s.name.charAt(0).toUpperCase()+'</div><div style="flex:1"><div style="display:flex;align-items:center;gap:6px"><span style="font-size:14px;font-weight:700">'+s.name+'</span>'+(medal?'<span>'+medal+'</span>':'')+'</div><div style="font-size:11px;color:#aaa;margin-top:2px">'+s.done+' completed · '+s.total+' total</div></div><div style="text-align:right"><div style="font-size:20px;font-weight:700;color:'+barColor+'">'+completionRate+'%</div><div style="font-size:10px;color:#aaa">completion</div></div></div><div style="height:6px;background:#f0f0f0;border-radius:6px;margin-bottom:10px;overflow:hidden"><div style="height:100%;width:'+completionRate+'%;background:'+barColor+';border-radius:6px"></div></div><div style="display:flex;gap:12px;flex-wrap:wrap"><div style="background:#f9f9f9;border-radius:8px;padding:8px 12px;text-align:center;flex:1"><div style="font-size:16px;font-weight:700;color:#0a9396">'+s.done+'</div><div style="font-size:10px;color:#aaa">Done</div></div><div style="background:#f9f9f9;border-radius:8px;padding:8px 12px;text-align:center;flex:1"><div style="font-size:16px;font-weight:700;color:#ee9b00">'+s.inProgress+'</div><div style="font-size:10px;color:#aaa">Active</div></div><div style="background:#f9f9f9;border-radius:8px;padding:8px 12px;text-align:center;flex:1"><div style="font-size:16px;font-weight:700;color:#f77f00">'+(avgResponseMin!==null?avgResponseMin+'m':'N/A')+'</div><div style="font-size:10px;color:#aaa">Avg Response</div></div><div style="background:#f9f9f9;border-radius:8px;padding:8px 12px;text-align:center;flex:1"><div style="font-size:16px;font-weight:700;color:#2ecc71">'+(avgRating?avgRating+'⭐':'N/A')+'</div><div style="font-size:10px;color:#aaa">Avg Rating</div></div></div></div>';
+  }).join('')+'<div style="font-size:11px;color:#aaa;text-align:center;padding-top:12px">🥇🥈🥉 top performers</div>';
 }
+
+// ── SHOW TAB — AI KB always fetches fresh from server ──
 function showTab(name) {
-  // Show/hide AI KB tab based on permission
   if (name === 'aikb') {
     var perms = hodData && hodData.permissions ? hodData.permissions : {};
     var allowed = perms.ai_kb || false;
     document.getElementById('aikb-locked').style.display = allowed ? 'none' : 'block';
     document.getElementById('aikb-content').style.display = allowed ? 'block' : 'none';
-    if (allowed && hodHotelData) loadHodKbFields(hodHotelData.ai_kb || {});
+    if (allowed) {
+      // ALWAYS fetch fresh from server — never use cached data
+      var loadingEl = document.getElementById('kb-loading');
+      if (loadingEl) loadingEl.style.display = 'block';
+      fetch('/hotels').then(function(r){ return r.json(); }).then(function(hotels){
+        var hotel = hotels.find(function(h){ return h.hotel_id === hodData.hotel_id; });
+        if (hotel) {
+          hodHotelData = hotel;
+          loadHodKbFields(hotel.ai_kb || {});
+        }
+        if (loadingEl) loadingEl.style.display = 'none';
+      }).catch(function(){
+        if (hodHotelData) loadHodKbFields(hodHotelData.ai_kb || {});
+        if (loadingEl) loadingEl.style.display = 'none';
+      });
+    }
   }
- var permMap={'staff':'staff','analytics':'analytics','announce':'announcements','maintenance':'schedule','guestoptions':'guest_options'};
- var requiredPerm=permMap[name];
- if(requiredPerm&&hodData.permissions&&hodData.permissions[requiredPerm]===false){alert('⛔ Access Denied');return;}
- var names=['overview','requests','rooms','staff','analytics','announce','maintenance','guestoptions'];
- document.querySelectorAll('.tab').forEach(function(t,i){t.classList.toggle('active',names[i]===name);});
- document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
- document.getElementById('panel-'+name).classList.add('active');
- if(name==='rooms')loadRooms();
- if(name==='staff')loadStaff();
- if(name==='maintenance')loadMaintenance();
- if(name==='announce')loadAnnouncements();
- if(name==='guestoptions'){loadServiceHours();loadGuestOptions();}
+
+  var permMap={'staff':'staff','analytics':'analytics','announce':'announcements','maintenance':'schedule','guestoptions':'guest_options'};
+  var requiredPerm=permMap[name];
+  if(requiredPerm&&hodData.permissions&&hodData.permissions[requiredPerm]===false){alert('⛔ Access Denied');return;}
+
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
+
+  // Find and activate the clicked tab
+  var tabNames=['overview','requests','rooms','staff','analytics','announce','maintenance','guestoptions'];
+  document.querySelectorAll('.tab').forEach(function(t,i){
+    if(tabNames[i]===name) t.classList.add('active');
+    if(t.id==='ai-kb-tab'&&name==='aikb') t.classList.add('active');
+  });
+  document.getElementById('panel-'+name).classList.add('active');
+
+  if(name==='rooms')loadRooms();
+  if(name==='staff')loadStaff();
+  if(name==='maintenance')loadMaintenance();
+  if(name==='announce')loadAnnouncements();
+  if(name==='guestoptions'){loadServiceHours();loadGuestOptions();}
 }
+
 function loadMaintenance(){fetch('/maintenance?hotel_id='+hodData.hotel_id+'&department='+encodeURIComponent(hodData.dept)).then(function(r){return r.json();}).then(function(data){if(!Array.isArray(data))return;renderMaintenance(data);}).catch(function(){document.getElementById('maint-urgent').innerHTML='<div class="empty">Could not load tasks</div>';});}
+
 function addMaintenanceTask(){
- var title=document.getElementById('maint-title').value.trim(); var desc=document.getElementById('maint-desc').value.trim(); var freq=document.getElementById('maint-freq').value;
- if(!title){alert('Enter a task title!');return;}
- var now=new Date(),nextDue=new Date(now);
- if(freq==='daily')nextDue.setDate(nextDue.getDate()+1);else if(freq==='weekly')nextDue.setDate(nextDue.getDate()+7);else nextDue.setMonth(nextDue.getMonth()+1);
- authFetch('/maintenance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hodData.hotel_id,department:hodData.dept,title:title,description:desc,frequency:freq,next_due:nextDue.toISOString(),created_by:hodData.name})}).then(function(r){return r.json();}).then(function(data){
- if(data.error){alert(data.error);return;}
- document.getElementById('maint-title').value=''; document.getElementById('maint-desc').value='';
- var msg=document.getElementById('maint-msg'); msg.textContent='✅ Task added: '+title+' ('+freq+')'; msg.className='msg-box msg-success';
- setTimeout(function(){msg.className='msg-box';},3000); loadMaintenance();
- });
+  var title=document.getElementById('maint-title').value.trim(); var desc=document.getElementById('maint-desc').value.trim(); var freq=document.getElementById('maint-freq').value;
+  if(!title){alert('Enter a task title!');return;}
+  var now=new Date(),nextDue=new Date(now);
+  if(freq==='daily')nextDue.setDate(nextDue.getDate()+1);else if(freq==='weekly')nextDue.setDate(nextDue.getDate()+7);else nextDue.setMonth(nextDue.getMonth()+1);
+  authFetch('/maintenance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hodData.hotel_id,department:hodData.dept,title:title,description:desc,frequency:freq,next_due:nextDue.toISOString(),created_by:hodData.name})}).then(function(r){return r.json();}).then(function(data){
+    if(data.error){alert(data.error);return;}
+    document.getElementById('maint-title').value=''; document.getElementById('maint-desc').value='';
+    var msg=document.getElementById('maint-msg'); msg.textContent='✅ Task added: '+title+' ('+freq+')'; msg.className='msg-box msg-success';
+    setTimeout(function(){msg.className='msg-box';},3000); loadMaintenance();
+  });
 }
+
 function markTaskDone(id,freq){var now=new Date(),nextDue=new Date(now);if(freq==='daily')nextDue.setDate(nextDue.getDate()+1);else if(freq==='weekly')nextDue.setDate(nextDue.getDate()+7);else nextDue.setMonth(nextDue.getMonth()+1);authFetch('/maintenance/'+id+'/done',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({last_done:now.toISOString(),next_due:nextDue.toISOString()})}).then(function(){loadMaintenance();});}
 function deleteTask(id){if(!confirm('Delete this task?'))return;authFetch('/maintenance/'+id,{method:'DELETE'}).then(function(){loadMaintenance();});}
+
 function renderMaintenance(tasks){
- var now=new Date(); var today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
- function getDueBadge(task){if(!task.next_due)return '<span class="due-badge due-upcoming">No due date</span>';var due=new Date(task.next_due);var dueDay=new Date(due.getFullYear(),due.getMonth(),due.getDate());if(dueDay<today)return '<span class="due-badge due-overdue">⚠️ Overdue</span>';if(dueDay.getTime()===today.getTime())return '<span class="due-badge due-today">📅 Due Today</span>';var diff=Math.ceil((dueDay-today)/(1000*60*60*24));return '<span class="due-badge due-upcoming">✅ Due in '+diff+' day'+(diff>1?'s':'')+'</span>';}
- function taskHTML(task){var freqClass='freq-'+task.frequency;var lastDone=task.last_done?'Last done: '+new Date(task.last_done).toLocaleDateString('en-IN',{day:'numeric',month:'short'}):'Never done';return '<div class="maint-item"><div class="maint-top"><div><div class="maint-title-txt">'+task.title+'</div>'+(task.description?'<div class="maint-desc-txt">'+task.description+'</div>':'')+'</div><div style="display:flex;gap:6px;align-items:center"><span class="freq-pill '+freqClass+'">'+task.frequency+'</span>'+getDueBadge(task)+'</div></div><div class="maint-meta"><span>'+lastDone+'</span><span>By: '+task.created_by+'</span><button class="btn-mark-done" onclick="markTaskDone('+task.id+',\''+task.frequency+'\')">✓ Mark Done</button><button class="btn-delete-task" onclick="deleteTask('+task.id+')">✕</button></div></div>';}
- var urgent=tasks.filter(function(t){if(!t.next_due)return false;var due=new Date(t.next_due);var dueDay=new Date(due.getFullYear(),due.getMonth(),due.getDate());return dueDay<=today;});
- document.getElementById('maint-urgent').innerHTML=urgent.length?urgent.map(taskHTML).join(''):'<div class="empty">✅ No overdue tasks!</div>';
- ['daily','weekly','monthly'].forEach(function(freq){var filtered=tasks.filter(function(t){return t.frequency===freq;});document.getElementById('maint-'+freq).innerHTML=filtered.length?filtered.map(taskHTML).join(''):'<div class="empty">No '+freq+' tasks</div>';});
+  var now=new Date(); var today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  function getDueBadge(task){if(!task.next_due)return '<span class="due-badge due-upcoming">No due date</span>';var due=new Date(task.next_due);var dueDay=new Date(due.getFullYear(),due.getMonth(),due.getDate());if(dueDay<today)return '<span class="due-badge due-overdue">⚠️ Overdue</span>';if(dueDay.getTime()===today.getTime())return '<span class="due-badge due-today">📅 Due Today</span>';var diff=Math.ceil((dueDay-today)/(1000*60*60*24));return '<span class="due-badge due-upcoming">✅ Due in '+diff+' day'+(diff>1?'s':'')+'</span>';}
+  function taskHTML(task){var freqClass='freq-'+task.frequency;var lastDone=task.last_done?'Last done: '+new Date(task.last_done).toLocaleDateString('en-IN',{day:'numeric',month:'short'}):'Never done';return '<div class="maint-item"><div class="maint-top"><div><div class="maint-title-txt">'+task.title+'</div>'+(task.description?'<div class="maint-desc-txt">'+task.description+'</div>':'')+'</div><div style="display:flex;gap:6px;align-items:center"><span class="freq-pill '+freqClass+'">'+task.frequency+'</span>'+getDueBadge(task)+'</div></div><div class="maint-meta"><span>'+lastDone+'</span><span>By: '+task.created_by+'</span><button class="btn-mark-done" onclick="markTaskDone('+task.id+',\''+task.frequency+'\')">✓ Mark Done</button><button class="btn-delete-task" onclick="deleteTask('+task.id+')">✕</button></div></div>';}
+  var urgent=tasks.filter(function(t){if(!t.next_due)return false;var due=new Date(t.next_due);var dueDay=new Date(due.getFullYear(),due.getMonth(),due.getDate());return dueDay<=today;});
+  document.getElementById('maint-urgent').innerHTML=urgent.length?urgent.map(taskHTML).join(''):'<div class="empty">✅ No overdue tasks!</div>';
+  ['daily','weekly','monthly'].forEach(function(freq){var filtered=tasks.filter(function(t){return t.frequency===freq;});document.getElementById('maint-'+freq).innerHTML=filtered.length?filtered.map(taskHTML).join(''):'<div class="empty">No '+freq+' tasks</div>';});
 }
+
+// ── GUEST OPTIONS ──
 var DEPT_DEFAULT_OPTIONS = {
- 'Housekeeping':[{key:'Extra Towels',label:'🛁 Extra Towels'},{key:'Extra Pillow',label:'🛏️ Extra Pillow'},{key:'Water Bottles',label:'💧 Water Bottles'},{key:'Clean Room',label:'🧹 Clean Room'},{key:'Extra Blanket',label:'🛌 Extra Blanket'},{key:'Toiletries',label:'🧴 Toiletries'}],
- 'Room Service':[{key:'Breakfast',label:'🍳 Breakfast'},{key:'Coffee',label:'☕ Coffee'},{key:'Tea',label:'🍵 Tea'},{key:'Water',label:'💧 Water'},{key:'Snacks',label:'🍪 Snacks'},{key:'Ice Bucket',label:'🧊 Ice Bucket'}],
- 'Maintenance':[{key:'AC Issue',label:'❄️ AC Issue'},{key:'Hot Water',label:'♨️ Hot Water'},{key:'Light Bulb',label:'💡 Light Bulb'},{key:'TV Issue',label:'📺 TV Issue'},{key:'WiFi Help',label:'📶 WiFi Help'},{key:'Door Lock',label:'🔑 Door Lock'}],
- 'Front Desk':[{key:'Wake Up Call',label:'⏰ Wake Up Call'},{key:'Luggage Help',label:'🧳 Luggage Help'},{key:'Late Checkout Info',label:'🕐 Late Checkout Info'},{key:'Airport Transfer & Local Cab',label:'🚕 Airport Transfer & Local Cab'},{key:'Room Upgradation Info',label:'⬆️ Room Upgradation Info'},{key:'Room Decoration Info',label:'🌸 Room Decoration Info'},{key:'Private Dinner Info',label:'🍽️ Private Dinner Info'},{key:'Extend Stay Info',label:'📅 Extend Stay Info'},{key:'Bike Rent Info',label:'🏍️ Bike Rent Info'},{key:'Adventure Activities Info',label:'🏄 Adventure Activities Info'},{key:'SPA Booking Info',label:'💆 SPA Booking Info'}]
+  'Housekeeping':[{key:'Extra Towels',label:'🛁 Extra Towels'},{key:'Extra Pillow',label:'🛏️ Extra Pillow'},{key:'Water Bottles',label:'💧 Water Bottles'},{key:'Clean Room',label:'🧹 Clean Room'},{key:'Extra Blanket',label:'🛌 Extra Blanket'},{key:'Toiletries',label:'🧴 Toiletries'}],
+  'Room Service':[{key:'Breakfast',label:'🍳 Breakfast'},{key:'Coffee',label:'☕ Coffee'},{key:'Tea',label:'🍵 Tea'},{key:'Water',label:'💧 Water'},{key:'Snacks',label:'🍪 Snacks'},{key:'Ice Bucket',label:'🧊 Ice Bucket'}],
+  'Maintenance':[{key:'AC Issue',label:'❄️ AC Issue'},{key:'Hot Water',label:'♨️ Hot Water'},{key:'Light Bulb',label:'💡 Light Bulb'},{key:'TV Issue',label:'📺 TV Issue'},{key:'WiFi Help',label:'📶 WiFi Help'},{key:'Door Lock',label:'🔑 Door Lock'}],
+  'Front Desk':[{key:'Wake Up Call',label:'⏰ Wake Up Call'},{key:'Luggage Help',label:'🧳 Luggage Help'},{key:'Late Checkout Info',label:'🕐 Late Checkout Info'},{key:'Airport Transfer & Local Cab',label:'🚕 Airport Transfer & Local Cab'},{key:'Room Upgradation Info',label:'⬆️ Room Upgradation Info'},{key:'Room Decoration Info',label:'🌸 Room Decoration Info'},{key:'Private Dinner Info',label:'🍽️ Private Dinner Info'},{key:'Extend Stay Info',label:'📅 Extend Stay Info'},{key:'Bike Rent Info',label:'🏍️ Bike Rent Info'},{key:'Adventure Activities Info',label:'🏄 Adventure Activities Info'},{key:'SPA Booking Info',label:'💆 SPA Booking Info'}]
 };
 var DEFAULT_OPTION_SLA={'Extra Towels':5,'Extra Pillow':5,'Water Bottles':5,'Clean Room':30,'Extra Blanket':5,'Toiletries':10,'Breakfast':20,'Coffee':10,'Tea':10,'Water':5,'Snacks':10,'Ice Bucket':5,'AC Issue':20,'Hot Water':15,'Light Bulb':10,'TV Issue':15,'WiFi Help':10,'Door Lock':10,'Wake Up Call':2,'Luggage Help':5,'Late Checkout Info':5,'Airport Transfer & Local Cab':10,'Room Upgradation Info':5,'Room Decoration Info':30,'Private Dinner Info':10,'Extend Stay Info':5,'Bike Rent Info':5,'Adventure Activities Info':5,'SPA Booking Info':5};
 var currentDeptOptions=[], customDeptOptions=[], optionSlaMap={}, fullDeptOptions={};
+
 function loadGuestOptions(){
- fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
- var hotel=hotels.find(function(h){return h.hotel_id===hodData.hotel_id;});
- fullDeptOptions=(hotel&&hotel.dept_guest_options)?hotel.dept_guest_options:{};
- var dept=hodData.dept; var saved=fullDeptOptions[dept];
- var defaults=(DEPT_DEFAULT_OPTIONS[dept]||[]).map(function(o){return o.key;});
- if(saved){
- currentDeptOptions=saved.enabled||defaults;
- customDeptOptions=(saved.custom||[]).map(function(c){return{key:c.key,label:c.label,sla:c.sla||15};});
- optionSlaMap=saved.slaMap||{};
- customDeptOptions.forEach(function(c){if(currentDeptOptions.indexOf(c.key)===-1)currentDeptOptions.push(c.key);if(!optionSlaMap[c.key])optionSlaMap[c.key]=c.sla||15;});
- } else { currentDeptOptions=defaults; customDeptOptions=[]; optionSlaMap={}; }
- renderGuestOptionsList();
- }).catch(function(){renderGuestOptionsList();});
+  fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
+    var hotel=hotels.find(function(h){return h.hotel_id===hodData.hotel_id;});
+    fullDeptOptions=(hotel&&hotel.dept_guest_options)?hotel.dept_guest_options:{};
+    var dept=hodData.dept; var saved=fullDeptOptions[dept];
+    var defaults=(DEPT_DEFAULT_OPTIONS[dept]||[]).map(function(o){return o.key;});
+    if(saved){
+      currentDeptOptions=saved.enabled||defaults;
+      customDeptOptions=(saved.custom||[]).map(function(c){return{key:c.key,label:c.label,sla:c.sla||15};});
+      optionSlaMap=saved.slaMap||{};
+      customDeptOptions.forEach(function(c){if(currentDeptOptions.indexOf(c.key)===-1)currentDeptOptions.push(c.key);if(!optionSlaMap[c.key])optionSlaMap[c.key]=c.sla||15;});
+    } else { currentDeptOptions=defaults; customDeptOptions=[]; optionSlaMap={}; }
+    renderGuestOptionsList();
+  }).catch(function(){renderGuestOptionsList();});
 }
+
 function getSla(key){if(optionSlaMap[key]!==undefined)return optionSlaMap[key];return DEFAULT_OPTION_SLA[key]||15;}
+
 function renderGuestOptionsList(){
- var dept=hodData.dept; var defaults=DEPT_DEFAULT_OPTIONS[dept]||[];
- var list=document.getElementById('go-list');
- var html='<div style="font-size:11px;color:#0a9396;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Default Options — Toggle & Set SLA Time</div>';
- defaults.forEach(function(opt){var isEnabled=currentDeptOptions.indexOf(opt.key)!==-1;html+=optionRowHTML(opt.key,opt.label,isEnabled,false,getSla(opt.key));});
- if(customDeptOptions.length>0){html+='<div style="font-size:11px;color:#ee9b00;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin:14px 0 8px">Your Custom Options</div>';customDeptOptions.forEach(function(opt){var isEnabled=currentDeptOptions.indexOf(opt.key)!==-1;html+=optionRowHTML(opt.key,opt.label,isEnabled,true,getSla(opt.key));});}
- list.innerHTML=html;
+  var dept=hodData.dept; var defaults=DEPT_DEFAULT_OPTIONS[dept]||[];
+  var list=document.getElementById('go-list');
+  var html='<div style="font-size:11px;color:#0a9396;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Default Options — Toggle & Set SLA Time</div>';
+  defaults.forEach(function(opt){var isEnabled=currentDeptOptions.indexOf(opt.key)!==-1;html+=optionRowHTML(opt.key,opt.label,isEnabled,false,getSla(opt.key));});
+  if(customDeptOptions.length>0){html+='<div style="font-size:11px;color:#ee9b00;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin:14px 0 8px">Your Custom Options</div>';customDeptOptions.forEach(function(opt){var isEnabled=currentDeptOptions.indexOf(opt.key)!==-1;html+=optionRowHTML(opt.key,opt.label,isEnabled,true,getSla(opt.key));});}
+  list.innerHTML=html;
 }
+
 function optionRowHTML(key,label,isEnabled,isCustom,sla){
- var safeKey=key.replace(/'/g,"\\'");
- return '<div style="display:flex;flex-direction:column;gap:8px;padding:12px 14px;background:'+(isEnabled?'#e8f4f4':'#f9f9f9')+';border-radius:12px;border:1.5px solid '+(isEnabled?'#0a9396':'#eee')+';margin-bottom:8px">'+
- '<div style="display:flex;align-items:center;gap:8px">'+
- '<span style="font-size:14px;font-weight:'+(isEnabled?'600':'400')+';color:'+(isEnabled?'#005f73':'#888')+';flex:1">'+label+(isCustom?' <span style="font-size:10px;background:#fff3cd;color:#8a6000;padding:1px 6px;border-radius:10px;margin-left:4px">Custom</span>':'')+'</span>'+
- (isCustom?'<button onclick="removeCustomDeptOption(\''+safeKey+'\')" style="background:#fde8ea;color:#e63946;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;flex-shrink:0">✕</button>':'')+
- '<label style="position:relative;display:inline-block;width:46px;height:26px;cursor:pointer;flex-shrink:0">'+
- '<input type="checkbox" '+(isEnabled?'checked':'')+' data-key="'+key+'" onchange="toggleDeptOption(this)" style="opacity:0;width:0;height:0">'+
- '<span style="position:absolute;inset:0;background:'+(isEnabled?'#0a9396':'#ddd')+';border-radius:26px;transition:0.3s"></span>'+
- '<span style="position:absolute;top:3px;left:'+(isEnabled?'23px':'3px')+';width:20px;height:20px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></span>'+
- '</label>'+
- '</div>'+
- (isEnabled?'<div style="display:flex;align-items:center;gap:8px;padding-top:4px;border-top:1px solid rgba(10,147,150,0.12)"><span style="font-size:11px;color:#0a9396;font-weight:600">⏱ SLA Time:</span><input type="number" min="1" max="999" value="'+sla+'" data-sla-key="'+key+'" onchange="updateSla(this)" style="width:64px;padding:5px 8px;border:1.5px solid #0a9396;border-radius:8px;font-size:13px;font-weight:700;color:#005f73;text-align:center;outline:none;background:white"><span style="font-size:12px;color:#888">minutes</span><span style="font-size:11px;color:#aaa;margin-left:4px">Guest sees: "Ready in '+sla+' min"</span></div>':'')+'</div>';
+  var safeKey=key.replace(/'/g,"\\'");
+  return '<div style="display:flex;flex-direction:column;gap:8px;padding:12px 14px;background:'+(isEnabled?'#e8f4f4':'#f9f9f9')+';border-radius:12px;border:1.5px solid '+(isEnabled?'#0a9396':'#eee')+';margin-bottom:8px">'+
+  '<div style="display:flex;align-items:center;gap:8px">'+
+  '<span style="font-size:14px;font-weight:'+(isEnabled?'600':'400')+';color:'+(isEnabled?'#005f73':'#888')+';flex:1">'+label+(isCustom?' <span style="font-size:10px;background:#fff3cd;color:#8a6000;padding:1px 6px;border-radius:10px;margin-left:4px">Custom</span>':'')+'</span>'+
+  (isCustom?'<button onclick="removeCustomDeptOption(\''+safeKey+'\')" style="background:#fde8ea;color:#e63946;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;flex-shrink:0">✕</button>':'')+
+  '<label style="position:relative;display:inline-block;width:46px;height:26px;cursor:pointer;flex-shrink:0">'+
+  '<input type="checkbox" '+(isEnabled?'checked':'')+' data-key="'+key+'" onchange="toggleDeptOption(this)" style="opacity:0;width:0;height:0">'+
+  '<span style="position:absolute;inset:0;background:'+(isEnabled?'#0a9396':'#ddd')+';border-radius:26px;transition:0.3s"></span>'+
+  '<span style="position:absolute;top:3px;left:'+(isEnabled?'23px':'3px')+';width:20px;height:20px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></span>'+
+  '</label>'+
+  '</div>'+
+  (isEnabled?'<div style="display:flex;align-items:center;gap:8px;padding-top:4px;border-top:1px solid rgba(10,147,150,0.12)"><span style="font-size:11px;color:#0a9396;font-weight:600">⏱ SLA Time:</span><input type="number" min="1" max="999" value="'+sla+'" data-sla-key="'+key+'" onchange="updateSla(this)" style="width:64px;padding:5px 8px;border:1.5px solid #0a9396;border-radius:8px;font-size:13px;font-weight:700;color:#005f73;text-align:center;outline:none;background:white"><span style="font-size:12px;color:#888">minutes</span><span style="font-size:11px;color:#aaa;margin-left:4px">Guest sees: "Ready in '+sla+' min"</span></div>':'')+'</div>';
 }
+
 function updateSla(input){var key=input.getAttribute('data-sla-key');var val=parseInt(input.value);if(isNaN(val)||val<1)val=1;if(val>999)val=999;input.value=val;optionSlaMap[key]=val;var preview=input.parentElement.querySelector('span:last-child');if(preview)preview.textContent='Guest sees: "Ready in '+val+' min"';}
 function toggleDeptOption(checkbox){var key=checkbox.getAttribute('data-key');if(checkbox.checked){if(currentDeptOptions.indexOf(key)===-1)currentDeptOptions.push(key);}else{currentDeptOptions=currentDeptOptions.filter(function(k){return k!==key;});}renderGuestOptionsList();}
 function addCustomOption(){var emoji=document.getElementById('custom-option-emoji').value.trim();var text=document.getElementById('custom-option-text').value.trim();var slaVal=parseInt(document.getElementById('custom-option-sla').value)||15;if(!text){alert('Please enter a service name.');return;}var label=(emoji?emoji+' ':'✨ ')+text;var key='CUSTOM::'+text+'::'+Date.now();customDeptOptions.push({key:key,label:label,sla:slaVal});currentDeptOptions.push(key);optionSlaMap[key]=slaVal;document.getElementById('custom-option-emoji').value='';document.getElementById('custom-option-text').value='';document.getElementById('custom-option-sla').value='15';renderGuestOptionsList();}
 function removeCustomDeptOption(key){customDeptOptions=customDeptOptions.filter(function(c){return c.key!==key;});currentDeptOptions=currentDeptOptions.filter(function(k){return k!==key;});delete optionSlaMap[key];renderGuestOptionsList();}
 
-/* ── FAQ MANAGER ── */
-var faqList = [];
-
+// ── FAQ MANAGER ──
 function renderFaqList() {
   var container = document.getElementById('faq-list');
   var counter = document.getElementById('faq-count');
   if (!container) return;
   if (counter) counter.textContent = faqList.length + ' FAQ' + (faqList.length !== 1 ? 's' : '');
-
   if (faqList.length === 0) {
     container.innerHTML = '<div style="text-align:center;padding:20px;color:#aaa;font-size:13px;background:#f8f8f8;border-radius:12px">No FAQs added yet. Add your first one below ↓</div>';
     return;
   }
-
   container.innerHTML = faqList.map(function(faq, i) {
     return '<div style="background:white;border:1.5px solid #e8e8ff;border-radius:12px;padding:14px;position:relative">'
       + '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">'
@@ -1007,7 +1022,6 @@ function quickAddFaq(question, answer) {
   document.getElementById('faq-question').value = question;
   document.getElementById('faq-answer').value = answer;
   document.getElementById('faq-question').focus();
-  // Scroll to add form
   document.getElementById('faq-question').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
@@ -1020,8 +1034,8 @@ function loadFaqList(faqs) {
   faqList = faqs || [];
   renderFaqList();
 }
-var hodHotelData = null;
 
+// ── LOAD KB FIELDS FROM SERVER DATA ──
 function loadHodKbFields(kb) {
   var fields = {
     'hod-ai-wifi-name': kb.wifi_name || '',
@@ -1040,186 +1054,212 @@ function loadHodKbFields(kb) {
     var el = document.getElementById(id);
     if (el) el.value = fields[id];
   });
-  // Load FAQs
   loadFaqList(kb.faqs || []);
 }
 
+// ── SAVE KB — ALWAYS FETCH FRESH THEN MERGE ──
 async function saveHodKb() {
   var msg = document.getElementById('hod-kb-msg');
   msg.textContent = '⏳ Saving...'; msg.className = 'msg-box msg-success';
-  var kb = hodHotelData && hodHotelData.ai_kb ? JSON.parse(JSON.stringify(hodHotelData.ai_kb)) : {};
-  kb.wifi_name = document.getElementById('hod-ai-wifi-name').value.trim();
-  kb.wifi = document.getElementById('hod-ai-wifi').value.trim();
-  kb.checkin = document.getElementById('hod-ai-checkin').value.trim();
-  kb.checkout = document.getElementById('hod-ai-checkout').value.trim();
-  kb.facilities = document.getElementById('hod-ai-facilities').value.trim();
-  kb.activities = document.getElementById('hod-ai-activities').value.trim();
-  kb.restaurant = document.getElementById('hod-ai-restaurant').value.trim();
-  kb.transport = document.getElementById('hod-ai-transport').value.trim();
-  kb.contact = document.getElementById('hod-ai-contact').value.trim();
-  kb.emergency = document.getElementById('hod-ai-emergency').value.trim();
-  kb.extra = document.getElementById('hod-ai-extra').value.trim();
-  kb.faqs = faqList;
+
+  // Build KB object from current form values
+  var kb = {
+    wifi_name: document.getElementById('hod-ai-wifi-name').value.trim(),
+    wifi: document.getElementById('hod-ai-wifi').value.trim(),
+    checkin: document.getElementById('hod-ai-checkin').value.trim(),
+    checkout: document.getElementById('hod-ai-checkout').value.trim(),
+    facilities: document.getElementById('hod-ai-facilities').value.trim(),
+    activities: document.getElementById('hod-ai-activities').value.trim(),
+    restaurant: document.getElementById('hod-ai-restaurant').value.trim(),
+    transport: document.getElementById('hod-ai-transport').value.trim(),
+    contact: document.getElementById('hod-ai-contact').value.trim(),
+    emergency: document.getElementById('hod-ai-emergency').value.trim(),
+    extra: document.getElementById('hod-ai-extra').value.trim(),
+    faqs: faqList
+  };
+
   try {
     var r = await authFetch('/hotels/' + hodData.hotel_id + '/kb', {
-      method: 'POST', headers: {'Content-Type':'application/json'},
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ ai_kb: kb })
     });
     var data = await r.json();
     if (r.ok && data.success) {
-      if (hodHotelData) hodHotelData.ai_kb = kb;
-      msg.textContent = '✅ Knowledge base saved! AI will now use this info.';
-    } else { msg.textContent = '❌ ' + (data.error || 'Save failed. Try again.'); }
-  } catch(e) { msg.textContent = '❌ Connection error. Please try again.'; }
-  setTimeout(function(){ msg.className='msg-box'; }, 4000);
+      // Update local cache with saved data
+      if (hodHotelData) hodHotelData.ai_kb = JSON.parse(JSON.stringify(kb));
+      msg.textContent = '✅ Knowledge base saved! AI will now use this info to answer guests.';
+      msg.style.background = '#d1fae5'; msg.style.color = '#065f46';
+    } else {
+      msg.textContent = '❌ ' + (data.error || 'Save failed. Try again.');
+      msg.style.background = '#fde8ea'; msg.style.color = '#e63946';
+    }
+  } catch(e) {
+    msg.textContent = '❌ Connection error. Please try again.';
+    msg.style.background = '#fde8ea'; msg.style.color = '#e63946';
+  }
+  msg.style.display = 'block';
+  setTimeout(function(){ msg.className='msg-box'; msg.style.display='none'; }, 5000);
 }
 
-function saveGuestOptions(){
- var dept=hodData.dept;
- fullDeptOptions[dept]={enabled:currentDeptOptions,slaMap:optionSlaMap,custom:customDeptOptions.map(function(c){return{key:c.key,label:c.label,sla:optionSlaMap[c.key]||c.sla||15};})};
- authFetch('/hotels/'+hodData.hotel_id+'/dept-guest-options',{
- method:'POST', headers:{'Content-Type':'application/json'},
- body:JSON.stringify({dept_guest_options:fullDeptOptions})
- }).then(function(r){return r.json();}).then(function(){
- var msg=document.getElementById('go-msg');
- msg.textContent='✅ Saved! '+currentDeptOptions.length+' option(s) active.';
- msg.className='msg-box msg-success';
- setTimeout(function(){msg.className='msg-box';},4000);
- }).catch(function(){
- var msg=document.getElementById('go-msg');
- msg.textContent='❌ Failed to save. Try again.';
- msg.style.background='#fde8ea'; msg.style.color='#e63946';
- msg.className='msg-box msg-success';
- setTimeout(function(){msg.className='msg-box';},3000);
- });
-}
+// ── ANNOUNCEMENTS ──
 function previewAnn(val){var prev=document.getElementById('ann-preview');if(val.trim()){document.getElementById('ann-preview-text').textContent=val;prev.style.display='flex';}else{prev.style.display='none';}}
 function postAnnouncement(){var msg=document.getElementById('ann-input').value.trim();if(!msg){alert('Please type an announcement first.');return;}authFetch('/announcements',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hodData.hotel_id,message:msg})}).then(function(r){return r.json();}).then(function(data){if(data.error){alert(data.error);return;}document.getElementById('ann-input').value='';document.getElementById('ann-preview').style.display='none';var m=document.getElementById('ann-msg');m.textContent='✅ Posted! Guests will see it now.';m.className='msg-box msg-success';setTimeout(function(){m.className='msg-box';},4000);loadAnnouncements();});}
 function loadAnnouncements(){fetch('/announcements?hotel_id='+hodData.hotel_id).then(function(r){return r.json();}).then(function(list){var el=document.getElementById('ann-list');if(!Array.isArray(list)||list.length===0){el.innerHTML='<div class="empty">No announcements yet</div>';return;}el.innerHTML=list.map(function(a){var time=new Date(a.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});var badge=a.is_active?'<span style="background:#d1fae5;color:#065f46;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500">🟢 Live</span>':'<span style="background:#f0f0f0;color:#999;padding:2px 8px;border-radius:10px;font-size:11px">Off</span>';var toggleBtn=a.is_active?'<button onclick="toggleAnn('+a.id+',false)" style="padding:5px 10px;background:#fff3cd;color:#8a6000;border:none;border-radius:6px;font-size:11px;cursor:pointer">Turn Off</button>':'<button onclick="toggleAnn('+a.id+',true)" style="padding:5px 10px;background:#d1fae5;color:#065f46;border:none;border-radius:6px;font-size:11px;cursor:pointer">Turn On</button>';return '<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:14px 0;border-bottom:1px solid #f0f0f0;gap:10px"><div><div style="font-size:14px;color:#333;line-height:1.5;flex:1">'+a.message+'</div><div style="font-size:11px;color:#aaa;margin-top:4px">'+badge+'&nbsp;&nbsp;'+time+'</div></div><div style="display:flex;gap:6px;flex-shrink:0">'+toggleBtn+'<button onclick="deleteAnn('+a.id+')" style="padding:5px 10px;background:#fde8ea;color:#e63946;border:none;border-radius:6px;font-size:11px;cursor:pointer">✕</button></div></div>';}).join('');}).catch(function(){document.getElementById('ann-list').innerHTML='<div class="empty">Could not load</div>';});}
 function toggleAnn(id,active){authFetch('/announcements/'+id+'/toggle',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({is_active:active})}).then(function(){loadAnnouncements();});}
 function deleteAnn(id){if(!confirm('Delete this announcement?'))return;authFetch('/announcements/'+id,{method:'DELETE'}).then(function(){loadAnnouncements();});}
+
+// ── REPORTS ──
 function setToday(){var today=new Date().toISOString().split('T')[0];document.getElementById('report-from').value=today;document.getElementById('report-to').value=today;}
 function downloadReport(format){
- var from=document.getElementById('report-from').value; var to=document.getElementById('report-to').value; var msg=document.getElementById('report-msg');
- if(!from||!to){msg.textContent='⚠️ Select both dates.';msg.style.color='#e63946';return;}
- if(from>to){msg.textContent='⚠️ From must be before To.';msg.style.color='#e63946';return;}
- var fromDate=new Date(from+'T00:00:00'); var toDate=new Date(to+'T23:59:59');
- var filtered=deptRequests.filter(function(r){var d=new Date(r.created_at);return d>=fromDate&&d<=toDate;});
- if(filtered.length===0){msg.textContent='⚠️ No requests for this date range.';msg.style.color='#e63946';return;}
- msg.textContent='✅ Generating report for '+filtered.length+' requests...';msg.style.color='#065f46';
- var hotelName=(hodData.hotel&&hodData.hotel.name)||'Hotel';
- var total=filtered.length,done=filtered.filter(function(r){return r.status==='done';}).length,pending=filtered.filter(function(r){return r.status==='pending';}).length,inprog=filtered.filter(function(r){return r.status==='in_progress';}).length;
- var rated=filtered.filter(function(r){return r.feedback_rating;});
- var avgRating=rated.length?(rated.reduce(function(a,r){return a+r.feedback_rating;},0)/rated.length).toFixed(1):'N/A';
- var staffMap={};
- filtered.forEach(function(r){if(!r.claimed_by)return;var n=r.claimed_by;if(!staffMap[n])staffMap[n]={name:n,done:0,total:0,ratings:[],responseMs:0,rCount:0};staffMap[n].total++;if(r.status==='done')staffMap[n].done++;if(r.feedback_rating)staffMap[n].ratings.push(r.feedback_rating);if(r.claimed_at&&r.created_at){var ms=new Date(r.claimed_at)-new Date(r.created_at);if(ms>0){staffMap[n].responseMs+=ms;staffMap[n].rCount++;}}});
- var staffList=Object.values(staffMap).sort(function(a,b){return b.done-a.done;});
- var title=hotelName+' — '+hodData.dept+' Report'; var dateRange=formatDate(fromDate)+' to '+formatDate(toDate); var by=hodData.name+' (HOD)'; var at=new Date().toLocaleString('en-IN');
- if(format==='csv')downloadCSV(filtered,staffList,title,dateRange,by,at,total,done,pending,inprog,avgRating,from,to);
- else downloadExcel(filtered,staffList,title,dateRange,by,at,total,done,pending,inprog,avgRating,from,to);
- setTimeout(function(){msg.textContent='';},4000);
+  var from=document.getElementById('report-from').value; var to=document.getElementById('report-to').value; var msg=document.getElementById('report-msg');
+  if(!from||!to){msg.textContent='⚠️ Select both dates.';msg.style.color='#e63946';return;}
+  if(from>to){msg.textContent='⚠️ From must be before To.';msg.style.color='#e63946';return;}
+  var fromDate=new Date(from+'T00:00:00'); var toDate=new Date(to+'T23:59:59');
+  var filtered=deptRequests.filter(function(r){var d=new Date(r.created_at);return d>=fromDate&&d<=toDate;});
+  if(filtered.length===0){msg.textContent='⚠️ No requests for this date range.';msg.style.color='#e63946';return;}
+  msg.textContent='✅ Generating report for '+filtered.length+' requests...';msg.style.color='#065f46';
+  var hotelName=(hodData.hotel&&hodData.hotel.name)||'Hotel';
+  var total=filtered.length,done=filtered.filter(function(r){return r.status==='done';}).length,pending=filtered.filter(function(r){return r.status==='pending';}).length,inprog=filtered.filter(function(r){return r.status==='in_progress';}).length;
+  var rated=filtered.filter(function(r){return r.feedback_rating;});
+  var avgRating=rated.length?(rated.reduce(function(a,r){return a+r.feedback_rating;},0)/rated.length).toFixed(1):'N/A';
+  var staffMap={};
+  filtered.forEach(function(r){if(!r.claimed_by)return;var n=r.claimed_by;if(!staffMap[n])staffMap[n]={name:n,done:0,total:0,ratings:[],responseMs:0,rCount:0};staffMap[n].total++;if(r.status==='done')staffMap[n].done++;if(r.feedback_rating)staffMap[n].ratings.push(r.feedback_rating);if(r.claimed_at&&r.created_at){var ms=new Date(r.claimed_at)-new Date(r.created_at);if(ms>0){staffMap[n].responseMs+=ms;staffMap[n].rCount++;}}});
+  var staffList=Object.values(staffMap).sort(function(a,b){return b.done-a.done;});
+  var title=hotelName+' — '+hodData.dept+' Report'; var dateRange=formatDate(fromDate)+' to '+formatDate(toDate); var by=hodData.name+' (HOD)'; var at=new Date().toLocaleString('en-IN');
+  if(format==='csv')downloadCSV(filtered,staffList,title,dateRange,by,at,total,done,pending,inprog,avgRating,from,to);
+  else downloadExcel(filtered,staffList,title,dateRange,by,at,total,done,pending,inprog,avgRating,from,to);
+  setTimeout(function(){msg.textContent='';},4000);
 }
 function formatDate(d){return d.toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'});}
 function escCSV(val){if(val===null||val===undefined)return '';var s=String(val);if(s.includes(',')||s.includes('"')||s.includes('\n'))return '"'+s.replace(/"/g,'""')+'"';return s;}
 function downloadCSV(reqs,staffList,title,dateRange,by,at,total,done,pending,inprog,avgRating,from,to){
- var rows=[];rows.push(['WELCO HOTEL MANAGEMENT SYSTEM']);rows.push([title]);rows.push(['Period: '+dateRange]);rows.push(['Generated by: '+by+' | '+at]);rows.push([]);rows.push(['SUMMARY']);rows.push(['Total','Completed','Pending','In Progress','Avg Rating']);rows.push([total,done,pending,inprog,avgRating]);rows.push([]);rows.push(['STAFF PERFORMANCE']);rows.push(['Name','Completed','Total','Completion %','Avg Response (min)','Avg Rating']);
- staffList.forEach(function(s){var avgR=s.ratings.length?(s.ratings.reduce(function(a,b){return a+b;},0)/s.ratings.length).toFixed(1):'N/A';var avgResp=s.rCount>0?Math.round(s.responseMs/s.rCount/60000):'N/A';var pct=s.total>0?Math.round(s.done/s.total*100)+'%':'0%';rows.push([s.name,s.done,s.total,pct,avgResp,avgR]);});
- rows.push([]);rows.push(['REQUEST DETAILS']);rows.push(['Date','Time','Room','Category','Request','Status','Handled By','Response Time (min)','Guest Rating','Comment']);
- reqs.forEach(function(r){var d=new Date(r.created_at);var dateStr=d.toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'});var timeStr=d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});var respMin=(r.claimed_at&&r.created_at)?Math.round((new Date(r.claimed_at)-new Date(r.created_at))/60000):'';rows.push([dateStr,timeStr,'Room '+(r.room_number||'?'),r.category||'',r.message||'',r.status==='done'?'Completed':r.status==='in_progress'?'In Progress':'Pending',r.claimed_by||'Unclaimed',respMin,r.feedback_rating||'',r.feedback_comments||'']);});
- var csv=rows.map(function(row){return row.map(escCSV).join(',');}).join('\n');
- var blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='Welco_'+hodData.dept.replace(' ','_')+'_Report_'+from+'_to_'+to+'.csv';a.click();URL.revokeObjectURL(url);
+  var rows=[];rows.push(['WELCO HOTEL MANAGEMENT SYSTEM']);rows.push([title]);rows.push(['Period: '+dateRange]);rows.push(['Generated by: '+by+' | '+at]);rows.push([]);rows.push(['SUMMARY']);rows.push(['Total','Completed','Pending','In Progress','Avg Rating']);rows.push([total,done,pending,inprog,avgRating]);rows.push([]);rows.push(['STAFF PERFORMANCE']);rows.push(['Name','Completed','Total','Completion %','Avg Response (min)','Avg Rating']);
+  staffList.forEach(function(s){var avgR=s.ratings.length?(s.ratings.reduce(function(a,b){return a+b;},0)/s.ratings.length).toFixed(1):'N/A';var avgResp=s.rCount>0?Math.round(s.responseMs/s.rCount/60000):'N/A';var pct=s.total>0?Math.round(s.done/s.total*100)+'%':'0%';rows.push([s.name,s.done,s.total,pct,avgResp,avgR]);});
+  rows.push([]);rows.push(['REQUEST DETAILS']);rows.push(['Date','Time','Room','Category','Request','Status','Handled By','Response Time (min)','Guest Rating','Comment']);
+  reqs.forEach(function(r){var d=new Date(r.created_at);var dateStr=d.toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'});var timeStr=d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});var respMin=(r.claimed_at&&r.created_at)?Math.round((new Date(r.claimed_at)-new Date(r.created_at))/60000):'';rows.push([dateStr,timeStr,'Room '+(r.room_number||'?'),r.category||'',r.message||'',r.status==='done'?'Completed':r.status==='in_progress'?'In Progress':'Pending',r.claimed_by||'Unclaimed',respMin,r.feedback_rating||'',r.feedback_comments||'']);});
+  var csv=rows.map(function(row){return row.map(escCSV).join(',');}).join('\n');
+  var blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='Welco_'+hodData.dept.replace(' ','_')+'_Report_'+from+'_to_'+to+'.csv';a.click();URL.revokeObjectURL(url);
 }
 function downloadExcel(reqs,staffList,title,dateRange,by,at,total,done,pending,inprog,avgRating,from,to){
- var xml='<?xml version="1.0" encoding="UTF-8"?>\n<?mso-application progid="Excel.Sheet"?>\n<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">\n<Styles><Style ss:ID="h1"><Font ss:Bold="1" ss:Size="14" ss:Color="#005f73"/></Style><Style ss:ID="h2"><Interior ss:Color="#005f73" ss:Pattern="Solid"/><Font ss:Bold="1" ss:Color="#FFFFFF" ss:Size="11"/></Style><Style ss:ID="hd"><Font ss:Bold="1"/><Interior ss:Color="#e8f4f4" ss:Pattern="Solid"/></Style><Style ss:ID="good"><Interior ss:Color="#d1fae5" ss:Pattern="Solid"/></Style><Style ss:ID="warn"><Interior ss:Color="#fde8ea" ss:Pattern="Solid"/></Style></Styles>';
- function cell(val,style,type){type=type||(typeof val==='number'?'Number':'String');var s=style?' ss:StyleID="'+style+'"':'';return '<Cell'+s+'><Data ss:Type="'+type+'">'+String(val).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</Data></Cell>';}
- function row(cells){return '<Row>'+cells+'</Row>\n';}
- function emptyRow(){return '<Row><Cell><Data ss:Type="String"></Data></Cell></Row>\n';}
- xml+='<Worksheet ss:Name="Summary"><Table>';
- xml+=row(cell(title,'h1'));xml+=row(cell('Period: '+dateRange));xml+=row(cell('By: '+by+' | '+at));xml+=emptyRow();
- xml+=row(cell('Total','hd')+cell('Completed','hd')+cell('Pending','hd')+cell('In Progress','hd')+cell('Avg Rating','hd'));
- xml+=row(cell(total,'good','Number')+cell(done,'good','Number')+cell(pending,pending>0?'warn':'','Number')+cell(inprog,'','Number')+cell(avgRating));
- xml+=emptyRow();xml+=row(cell('STAFF PERFORMANCE','h2')+cell('','h2')+cell('','h2')+cell('','h2')+cell('','h2')+cell('','h2'));
- xml+=row(cell('Name','hd')+cell('Completed','hd')+cell('Total','hd')+cell('Completion %','hd')+cell('Avg Response','hd')+cell('Avg Rating','hd'));
- staffList.forEach(function(s,i){var avgR=s.ratings.length?(s.ratings.reduce(function(a,b){return a+b;},0)/s.ratings.length).toFixed(1):'N/A';var avgResp=s.rCount>0?Math.round(s.responseMs/s.rCount/60000):'N/A';var pct=s.total>0?Math.round(s.done/s.total*100):0;var medal=i===0?'🥇 ':i===1?'🥈 ':i===2?'🥉 ':'';xml+=row(cell(medal+s.name,i<3?'good':'')+cell(s.done,'','Number')+cell(s.total,'','Number')+cell(pct+'%')+cell(typeof avgResp==='number'?avgResp:'N/A')+cell(avgR));});
- xml+='</Table></Worksheet>';
- xml+='<Worksheet ss:Name="Requests"><Table>';
- xml+=row(cell(title,'h1'));xml+=row(cell('Period: '+dateRange));xml+=emptyRow();
- xml+=row(cell('Date','hd')+cell('Time','hd')+cell('Room','hd')+cell('Category','hd')+cell('Request','hd')+cell('Status','hd')+cell('Handled By','hd')+cell('Response(min)','hd')+cell('Rating','hd')+cell('Comment','hd'));
- reqs.forEach(function(r){var d=new Date(r.created_at);var dateStr=d.toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'});var timeStr=d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});var respMin=(r.claimed_at&&r.created_at)?Math.round((new Date(r.claimed_at)-new Date(r.created_at))/60000):'';var statusLabel=r.status==='done'?'Completed':r.status==='in_progress'?'In Progress':'Pending';var rowStyle=r.status==='done'?'good':r.status==='pending'?'warn':'';xml+=row(cell(dateStr,rowStyle)+cell(timeStr,rowStyle)+cell('Room '+(r.room_number||'?'),rowStyle)+cell(r.category||'',rowStyle)+cell(r.message||'',rowStyle)+cell(statusLabel,rowStyle)+cell(r.claimed_by||'Unclaimed',rowStyle)+cell(respMin!==''?respMin:'',rowStyle,respMin!==''?'Number':'String')+cell(r.feedback_rating||'',rowStyle,r.feedback_rating?'Number':'String')+cell(r.feedback_comments||'',rowStyle));});
- xml+='</Table></Worksheet></Workbook>';
- var blob=new Blob([xml],{type:'application/vnd.ms-excel'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='Welco_'+hodData.dept.replace(' ','_')+'_Report_'+from+'_to_'+to+'.xls';a.click();URL.revokeObjectURL(url);
+  var xml='<?xml version="1.0" encoding="UTF-8"?>\n<?mso-application progid="Excel.Sheet"?>\n<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">\n<Styles><Style ss:ID="h1"><Font ss:Bold="1" ss:Size="14" ss:Color="#005f73"/></Style><Style ss:ID="h2"><Interior ss:Color="#005f73" ss:Pattern="Solid"/><Font ss:Bold="1" ss:Color="#FFFFFF" ss:Size="11"/></Style><Style ss:ID="hd"><Font ss:Bold="1"/><Interior ss:Color="#e8f4f4" ss:Pattern="Solid"/></Style><Style ss:ID="good"><Interior ss:Color="#d1fae5" ss:Pattern="Solid"/></Style><Style ss:ID="warn"><Interior ss:Color="#fde8ea" ss:Pattern="Solid"/></Style></Styles>';
+  function cell(val,style,type){type=type||(typeof val==='number'?'Number':'String');var s=style?' ss:StyleID="'+style+'"':'';return '<Cell'+s+'><Data ss:Type="'+type+'">'+String(val).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</Data></Cell>';}
+  function row(cells){return '<Row>'+cells+'</Row>\n';}
+  function emptyRow(){return '<Row><Cell><Data ss:Type="String"></Data></Cell></Row>\n';}
+  xml+='<Worksheet ss:Name="Summary"><Table>';
+  xml+=row(cell(title,'h1'));xml+=row(cell('Period: '+dateRange));xml+=row(cell('By: '+by+' | '+at));xml+=emptyRow();
+  xml+=row(cell('Total','hd')+cell('Completed','hd')+cell('Pending','hd')+cell('In Progress','hd')+cell('Avg Rating','hd'));
+  xml+=row(cell(total,'good','Number')+cell(done,'good','Number')+cell(pending,pending>0?'warn':'','Number')+cell(inprog,'','Number')+cell(avgRating));
+  xml+=emptyRow();xml+=row(cell('STAFF PERFORMANCE','h2')+cell('','h2')+cell('','h2')+cell('','h2')+cell('','h2')+cell('','h2'));
+  xml+=row(cell('Name','hd')+cell('Completed','hd')+cell('Total','hd')+cell('Completion %','hd')+cell('Avg Response','hd')+cell('Avg Rating','hd'));
+  staffList.forEach(function(s,i){var avgR=s.ratings.length?(s.ratings.reduce(function(a,b){return a+b;},0)/s.ratings.length).toFixed(1):'N/A';var avgResp=s.rCount>0?Math.round(s.responseMs/s.rCount/60000):'N/A';var pct=s.total>0?Math.round(s.done/s.total*100):0;var medal=i===0?'🥇 ':i===1?'🥈 ':i===2?'🥉 ':'';xml+=row(cell(medal+s.name,i<3?'good':'')+cell(s.done,'','Number')+cell(s.total,'','Number')+cell(pct+'%')+cell(typeof avgResp==='number'?avgResp:'N/A')+cell(avgR));});
+  xml+='</Table></Worksheet>';
+  xml+='<Worksheet ss:Name="Requests"><Table>';
+  xml+=row(cell(title,'h1'));xml+=row(cell('Period: '+dateRange));xml+=emptyRow();
+  xml+=row(cell('Date','hd')+cell('Time','hd')+cell('Room','hd')+cell('Category','hd')+cell('Request','hd')+cell('Status','hd')+cell('Handled By','hd')+cell('Response(min)','hd')+cell('Rating','hd')+cell('Comment','hd'));
+  reqs.forEach(function(r){var d=new Date(r.created_at);var dateStr=d.toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'});var timeStr=d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});var respMin=(r.claimed_at&&r.created_at)?Math.round((new Date(r.claimed_at)-new Date(r.created_at))/60000):'';var statusLabel=r.status==='done'?'Completed':r.status==='in_progress'?'In Progress':'Pending';var rowStyle=r.status==='done'?'good':r.status==='pending'?'warn':'';xml+=row(cell(dateStr,rowStyle)+cell(timeStr,rowStyle)+cell('Room '+(r.room_number||'?'),rowStyle)+cell(r.category||'',rowStyle)+cell(r.message||'',rowStyle)+cell(statusLabel,rowStyle)+cell(r.claimed_by||'Unclaimed',rowStyle)+cell(respMin!==''?respMin:'',rowStyle,respMin!==''?'Number':'String')+cell(r.feedback_rating||'',rowStyle,r.feedback_rating?'Number':'String')+cell(r.feedback_comments||'',rowStyle));});
+  xml+='</Table></Worksheet></Workbook>';
+  var blob=new Blob([xml],{type:'application/vnd.ms-excel'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='Welco_'+hodData.dept.replace(' ','_')+'_Report_'+from+'_to_'+to+'.xls';a.click();URL.revokeObjectURL(url);
 }
+
+// ── SERVICE HOURS ──
 function updateServiceStatusLabel(){
- var isOpen=document.getElementById('service-open-toggle').checked;
- document.getElementById('service-status-label').textContent=isOpen?'🟢 Service is Open':'🔴 Service is Closed';
- document.getElementById('service-status-sub').textContent=isOpen?'Guests can currently send requests':'Guests will see a closed message';
- document.getElementById('toggle-bg').style.background=isOpen?'#2ecc71':'#e63946';
- document.getElementById('toggle-knob').style.left=isOpen?'28px':'4px';
+  var isOpen=document.getElementById('service-open-toggle').checked;
+  document.getElementById('service-status-label').textContent=isOpen?'🟢 Service is Open':'🔴 Service is Closed';
+  document.getElementById('service-status-sub').textContent=isOpen?'Guests can currently send requests':'Guests will see a closed message';
+  document.getElementById('toggle-bg').style.background=isOpen?'#2ecc71':'#e63946';
+  document.getElementById('toggle-knob').style.left=isOpen?'28px':'4px';
 }
 function loadServiceHours(){
- fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
- var hotel=hotels.find(function(h){return h.hotel_id===hodData.hotel_id;});
- if(!hotel||!hotel.dept_guest_options){updateServiceStatusLabel();return;}
- var saved=hotel.dept_guest_options[hodData.dept];
- if(!saved||!saved.hours){updateServiceStatusLabel();return;}
- var h=saved.hours;
- document.getElementById('service-open-toggle').checked=(h.isOpen!==false);
- if(h.openTime)document.getElementById('service-open-time').value=h.openTime;
- if(h.closeTime)document.getElementById('service-close-time').value=h.closeTime;
- if(h.closedMsg)document.getElementById('service-closed-msg').value=h.closedMsg;
- updateServiceStatusLabel();
- }).catch(function(){updateServiceStatusLabel();});
+  fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
+    var hotel=hotels.find(function(h){return h.hotel_id===hodData.hotel_id;});
+    if(!hotel||!hotel.dept_guest_options){updateServiceStatusLabel();return;}
+    var saved=hotel.dept_guest_options[hodData.dept];
+    if(!saved||!saved.hours){updateServiceStatusLabel();return;}
+    var h=saved.hours;
+    document.getElementById('service-open-toggle').checked=(h.isOpen!==false);
+    if(h.openTime)document.getElementById('service-open-time').value=h.openTime;
+    if(h.closeTime)document.getElementById('service-close-time').value=h.closeTime;
+    if(h.closedMsg)document.getElementById('service-closed-msg').value=h.closedMsg;
+    updateServiceStatusLabel();
+  }).catch(function(){updateServiceStatusLabel();});
 }
 function saveServiceHours(){
- var isOpen=document.getElementById('service-open-toggle').checked;
- var openTime=document.getElementById('service-open-time').value;
- var closeTime=document.getElementById('service-close-time').value;
- var closedMsg=document.getElementById('service-closed-msg').value.trim();
- var msg=document.getElementById('hours-msg');
-
- // ── VALIDATE: close time must be after open time ──
- if (openTime && closeTime) {
-   var op=openTime.split(':'), cl=closeTime.split(':');
-   var openMins=parseInt(op[0])*60+parseInt(op[1]);
-   var closeMins=parseInt(cl[0])*60+parseInt(cl[1]);
-   if (closeMins <= openMins) {
-     msg.textContent='⚠️ Close time must be after open time. e.g. Opens 07:00, Closes 23:00';
-     msg.style.background='#fff3cd'; msg.style.color='#8a6000';
-     msg.className='msg-box msg-success';
-     setTimeout(function(){msg.className='msg-box';},5000);
-     return; // stop save
-   }
- }
-
- if(!fullDeptOptions[hodData.dept])fullDeptOptions[hodData.dept]={};
- fullDeptOptions[hodData.dept].hours={isOpen:isOpen,openTime:openTime,closeTime:closeTime,closedMsg:closedMsg};
- authFetch('/hotels/'+hodData.hotel_id+'/dept-guest-options',{
- method:'POST', headers:{'Content-Type':'application/json'},
- body:JSON.stringify({dept_guest_options:fullDeptOptions})
- }).then(function(r){return r.json();}).then(function(){
- msg.textContent=isOpen?'✅ Saved! Service is now OPEN.':'✅ Saved! Auto-open '+openTime+', Auto-close '+closeTime+'.';
- msg.className='msg-box msg-success';
- setTimeout(function(){msg.className='msg-box';},4000);
- }).catch(function(){
- msg.textContent='❌ Failed to save. Try again.';
- msg.style.background='#fde8ea'; msg.style.color='#e63946';
- msg.className='msg-box msg-success';
- });
+  var isOpen=document.getElementById('service-open-toggle').checked;
+  var openTime=document.getElementById('service-open-time').value;
+  var closeTime=document.getElementById('service-close-time').value;
+  var closedMsg=document.getElementById('service-closed-msg').value.trim();
+  var msg=document.getElementById('hours-msg');
+  if(openTime&&closeTime){
+    var op=openTime.split(':'),cl=closeTime.split(':');
+    var openMins=parseInt(op[0])*60+parseInt(op[1]);
+    var closeMins=parseInt(cl[0])*60+parseInt(cl[1]);
+    if(closeMins<=openMins){
+      msg.textContent='⚠️ Close time must be after open time.';
+      msg.style.background='#fff3cd';msg.style.color='#8a6000';
+      msg.className='msg-box msg-success';
+      setTimeout(function(){msg.className='msg-box';},5000);
+      return;
+    }
+  }
+  if(!fullDeptOptions[hodData.dept])fullDeptOptions[hodData.dept]={};
+  fullDeptOptions[hodData.dept].hours={isOpen:isOpen,openTime:openTime,closeTime:closeTime,closedMsg:closedMsg};
+  authFetch('/hotels/'+hodData.hotel_id+'/dept-guest-options',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({dept_guest_options:fullDeptOptions})
+  }).then(function(r){return r.json();}).then(function(){
+    msg.textContent=isOpen?'✅ Saved! Service is now OPEN.':'✅ Saved! Auto-open '+openTime+', Auto-close '+closeTime+'.';
+    msg.className='msg-box msg-success';
+    setTimeout(function(){msg.className='msg-box';},4000);
+  }).catch(function(){
+    msg.textContent='❌ Failed to save. Try again.';
+    msg.style.background='#fde8ea';msg.style.color='#e63946';
+    msg.className='msg-box msg-success';
+  });
 }
-window.onload=function(){
- var stored=localStorage.getItem('welco_hod');
- if(stored){try{hodData=JSON.parse(stored);fetch('/hod?hotel_id='+hodData.hotel_id).then(function(r){return r.json();}).then(function(){startApp();}).catch(function(){localStorage.removeItem('welco_hod');});}catch(e){localStorage.removeItem('welco_hod');}}
-};</script>
+function saveGuestOptions(){
+  var dept=hodData.dept;
+  fullDeptOptions[dept]={enabled:currentDeptOptions,slaMap:optionSlaMap,custom:customDeptOptions.map(function(c){return{key:c.key,label:c.label,sla:optionSlaMap[c.key]||c.sla||15};})};
+  authFetch('/hotels/'+hodData.hotel_id+'/dept-guest-options',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({dept_guest_options:fullDeptOptions})
+  }).then(function(r){return r.json();}).then(function(){
+    var msg=document.getElementById('go-msg');
+    msg.textContent='✅ Saved! '+currentDeptOptions.length+' option(s) active.';
+    msg.className='msg-box msg-success';
+    setTimeout(function(){msg.className='msg-box';},4000);
+  }).catch(function(){
+    var msg=document.getElementById('go-msg');
+    msg.textContent='❌ Failed to save. Try again.';
+    msg.style.background='#fde8ea';msg.style.color='#e63946';
+    msg.className='msg-box msg-success';
+    setTimeout(function(){msg.className='msg-box';},3000);
+  });
+}
 
-  <!-- COPYRIGHT -->
+// ── ON LOAD ──
+window.onload = function(){
+  var stored = localStorage.getItem('welco_hod');
+  if (stored) {
+    try {
+      hodData = JSON.parse(stored);
+      fetch('/hod?hotel_id=' + hodData.hotel_id)
+        .then(function(r){ return r.json(); })
+        .then(function(){ startApp(); })
+        .catch(function(){ localStorage.removeItem('welco_hod'); });
+    } catch(e) { localStorage.removeItem('welco_hod'); }
+  }
+};
+</script>
+
+
   <div style="text-align:center;padding:12px;font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:0.05em;background:rgba(0,0,0,0.2)">
     © 2026 Welco Technologies. All rights reserved. Unauthorized use prohibited.
   </div>
 
-  <!-- Welco Copyright Footer -->
+  
   <div style="text-align:center;padding:16px;font-size:11px;color:rgba(255,255,255,0.4);position:relative;z-index:1;margin-top:auto">
-    © 2026 <strong>Welco™</strong> · All Rights Reserved · Built in India 🇮🇳<br>
-    Unauthorized copying or distribution is prohibited.
+    © 2026 <strong>Welco™</strong> · All Rights Reserved · Built in India 🇮🇳
   </div>
 
 </body>

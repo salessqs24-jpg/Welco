@@ -103,36 +103,37 @@ const GEMINI_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=';
 
 async function askGemini(prompt) {
-  const https = require('https');
-  return new Promise((resolve, reject) => {
-    const body = JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.7, maxOutputTokens: 512 }
-    });
-    const url = GEMINI_URL + GEMINI_KEY;
-    const reqOpts = new URL(url);
-    const options = {
-      hostname: reqOpts.hostname,
-      path: reqOpts.pathname + reqOpts.search,
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) }
-    };
-    const req = https.request(options, (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => {
-        try {
-          const json = JSON.parse(data);
-          const text = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
-          resolve(text.trim());
-        } catch(e) { reject(e); }
-      });
-    });
-    req.on('error', reject);
-    req.write(body);
-    req.end();
+  const url = GEMINI_URL + GEMINI_KEY;
+  const body = JSON.stringify({
+    contents: [{ parts: [{ text: prompt }] }],
+    generationConfig: { temperature: 0.7, maxOutputTokens: 512 }
   });
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: body
+  });
+  const json = await response.json();
+  if (json.error) {
+    console.error('Gemini API error:', JSON.stringify(json.error));
+    throw new Error(json.error.message || 'Gemini error');
+  }
+  const text = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  if (!text) {
+    console.error('Gemini empty response:', JSON.stringify(json));
+    throw new Error('Empty response from Gemini');
+  }
+  return text.trim();
 }
+
+app.get('/ai/test', async (req,res) => {
+  try {
+    const result = await askGemini('Say exactly: Welco AI is working!');
+    res.json({ success: true, response: result, key_set: !!GEMINI_KEY });
+  } catch(e) {
+    res.json({ success: false, error: e.message, key_set: !!GEMINI_KEY });
+  }
+});
 
 // 1. AI GUEST CHATBOT
 app.post('/ai/chat', async (req, res) => {

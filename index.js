@@ -136,18 +136,57 @@ async function askGemini(prompt) {
 
 // 1. AI GUEST CHATBOT
 app.post('/ai/chat', async (req, res) => {
-  const { message, hotel_name, room_number } = req.body;
+  const { message, hotel_name, room_number, hotel_id } = req.body;
   if (!message) return res.status(400).json({ error: 'Message required' });
   try {
-    const prompt = `You are a helpful hotel concierge AI for "${hotel_name || 'our hotel'}", Room ${room_number || '?'}.
-A guest sent this message (may be in any language): "${message}"
-Respond in JSON only (no markdown, no backticks):
-{"reply":"A warm helpful reply to guest in their same language (max 2 sentences)","department":"one of: Housekeeping, Room Service, Maintenance, Front Desk, or null if just greeting","task":"Short English task for staff (max 10 words)","priority":"normal or urgent","english_message":"English translation of guest message"}`;
+    // Fetch hotel knowledge base for auto-answers
+    let kb = {};
+    if (hotel_id) {
+      const { data: hotelData } = await supabase.from('hotels').select('ai_kb,name').eq('hotel_id', hotel_id).single();
+      if (hotelData) { kb = hotelData.ai_kb || {}; }
+    }
+
+    // Build KB context string
+    const kbContext = [
+      kb.wifi       ? `WiFi Password: ${kb.wifi}` : '',
+      kb.checkin    ? `Check-in time: ${kb.checkin}` : '',
+      kb.checkout   ? `Check-out time: ${kb.checkout}` : '',
+      kb.facilities ? `Facilities: ${kb.facilities}` : '',
+      kb.activities ? `Activities: ${kb.activities}` : '',
+      kb.restaurant ? `Restaurant/Food: ${kb.restaurant}` : '',
+      kb.transport  ? `Transport/Location: ${kb.transport}` : '',
+      kb.contact    ? `Contact: ${kb.contact}` : '',
+      kb.extra      ? `Other info: ${kb.extra}` : '',
+    ].filter(Boolean).join('\n');
+
+    const prompt = `You are a warm, helpful hotel concierge AI for "${hotel_name || 'our hotel'}", Room ${room_number || '?'}.
+
+HOTEL INFORMATION (use this to answer questions directly):
+${kbContext || 'No specific information provided yet.'}
+
+Guest message (may be in any language): "${message}"
+
+Instructions:
+- If the guest is asking about WiFi, facilities, activities, food, checkout, transport, or anything in the hotel info above — answer directly and completely from the hotel info. DO NOT create a staff task for these.
+- If the guest needs a physical service (towels, food delivery, maintenance, room cleaning etc.) — route it to staff.
+- Always reply in the SAME language the guest used.
+- Be warm, friendly, concise.
+
+Respond in JSON only (no markdown):
+{
+  "reply": "Your warm response to guest in their language",
+  "needs_staff": true or false,
+  "department": "Housekeeping|Room Service|Maintenance|Front Desk or null",
+  "task": "Short English task for staff if needs_staff is true, else null",
+  "priority": "normal or urgent",
+  "english_message": "English translation of guest message"
+}`;
+
     const raw = await askGemini(prompt);
     const clean = raw.replace(/```json|```/g, '').trim();
     res.json(JSON.parse(clean));
   } catch(e) {
-    res.json({ reply: "Thank you! Our team will assist you shortly.", department: "Front Desk", task: message.substring(0,60), priority: "normal", english_message: message });
+    res.json({ reply: "Thank you! Our team will assist you shortly.", needs_staff: true, department: "Front Desk", task: message.substring(0,60), priority: "normal", english_message: message });
   }
 });
 
@@ -390,7 +429,8 @@ app.post('/hotels/:hotel_id/guest-options', verifyToken, async (req,res) => {
 });
 app.post('/hotels/:hotel_id/update', verifyToken, async (req,res) => {
   const name=sanitize(req.body.name), city=sanitize(req.body.city||''), colour=sanitize(req.body.colour||''), emoji=req.body.emoji||'', logo_url=req.body.logo_url;
-  const { data,error } = await supabase.from('hotels').update({ name,city,colour,emoji,logo_url }).eq('hotel_id',req.params.hotel_id).select().single();
+  const ai_kb = req.body.ai_kb || {};
+  const { data,error } = await supabase.from('hotels').update({ name,city,colour,emoji,logo_url,ai_kb }).eq('hotel_id',req.params.hotel_id).select().single();
   if (error) return res.status(500).json({ error:error.message });
   res.json(data);
 });

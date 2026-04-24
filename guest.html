@@ -1769,6 +1769,7 @@
           message: text,
           hotel_name: document.getElementById('hotel-name').textContent,
           room_number: roomNumber,
+          hotel_id: hotelId,
           lang: currentLang
         })
       });
@@ -1776,13 +1777,12 @@
       removeTypingIndicator();
       addChatMessage(data.reply || 'Our team will assist you shortly!', false);
 
-      // If AI identified a service request — pre-fill and auto-submit
-      if (data.department && data.task) {
+      // Only create staff task if AI says it needs staff
+      if (data.needs_staff && data.department && data.task) {
         setTimeout(function() {
-          addChatMessage('✅ I\'ve logged this request for ' + data.department + '. Your team has been notified!', false);
-          // Auto submit as request
+          addChatMessage('✅ I\'ve notified the ' + data.department + ' team. They\'ll be with you shortly!', false);
           autoSubmitAIRequest(data);
-        }, 800);
+        }, 600);
       }
     } catch(e) {
       removeTypingIndicator();

@@ -622,7 +622,57 @@
           <button class="logo-remove-btn" id="logo-remove-btn" onclick="removeLogo()">✕ Remove photo</button>
           <p class="logo-size-note" id="logo-size-note"></p>
           <input type="file" id="logo-file-input" accept="image/jpeg,image/png,image/webp" onchange="handleLogoUpload(event)">
-          <button class="save-btn" onclick="saveSettings()" style="margin-top:14px">Save Changes</button>
+
+          <!-- AI KNOWLEDGE BASE -->
+          <div style="background:linear-gradient(135deg,#f8f7ff,#f0f0ff);border:1.5px solid #667eea;border-radius:14px;padding:18px;margin-top:16px;margin-bottom:14px">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+              <span style="font-size:20px">✨</span>
+              <div>
+                <div style="font-size:14px;font-weight:700;color:#667eea">AI Concierge Knowledge Base</div>
+                <div style="font-size:11px;color:#888;margin-top:2px">AI uses this to auto-answer guests without disturbing staff</div>
+              </div>
+            </div>
+            <div style="display:grid;gap:12px">
+              <div>
+                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">📶 WiFi Password</label>
+                <input type="text" id="ai-wifi" placeholder="e.g. WelcomeGuest2026" style="width:100%;padding:10px 14px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;font-family:monospace">
+              </div>
+              <div>
+                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">⏰ Check-in / Check-out Time</label>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                  <input type="text" id="ai-checkin" placeholder="e.g. 12:00 PM" style="padding:10px 14px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none">
+                  <input type="text" id="ai-checkout" placeholder="e.g. 11:00 AM" style="padding:10px 14px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none">
+                </div>
+              </div>
+              <div>
+                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">🏊 Hotel Facilities</label>
+                <textarea id="ai-facilities" placeholder="e.g. Swimming pool (7AM-9PM), Spa (10AM-8PM), Restaurant (7AM-11PM), Gym (6AM-10PM), Rooftop lounge (4PM-12AM)" style="width:100%;padding:10px 14px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;min-height:70px;resize:vertical;font-family:sans-serif"></textarea>
+              </div>
+              <div>
+                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">🎯 Activities & Experiences</label>
+                <textarea id="ai-activities" placeholder="e.g. Camel safari (₹800/person, 4PM), Boat ride on lake (₹500, 6AM-7PM), Cooking class (₹1200, 11AM), City tour (₹1500, 9AM)" style="width:100%;padding:10px 14px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;min-height:70px;resize:vertical;font-family:sans-serif"></textarea>
+              </div>
+              <div>
+                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">🍽️ Restaurant & Menu Info</label>
+                <textarea id="ai-restaurant" placeholder="e.g. Breakfast (7-10AM): ₹350 buffet. Lunch (12-3PM): ₹500. Dinner (7-11PM): ₹700. Room service available 24/7. Specialty: Rajasthani thali ₹450" style="width:100%;padding:10px 14px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;min-height:70px;resize:vertical;font-family:sans-serif"></textarea>
+              </div>
+              <div>
+                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">📍 Location & Transport</label>
+                <textarea id="ai-transport" placeholder="e.g. Airport: 45 min (₹600 taxi). Railway station: 20 min (₹300). City center: 10 min walk. Auto rickshaw available at gate." style="width:100%;padding:10px 14px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;min-height:70px;resize:vertical;font-family:sans-serif"></textarea>
+              </div>
+              <div>
+                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">📞 Contact & Emergency</label>
+                <input type="text" id="ai-contact" placeholder="e.g. Reception: +91 98765 43210, Emergency: +91 98765 43211" style="width:100%;padding:10px 14px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none">
+              </div>
+              <div>
+                <label style="font-size:11px;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px">💬 Anything Else Guests Often Ask</label>
+                <textarea id="ai-extra" placeholder="e.g. Pets not allowed. Late checkout available at ₹500 extra. Luggage storage available. Currency exchange at reception." style="width:100%;padding:10px 14px;border:1.5px solid #ddd6fe;border-radius:9px;font-size:13px;outline:none;min-height:60px;resize:vertical;font-family:sans-serif"></textarea>
+              </div>
+            </div>
+            <div style="font-size:11px;color:#aaa;margin-top:10px">💡 The more you fill, the smarter the AI gets. Guests get instant answers without calling reception.</div>
+          </div>
+
+          <button class="save-btn" onclick="saveSettings()" style="margin-top:4px">Save Changes</button>
         </div>
       </div>
 
@@ -894,6 +944,10 @@ function startApp() {
  document.documentElement.style.setProperty('--brand2', hotel.colour || '#0a9396');
  document.getElementById('set-name').value = hotel.name || '';
  document.getElementById('set-city').value = hotel.city || '';
+ // Load AI Knowledge Base
+ var kb = hotel.ai_kb || {};
+ var fields = ['wifi','checkin','checkout','facilities','activities','restaurant','transport','contact','extra'];
+ fields.forEach(function(f){ var el=document.getElementById('ai-'+f); if(el) el.value=kb[f]||''; });
  document.getElementById('set-colortext').value = hotel.colour || '#0a9396';
  document.getElementById('set-colorpicker').value = hotel.colour || '#0a9396';
  applyLogoOrEmoji(hotel.logo_url, null);
@@ -1142,7 +1196,17 @@ function saveSettings(){
  msg.className='msg-box msg-success';
 
  // Save basic settings first (without photos - they're too large)
- var basicPayload={name:name,city:city,colour:colour};
+ var basicPayload={name:name,city:city,colour:colour,ai_kb:{
+   wifi: document.getElementById('ai-wifi').value.trim(),
+   checkin: document.getElementById('ai-checkin').value.trim(),
+   checkout: document.getElementById('ai-checkout').value.trim(),
+   facilities: document.getElementById('ai-facilities').value.trim(),
+   activities: document.getElementById('ai-activities').value.trim(),
+   restaurant: document.getElementById('ai-restaurant').value.trim(),
+   transport: document.getElementById('ai-transport').value.trim(),
+   contact: document.getElementById('ai-contact').value.trim(),
+   extra: document.getElementById('ai-extra').value.trim()
+ }};
  if(pendingLogoBase64!==null) basicPayload.logo_url=pendingLogoBase64;
 
  authFetch('/hotels/'+hotel.hotel_id+'/update',{

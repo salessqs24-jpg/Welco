@@ -1048,7 +1048,6 @@ async function saveHodKb() {
   var msg = document.getElementById('hod-kb-msg');
   msg.textContent = '⏳ Saving...'; msg.className = 'msg-box msg-success';
   var kb = hodHotelData && hodHotelData.ai_kb ? JSON.parse(JSON.stringify(hodHotelData.ai_kb)) : {};
-  // Update KB with HOD values
   kb.wifi_name = document.getElementById('hod-ai-wifi-name').value.trim();
   kb.wifi = document.getElementById('hod-ai-wifi').value.trim();
   kb.checkin = document.getElementById('hod-ai-checkin').value.trim();
@@ -1060,18 +1059,18 @@ async function saveHodKb() {
   kb.contact = document.getElementById('hod-ai-contact').value.trim();
   kb.emergency = document.getElementById('hod-ai-emergency').value.trim();
   kb.extra = document.getElementById('hod-ai-extra').value.trim();
-  kb.faqs = faqList; // Save FAQ list
-
+  kb.faqs = faqList;
   try {
-    var r = await authFetch('/hotels/'+hodData.hotel_id+'/update', {
+    var r = await authFetch('/hotels/' + hodData.hotel_id + '/kb', {
       method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({name: hodHotelData.name, city: hodHotelData.city, colour: hodHotelData.colour, ai_kb: kb})
+      body: JSON.stringify({ ai_kb: kb })
     });
-    if (r.ok) {
+    var data = await r.json();
+    if (r.ok && data.success) {
       if (hodHotelData) hodHotelData.ai_kb = kb;
       msg.textContent = '✅ Knowledge base saved! AI will now use this info.';
-    } else { msg.textContent = '❌ Save failed. Try again.'; }
-  } catch(e) { msg.textContent = '❌ Connection error.'; }
+    } else { msg.textContent = '❌ ' + (data.error || 'Save failed. Try again.'); }
+  } catch(e) { msg.textContent = '❌ Connection error. Please try again.'; }
   setTimeout(function(){ msg.className='msg-box'; }, 4000);
 }
 

@@ -684,7 +684,22 @@ app.get('/qr/:room_id', async (req,res) => {
 });
 
 
-// SAVE HOTEL PHOTOS SEPARATELY
+// HOD KB SAVE — separate route that accepts HOD tokens
+app.post('/hotels/:hotel_id/kb', verifyToken, async (req,res) => {
+  try {
+    const hotel_id = req.params.hotel_id;
+    // Get current hotel KB
+    const { data: hotelData } = await supabase.from('hotels').select('ai_kb').eq('hotel_id', hotel_id).single();
+    const currentKb = (hotelData && hotelData.ai_kb) || {};
+    // Merge new KB fields (preserve fields HOD didn't send)
+    const newKb = Object.assign({}, currentKb, req.body.ai_kb || {});
+    const { data, error } = await supabase.from('hotels').update({ ai_kb: newKb }).eq('hotel_id', hotel_id).select().single();
+    if (error) return res.status(500).json({ error: error.message });
+    res.json({ success: true, hotel: data });
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+
 app.post('/hotels/:hotel_id/photos', verifyToken, async (req,res) => {
   try {
     const hotel_photos = req.body.hotel_photos || [];

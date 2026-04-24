@@ -529,6 +529,19 @@ app.get('/qr/:room_id', async (req,res) => {
 });
 
 
+// SAVE HOTEL PHOTOS SEPARATELY
+app.post('/hotels/:hotel_id/photos', verifyToken, async (req,res) => {
+  try {
+    const hotel_photos = req.body.hotel_photos || [];
+    const { data, error } = await supabase.from('hotels')
+      .update({ hotel_photos })
+      .eq('hotel_id', req.params.hotel_id)
+      .select().single();
+    if (error) return res.status(500).json({ error: error.message });
+    res.json({ success: true, hotel: data });
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
 // DELETE HOTEL
 app.post('/hotels/:hotel_id/delete', verifyToken, async (req,res) => {
   const { hotel_id } = req.params;

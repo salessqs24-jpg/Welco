@@ -1110,12 +1110,65 @@ function reqRow(r){
  return '<div class="request-row"><div class="req-top"><span class="req-room">Room '+(r.room_number||'-')+'</span><span class="req-cat">'+(r.category||'General')+'</span></div><div class="req-msg">'+(r.message||'No details')+'</div><div class="req-meta"><span class="badge '+bc+'">'+bt+'</span>'+(r.claimed_by?'<span>👷 '+r.claimed_by+'</span>':'')+(r.feedback_rating?'<span>⭐ '+r.feedback_rating+'/5</span>':'')+'<span>'+time+'</span></div></div>';
 }
 function saveSettings(){
- var name=document.getElementById('set-name').value.trim();var city=document.getElementById('set-city').value.trim();var colour=document.getElementById('set-colortext').value.trim();
+ var name=document.getElementById('set-name').value.trim();
+ var city=document.getElementById('set-city').value.trim();
+ var colour=document.getElementById('set-colortext').value.trim();
  if(!name){alert('Hotel name cannot be empty.');return;}
- var payload={name:name,city:city,colour:colour,hotel_photos:hotelPhotos};
- if(pendingLogoBase64!==null)payload.logo_url=pendingLogoBase64;
- authFetch('/hotels/'+hotel.hotel_id+'/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).then(function(r){
- if(r.ok){var newLogo=pendingLogoBase64!==null?pendingLogoBase64:hotel.logo_url;hotel=Object.assign({},hotel,{name:name,city:city,colour:colour,logo_url:newLogo});localStorage.setItem('welco_admin_hotel',JSON.stringify(hotel));for(var i=0;i<allHotels.length;i++){if(allHotels[i].hotel_id===hotel.hotel_id){allHotels[i]=hotel;break;}}localStorage.setItem('welco_admin_hotels',JSON.stringify(allHotels));document.getElementById('t-name').textContent=name;document.getElementById('t-city').textContent=city;document.documentElement.style.setProperty('--brand',colour);applyLogoOrEmoji(hotel.logo_url,null);if(allHotels.length>1)renderHotelDropdown();pendingLogoBase64=null;var msg=document.getElementById('settings-msg');msg.textContent='✅ Settings saved!';msg.className='msg-box msg-success';setTimeout(function(){msg.className='msg-box';},3000);document.getElementById('logo-size-note').textContent='';}
+
+ var msg=document.getElementById('settings-msg');
+ msg.textContent='⏳ Saving...';
+ msg.className='msg-box msg-success';
+
+ // Save basic settings first (without photos - they're too large)
+ var basicPayload={name:name,city:city,colour:colour};
+ if(pendingLogoBase64!==null) basicPayload.logo_url=pendingLogoBase64;
+
+ authFetch('/hotels/'+hotel.hotel_id+'/update',{
+   method:'POST',
+   headers:{'Content-Type':'application/json'},
+   body:JSON.stringify(basicPayload)
+ }).then(function(r){
+   if(!r.ok){ msg.textContent='❌ Save failed. Try again.'; return; }
+   // Update local hotel object
+   var newLogo=pendingLogoBase64!==null?pendingLogoBase64:hotel.logo_url;
+   hotel=Object.assign({},hotel,{name:name,city:city,colour:colour,logo_url:newLogo,hotel_photos:hotelPhotos});
+   localStorage.setItem('welco_admin_hotel',JSON.stringify(hotel));
+   for(var i=0;i<allHotels.length;i++){if(allHotels[i].hotel_id===hotel.hotel_id){allHotels[i]=hotel;break;}}
+   localStorage.setItem('welco_admin_hotels',JSON.stringify(allHotels));
+   document.getElementById('t-name').textContent=name;
+   document.getElementById('t-city').textContent=city;
+   document.documentElement.style.setProperty('--brand',colour);
+   applyLogoOrEmoji(hotel.logo_url,null);
+   if(allHotels.length>1)renderHotelDropdown();
+   pendingLogoBase64=null;
+   document.getElementById('logo-size-note').textContent='';
+
+   // Now save photos separately if any
+   if(hotelPhotos.length>0){
+     msg.textContent='⏳ Saving photos...';
+     authFetch('/hotels/'+hotel.hotel_id+'/photos',{
+       method:'POST',
+       headers:{'Content-Type':'application/json'},
+       body:JSON.stringify({hotel_photos:hotelPhotos})
+     }).then(function(r2){
+       if(r2.ok){
+         msg.textContent='✅ Settings & photos saved!';
+       } else {
+         msg.textContent='✅ Settings saved! Photos may need re-upload.';
+       }
+       msg.className='msg-box msg-success';
+       setTimeout(function(){msg.className='msg-box';},4000);
+     }).catch(function(){
+       msg.textContent='✅ Settings saved! Photos: try saving again.';
+       setTimeout(function(){msg.className='msg-box';},4000);
+     });
+   } else {
+     msg.textContent='✅ Settings saved!';
+     msg.className='msg-box msg-success';
+     setTimeout(function(){msg.className='msg-box';},3000);
+   }
+ }).catch(function(){
+   msg.textContent='❌ Connection error. Try again.';
  });
 }
 function showQR(hotelId,roomId,roomNum){currentQRRoom='Room-'+roomNum;document.getElementById('qr-title').textContent='Room '+roomNum;document.getElementById('qr-sub').textContent=hotel.name;var output=document.getElementById('qr-output');output.innerHTML='';new QRCode(output,{text:LIVE_URL+'/guest.html?hotel_id='+hotelId+'&room_id='+roomId,width:180,height:180,colorDark:hotel.colour||'#005f73',colorLight:'#ffffff'});document.getElementById('qr-modal').classList.add('open');}

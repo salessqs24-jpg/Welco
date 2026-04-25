@@ -442,6 +442,15 @@ app.post('/signup', async (req,res) => {
   res.json({ hotel:{ ...hotel,hotel_id }, owner, token:signToken({ owner_id:owner?owner.id:null, email }) });
 });
 
+// FAST SINGLE HOTEL ENDPOINT
+app.get('/hotel', async (req,res) => {
+  const hotel_id = req.query.hotel_id;
+  if (!hotel_id) return res.status(400).json({ error: 'hotel_id required' });
+  const { data, error } = await supabase.from('hotels').select('hotel_id,name,city,colour,emoji,logo_url,hotel_photos,dept_guest_options,guest_options,ai_kb,menu,room_guide').eq('hotel_id', hotel_id).single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+});
+
 // HOTELS
 app.get('/hotels', async (req,res) => {
   const { data,error } = await supabase.from('hotels').select('*');

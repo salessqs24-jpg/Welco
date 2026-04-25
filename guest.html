@@ -469,12 +469,12 @@ async function loadBranding() {
       var roomData = await roomRes.json();
       if (roomData && roomData.room_number) roomNumber = roomData.room_number;
     }
-    // Fetch hotel data
+    // Fetch only this hotel - fast single query
     var hotel = null;
     try {
-      var hotelRes = await fetch('/hotels');
-      var hotels = await hotelRes.json();
-      hotel = Array.isArray(hotels) ? hotels.find(function(h){ return h.hotel_id === hotelId; }) : null;
+      var hotelRes = await fetch('/hotel?hotel_id=' + hotelId);
+      hotel = await hotelRes.json();
+      if (!hotel || hotel.error) hotel = null;
     } catch(e) { hotel = null; }
     if (hotel) {
       hotelData = hotel;

@@ -154,38 +154,67 @@ app.post('/ai/chat', async (req, res) => {
       : '';
 
     const kbContext = [
-      kb.wifi_name  ? `WiFi Network: ${kb.wifi_name}` : '',
-      kb.wifi       ? `WiFi Password: ${kb.wifi}` : '',
-      kb.checkin    ? `Check-in time: ${kb.checkin}` : '',
-      kb.checkout   ? `Check-out time: ${kb.checkout}` : '',
-      kb.facilities ? `Facilities: ${kb.facilities}` : '',
-      kb.activities ? `Activities & Experiences: ${kb.activities}` : '',
-      kb.restaurant ? `Restaurant/Food: ${kb.restaurant}` : '',
-      kb.transport  ? `Transport/Location: ${kb.transport}` : '',
-      kb.contact    ? `Reception: ${kb.contact}` : '',
-      kb.emergency  ? `Emergency: ${kb.emergency}` : '',
-      kb.extra      ? `Other info: ${kb.extra}` : '',
+      kb.wifi_name      ? `WiFi Network Name: ${kb.wifi_name}` : '',
+      kb.wifi           ? `WiFi Password: ${kb.wifi}` : '',
+      kb.checkin        ? `Check-in time: ${kb.checkin}` : '',
+      kb.checkout       ? `Check-out time: ${kb.checkout}` : '',
+      kb.breakfast      ? `Breakfast timings: ${kb.breakfast}` : '',
+      kb.restaurant     ? `Restaurant/Lunch/Dinner: ${kb.restaurant}` : '',
+      kb.bar            ? `Bar timings: ${kb.bar}` : '',
+      kb.pool           ? `Swimming Pool timings: ${kb.pool}` : '',
+      kb.spa            ? `Spa timings: ${kb.spa}` : '',
+      kb.gym            ? `Gym timings: ${kb.gym}` : '',
+      kb.roomservice    ? `Room Service timings: ${kb.roomservice}` : '',
+      kb.facilities     ? `Other Facilities: ${kb.facilities}` : '',
+      kb.activities     ? `Activities & Experiences: ${kb.activities}` : '',
+      kb.transport      ? `Transport/Location: ${kb.transport}` : '',
+      kb.parking        ? `Parking: ${kb.parking}` : '',
+      kb.pets           ? `Pet Policy: ${kb.pets}` : '',
+      kb.contact        ? `Reception number: ${kb.contact}` : '',
+      kb.emergency      ? `Emergency number: ${kb.emergency}` : '',
+      kb.extra          ? `Other info: ${kb.extra}` : '',
     ].filter(Boolean).join('\n') + faqContext;
 
-    const prompt = `You are a warm, helpful hotel concierge AI for "${hotel_name || 'our hotel'}", Room ${room_number || '?'}.
+    const prompt = `You are a smart hotel concierge AI for "${hotel_name || 'our hotel'}", Room ${room_number || '?'}.
 
-HOTEL INFORMATION (use this to answer questions directly):
-${kbContext || 'No specific information provided yet.'}
+HOTEL INFORMATION (from hotel knowledge base):
+${kbContext || 'No specific hotel info provided yet.'}
 
-Guest message (may be in any language): "${message}"
+Guest message: "${message}"
 
-Instructions:
-- If the guest is asking about WiFi, facilities, activities, food, checkout, transport, or anything in the hotel info above — answer directly and completely from the hotel info. DO NOT create a staff task for these.
-- If the guest needs a physical service (towels, food delivery, maintenance, room cleaning etc.) — route it to staff.
-- Always reply in the SAME language the guest used.
-- Be warm, friendly, concise.
+RULES:
+
+1. NO GREETINGS. Never say Namaste, Hello, Hi, Good morning. Answer directly.
+
+2. HOTEL INFO QUESTIONS — use hotel knowledge base above:
+   - wifi, breakfast, bar, pool, spa, gym, checkout, checkin, transport, parking, pets, activities → hotel data only
+   - If not in data: say Please call reception + number if available
+
+3. CITY GUIDE QUESTIONS — use your own knowledge, be a local expert:
+   - places to visit / sightseeing / tourist spots → list top 4-5 real places with timings
+   - best restaurant / local food / where to eat → suggest famous local restaurants and dishes
+   - shopping / market / bazaar → suggest popular markets
+   - things to do in city / activities → suggest real experiences
+   - how to reach / distance / directions → give actual directions and transport
+   - weather / best time to visit → answer from knowledge
+   - local tips / hidden gems → share real insider tips
+   Be specific with real place names, actual timings, real prices. Be a knowledgeable local guide.
+
+4. STAFF REQUESTS — needs_staff: true:
+   - Wake up call → department: Front Desk, task: Wake up call Room ${room_number} at [time]
+   - Towels, food delivery, AC repair, room cleaning, luggage → correct department
+   - Any physical service needed in room
+
+5. Reply in EXACT same language as guest.
+
+6. URGENT issues (medical/fire/flooding) → needs_staff: true, priority: urgent
 
 Respond in JSON only (no markdown):
 {
-  "reply": "Your warm response to guest in their language",
+  "reply": "Helpful direct answer in guest language",
   "needs_staff": true or false,
-  "department": "Housekeeping|Room Service|Maintenance|Front Desk or null",
-  "task": "Short English task for staff if needs_staff is true, else null",
+  "department": "Front Desk or Housekeeping or Room Service or Maintenance or null",
+  "task": "Short English task for staff or null",
   "priority": "normal or urgent",
   "english_message": "English translation of guest message"
 }`;
@@ -731,6 +760,118 @@ app.post('/owner/delete', verifyToken, async (req,res) => {
     await supabase.from('owners').delete().eq('id', owner_id);
     res.json({ success: true });
   } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// ── FOOD MENU ─────────────────────────────────────────────────
+app.get('/menu', async (req,res) => {
+  const hotel_id = req.query.hotel_id;
+  if (!hotel_id) return res.status(400).json({ error: 'hotel_id required' });
+  const { data, error } = await supabase.from('hotels').select('menu').eq('hotel_id', hotel_id).single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data.menu || []);
+});
+app.post('/menu', verifyToken, async (req,res) => {
+  const { hotel_id, menu } = req.body;
+  if (!hotel_id) return res.status(400).json({ error: 'hotel_id required' });
+  const { data, error } = await supabase.from('hotels').update({ menu }).eq('hotel_id', hotel_id).select().single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ success: true, hotel: data });
+});
+
+// ── ROOM GUIDE ─────────────────────────────────────────────────
+app.get('/room-guide', async (req,res) => {
+  const hotel_id = req.query.hotel_id;
+  if (!hotel_id) return res.status(400).json({ error: 'hotel_id required' });
+  const { data, error } = await supabase.from('hotels').select('room_guide').eq('hotel_id', hotel_id).single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data.room_guide || {});
+});
+app.post('/room-guide', verifyToken, async (req,res) => {
+  const { hotel_id, room_guide } = req.body;
+  if (!hotel_id) return res.status(400).json({ error: 'hotel_id required' });
+  const { data, error } = await supabase.from('hotels').update({ room_guide }).eq('hotel_id', hotel_id).select().single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ success: true, hotel: data });
+});
+
+// ── GUEST CHAT ─────────────────────────────────────────────────
+// GET chat by session_id (guest sees only their session)
+app.get('/chat', async (req,res) => {
+  const hotel_id = req.query.hotel_id;
+  const room_number = req.query.room_number;
+  const session_id = req.query.session_id;
+  if (!hotel_id) return res.status(400).json({ error: 'hotel_id required' });
+  let query = supabase.from('guest_chats').select('*')
+    .eq('hotel_id', hotel_id)
+    .order('created_at', { ascending: true });
+  if (room_number) query = query.eq('room_number', room_number);
+  if (session_id) query = query.eq('session_id', session_id);
+  const { data, error } = await query;
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data || []);
+});
+
+// POST new chat message
+app.post('/chat', async (req,res) => {
+  const { hotel_id, room_number, message, sender, session_id } = req.body;
+  if (!hotel_id || !message) return res.status(400).json({ error: 'hotel_id and message required' });
+  const { data, error } = await supabase.from('guest_chats').insert([{
+    hotel_id,
+    room_number: room_number || '?',
+    message: sanitize(message),
+    sender: sender || 'guest',
+    is_read: false,
+    session_id: session_id || null
+  }]).select().single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+});
+
+// Mark message as read
+app.post('/chat/:id/read', async (req,res) => {
+  const { error } = await supabase.from('guest_chats').update({ is_read: true }).eq('id', req.params.id);
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ success: true });
+});
+
+// Mark all messages in a session as read (staff marks whole room as read)
+app.post('/chat/room/read', async (req,res) => {
+  const { hotel_id, room_number, session_id } = req.body;
+  let query = supabase.from('guest_chats').update({ is_read: true })
+    .eq('hotel_id', hotel_id).eq('sender', 'guest');
+  if (room_number) query = query.eq('room_number', room_number);
+  if (session_id) query = query.eq('session_id', session_id);
+  const { error } = await query;
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ success: true });
+});
+
+// Get all active chat rooms for hotel (staff inbox)
+app.get('/chat/rooms', async (req,res) => {
+  const hotel_id = req.query.hotel_id;
+  if (!hotel_id) return res.status(400).json({ error: 'hotel_id required' });
+  // Get last 48 hours of chats grouped by room+session
+  var cutoff = new Date();
+  cutoff.setHours(cutoff.getHours() - 48);
+  const { data, error } = await supabase.from('guest_chats')
+    .select('*')
+    .eq('hotel_id', hotel_id)
+    .gte('created_at', cutoff.toISOString())
+    .order('created_at', { ascending: false });
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data || []);
+});
+
+// Get unread count for staff badge
+app.get('/chat/unread', async (req,res) => {
+  const hotel_id = req.query.hotel_id;
+  if (!hotel_id) return res.status(400).json({ error: 'hotel_id required' });
+  const { data, error } = await supabase.from('guest_chats')
+    .select('*').eq('hotel_id', hotel_id)
+    .eq('sender', 'guest').eq('is_read', false)
+    .order('created_at', { ascending: false });
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data || []);
 });
 
 app.get('/legal', (req,res) => res.send(`

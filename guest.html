@@ -1,45 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
   <script>
-    /* © 2026 Welco™ - Protected Source */
     (function(){
-      var _0x4a2b=function(){};
-      try{
-        var d=new Date();
-        if(d.getFullYear()<2026){}
-      }catch(e){}
-      // Disable right-click
       document.addEventListener('contextmenu',function(e){e.preventDefault();});
-      // Detect devtools open
-      var threshold=160;
-      setInterval(function(){
-        if(window.outerWidth-window.innerWidth>threshold||window.outerHeight-window.innerHeight>threshold){
-          // devtools detected - do nothing but could add protection here
-        }
-      },1000);
     })();
   </script>
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welco - Guest Services</title>
   <style>
     :root { --brand: #1a1a2e; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: sans-serif; min-height: 100vh; background: #1a1a2e; display: flex; flex-direction: column; position: relative; }
-    /* FULLSCREEN SLIDESHOW BACKGROUND */
+    body { font-family: sans-serif; min-height: 100vh; background: #1a1a2e; display: flex; flex-direction: column; position: relative; padding-bottom: 70px; }
+
+    /* SLIDESHOW */
     #slideshow-container { position: fixed; inset: 0; z-index: 0; overflow: hidden; }
     .slideshow-slide { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.5s ease; }
     .slideshow-slide.active { opacity: 1; }
     #slideshow-overlay { position: fixed; inset: 0; z-index: 1; background: linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.7) 100%); pointer-events: none; }
-    .slideshow-dots { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 10; }
+    .slideshow-dots { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 10; }
     .slideshow-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; transition: all .3s; }
     .slideshow-dot.active { background: white; width: 18px; border-radius: 3px; }
+
     /* HEADER */
     .header { position: relative; z-index: 5; color: white; text-align: center; padding: 0; min-height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
-    .hotel-photo-bg { display: none; }
     .header-inner { position: relative; z-index: 5; padding: 20px 20px 10px; width: 100%; }
     .hotel-logo-circle { width: 64px; height: 64px; border-radius: 50%; background: white; border: 3px solid rgba(255,255,255,0.8); margin: 0 auto 10px; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
     .hotel-logo-circle img { width: 100%; height: 100%; object-fit: cover; }
@@ -48,16 +33,31 @@
     .header p { font-size: 13px; opacity: 0.9; margin-top: 4px; text-shadow: 0 1px 6px rgba(0,0,0,0.6); }
     .welcome-msg { font-size: 12px; margin-top: 8px; background: rgba(255,255,255,0.15); border-radius: 20px; padding: 4px 14px; display: inline-block; }
 
-    /* LANGUAGE SWITCHER */
+    /* LANG BAR */
     .lang-bar { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; padding: 10px 16px; background: rgba(0,0,0,0.35); backdrop-filter: blur(8px); position: relative; z-index: 5; }
     .lang-btn { padding: 5px 10px; border: 1.5px solid rgba(255,255,255,0.3); border-radius: 20px; background: rgba(255,255,255,0.1); color: white; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
-    .lang-btn:hover { background: rgba(255,255,255,0.25); }
     .lang-btn.active { background: white; color: #1a1a2e; border-color: white; }
 
-    .announcement-banner { display: none; margin: 0; background: linear-gradient(90deg, #ee9b00, #ca6702); color: white; padding: 10px 16px; font-size: 13px; font-weight: 500; text-align: center; line-height: 1.5; animation: slideDown 0.4s ease; }
-    .announcement-banner .ann-dismiss { background: rgba(255,255,255,0.25); border: none; color: white; border-radius: 20px; padding: 2px 10px; font-size: 11px; cursor: pointer; margin-left: 10px; vertical-align: middle; }
-    @keyframes slideDown { from { opacity:0; transform: translateY(-10px); } to { opacity:1; transform: translateY(0); } }
-    .container { position: relative; z-index: 5; flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 16px; min-height: calc(100vh - 90px); }
+    /* ANNOUNCEMENT */
+    .announcement-banner { display: none; background: linear-gradient(90deg, #ee9b00, #ca6702); color: white; padding: 10px 16px; font-size: 13px; font-weight: 500; text-align: center; line-height: 1.5; }
+    .announcement-banner .ann-dismiss { background: rgba(255,255,255,0.25); border: none; color: white; border-radius: 20px; padding: 2px 10px; font-size: 11px; cursor: pointer; margin-left: 10px; }
+
+    /* BOTTOM NAV */
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; background: rgba(10,10,20,0.95); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.1); display: flex; }
+    .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 4px 8px; cursor: pointer; transition: all 0.2s; border: none; background: none; color: rgba(255,255,255,0.4); }
+    .nav-btn.active { color: white; }
+    .nav-btn .nav-icon { font-size: 20px; margin-bottom: 3px; }
+    .nav-btn .nav-label { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+    .nav-btn.active .nav-label { color: var(--brand-light, #7fdbda); }
+    .nav-badge { position: absolute; top: 6px; right: calc(50% - 20px); background: #e63946; color: white; border-radius: 10px; font-size: 9px; font-weight: 700; padding: 1px 5px; display: none; }
+    .nav-btn { position: relative; }
+
+    /* TAB PANELS */
+    .tab-panel { display: none; position: relative; z-index: 5; }
+    .tab-panel.active { display: block; }
+
+    /* ── HOME TAB ── */
+    .container { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 16px; }
     .card { background: rgba(255,255,255,0.96); backdrop-filter: blur(12px); border-radius: 20px; padding: 24px; width: 100%; max-width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); }
     .card h2 { font-size: 17px; margin-bottom: 16px; color: #222; text-align: center; }
     .categories { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
@@ -66,12 +66,9 @@
     .services-section { margin-bottom: 14px; display: none; }
     .services-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
     .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .service-item { padding: 10px 12px; background: #f0f9f9; border: 1.5px solid #e0f0f0; border-radius: 12px; font-size: 13px; cursor: pointer; color: #005f73; transition: all 0.2s; text-align: center; line-height: 1.3; }
-    .service-item:hover { background: var(--brand); color: white; border-color: var(--brand); }
+    .service-item { padding: 10px 12px; background: #f0f9f9; border: 1.5px solid #e0f0f0; border-radius: 12px; font-size: 13px; cursor: pointer; color: #005f73; transition: all 0.2s; text-align: center; }
     .service-item.selected { background: var(--brand); color: white; border-color: var(--brand); }
-    .no-services { font-size: 13px; color: #aaa; text-align: center; padding: 12px; }
-    .dept-closed-box { display: none; background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 16px; padding: 28px 20px; text-align: center; margin-bottom: 14px; animation: fadeIn 0.3s ease; }
-    @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+    .dept-closed-box { display: none; background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 16px; padding: 28px 20px; text-align: center; margin-bottom: 14px; }
     .dept-closed-box .closed-moon { font-size: 44px; margin-bottom: 10px; }
     .dept-closed-box .closed-title { font-size: 17px; font-weight: 700; color: white; margin-bottom: 8px; }
     .dept-closed-box .closed-msg { font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.6; margin-bottom: 12px; }
@@ -82,6 +79,8 @@
     .submit-btn { width: 100%; padding: 15px; background: var(--brand); color: white; border: none; border-radius: 12px; font-size: 16px; cursor: pointer; margin-top: 12px; font-weight: bold; transition: opacity 0.2s; }
     .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
     .success { background: #e8f5e9; color: #2e7d32; padding: 14px; border-radius: 10px; margin-top: 12px; display: none; font-size: 14px; text-align: center; }
+
+    /* TRACKING */
     .tracking-card { background: rgba(255,255,255,0.96); border-radius: 20px; padding: 28px; width: 100%; max-width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); display: none; text-align: center; }
     .tracking-icon { font-size: 52px; margin-bottom: 12px; animation: pulse 2s infinite; }
     @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
@@ -93,43 +92,115 @@
     .status-step.done { background: #e8f5e9; color: #2e7d32; }
     .step-icon { font-size: 20px; width: 30px; text-align: center; }
     .step-text { flex: 1; text-align: left; }
-    .step-check { font-size: 16px; }
     .eta-bar { background: #f0f0f0; border-radius: 20px; height: 8px; margin-bottom: 8px; overflow: hidden; }
     .eta-fill { height: 100%; border-radius: 20px; background: var(--brand); width: 10%; transition: width 30s linear; }
     .eta-text { font-size: 12px; color: #999; margin-bottom: 20px; }
     .new-request-btn { padding: 12px 28px; background: white; color: var(--brand); border: 2px solid var(--brand); border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; }
+
+    /* FEEDBACK */
     .feedback-card { background: rgba(255,255,255,0.96); border-radius: 20px; padding: 28px; width: 100%; max-width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); display: none; text-align: center; }
-    .feedback-card h2 { font-size: 20px; margin-bottom: 8px; color: #1a1a2e; }
-    .feedback-card p { color: #666; font-size: 14px; margin-bottom: 16px; }
     .stars { font-size: 42px; cursor: pointer; margin-bottom: 12px; }
     .stars span { display: inline-block; transition: transform 0.1s; }
-    .stars span:hover { transform: scale(1.2); }
     .comment-box { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 14px; resize: none; height: 80px; margin-bottom: 12px; font-family: sans-serif; }
     .feedback-btn { width: 100%; padding: 14px; background: #2ecc71; color: white; border: none; border-radius: 12px; font-size: 15px; cursor: pointer; font-weight: bold; }
     .thankyou { background: rgba(255,255,255,0.96); color: #2e7d32; padding: 32px; border-radius: 20px; text-align: center; display: none; font-size: 18px; width: 100%; max-width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); line-height: 1.6; }
-    @media (max-width: 480px) { .header h1 { font-size: 22px; } .cat-btn { font-size: 13px; } }
-  </style>
 
+    /* AI CHAT MODAL */
+    #ai-chat-modal { display:none; position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.7); backdrop-filter:blur(8px); }
+    .ai-modal-inner { position:absolute; bottom:0; left:0; right:0; background:white; border-radius:24px 24px 0 0; padding:20px; max-height:80vh; display:flex; flex-direction:column; }
+    .ai-msg-list { flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:10px; margin-bottom:14px; max-height:40vh; min-height:100px; }
+    .ai-msg-bot { background:linear-gradient(135deg,#667eea,#764ba2); color:white; padding:12px 16px; border-radius:16px 16px 16px 4px; font-size:14px; max-width:85%; line-height:1.5; }
+    .ai-msg-user { background:#f0f0f0; color:#0d1b1e; padding:12px 16px; border-radius:16px 16px 4px 16px; font-size:14px; max-width:85%; align-self:flex-end; margin-left:auto; line-height:1.5; }
+    .ai-input-row { display:flex; gap:8px; }
+    .ai-input-row input { flex:1; padding:12px 16px; border:1.5px solid #e0e0e0; border-radius:12px; font-size:14px; outline:none; }
+    .ai-send-btn { padding:12px 18px; background:linear-gradient(135deg,#667eea,#764ba2); color:white; border:none; border-radius:12px; font-size:18px; cursor:pointer; }
+
+    /* UPSELL */
+    #upsell-widget { display:none; margin-top:16px; background:linear-gradient(135deg,#fff9e6,#fff3cd); border:1.5px solid #ffd166; border-radius:14px; padding:14px; }
+
+    /* ── MENU TAB ── */
+    .menu-tab { background: rgba(10,10,20,0.7); backdrop-filter: blur(12px); min-height: calc(100vh - 140px); padding: 16px; }
+    .menu-search { width: 100%; padding: 12px 16px; border: 1.5px solid rgba(255,255,255,0.2); border-radius: 12px; background: rgba(255,255,255,0.1); color: white; font-size: 14px; margin-bottom: 16px; outline: none; }
+    .menu-search::placeholder { color: rgba(255,255,255,0.4); }
+    .menu-cats { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 16px; padding-bottom: 4px; }
+    .menu-cat-btn { padding: 7px 16px; border-radius: 20px; border: 1.5px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: white; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+    .menu-cat-btn.active { background: var(--brand); border-color: var(--brand); color: white; }
+    .menu-section-title { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; margin-top: 8px; }
+    .menu-item-card { background: rgba(255,255,255,0.95); border-radius: 16px; padding: 14px; margin-bottom: 12px; display: flex; gap: 12px; align-items: center; }
+    .menu-item-img { width: 72px; height: 72px; border-radius: 12px; object-fit: cover; background: #f0f0f0; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 28px; }
+    .menu-item-info { flex: 1; }
+    .menu-item-name { font-size: 14px; font-weight: 700; color: #1a1a2e; margin-bottom: 3px; }
+    .menu-item-desc { font-size: 12px; color: #888; line-height: 1.4; margin-bottom: 6px; }
+    .menu-item-price { font-size: 15px; font-weight: 800; color: var(--brand); }
+    .menu-veg-badge { display: inline-block; width: 14px; height: 14px; border: 1.5px solid #2ecc71; border-radius: 2px; margin-right: 4px; position: relative; top: 1px; }
+    .menu-veg-badge::after { content:''; width: 8px; height: 8px; background: #2ecc71; border-radius: 50%; position: absolute; top: 1px; left: 1px; }
+    .menu-nonveg-badge { display: inline-block; width: 14px; height: 14px; border: 1.5px solid #e63946; border-radius: 2px; margin-right: 4px; position: relative; top: 1px; }
+    .menu-nonveg-badge::after { content:''; width: 8px; height: 8px; background: #e63946; border-radius: 50%; position: absolute; top: 1px; left: 1px; }
+    .order-btn { padding: 8px 16px; background: var(--brand); color: white; border: none; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .order-count { display: flex; align-items: center; gap: 8px; }
+    .count-btn { width: 28px; height: 28px; border-radius: 50%; border: none; background: var(--brand); color: white; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .count-num { font-size: 15px; font-weight: 700; min-width: 20px; text-align: center; }
+    .cart-bar { position: fixed; bottom: 70px; left: 16px; right: 16px; background: var(--brand); color: white; border-radius: 16px; padding: 14px 20px; display: none; z-index: 90; cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+    .cart-bar-inner { display: flex; justify-content: space-between; align-items: center; }
+    .cart-bar .cart-count { font-size: 13px; opacity: 0.85; }
+    .cart-bar .cart-total { font-size: 16px; font-weight: 800; }
+    .cart-bar .cart-action { font-size: 13px; font-weight: 700; background: white; color: var(--brand); padding: 6px 14px; border-radius: 10px; }
+    .empty-menu { text-align: center; padding: 60px 20px; color: rgba(255,255,255,0.4); }
+    .empty-menu .em-icon { font-size: 48px; margin-bottom: 12px; }
+
+    /* ── GUIDE TAB ── */
+    .guide-tab { background: rgba(10,10,20,0.7); backdrop-filter: blur(12px); min-height: calc(100vh - 140px); padding: 16px; }
+    .guide-section { background: rgba(255,255,255,0.95); border-radius: 16px; margin-bottom: 14px; overflow: hidden; }
+    .guide-section-header { padding: 14px 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .guide-section-header .gs-icon { font-size: 22px; }
+    .guide-section-header .gs-title { font-size: 15px; font-weight: 700; color: #1a1a2e; flex: 1; }
+    .guide-section-header .gs-arrow { font-size: 12px; color: #aaa; transition: transform 0.3s; }
+    .guide-section-header.open .gs-arrow { transform: rotate(180deg); }
+    .guide-section-body { display: none; padding: 0 16px 16px; border-top: 1px solid #f0f0f0; }
+    .guide-section-body.open { display: block; }
+    .guide-item { padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
+    .guide-item:last-child { border-bottom: none; }
+    .guide-item-title { font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 3px; }
+    .guide-item-desc { font-size: 12px; color: #666; line-height: 1.5; }
+    .local-place { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
+    .local-place:last-child { border-bottom: none; }
+    .local-place-icon { font-size: 24px; width: 40px; text-align: center; flex-shrink: 0; }
+    .local-place-info { flex: 1; }
+    .local-place-name { font-size: 13px; font-weight: 700; color: #1a1a2e; }
+    .local-place-desc { font-size: 11px; color: #888; margin-top: 2px; }
+    .local-place-dist { font-size: 11px; color: var(--brand); font-weight: 600; }
+    .empty-guide { text-align: center; padding: 60px 20px; color: rgba(255,255,255,0.4); }
+
+    /* ── CHAT TAB ── */
+    .chat-tab { display: flex; flex-direction: column; height: calc(100vh - 210px); }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+    .chat-msg { max-width: 80%; padding: 10px 14px; border-radius: 16px; font-size: 14px; line-height: 1.5; }
+    .chat-msg.guest { background: var(--brand); color: white; align-self: flex-end; border-radius: 16px 16px 4px 16px; margin-left: auto; }
+    .chat-msg.staff { background: rgba(255,255,255,0.95); color: #1a1a2e; align-self: flex-start; border-radius: 16px 16px 16px 4px; }
+    .chat-msg-meta { font-size: 10px; opacity: 0.6; margin-top: 4px; }
+    .chat-msg.staff .chat-msg-meta { color: #888; }
+    .chat-msg.guest .chat-msg-meta { color: rgba(255,255,255,0.7); }
+    .chat-input-area { padding: 12px 16px; background: rgba(10,10,20,0.8); backdrop-filter: blur(12px); border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 10px; align-items: center; }
+    .chat-input { flex: 1; padding: 12px 16px; border: 1.5px solid rgba(255,255,255,0.2); border-radius: 24px; background: rgba(255,255,255,0.1); color: white; font-size: 14px; outline: none; font-family: sans-serif; }
+    .chat-input::placeholder { color: rgba(255,255,255,0.4); }
+    .chat-send-btn { width: 44px; height: 44px; border-radius: 50%; background: var(--brand); color: white; border: none; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .chat-empty { text-align: center; padding: 40px 20px; color: rgba(255,255,255,0.4); }
+    .chat-header-info { padding: 12px 16px; background: rgba(0,0,0,0.3); backdrop-filter: blur(8px); text-align: center; }
+    .chat-header-info p { font-size: 12px; color: rgba(255,255,255,0.6); }
+    .typing-indicator { display: none; padding: 8px 14px; background: rgba(255,255,255,0.15); border-radius: 16px; align-self: flex-start; color: white; font-size: 12px; }
+
+    @keyframes slideDown { from { opacity:0; transform: translateY(-10px); } to { opacity:1; transform: translateY(0); } }
+  </style>
   <script>(function(){
- var _0x='© 2026 Welco Technologies. All Rights Reserved.';
- console.log('%c'+_0x,'color:#005f73;font-size:14px;font-weight:bold;');
- console.log('%cStop!','color:#e63946;font-size:40px;font-weight:bold;');
- console.log('%cThis is a browser feature for developers. If someone told you to copy-paste something here, it is a scam.','color:#333;font-size:14px;');
- document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
- var threshold = 160;
- setInterval(function(){
- if(window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold){
- document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#1a1a2e;color:white;font-size:20px;font-family:sans-serif;text-align:center;padding:20px">' +
- '<div><div style="font-size:60px;margin-bottom:20px">🔒</div>' +
- '<div style="font-weight:bold;margin-bottom:10px">© 2026 Welco Technologies</div>' +
- '<div style="font-size:14px;opacity:0.7">Developer tools detected.<br>This software is protected.</div></div></div>';
- }
- }, 1000);
- })();</script>
-  <script src="/welco-protect.js"></script>
+    var _0x='© 2026 Welco Technologies. All Rights Reserved.';
+    console.log('%c'+_0x,'color:#005f73;font-size:14px;font-weight:bold;');
+    console.log('%cStop!','color:#e63946;font-size:40px;font-weight:bold;');
+    document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+  })();</script>
 </head>
 <body>
 
+  <!-- HEADER (always visible) -->
   <div class="header">
     <div id="slideshow-container"></div>
     <div id="slideshow-overlay"></div>
@@ -144,838 +215,155 @@
     </div>
   </div>
 
-  <!-- LANGUAGE SWITCHER -->
-  <div class="lang-bar">
+  <!-- LANG BAR -->
+  <div class="lang-bar" id="lang-bar">
     <button class="lang-btn active" onclick="setLang('en')">🇬🇧 EN</button>
     <button class="lang-btn" onclick="setLang('hi')">🇮🇳 हिंदी</button>
     <button class="lang-btn" onclick="setLang('gu')">🇮🇳 ગુજ</button>
     <button class="lang-btn" onclick="setLang('es')">🇪🇸 ES</button>
     <button class="lang-btn" onclick="setLang('fr')">🇫🇷 FR</button>
-    <button class="lang-btn" onclick="setLang('de')">🇩🇪 DE</button>
-    <button class="lang-btn" onclick="setLang('it')">🇮🇹 IT</button>
     <button class="lang-btn" onclick="setLang('ar')">🇸🇦 عربي</button>
   </div>
 
   <div class="announcement-banner" id="announcement-banner">
     <span>📢</span>
     <span id="announcement-text"></span>
-    <button class="ann-dismiss" onclick="document.getElementById('announcement-banner').style.display='none'" id="btn-dismiss">✕</button>
+    <button class="ann-dismiss" onclick="document.getElementById('announcement-banner').style.display='none'">✕</button>
   </div>
 
-  <div class="container">
-    <div class="card" id="request-card">
-      <h2 id="txt-howhelp">How can we help you?</h2>
-      <div class="categories">
-        <button class="cat-btn" onclick="selectCat(this,'Housekeeping')" id="cat-hk">🛏️ Housekeeping</button>
-        <button class="cat-btn" onclick="selectCat(this,'Room Service')" id="cat-rs">🍽️ Room Service</button>
-        <button class="cat-btn" onclick="selectCat(this,'Maintenance')" id="cat-mt">🔧 Maintenance</button>
-        <button class="cat-btn" onclick="selectCat(this,'Front Desk')" id="cat-fd">🛎️ Front Desk</button>
-      </div>
+  <!-- ══ TAB PANELS ══ -->
 
-      <div class="dept-closed-box" id="dept-closed-box">
-        <div class="closed-moon">🌙</div>
-        <div class="closed-title" id="closed-title">Department is Closed</div>
-        <div class="closed-msg" id="closed-msg"></div>
-        <div class="closed-timing" id="closed-timing" style="display:none"></div>
-      </div>
-
-      <div class="services-section" id="services-section">
-        <div class="services-label" id="txt-quickreq">Quick Requests — Tap to add</div>
-        <div class="services-grid" id="services-grid"></div>
-      </div>
-
-      <div class="eta-badge" id="eta-badge">⏱ <span id="txt-ready">Usually ready in</span> <strong id="eta-time">10 mins</strong></div>
-      <textarea id="message" id="txt-describe"></textarea>
-      <div id="translate-hint" style="font-size:11px;color:#aaa;margin-top:4px;display:none">🌍 Your message will be auto-translated to English for our staff</div>
-
-      <!-- AI CHAT BUTTON -->
-      <button onclick="openAIChat()" style="width:100%;padding:11px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px">
-        ✨ Chat with AI Concierge
-      </button>
-
-      <button class="submit-btn" id="submit-btn" onclick="submitRequest()" id="btn-send">Send Request 🚀</button>
-      <div class="success" id="success">✅ <span id="txt-sent">Request sent!</span></div>
-
-      <!-- AI UPSELL WIDGET -->
-      <div id="upsell-widget" style="display:none;margin-top:16px;background:linear-gradient(135deg,#fff9e6,#fff3cd);border:1.5px solid #ffd166;border-radius:14px;padding:14px">
-        <div style="font-size:12px;font-weight:700;color:#ca8a04;margin-bottom:10px">✨ You might also enjoy</div>
-        <div id="upsell-offers"></div>
-      </div>
-    </div>
-
-    <div class="tracking-card" id="tracking-card">
-      <div class="tracking-icon" id="tracking-icon">📋</div>
-      <div class="tracking-title" id="tracking-title"></div>
-      <div class="tracking-sub" id="tracking-sub"></div>
-      <div class="tracking-status">
-        <div class="status-step active" id="step-1">
-          <div class="step-icon">📋</div>
-          <div class="step-text" id="txt-step1">Request received</div>
-          <div class="step-check">✓</div>
+  <!-- HOME TAB -->
+  <div class="tab-panel active" id="panel-home">
+    <div class="container">
+      <div class="card" id="request-card">
+        <h2 id="txt-howhelp">How can we help you?</h2>
+        <div class="categories">
+          <button class="cat-btn" onclick="selectCat(this,'Housekeeping')" id="cat-hk">🛏️ Housekeeping</button>
+          <button class="cat-btn" onclick="selectCat(this,'Room Service')" id="cat-rs">🍽️ Room Service</button>
+          <button class="cat-btn" onclick="selectCat(this,'Maintenance')" id="cat-mt">🔧 Maintenance</button>
+          <button class="cat-btn" onclick="selectCat(this,'Front Desk')" id="cat-fd">🛎️ Front Desk</button>
         </div>
-        <div class="status-step" id="step-2">
-          <div class="step-icon">👷</div>
-          <div class="step-text" id="txt-step2">Staff assigned</div>
-          <div class="step-check" id="check-2">⏳</div>
+        <div class="dept-closed-box" id="dept-closed-box">
+          <div class="closed-moon">🌙</div>
+          <div class="closed-title" id="closed-title">Department is Closed</div>
+          <div class="closed-msg" id="closed-msg"></div>
+          <div class="closed-timing" id="closed-timing" style="display:none"></div>
         </div>
-        <div class="status-step" id="step-3">
-          <div class="step-icon">✅</div>
-          <div class="step-text" id="txt-step3">Completed</div>
-          <div class="step-check" id="check-3">⏳</div>
+        <div class="services-section" id="services-section">
+          <div class="services-label" id="txt-quickreq">Quick Requests — Tap to add</div>
+          <div class="services-grid" id="services-grid"></div>
+        </div>
+        <div class="eta-badge" id="eta-badge">⏱ <span id="txt-ready">Usually ready in</span> <strong id="eta-time">10 mins</strong></div>
+        <textarea id="message" placeholder="Describe your request... (optional)"></textarea>
+        <button onclick="openAIChat()" style="width:100%;padding:11px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px">✨ Chat with AI Concierge</button>
+        <button class="submit-btn" id="submit-btn" onclick="submitRequest()">Send Request 🚀</button>
+        <div class="success" id="success">✅ Request sent! Tracking below...</div>
+        <div id="upsell-widget">
+          <div style="font-size:12px;font-weight:700;color:#ca8a04;margin-bottom:10px">✨ You might also enjoy</div>
+          <div id="upsell-offers"></div>
         </div>
       </div>
-      <div class="eta-bar"><div class="eta-fill" id="eta-fill"></div></div>
-      <div class="eta-text" id="eta-track-text"></div>
-      <button class="new-request-btn" onclick="newRequest()" id="btn-newreq">+ New Request</button>
-    </div>
-
-    <div class="feedback-card" id="feedback-card">
-      <h2 id="txt-howdid">How did we do? ⭐</h2>
-      <p id="txt-feedbacksub">Your request has been completed!<br>We'd love your feedback.</p>
-      <div class="stars" id="stars">
-        <span onclick="setRating(1)">⭐</span><span onclick="setRating(2)">⭐</span>
-        <span onclick="setRating(3)">⭐</span><span onclick="setRating(4)">⭐</span>
-        <span onclick="setRating(5)">⭐</span>
+      <div class="tracking-card" id="tracking-card">
+        <div class="tracking-icon" id="tracking-icon">📋</div>
+        <div class="tracking-title" id="tracking-title"></div>
+        <div class="tracking-sub" id="tracking-sub"></div>
+        <div class="tracking-status">
+          <div class="status-step active" id="step-1"><div class="step-icon">📋</div><div class="step-text" id="txt-step1">Request received</div><div class="step-check">✓</div></div>
+          <div class="status-step" id="step-2"><div class="step-icon">👷</div><div class="step-text" id="txt-step2">Staff assigned</div><div class="step-check" id="check-2">⏳</div></div>
+          <div class="status-step" id="step-3"><div class="step-icon">✅</div><div class="step-text" id="txt-step3">Completed</div><div class="step-check" id="check-3">⏳</div></div>
+        </div>
+        <div class="eta-bar"><div class="eta-fill" id="eta-fill"></div></div>
+        <div class="eta-text" id="eta-track-text"></div>
+        <button class="new-request-btn" onclick="newRequest()">+ New Request</button>
       </div>
-      <p id="rating-label" style="margin-bottom:12px;color:#1a1a2e;font-weight:bold;font-size:16px"></p>
-      <textarea class="comment-box" id="comment"></textarea>
-      <button class="feedback-btn" onclick="submitFeedback()" id="btn-submit-fb">Submit Feedback</button>
+      <div class="feedback-card" id="feedback-card">
+        <h2>How did we do? ⭐</h2>
+        <p style="color:#666;font-size:14px;margin-bottom:16px">Your request has been completed!</p>
+        <div class="stars" id="stars">
+          <span onclick="setRating(1)">⭐</span><span onclick="setRating(2)">⭐</span>
+          <span onclick="setRating(3)">⭐</span><span onclick="setRating(4)">⭐</span>
+          <span onclick="setRating(5)">⭐</span>
+        </div>
+        <p id="rating-label" style="margin-bottom:12px;color:#1a1a2e;font-weight:bold;font-size:16px"></p>
+        <textarea class="comment-box" id="comment" placeholder="Any suggestions? (optional)"></textarea>
+        <button class="feedback-btn" onclick="submitFeedback()">Submit Feedback</button>
+      </div>
+      <div class="thankyou" id="thankyou">🙏 Thank you for your feedback!<br><br><span style="font-size:14px;color:#555">Enjoy your stay at </span><span id="hotel-name-ty"></span></div>
     </div>
+  </div>
 
-    <div class="thankyou" id="thankyou">
-      🙏 <span id="txt-thankyou">Thank you for your feedback!</span><br><br>
-      <span style="font-size:14px;color:#555" id="txt-enjoy">Enjoy your stay at </span><span id="hotel-name-ty"></span>
+  <!-- MENU TAB -->
+  <div class="tab-panel" id="panel-menu">
+    <div class="menu-tab">
+      <input class="menu-search" id="menu-search" placeholder="🔍 Search food & drinks..." oninput="filterMenu()">
+      <div class="menu-cats" id="menu-cats"></div>
+      <div id="menu-list"><div class="empty-menu"><div class="em-icon">🍽️</div><p>Loading menu...</p></div></div>
+    </div>
+    <!-- CART BAR -->
+    <div class="cart-bar" id="cart-bar" onclick="placeOrder()">
+      <div class="cart-bar-inner">
+        <div>
+          <div class="cart-count" id="cart-count-label">0 items</div>
+          <div class="cart-total" id="cart-total-label">₹0</div>
+        </div>
+        <div class="cart-action">Place Order →</div>
+      </div>
     </div>
   </div>
 
-  <script>var LANGS = {
- en: {
- howhelp: 'How can we help you?',
- quickreq: 'Quick Requests — Tap to add',
- ready: 'Usually ready in',
- describe: 'Describe your request... (optional)',
- send: 'Send Request 🚀',
- sent: 'Request sent! Tracking your request below...',
- step1: 'Request received', step2: 'Staff assigned', step3: 'Completed',
- newreq: '+ New Request',
- howdid: 'How did we do? ⭐',
- feedbacksub: "Your request has been completed! We'd love your feedback.",
- submitfb: 'Submit Feedback',
- thankyou: 'Thank you for your feedback!',
- enjoy: 'Enjoy your stay at ',
- welcome: '👋 Welcome! We\'re here to help.',
- dismiss: '✕ Dismiss',
- closed: 'is Closed Right Now',
- closedDefault: "We're currently closed. Please try again during our service hours.",
- serviceHours: '⏰ Service hours: ',
- ratings: ['', '😞 Poor', '😐 Fair', '🙂 Good', '😊 Great', '🤩 Excellent!'],
- cats: { Housekeeping: '🛏️ Housekeeping', 'Room Service': '🍽️ Room Service', Maintenance: '🔧 Maintenance', 'Front Desk': '🛎️ Front Desk' },
- staffOnWay: 'Staff On The Way! 👷',
- staffSub: 'A staff member has accepted your request.',
- completed: 'Completed! ✅',
- completedSub: 'Your request has been completed. How was the service?',
- received: 'Request Received!',
- receivedSub: 'Your request has been sent to our staff.',
- estimated: 'Estimated: ',
- commentPlaceholder: 'Any suggestions? (optional)',
- dir: 'ltr'
- },
- hi: {
- howhelp: 'हम आपकी कैसे मदद कर सकते हैं?',
- quickreq: 'त्वरित अनुरोध — टैप करें',
- ready: 'आमतौर पर तैयार',
- describe: 'अपना अनुरोध बताएं... (वैकल्पिक)',
- send: 'अनुरोध भेजें 🚀',
- sent: 'अनुरोध भेजा गया! नीचे ट्रैक करें...',
- step1: 'अनुरोध प्राप्त हुआ', step2: 'स्टाफ नियुक्त', step3: 'पूर्ण',
- newreq: '+ नया अनुरोध',
- howdid: 'हमारी सेवा कैसी रही? ⭐',
- feedbacksub: 'आपका अनुरोध पूरा हो गया! कृपया फीडबैक दें।',
- submitfb: 'फीडबैक जमा करें',
- thankyou: 'आपके फीडबैक के लिए धन्यवाद!',
- enjoy: 'में आपका प्रवास शुभ हो ',
- welcome: '👋 स्वागत है! हम यहाँ मदद के लिए हैं।',
- dismiss: '✕ बंद करें',
- closed: 'अभी बंद है',
- closedDefault: 'हम अभी बंद हैं। कृपया सेवा समय के दौरान फिर से प्रयास करें।',
- serviceHours: '⏰ सेवा समय: ',
- ratings: ['', '😞 खराब', '😐 ठीक', '🙂 अच्छा', '😊 बहुत अच्छा', '🤩 शानदार!'],
- cats: { Housekeeping: '🛏️ हाउसकीपिंग', 'Room Service': '🍽️ रूम सर्विस', Maintenance: '🔧 मेंटेनेंस', 'Front Desk': '🛎️ फ्रंट डेस्क' },
- staffOnWay: 'स्टाफ आ रहा है! 👷',
- staffSub: 'एक स्टाफ सदस्य ने आपका अनुरोध स्वीकार किया।',
- completed: 'पूर्ण! ✅',
- completedSub: 'आपका अनुरोध पूरा हो गया। सेवा कैसी रही?',
- received: 'अनुरोध प्राप्त!',
- receivedSub: 'आपका अनुरोध हमारे स्टाफ को भेज दिया गया है।',
- estimated: 'अनुमानित: ',
- commentPlaceholder: 'कोई सुझाव? (वैकल्पिक)',
- dir: 'ltr'
- },
- gu: {
- howhelp: 'અમે તમારી કેવી રીતે મદદ કરી શકીએ?',
- quickreq: 'ઝડપી વિનંતી — ટેપ કરો',
- ready: 'સામાન્ય રીતે તૈયાર',
- describe: 'તમારી વિનંતી જણાવો... (વૈકલ્પિક)',
- send: 'વિનંતી મોકલો 🚀',
- sent: 'વિનંતી મોકલી! નીચે ટ્રેક કરો...',
- step1: 'વિનંતી મળી', step2: 'સ્ટાફ નિયુક્ત', step3: 'પૂર્ણ',
- newreq: '+ નવી વિનંતી',
- howdid: 'અમારી સેવા કેવી હતી? ⭐',
- feedbacksub: 'તમારી વિનંતી પૂર્ણ થઈ! કૃપા કરી પ્રતિભાવ આપો.',
- submitfb: 'પ્રતિભાવ સબમિટ કરો',
- thankyou: 'તમારા પ્રતિભાવ માટે આભાર!',
- enjoy: 'માં તમારો રોકાણ શુભ રહે ',
- welcome: '👋 સ્વાગત છે! અમે અહીં મદદ માટે છીએ.',
- dismiss: '✕ બંધ કરો',
- closed: 'હમણાં બંધ છે',
- closedDefault: 'અમે હમણાં બંધ છીએ. કૃપા કરી સેવા સમય દરમિયાન ફરી પ્રયાસ કરો.',
- serviceHours: '⏰ સેવા સમય: ',
- ratings: ['', '😞 નબળું', '😐 ઠીક', '🙂 સારું', '😊 ખૂબ સારું', '🤩 ઉત્તમ!'],
- cats: { Housekeeping: '🛏️ હાઉસકીપિંગ', 'Room Service': '🍽️ રૂમ સર્વિસ', Maintenance: '🔧 મેઈન્ટેનન્સ', 'Front Desk': '🛎️ ફ્રન્ટ ડેસ્ક' },
- staffOnWay: 'સ્ટાફ આવી રહ્યો છે! 👷',
- staffSub: 'એક સ્ટાફ સભ્યે તમારી વિનંતી સ્વીકારી.',
- completed: 'પૂર્ણ! ✅',
- completedSub: 'તમારી વિનંતી પૂર્ણ થઈ. સેવા કેવી હતી?',
- received: 'વિનંતી મળી!',
- receivedSub: 'તમારી વિનંતી સ્ટાફને મોકલવામાં આવી છે.',
- estimated: 'અંદાજ: ',
- commentPlaceholder: 'કોઈ સૂચન? (વૈકલ્પિક)',
- dir: 'ltr'
- },
- es: {
- howhelp: '¿En qué podemos ayudarle?',
- quickreq: 'Solicitudes rápidas — Toque para añadir',
- ready: 'Normalmente listo en',
- describe: 'Describa su solicitud... (opcional)',
- send: 'Enviar solicitud 🚀',
- sent: '¡Solicitud enviada! Rastreando abajo...',
- step1: 'Solicitud recibida', step2: 'Personal asignado', step3: 'Completado',
- newreq: '+ Nueva solicitud',
- howdid: '¿Cómo lo hicimos? ⭐',
- feedbacksub: '¡Su solicitud fue completada! Nos encantaría su opinión.',
- submitfb: 'Enviar opinión',
- thankyou: '¡Gracias por su opinión!',
- enjoy: 'Disfrute su estadía en ',
- welcome: '👋 ¡Bienvenido! Estamos aquí para ayudar.',
- dismiss: '✕ Cerrar',
- closed: 'está cerrado ahora',
- closedDefault: 'Estamos cerrados. Por favor intente durante el horario de servicio.',
- serviceHours: '⏰ Horario: ',
- ratings: ['', '😞 Malo', '😐 Regular', '🙂 Bueno', '😊 Muy bueno', '🤩 ¡Excelente!'],
- cats: { Housekeeping: '🛏️ Limpieza', 'Room Service': '🍽️ Servicio a hab.', Maintenance: '🔧 Mantenimiento', 'Front Desk': '🛎️ Recepción' },
- staffOnWay: '¡Personal en camino! 👷',
- staffSub: 'Un miembro del personal aceptó su solicitud.',
- completed: '¡Completado! ✅',
- completedSub: 'Su solicitud fue completada. ¿Cómo fue el servicio?',
- received: '¡Solicitud recibida!',
- receivedSub: 'Su solicitud fue enviada al personal.',
- estimated: 'Estimado: ',
- commentPlaceholder: '¿Alguna sugerencia? (opcional)',
- dir: 'ltr'
- },
- fr: {
- howhelp: 'Comment pouvons-nous vous aider?',
- quickreq: 'Demandes rapides — Appuyez pour ajouter',
- ready: 'Généralement prêt en',
- describe: 'Décrivez votre demande... (facultatif)',
- send: 'Envoyer la demande 🚀',
- sent: 'Demande envoyée! Suivi ci-dessous...',
- step1: 'Demande reçue', step2: 'Personnel assigné', step3: 'Terminé',
- newreq: '+ Nouvelle demande',
- howdid: 'Comment avons-nous fait? ⭐',
- feedbacksub: 'Votre demande a été complétée! Nous aimerions votre avis.',
- submitfb: 'Soumettre un avis',
- thankyou: 'Merci pour votre avis!',
- enjoy: 'Profitez de votre séjour à ',
- welcome: '👋 Bienvenue! Nous sommes là pour vous aider.',
- dismiss: '✕ Fermer',
- closed: 'est fermé maintenant',
- closedDefault: 'Nous sommes fermés. Veuillez réessayer pendant les heures de service.',
- serviceHours: '⏰ Heures: ',
- ratings: ['', '😞 Mauvais', '😐 Passable', '🙂 Bien', '😊 Très bien', '🤩 Excellent!'],
- cats: { Housekeeping: '🛏️ Ménage', 'Room Service': '🍽️ Room service', Maintenance: '🔧 Maintenance', 'Front Desk': '🛎️ Réception' },
- staffOnWay: 'Personnel en route! 👷',
- staffSub: 'Un membre du personnel a accepté votre demande.',
- completed: 'Terminé! ✅',
- completedSub: 'Votre demande a été complétée. Comment était le service?',
- received: 'Demande reçue!',
- receivedSub: 'Votre demande a été envoyée à notre personnel.',
- estimated: 'Estimé: ',
- commentPlaceholder: 'Des suggestions? (facultatif)',
- dir: 'ltr'
- },
- de: {
- howhelp: 'Wie können wir Ihnen helfen?',
- quickreq: 'Schnellanfragen — Tippen zum Hinzufügen',
- ready: 'Normalerweise bereit in',
- describe: 'Beschreiben Sie Ihre Anfrage... (optional)',
- send: 'Anfrage senden 🚀',
- sent: 'Anfrage gesendet! Unten verfolgen...',
- step1: 'Anfrage erhalten', step2: 'Personal zugewiesen', step3: 'Abgeschlossen',
- newreq: '+ Neue Anfrage',
- howdid: 'Wie haben wir abgeschnitten? ⭐',
- feedbacksub: 'Ihre Anfrage wurde abgeschlossen! Wir freuen uns über Ihr Feedback.',
- submitfb: 'Feedback senden',
- thankyou: 'Danke für Ihr Feedback!',
- enjoy: 'Genießen Sie Ihren Aufenthalt im ',
- welcome: '👋 Willkommen! Wir sind für Sie da.',
- dismiss: '✕ Schließen',
- closed: 'ist jetzt geschlossen',
- closedDefault: 'Wir sind geschlossen. Bitte versuchen Sie es während der Servicezeiten.',
- serviceHours: '⏰ Servicezeiten: ',
- ratings: ['', '😞 Schlecht', '😐 Okay', '🙂 Gut', '😊 Sehr gut', '🤩 Ausgezeichnet!'],
- cats: { Housekeeping: '🛏️ Housekeeping', 'Room Service': '🍽️ Zimmerservice', Maintenance: '🔧 Wartung', 'Front Desk': '🛎️ Rezeption' },
- staffOnWay: 'Personal unterwegs! 👷',
- staffSub: 'Ein Mitarbeiter hat Ihre Anfrage angenommen.',
- completed: 'Abgeschlossen! ✅',
- completedSub: 'Ihre Anfrage wurde abgeschlossen. Wie war der Service?',
- received: 'Anfrage erhalten!',
- receivedSub: 'Ihre Anfrage wurde an unser Personal gesendet.',
- estimated: 'Geschätzt: ',
- commentPlaceholder: 'Anregungen? (optional)',
- dir: 'ltr'
- },
- it: {
- howhelp: 'Come possiamo aiutarla?',
- quickreq: 'Richieste rapide — Tocca per aggiungere',
- ready: 'Di solito pronto in',
- describe: 'Descrivi la tua richiesta... (opzionale)',
- send: 'Invia richiesta 🚀',
- sent: 'Richiesta inviata! Tracciamento sotto...',
- step1: 'Richiesta ricevuta', step2: 'Personale assegnato', step3: 'Completato',
- newreq: '+ Nuova richiesta',
- howdid: 'Come abbiamo fatto? ⭐',
- feedbacksub: 'La tua richiesta è stata completata! Ci piacerebbe il tuo feedback.',
- submitfb: 'Invia feedback',
- thankyou: 'Grazie per il tuo feedback!',
- enjoy: 'Goditi il soggiorno a ',
- welcome: '👋 Benvenuto! Siamo qui per aiutarti.',
- dismiss: '✕ Chiudi',
- closed: 'è chiuso ora',
- closedDefault: 'Siamo chiusi. Riprova durante gli orari di servizio.',
- serviceHours: '⏰ Orari: ',
- ratings: ['', '😞 Scarso', '😐 Discreto', '🙂 Buono', '😊 Ottimo', '🤩 Eccellente!'],
- cats: { Housekeeping: '🛏️ Pulizie', 'Room Service': '🍽️ Room service', Maintenance: '🔧 Manutenzione', 'Front Desk': '🛎️ Reception' },
- staffOnWay: 'Personale in arrivo! 👷',
- staffSub: 'Un membro del personale ha accettato la tua richiesta.',
- completed: 'Completato! ✅',
- completedSub: 'La tua richiesta è stata completata. Com\'era il servizio?',
- received: 'Richiesta ricevuta!',
- receivedSub: 'La tua richiesta è stata inviata al nostro personale.',
- estimated: 'Stimato: ',
- commentPlaceholder: 'Suggerimenti? (opzionale)',
- dir: 'ltr'
- },
- ar: {
- howhelp: 'كيف يمكننا مساعدتك؟',
- quickreq: 'طلبات سريعة — اضغط للإضافة',
- ready: 'جاهز عادةً في',
- describe: 'صف طلبك... (اختياري)',
- send: 'إرسال الطلب 🚀',
- sent: 'تم إرسال الطلب! تتبع أدناه...',
- step1: 'تم استلام الطلب', step2: 'تم تعيين الموظف', step3: 'مكتمل',
- newreq: '+ طلب جديد',
- howdid: 'كيف كانت خدمتنا؟ ⭐',
- feedbacksub: 'اكتمل طلبك! نود سماع رأيك.',
- submitfb: 'إرسال التقييم',
- thankyou: 'شكراً على تقييمك!',
- enjoy: 'استمتع بإقامتك في ',
- welcome: '👋 مرحباً! نحن هنا للمساعدة.',
- dismiss: '✕ إغلاق',
- closed: 'مغلق الآن',
- closedDefault: 'نحن مغلقون حالياً. يرجى المحاولة خلال ساعات الخدمة.',
- serviceHours: '⏰ ساعات الخدمة: ',
- ratings: ['', '😞 سيء', '😐 مقبول', '🙂 جيد', '😊 جيد جداً', '🤩 ممتاز!'],
- cats: { Housekeeping: '🛏️ التدبير المنزلي', 'Room Service': '🍽️ خدمة الغرف', Maintenance: '🔧 الصيانة', 'Front Desk': '🛎️ الاستقبال' },
- staffOnWay: 'الموظف في الطريق! 👷',
- staffSub: 'قبل أحد الموظفين طلبك.',
- completed: 'مكتمل! ✅',
- completedSub: 'اكتمل طلبك. كيف كانت الخدمة؟',
- received: 'تم استلام الطلب!',
- receivedSub: 'تم إرسال طلبك إلى موظفينا.',
- estimated: 'المتوقع: ',
- commentPlaceholder: 'أي اقتراحات؟ (اختياري)',
- dir: 'rtl'
- }
- };
- var currentLang = 'en';
- function setLang(lang) {
- currentLang = lang;
- var t = LANGS[lang];
- document.querySelectorAll('.lang-btn').forEach(function(b) { b.classList.remove('active'); });
- event.target.classList.add('active');
- document.body.dir = t.dir || 'ltr';
- document.getElementById('txt-howhelp').textContent = t.howhelp;
- document.getElementById('txt-quickreq').textContent = t.quickreq;
- document.getElementById('txt-ready').textContent = t.ready;
- document.getElementById('message').placeholder = t.describe;
- document.getElementById('submit-btn').textContent = t.send;
- document.getElementById('txt-sent').textContent = t.sent;
- document.getElementById('txt-step1').textContent = t.step1;
- document.getElementById('txt-step2').textContent = t.step2;
- document.getElementById('txt-step3').textContent = t.step3;
- document.getElementById('btn-newreq').textContent = t.newreq;
- document.getElementById('txt-howdid').textContent = t.howdid;
- document.getElementById('txt-feedbacksub').textContent = t.feedbacksub;
- document.getElementById('btn-submit-fb').textContent = t.submitfb;
- document.getElementById('txt-thankyou').textContent = t.thankyou;
- document.getElementById('txt-enjoy').textContent = t.enjoy;
- document.getElementById('welcome-msg').textContent = t.welcome;
- document.getElementById('comment').placeholder = t.commentPlaceholder;
- document.getElementById('cat-hk').textContent = t.cats['Housekeeping'];
- document.getElementById('cat-rs').textContent = t.cats['Room Service'];
- document.getElementById('cat-mt').textContent = t.cats['Maintenance'];
- document.getElementById('cat-fd').textContent = t.cats['Front Desk'];
- if (selectedCategory) renderDeptServices(selectedCategory);
- }
- function T(key) { return (LANGS[currentLang] && LANGS[currentLang][key]) || LANGS['en'][key] || key; }
- var selectedCategory = '';
- var currentRequestId = null;
- var selectedRating = 0;
- var pollInterval = null;
- var hotelId = null;
- var roomId = null;
- var roomNumber = null;
- var selectedQuicks = [];
- var hotelData = null;
- var deptGuestOptions = {};
- var currentCatSlaMap = {};
- var deptIsClosed = false;
- var params = new URLSearchParams(window.location.search);
- hotelId = params.get('hotel_id') || params.get('hotel') || 'hotel_001';
- roomId = params.get('room_id') || null;
- roomNumber = params.get('room') || '101';
- var DEPT_DEFAULTS = {
- 'Housekeeping': ['Extra Towels','Extra Pillow','Water Bottles','Clean Room','Extra Blanket','Toiletries'],
- 'Room Service': ['Breakfast','Coffee','Tea','Water','Snacks','Ice Bucket'],
- 'Maintenance': ['AC Issue','Hot Water','Light Bulb','TV Issue','WiFi Help','Door Lock'],
- 'Front Desk': ['Wake Up Call','Luggage Help','Late Checkout Info','Airport Transfer & Local Cab','Room Upgradation Info','Room Decoration Info','Private Dinner Info','Extend Stay Info','Bike Rent Info','Adventure Activities Info','SPA Booking Info']
- };
- var OPTION_LABELS = {
- en: { 'Extra Towels':'🛁 Extra Towels','Extra Pillow':'🛏️ Extra Pillow','Water Bottles':'💧 Water Bottles','Clean Room':'🧹 Clean Room','Extra Blanket':'🛌 Extra Blanket','Toiletries':'🧴 Toiletries','Breakfast':'🍳 Breakfast','Coffee':'☕ Coffee','Tea':'🍵 Tea','Water':'💧 Water','Snacks':'🍪 Snacks','Ice Bucket':'🧊 Ice Bucket','AC Issue':'❄️ AC Issue','Hot Water':'♨️ Hot Water','Light Bulb':'💡 Light Bulb','TV Issue':'📺 TV Issue','WiFi Help':'📶 WiFi Help','Door Lock':'🔑 Door Lock','Wake Up Call':'⏰ Wake Up Call','Luggage Help':'🧳 Luggage Help','Late Checkout Info':'🕐 Late Checkout Info','Airport Transfer & Local Cab':'🚕 Airport Transfer & Local Cab','Room Upgradation Info':'⬆️ Room Upgradation Info','Room Decoration Info':'🌸 Room Decoration Info','Private Dinner Info':'🍽️ Private Dinner Info','Extend Stay Info':'📅 Extend Stay Info','Bike Rent Info':'🏍️ Bike Rent Info','Adventure Activities Info':'🏄 Adventure Activities Info','SPA Booking Info':'💆 SPA Booking Info' },
- hi: { 'Extra Towels':'🛁 अतिरिक्त तौलिए','Extra Pillow':'🛏️ अतिरिक्त तकिया','Water Bottles':'💧 पानी की बोतलें','Clean Room':'🧹 कमरा साफ करें','Extra Blanket':'🛌 अतिरिक्त कंबल','Toiletries':'🧴 टॉयलेटरीज','Breakfast':'🍳 नाश्ता','Coffee':'☕ कॉफी','Tea':'🍵 चाय','Water':'💧 पानी','Snacks':'🍪 स्नैक्स','Ice Bucket':'🧊 बर्फ की बाल्टी','AC Issue':'❄️ AC समस्या','Hot Water':'♨️ गर्म पानी','Light Bulb':'💡 बल्ब','TV Issue':'📺 TV समस्या','WiFi Help':'📶 WiFi मदद','Door Lock':'🔑 दरवाजे का ताला','Wake Up Call':'⏰ वेक-अप कॉल','Luggage Help':'🧳 सामान मदद','Late Checkout Info':'🕐 लेट चेकआउट','Airport Transfer & Local Cab':'🚕 एयरपोर्ट ट्रांसफर','Room Upgradation Info':'⬆️ रूम अपग्रेड','Room Decoration Info':'🌸 रूम सजावट','Private Dinner Info':'🍽️ प्राइवेट डिनर','Extend Stay Info':'📅 ठहराव बढ़ाएं','Bike Rent Info':'🏍️ बाइक किराया','Adventure Activities Info':'🏄 एडवेंचर','SPA Booking Info':'💆 स्पा बुकिंग' },
- gu: { 'Extra Towels':'🛁 વધારાના ટુવાલ','Extra Pillow':'🛏️ વધારાનું ઓશીકું','Water Bottles':'💧 પાણીની બોટલ','Clean Room':'🧹 રૂમ સાફ કરો','Extra Blanket':'🛌 વધારાનું ધાબળ','Toiletries':'🧴 ટોઇલેટ્રીઝ','Breakfast':'🍳 નાસ્તો','Coffee':'☕ કૉફી','Tea':'🍵 ચા','Water':'💧 પાણી','Snacks':'🍪 નાસ્તો','Ice Bucket':'🧊 બરફ','AC Issue':'❄️ AC સમસ્યા','Hot Water':'♨️ ગરમ પાણી','Light Bulb':'💡 બલ્બ','TV Issue':'📺 TV સમસ્યા','WiFi Help':'📶 WiFi','Door Lock':'🔑 દરવાજો','Wake Up Call':'⏰ વેક-અપ કૉલ','Luggage Help':'🧳 સામાન','Late Checkout Info':'🕐 લેટ ચેકઆઉટ','Airport Transfer & Local Cab':'🚕 એરપોર્ટ ટ્રાન્સફર','Room Upgradation Info':'⬆️ રૂમ અપગ્રેડ','Room Decoration Info':'🌸 સજાવટ','Private Dinner Info':'🍽️ ખાનગી ડિનર','Extend Stay Info':'📅 રોકાણ વધારો','Bike Rent Info':'🏍️ બાઇક ભાડે','Adventure Activities Info':'🏄 એડ્વેન્ચર','SPA Booking Info':'💆 સ્પા' },
- es: { 'Extra Towels':'🛁 Toallas extra','Extra Pillow':'🛏️ Almohada extra','Water Bottles':'💧 Botellas de agua','Clean Room':'🧹 Limpiar habitación','Extra Blanket':'🛌 Manta extra','Toiletries':'🧴 Artículos de tocador','Breakfast':'🍳 Desayuno','Coffee':'☕ Café','Tea':'🍵 Té','Water':'💧 Agua','Snacks':'🍪 Snacks','Ice Bucket':'🧊 Cubo de hielo','AC Issue':'❄️ Problema AC','Hot Water':'♨️ Agua caliente','Light Bulb':'💡 Bombilla','TV Issue':'📺 Problema TV','WiFi Help':'📶 Ayuda WiFi','Door Lock':'🔑 Cerradura','Wake Up Call':'⏰ Llamada de despertar','Luggage Help':'🧳 Ayuda con equipaje','Late Checkout Info':'🕐 Salida tardía','Airport Transfer & Local Cab':'🚕 Traslado aeropuerto','Room Upgradation Info':'⬆️ Mejora de habitación','Room Decoration Info':'🌸 Decoración','Private Dinner Info':'🍽️ Cena privada','Extend Stay Info':'📅 Extender estadía','Bike Rent Info':'🏍️ Alquiler bici','Adventure Activities Info':'🏄 Aventuras','SPA Booking Info':'💆 Spa' },
- fr: { 'Extra Towels':'🛁 Serviettes supplémentaires','Extra Pillow':'🛏️ Oreiller supplémentaire','Water Bottles':'💧 Bouteilles d\'eau','Clean Room':'🧹 Nettoyage chambre','Extra Blanket':'🛌 Couverture supplémentaire','Toiletries':'🧴 Articles de toilette','Breakfast':'🍳 Petit-déjeuner','Coffee':'☕ Café','Tea':'🍵 Thé','Water':'💧 Eau','Snacks':'🍪 Snacks','Ice Bucket':'🧊 Seau à glace','AC Issue':'❄️ Problème AC','Hot Water':'♨️ Eau chaude','Light Bulb':'💡 Ampoule','TV Issue':'📺 Problème TV','WiFi Help':'📶 Aide WiFi','Door Lock':'🔑 Serrure','Wake Up Call':'⏰ Réveil','Luggage Help':'🧳 Aide bagages','Late Checkout Info':'🕐 Départ tardif','Airport Transfer & Local Cab':'🚕 Transfert aéroport','Room Upgradation Info':'⬆️ Amélioration chambre','Room Decoration Info':'🌸 Décoration','Private Dinner Info':'🍽️ Dîner privé','Extend Stay Info':'📅 Prolonger séjour','Bike Rent Info':'🏍️ Location vélo','Adventure Activities Info':'🏄 Aventures','SPA Booking Info':'💆 Spa' },
- de: { 'Extra Towels':'🛁 Extra Handtücher','Extra Pillow':'🛏️ Extra Kissen','Water Bottles':'💧 Wasserflaschen','Clean Room':'🧹 Zimmer reinigen','Extra Blanket':'🛌 Extra Decke','Toiletries':'🧴 Toilettenartikel','Breakfast':'🍳 Frühstück','Coffee':'☕ Kaffee','Tea':'🍵 Tee','Water':'💧 Wasser','Snacks':'🍪 Snacks','Ice Bucket':'🧊 Eiskübel','AC Issue':'❄️ AC Problem','Hot Water':'♨️ Heißes Wasser','Light Bulb':'💡 Glühbirne','TV Issue':'📺 TV Problem','WiFi Help':'📶 WiFi Hilfe','Door Lock':'🔑 Türschloss','Wake Up Call':'⏰ Weckruf','Luggage Help':'🧳 Gepäckhilfe','Late Checkout Info':'🕐 Später Checkout','Airport Transfer & Local Cab':'🚕 Flughafentransfer','Room Upgradation Info':'⬆️ Zimmer-Upgrade','Room Decoration Info':'🌸 Dekoration','Private Dinner Info':'🍽️ Privates Dinner','Extend Stay Info':'📅 Aufenthalt verlängern','Bike Rent Info':'🏍️ Fahrradverleih','Adventure Activities Info':'🏄 Abenteuer','SPA Booking Info':'💆 Spa' },
- it: { 'Extra Towels':'🛁 Asciugamani extra','Extra Pillow':'🛏️ Cuscino extra','Water Bottles':'💧 Bottiglie d\'acqua','Clean Room':'🧹 Pulizia camera','Extra Blanket':'🛌 Coperta extra','Toiletries':'🧴 Articoli da bagno','Breakfast':'🍳 Colazione','Coffee':'☕ Caffè','Tea':'🍵 Tè','Water':'💧 Acqua','Snacks':'🍪 Snack','Ice Bucket':'🧊 Secchiello ghiaccio','AC Issue':'❄️ Problema AC','Hot Water':'♨️ Acqua calda','Light Bulb':'💡 Lampadina','TV Issue':'📺 Problema TV','WiFi Help':'📶 Aiuto WiFi','Door Lock':'🔑 Serratura','Wake Up Call':'⏰ Sveglia','Luggage Help':'🧳 Aiuto bagagli','Late Checkout Info':'🕐 Check-out tardivo','Airport Transfer & Local Cab':'🚕 Transfer aeroporto','Room Upgradation Info':'⬆️ Upgrade camera','Room Decoration Info':'🌸 Decorazione','Private Dinner Info':'🍽️ Cena privata','Extend Stay Info':'📅 Prolunga soggiorno','Bike Rent Info':'🏍️ Noleggio bici','Adventure Activities Info':'🏄 Avventure','SPA Booking Info':'💆 Spa' },
- ar: { 'Extra Towels':'🛁 مناشف إضافية','Extra Pillow':'🛏️ وسادة إضافية','Water Bottles':'💧 زجاجات ماء','Clean Room':'🧹 تنظيف الغرفة','Extra Blanket':'🛌 بطانية إضافية','Toiletries':'🧴 مستلزمات الحمام','Breakfast':'🍳 إفطار','Coffee':'☕ قهوة','Tea':'🍵 شاي','Water':'💧 ماء','Snacks':'🍪 وجبات خفيفة','Ice Bucket':'🧊 دلو ثلج','AC Issue':'❄️ مشكلة التكييف','Hot Water':'♨️ ماء ساخن','Light Bulb':'💡 مصباح','TV Issue':'📺 مشكلة التلفاز','WiFi Help':'📶 مساعدة WiFi','Door Lock':'🔑 قفل الباب','Wake Up Call':'⏰ إيقاظ','Luggage Help':'🧳 مساعدة الأمتعة','Late Checkout Info':'🕐 مغادرة متأخرة','Airport Transfer & Local Cab':'🚕 نقل المطار','Room Upgradation Info':'⬆️ ترقية الغرفة','Room Decoration Info':'🌸 تزيين الغرفة','Private Dinner Info':'🍽️ عشاء خاص','Extend Stay Info':'📅 تمديد الإقامة','Bike Rent Info':'🏍️ استئجار دراجة','Adventure Activities Info':'🏄 مغامرات','SPA Booking Info':'💆 سبا' }
- };
- function getOptionLabel(key) {
- var labels = OPTION_LABELS[currentLang] || OPTION_LABELS['en'];
- return labels[key] || (OPTION_LABELS['en'][key] || key);
- }
- var etaMap = { 'Housekeeping':'10–15 mins','Room Service':'15–20 mins','Maintenance':'10–20 mins','Front Desk':'5–10 mins' };
- var OPTION_SLA_DEFAULTS = { 'Extra Towels':5,'Extra Pillow':5,'Water Bottles':5,'Clean Room':30,'Extra Blanket':5,'Toiletries':10,'Breakfast':20,'Coffee':10,'Tea':10,'Water':5,'Snacks':10,'Ice Bucket':5,'AC Issue':20,'Hot Water':15,'Light Bulb':10,'TV Issue':15,'WiFi Help':10,'Door Lock':10,'Wake Up Call':2,'Luggage Help':5,'Late Checkout Info':5,'Airport Transfer & Local Cab':10,'Room Upgradation Info':5,'Room Decoration Info':30,'Private Dinner Info':10,'Extend Stay Info':5,'Bike Rent Info':5,'Adventure Activities Info':5,'SPA Booking Info':5 };
- async function loadBranding() {
- try {
- if (roomId) {
- var roomRes = await fetch('/rooms?hotel_id=' + hotelId);
- var rooms = await roomRes.json();
- var room = rooms.find(function(r) { return String(r.id) === String(roomId); });
- if (room) roomNumber = room.room_number;
- }
- var hotelRes = await fetch('/hotels');
- var hotels = await hotelRes.json();
- var hotel = hotels.find(function(h) { return h.hotel_id === hotelId; });
- if (hotel) {
- hotelData = hotel;
- document.documentElement.style.setProperty('--brand', hotel.colour || '#1a1a2e');
- // SLIDESHOW
- var photos = [];
- if (hotel.hotel_photos && hotel.hotel_photos.length > 0) { photos = hotel.hotel_photos; }
- else if (hotel.logo_url) { photos = [hotel.logo_url]; }
- var container = document.getElementById('slideshow-container');
- if (container && photos.length > 0) {
-   document.body.style.background = '#1a1a2e';
-   container.innerHTML = '';
-   photos.forEach(function(url, i) {
-     var img = document.createElement('img');
-     img.src = url; img.className = 'slideshow-slide'+(i===0?' active':''); img.alt = '';
-     container.appendChild(img);
-   });
-   if (photos.length > 1) {
-     var dotsWrap = document.createElement('div');
-     dotsWrap.className = 'slideshow-dots';
-     var curSlide = 0;
-     photos.forEach(function(_, i) {
-       var dot = document.createElement('div');
-       dot.className = 'slideshow-dot'+(i===0?' active':'');
-       dot.onclick = (function(idx){ return function(){ goSlide(idx); }; })(i);
-       dotsWrap.appendChild(dot);
-     });
-     container.appendChild(dotsWrap);
-     function goSlide(n) {
-       var slides = container.querySelectorAll('.slideshow-slide');
-       var dots = container.querySelectorAll('.slideshow-dot');
-       slides[curSlide].classList.remove('active'); dots[curSlide].classList.remove('active');
-       curSlide = (n + photos.length) % photos.length;
-       slides[curSlide].classList.add('active'); dots[curSlide].classList.add('active');
-     }
-     setInterval(function(){ goSlide(curSlide+1); }, 5000);
-   }
-   document.getElementById('hotel-name').textContent = hotel.name;
- } else {
-   document.body.style.background = (hotel.colour || '#1a1a2e');
-   document.getElementById('hotel-name').textContent = hotel.name;
- }
- // Show hotel logo in circle
- var logoImg = document.getElementById('hotel-logo-img');
- var logoEmoji = document.getElementById('hotel-logo-emoji');
- var logoCircle = document.getElementById('hotel-logo-circle');
- if (logoCircle) logoCircle.style.borderColor = (hotel.colour || '#0a9396');
- if (hotel.logo_url && logoImg) {
-   logoImg.src = hotel.logo_url;
-   logoImg.style.display = 'block';
-   if (logoEmoji) logoEmoji.style.display = 'none';
- } else if (logoEmoji) {
-   logoEmoji.textContent = hotel.emoji || '🏨';
- }
- document.getElementById('room-label').textContent = 'Room ' + roomNumber + (hotel.city ? ' — ' + hotel.city : '');
- document.getElementById('hotel-name-ty').textContent = hotel.name;
- document.title = 'Welco — ' + hotel.name;
- document.getElementById('welcome-msg').style.display = 'inline-block';
- if (hotel.dept_guest_options) deptGuestOptions = hotel.dept_guest_options;
- loadAnnouncement();
- }
- } catch(e) {
- document.getElementById('hotel-name').textContent = '🏨 Welco';
- document.getElementById('room-label').textContent = 'Room ' + roomNumber;
- }
- }
- async function loadAnnouncement() {
- try {
- var res = await fetch('/announcements?hotel_id=' + hotelId);
- var data = await res.json();
- if (Array.isArray(data)) {
- var active = data.find(function(a) { return a.is_active; });
- if (active) {
- document.getElementById('announcement-text').textContent = active.message;
- document.getElementById('announcement-banner').style.display = 'block';
- }
- }
- } catch(e) {}
- }
- loadBranding();
- setInterval(async function() {
- if (document.getElementById('request-card').style.display === 'none') return;
- try {
- var hotelRes = await fetch('/hotels');
- var hotels = await hotelRes.json();
- var latest = hotels.find(function(h) { return h.hotel_id === hotelId; });
- if (latest && latest.dept_guest_options) deptGuestOptions = latest.dept_guest_options;
- } catch(e) {}
- }, 5000);
- async function selectCat(btn, cat) {
- document.querySelectorAll('.cat-btn').forEach(function(b) { b.classList.remove('selected'); });
- btn.classList.add('selected');
- selectedCategory = cat;
- selectedQuicks = [];
- deptIsClosed = false;
- document.getElementById('dept-closed-box').style.display = 'none';
- document.getElementById('services-section').style.display = 'none';
- document.getElementById('eta-badge').style.display = 'none';
- document.getElementById('submit-btn').disabled = false;
- try {
- var hotelRes = await fetch('/hotels');
- var hotels = await hotelRes.json();
- var latestHotel = hotels.find(function(h) { return h.hotel_id === hotelId; });
- if (latestHotel && latestHotel.dept_guest_options) deptGuestOptions = latestHotel.dept_guest_options;
- } catch(e) {}
- var savedDeptFull = deptGuestOptions[cat];
- if (savedDeptFull && savedDeptFull.hours) {
- var h = savedDeptFull.hours;
- var closed = false;
-
- // ── SERVICE HOURS LOGIC ──────────────────────────────────────
- // isOpen = true → manually forced OPEN — always open, skip time
- // isOpen = false → manually forced CLOSED — always closed, skip time
- // isOpen = null/undefined → use time-based check automatically
- if (h.isOpen === true) {
-   closed = false; // manually ON — always open
- } else if (h.isOpen === false) {
-   // manually OFF — but only force closed if NO times set
-   // if times are set, respect them (so auto open/close still works)
-   if (h.openTime && h.closeTime) {
-     var now = new Date();
-     var curMins = now.getHours() * 60 + now.getMinutes();
-     var openParts = h.openTime.split(':');
-     var closeParts = h.closeTime.split(':');
-     var openMins = parseInt(openParts[0]) * 60 + parseInt(openParts[1]);
-     var closeMins = parseInt(closeParts[0]) * 60 + parseInt(closeParts[1]);
-     // Validate times are sensible (close must be after open)
-     if (closeMins > openMins) {
-       closed = curMins < openMins || curMins >= closeMins;
-     } else {
-       closed = true; // invalid times — treat as closed
-     }
-   } else {
-     closed = true; // no times set, manual OFF = closed
-   }
- } else if (h.openTime && h.closeTime) {
-   // No manual toggle — use time check
-   var now = new Date();
-   var curMins = now.getHours() * 60 + now.getMinutes();
-   var openParts = h.openTime.split(':');
-   var closeParts = h.closeTime.split(':');
-   var openMins = parseInt(openParts[0]) * 60 + parseInt(openParts[1]);
-   var closeMins = parseInt(closeParts[0]) * 60 + parseInt(closeParts[1]);
-   // Validate: close must be after open, else ignore (treat as always open)
-   if (closeMins > openMins) {
-     closed = curMins < openMins || curMins >= closeMins;
-   }
- }
- if (closed) {
- deptIsClosed = true;
- showClosedBox(cat, h);
- document.getElementById('submit-btn').disabled = true;
- return;
- }
- }
- currentCatSlaMap = (savedDeptFull && savedDeptFull.slaMap) ? savedDeptFull.slaMap : {};
- renderDeptServices(cat);
- document.getElementById('services-section').style.display = 'block';
- document.getElementById('eta-time').textContent = etaMap[cat] || '10 mins';
- document.getElementById('eta-badge').style.display = 'block';
- }
- function showClosedBox(cat, h) {
- function fmt(t) {
- if (!t) return '';
- var p = t.split(':'); var hr = parseInt(p[0]), mn = parseInt(p[1]);
- var ampm = hr >= 12 ? 'PM' : 'AM'; hr = hr % 12 || 12;
- return hr + (mn > 0 ? ':' + String(mn).padStart(2,'0') : '') + ' ' + ampm;
- }
- var t = LANGS[currentLang];
- var deptEmojis = {'Housekeeping':'🛏️','Room Service':'🍽️','Maintenance':'🔧','Front Desk':'🛎️'};
- var deptName = (t.cats && t.cats[cat]) ? t.cats[cat] : cat;
- document.getElementById('closed-title').textContent = deptName + ' ' + t.closed;
- document.getElementById('closed-msg').textContent = h.closedMsg || t.closedDefault;
- var timingEl = document.getElementById('closed-timing');
- if (h.openTime && h.closeTime) {
- timingEl.textContent = t.serviceHours + fmt(h.openTime) + ' – ' + fmt(h.closeTime);
- timingEl.style.display = 'block';
- } else { timingEl.style.display = 'none'; }
- document.getElementById('dept-closed-box').style.display = 'block';
- }
- function renderDeptServices(cat) {
- var grid = document.getElementById('services-grid');
- grid.innerHTML = '';
- var savedDept = deptGuestOptions[cat];
- var enabledKeys, customItems;
- if (savedDept && savedDept.enabled !== undefined) {
- enabledKeys = savedDept.enabled.filter(function(k) { return k.indexOf('CUSTOM::') !== 0; });
- customItems = (savedDept.custom || []).filter(function(c) { return savedDept.enabled.indexOf(c.key) !== -1; });
- } else {
- enabledKeys = DEPT_DEFAULTS[cat] || [];
- customItems = [];
- }
- if (enabledKeys.length === 0 && customItems.length === 0) {
- grid.innerHTML = '<div class="no-services" style="grid-column:1/-1">' + T('describe') + '</div>';
- return;
- }
- enabledKeys.forEach(function(key) {
- addServiceBtn(grid, key, getOptionLabel(key));
- });
- customItems.forEach(function(c) {
- addServiceBtn(grid, c.key, c.label);
- });
- }
- function addServiceBtn(grid, key, label) {
- var el = document.createElement('button');
- el.className = 'service-item';
- el.textContent = label;
- el.setAttribute('data-key', key);
- el.onclick = function() {
- var idx = selectedQuicks.indexOf(key);
- if (idx === -1) { selectedQuicks.push(key); el.classList.add('selected'); }
- else { selectedQuicks.splice(idx, 1); el.classList.remove('selected'); }
- var msgParts = selectedQuicks.map(function(k) {
- return getOptionLabel(k).replace(/[\u{1F000}-\u{1FFFF}]/gu, '').trim() || k;
- });
- document.getElementById('message').value = msgParts.join(', ');
- if (selectedQuicks.length > 0) {
- var maxSla = 0;
- selectedQuicks.forEach(function(k) { var s = getOptionSla(k); if (s > maxSla) maxSla = s; });
- document.getElementById('eta-time').textContent = maxSla + ' mins';
- } else {
- document.getElementById('eta-time').textContent = etaMap[selectedCategory] || '10 mins';
- }
- };
- grid.appendChild(el);
- }
- function getOptionSla(key) {
- if (currentCatSlaMap[key] !== undefined) return currentCatSlaMap[key];
- return OPTION_SLA_DEFAULTS[key] || 15;
- }
- function getMaxSla() {
- if (selectedQuicks.length === 0) return 15;
- var maxSla = 0;
- selectedQuicks.forEach(function(k) { var s = getOptionSla(k); if (s > maxSla) maxSla = s; });
- return maxSla || 15;
- }
- function setRating(r) {
- selectedRating = r;
- var labels = T('ratings');
- document.getElementById('rating-label').textContent = labels[r] || '';
- document.querySelectorAll('#stars span').forEach(function(s, i) { s.style.opacity = i < r ? '1' : '0.3'; });
- }
- // ── AUTO-TRANSLATE typed message to English ──────────────────
- // Maps Welco lang codes to LibreTranslate language codes
- var LANG_MAP = { en:'en', hi:'hi', gu:'gu', es:'es', fr:'fr', de:'de', it:'it', ar:'ar' };
-
- async function translateToEnglish(text, sourceLang) {
-   // No need to translate if already English or empty
-   if (!text || !text.trim() || sourceLang === 'en') return text;
-   var lcode = LANG_MAP[sourceLang] || 'en';
-   if (lcode === 'en') return text;
-   try {
-     // Try MyMemory free translation API (no key needed, 1000 req/day free)
-     var url = 'https://api.mymemory.translated.net/get?q=' +
-       encodeURIComponent(text) + '&langpair=' + lcode + '|en';
-     var r = await fetch(url);
-     var d = await r.json();
-     if (d && d.responseStatus === 200 && d.responseData && d.responseData.translatedText) {
-       var translated = d.responseData.translatedText;
-       // Only use if translation actually changed something
-       if (translated && translated.toLowerCase() !== text.toLowerCase()) {
-         return translated + ' [' + text + ']';
-       }
-     }
-   } catch(e) {}
-   // Fallback — return original if translation fails
-   return text;
- }
-
- async function submitRequest() {
- if (!selectedCategory) { alert(T('howhelp')); return; }
- if (deptIsClosed) { alert(T('closedDefault')); return; }
-
- var typedMessage = document.getElementById('message').value.trim();
- var quickMessage = selectedQuicks.map(function(k){ return getOptionLabel(k).replace(/[\u{1F000}-\u{1FFFF}]/gu,'').trim()||k; }).join(', ');
- var rawMessage = typedMessage || quickMessage;
-
- // Auto-translate typed text (not quick options — they're already in English internally)
- var message = rawMessage;
- if (typedMessage && currentLang !== 'en') {
-   try {
-     var btn = document.getElementById('submit-btn');
-     var origText = btn.textContent;
-     btn.textContent = '🌍 Translating...';
-     btn.disabled = true;
-     message = await translateToEnglish(typedMessage, currentLang);
-     btn.textContent = origText;
-     btn.disabled = false;
-   } catch(e) {
-     message = rawMessage; // fallback to original
-   }
- }
-
- try {
- var res = await fetch('/requests', {
- method: 'POST', headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ hotel_id: hotelId, room_id: roomId, room_number: roomNumber, category: selectedCategory, message: message, sla_minutes: getMaxSla() })
- });
- var data = await res.json();
- if (data && data.id) {
- currentRequestId = data.id;
- document.getElementById('success').style.display = 'block';
- setTimeout(function() {
- document.getElementById('request-card').style.display = 'none';
- showTracking(selectedCategory, message);
- }, 1500);
- document.getElementById('message').value = '';
- document.querySelectorAll('.cat-btn').forEach(function(b) { b.classList.remove('selected'); });
- document.querySelectorAll('.service-item').forEach(function(q) { q.classList.remove('selected'); });
- selectedCategory = ''; selectedQuicks = []; deptIsClosed = false;
- pollInterval = setInterval(checkIfDone, 5000);
- } else { alert('Something went wrong. Please try again.'); }
- } catch(e) { alert('Could not send request. Please try again.'); }
- }
- function showTracking(category, message) {
- var icons = { 'Housekeeping':'🛏️','Room Service':'🍽️','Maintenance':'🔧','Front Desk':'🛎️' };
- document.getElementById('tracking-icon').textContent = icons[category] || '📋';
- var t = LANGS[currentLang];
- document.getElementById('tracking-title').textContent = (t.cats[category] || category) + ' — ' + t.received;
- document.getElementById('tracking-sub').textContent = message ? '"' + message + '"' : t.receivedSub;
- document.getElementById('eta-track-text').textContent = t.estimated + (etaMap[category] || '10–15 mins');
- document.getElementById('tracking-card').style.display = 'block';
- setTimeout(function() { document.getElementById('eta-fill').style.width = '60%'; }, 500);
- }
- function updateTrackingStatus(status) {
- var t = LANGS[currentLang];
- if (status === 'in_progress') {
- document.getElementById('step-2').classList.add('active');
- document.getElementById('check-2').textContent = '✓';
- document.getElementById('tracking-title').textContent = t.staffOnWay;
- document.getElementById('tracking-sub').textContent = t.staffSub;
- document.getElementById('eta-fill').style.width = '80%';
- } else if (status === 'done') {
- document.getElementById('step-3').classList.add('active', 'done');
- document.getElementById('check-3').textContent = '✓';
- document.getElementById('tracking-title').textContent = t.completed;
- document.getElementById('tracking-sub').textContent = t.completedSub;
- document.getElementById('eta-fill').style.width = '100%';
- }
- }
- async function checkIfDone() {
- try {
- var res = await fetch('/requests?hotel_id=' + hotelId);
- var requests = await res.json();
- var req = requests.find(function(r) { return r.id === currentRequestId; });
- if (req) {
- updateTrackingStatus(req.status);
- if (req.status === 'done' && !req.feedback_rating) {
- clearInterval(pollInterval);
- setTimeout(function() {
- document.getElementById('tracking-card').style.display = 'none';
- document.getElementById('feedback-card').style.display = 'block';
- }, 2000);
- }
- }
- } catch(e) {}
- }
- function newRequest() {
- clearInterval(pollInterval);
- document.getElementById('tracking-card').style.display = 'none';
- document.getElementById('request-card').style.display = 'block';
- document.getElementById('success').style.display = 'none';
- document.getElementById('dept-closed-box').style.display = 'none';
- document.getElementById('services-section').style.display = 'none';
- document.getElementById('eta-badge').style.display = 'none';
- document.getElementById('submit-btn').disabled = false;
- document.getElementById('eta-fill').style.width = '10%';
- document.getElementById('step-2').classList.remove('active');
- document.getElementById('step-3').classList.remove('active', 'done');
- document.getElementById('check-2').textContent = '⏳';
- document.getElementById('check-3').textContent = '⏳';
- currentRequestId = null; deptIsClosed = false;
- }
- async function submitFeedback() {
- if (!selectedRating) { alert(T('howdid')); return; }
- var comment = document.getElementById('comment').value;
- await fetch('/requests/' + currentRequestId + '/feedback', {
- method: 'POST', headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ rating: selectedRating, feedback_comments: comment })
- });
- document.getElementById('feedback-card').style.display = 'none';
- document.getElementById('thankyou').style.display = 'block';
- }</script>
-
-  <!-- COPYRIGHT -->
-  <div style="text-align:center;padding:16px;font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:0.05em">
-    © 2026 Welco Technologies. All rights reserved.<br>
-    Unauthorized copying or reproduction of this software is strictly prohibited.
+  <!-- GUIDE TAB -->
+  <div class="tab-panel" id="panel-guide">
+    <div class="guide-tab" id="guide-content">
+      <div class="empty-guide"><div style="font-size:48px;margin-bottom:12px">📖</div><p>Loading guide...</p></div>
+    </div>
   </div>
 
-  <!-- Welco Copyright Footer -->
-  <div style="text-align:center;padding:16px;font-size:11px;color:rgba(255,255,255,0.4);position:relative;z-index:1;margin-top:auto">
-    © 2026 <strong>Welco™</strong> · All Rights Reserved · Built in India 🇮🇳<br>
-    Unauthorized copying or distribution is prohibited.
+  <!-- CHAT TAB -->
+  <div class="tab-panel" id="panel-chat">
+    <div class="chat-header-info">
+      <p>💬 Chat with our Front Desk — We reply within minutes</p>
+    </div>
+    <div class="chat-tab">
+      <div class="chat-messages" id="chat-messages">
+        <div class="chat-empty">
+          <div style="font-size:48px;margin-bottom:12px">💬</div>
+          <p style="color:rgba(255,255,255,0.5);font-size:14px">No messages yet.<br>Say hello to our Front Desk!</p>
+        </div>
+      </div>
+      <div class="typing-indicator" id="typing-indicator">Front Desk is typing...</div>
+      <div class="chat-input-area">
+        <input class="chat-input" id="chat-input" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendChat()">
+        <button class="chat-send-btn" onclick="sendChat()">→</button>
+      </div>
+    </div>
   </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="nav-home" onclick="switchTab('home')">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-label">Home</span>
+    </button>
+    <button class="nav-btn" id="nav-menu" onclick="switchTab('menu')">
+      <span class="nav-icon">🍽️</span>
+      <span class="nav-label">Menu</span>
+      <span class="nav-badge" id="menu-badge"></span>
+    </button>
+    <button class="nav-btn" id="nav-guide" onclick="switchTab('guide')">
+      <span class="nav-icon">📖</span>
+      <span class="nav-label">Guide</span>
+    </button>
+    <button class="nav-btn" id="nav-chat" onclick="switchTab('chat')">
+      <span class="nav-icon">💬</span>
+      <span class="nav-label">Chat</span>
+      <span class="nav-badge" id="chat-badge"></span>
+    </button>
+  </nav>
 
   <!-- AI CHAT MODAL -->
-  <div id="ai-chat-modal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px)">
-    <div style="position:absolute;bottom:0;left:0;right:0;background:white;border-radius:24px 24px 0 0;padding:20px;max-height:80vh;display:flex;flex-direction:column">
+  <div id="ai-chat-modal">
+    <div class="ai-modal-inner">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
         <div>
           <div style="font-size:16px;font-weight:800;color:#0d1b1e">✨ AI Concierge</div>
@@ -983,157 +371,638 @@
         </div>
         <button onclick="closeAIChat()" style="background:#f0f0f0;border:none;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer">✕</button>
       </div>
-      <div id="ai-chat-messages" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;margin-bottom:14px;max-height:40vh;min-height:100px">
-        <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:12px 16px;border-radius:16px 16px 16px 4px;font-size:14px;max-width:85%;line-height:1.5">
-          👋 Hello! I'm your AI concierge. How can I help you today? You can type in any language!
-        </div>
+      <div class="ai-msg-list" id="ai-chat-messages">
+        <div class="ai-msg-bot">👋 Hello! I'm your AI concierge. How can I help you today?</div>
       </div>
-      <div style="display:flex;gap:8px">
-        <input id="ai-chat-input" type="text" placeholder="Type your request..." style="flex:1;padding:12px 16px;border:1.5px solid #e0e0e0;border-radius:12px;font-size:14px;outline:none" onkeydown="if(event.key==='Enter')sendAIMessage()">
-        <button onclick="sendAIMessage()" style="padding:12px 18px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:12px;font-size:18px;cursor:pointer">→</button>
+      <div class="ai-input-row">
+        <input id="ai-chat-input" type="text" placeholder="Type your request..." onkeydown="if(event.key==='Enter')sendAIMessage()">
+        <button class="ai-send-btn" onclick="sendAIMessage()">→</button>
       </div>
     </div>
   </div>
 
-  <script>
-  // ── AI FEATURES ────────────────────────────────────────────────
+<script>
+// ── CORE VARS ──
+var hotelId = null, roomId = null, roomNumber = '101';
+var hotelData = null, deptGuestOptions = {};
+var selectedCategory = '', selectedQuicks = [], selectedRating = 0;
+var currentRequestId = null, pollInterval = null;
+var deptIsClosed = false, currentCatSlaMap = {};
+var currentLang = 'en';
+var cart = {}; // { itemId: { item, qty } }
+var menuData = [], activeMenuCat = 'All';
+var chatPollInterval = null;
+var params = new URLSearchParams(window.location.search);
+hotelId = params.get('hotel_id') || params.get('hotel') || 'hotel_001';
+roomId = params.get('room_id') || null;
+roomNumber = params.get('room') || '101';
 
-  function openAIChat() {
-    document.getElementById('ai-chat-modal').style.display = 'block';
-    document.getElementById('ai-chat-input').focus();
-    // Load upsell offers when chat opens
-    loadUpsellOffers();
-  }
+var DEPT_DEFAULTS = {
+  'Housekeeping': ['Extra Towels','Extra Pillow','Water Bottles','Clean Room','Extra Blanket','Toiletries'],
+  'Room Service': ['Breakfast','Coffee','Tea','Water','Snacks','Ice Bucket'],
+  'Maintenance': ['AC Issue','Hot Water','Light Bulb','TV Issue','WiFi Help','Door Lock'],
+  'Front Desk': ['Wake Up Call','Luggage Help','Late Checkout Info','Airport Transfer & Local Cab','Room Upgradation Info','Room Decoration Info','Private Dinner Info','Extend Stay Info','Bike Rent Info','Adventure Activities Info','SPA Booking Info']
+};
+var etaMap = { 'Housekeeping':'10–15 mins','Room Service':'15–20 mins','Maintenance':'10–20 mins','Front Desk':'5–10 mins' };
+var OPTION_SLA_DEFAULTS = { 'Extra Towels':5,'Extra Pillow':5,'Water Bottles':5,'Clean Room':30,'Extra Blanket':5,'Toiletries':10,'Breakfast':20,'Coffee':10,'Tea':10,'Water':5,'Snacks':10,'Ice Bucket':5,'AC Issue':20,'Hot Water':15,'Light Bulb':10,'TV Issue':15,'WiFi Help':10,'Door Lock':10,'Wake Up Call':2,'Luggage Help':5,'Late Checkout Info':5,'Airport Transfer & Local Cab':10,'Room Upgradation Info':5,'Room Decoration Info':30,'Private Dinner Info':10,'Extend Stay Info':5,'Bike Rent Info':5,'Adventure Activities Info':5,'SPA Booking Info':5 };
 
-  function closeAIChat() {
-    document.getElementById('ai-chat-modal').style.display = 'none';
-  }
+// ── TAB SWITCHING ──
+function switchTab(tab) {
+  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('panel-'+tab).classList.add('active');
+  document.getElementById('nav-'+tab).classList.add('active');
 
-  function addChatMessage(text, isUser) {
-    var msgs = document.getElementById('ai-chat-messages');
-    var div = document.createElement('div');
-    div.style.cssText = isUser
-      ? 'background:#f0f0f0;color:#0d1b1e;padding:12px 16px;border-radius:16px 16px 4px 16px;font-size:14px;max-width:85%;align-self:flex-end;margin-left:auto;line-height:1.5'
-      : 'background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:12px 16px;border-radius:16px 16px 16px 4px;font-size:14px;max-width:85%;line-height:1.5';
-    div.textContent = text;
-    msgs.appendChild(div);
-    msgs.scrollTop = msgs.scrollHeight;
-  }
+  if (tab === 'menu') loadMenu();
+  if (tab === 'guide') loadGuide();
+  if (tab === 'chat') { loadChat(); markChatRead(); }
+}
 
-  function addTypingIndicator() {
-    var msgs = document.getElementById('ai-chat-messages');
-    var div = document.createElement('div');
-    div.id = 'ai-typing';
-    div.style.cssText = 'background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:12px 16px;border-radius:16px 16px 16px 4px;font-size:14px;max-width:85%;line-height:1.5';
-    div.textContent = '✨ Thinking...';
-    msgs.appendChild(div);
-    msgs.scrollTop = msgs.scrollHeight;
-  }
-
-  function removeTypingIndicator() {
-    var el = document.getElementById('ai-typing');
-    if (el) el.remove();
-  }
-
-  async function sendAIMessage() {
-    var input = document.getElementById('ai-chat-input');
-    var text = input.value.trim();
-    if (!text) return;
-    input.value = '';
-    addChatMessage(text, true);
-    addTypingIndicator();
-
-    try {
-      var res = await fetch('/ai/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: text,
-          hotel_name: document.getElementById('hotel-name').textContent,
-          room_number: roomNumber,
-          hotel_id: hotelId,
-          lang: currentLang
-        })
-      });
-      var data = await res.json();
-      removeTypingIndicator();
-      addChatMessage(data.reply || 'Our team will assist you shortly!', false);
-
-      // Only create staff task if AI says it needs staff
-      if (data.needs_staff && data.department && data.task) {
-        setTimeout(function() {
-          addChatMessage('✅ I\'ve notified the ' + data.department + ' team. They\'ll be with you shortly!', false);
-          autoSubmitAIRequest(data);
-        }, 600);
-      }
-    } catch(e) {
-      removeTypingIndicator();
-      addChatMessage('Sorry, I\'m having trouble connecting. Please use the request form below.', false);
+// ── BRANDING ──
+async function loadBranding() {
+  try {
+    if (roomId) {
+      var roomRes = await fetch('/rooms?hotel_id=' + hotelId);
+      var rooms = await roomRes.json();
+      var room = rooms.find(function(r){ return String(r.id) === String(roomId); });
+      if (room) roomNumber = room.room_number;
     }
-  }
-
-  async function autoSubmitAIRequest(aiData) {
-    try {
-      await fetch('/requests', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          hotel_id: hotelId,
-          room_id: roomId,
-          room_number: roomNumber,
-          category: aiData.department || 'Front Desk',
-          message: aiData.english_message || aiData.task || 'Guest request via AI',
-          sla_minutes: aiData.priority === 'urgent' ? 5 : 15
-        })
-      });
-    } catch(e) {}
-  }
-
-  // SMART UPSELLING
-  async function loadUpsellOffers() {
-    if (!hotelId) return;
-    try {
-      var hour = new Date().getHours();
-      var timeOfDay = hour < 11 ? 'morning' : hour < 14 ? 'lunch time' : hour < 18 ? 'afternoon' : hour < 21 ? 'evening' : 'night';
-      var res = await fetch('/ai/upsell', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          hotel_name: document.getElementById('hotel-name').textContent,
-          room_number: roomNumber,
-          time_of_day: timeOfDay,
-          recent_requests: []
-        })
-      });
-      var data = await res.json();
-      if (data.offers && data.offers.length > 0) {
-        var widget = document.getElementById('upsell-widget');
-        var offersDiv = document.getElementById('upsell-offers');
-        offersDiv.innerHTML = data.offers.map(function(o) {
-          return '<div onclick="requestUpsell(\''+o.title+'\')" style="display:flex;align-items:center;gap:12px;padding:10px;background:white;border-radius:10px;margin-bottom:8px;cursor:pointer;border:1px solid #fde68a;transition:all .2s" onmouseover="this.style.background=\'#fffbeb\'" onmouseout="this.style.background=\'white\'">'
-            + '<span style="font-size:24px">'+o.emoji+'</span>'
-            + '<div style="flex:1"><div style="font-size:13px;font-weight:700;color:#0d1b1e">'+o.title+'</div><div style="font-size:11px;color:#888">'+o.desc+'</div></div>'
-            + '<div style="font-size:13px;font-weight:700;color:#ca8a04">'+o.price+'</div>'
-            + '</div>';
-        }).join('');
-        widget.style.display = 'block';
+    var hotelRes = await fetch('/hotels');
+    var hotels = await hotelRes.json();
+    var hotel = hotels.find(function(h){ return h.hotel_id === hotelId; });
+    if (hotel) {
+      hotelData = hotel;
+      document.documentElement.style.setProperty('--brand', hotel.colour || '#1a1a2e');
+      var photos = [];
+      if (hotel.hotel_photos && hotel.hotel_photos.length > 0) photos = hotel.hotel_photos;
+      else if (hotel.logo_url) photos = [hotel.logo_url];
+      var container = document.getElementById('slideshow-container');
+      if (container && photos.length > 0) {
+        container.innerHTML = '';
+        photos.forEach(function(url, i) {
+          var img = document.createElement('img');
+          img.src = url; img.className = 'slideshow-slide'+(i===0?' active':''); img.alt = '';
+          container.appendChild(img);
+        });
+        if (photos.length > 1) {
+          var dotsWrap = document.createElement('div'); dotsWrap.className = 'slideshow-dots';
+          var curSlide = 0;
+          photos.forEach(function(_, i) {
+            var dot = document.createElement('div');
+            dot.className = 'slideshow-dot'+(i===0?' active':'');
+            dot.onclick = (function(idx){ return function(){ goSlide(idx); }; })(i);
+            dotsWrap.appendChild(dot);
+          });
+          container.appendChild(dotsWrap);
+          function goSlide(n) {
+            var slides = container.querySelectorAll('.slideshow-slide');
+            var dots = container.querySelectorAll('.slideshow-dot');
+            slides[curSlide].classList.remove('active'); dots[curSlide].classList.remove('active');
+            curSlide = (n + photos.length) % photos.length;
+            slides[curSlide].classList.add('active'); dots[curSlide].classList.add('active');
+          }
+          setInterval(function(){ goSlide(curSlide+1); }, 5000);
+        }
       }
-    } catch(e) {}
-  }
-
-  function requestUpsell(title) {
-    // Close upsell, pre-fill chat
-    var input = document.getElementById('ai-chat-input');
-    if (input) {
-      openAIChat();
-      input.value = 'I would like to order: ' + title;
-      sendAIMessage();
+      document.getElementById('hotel-name').textContent = hotel.name;
+      var logoImg = document.getElementById('hotel-logo-img');
+      var logoEmoji = document.getElementById('hotel-logo-emoji');
+      if (hotel.logo_url && logoImg) { logoImg.src = hotel.logo_url; logoImg.style.display = 'block'; if (logoEmoji) logoEmoji.style.display = 'none'; }
+      else if (logoEmoji) { logoEmoji.textContent = hotel.emoji || '🏨'; }
+      document.getElementById('room-label').textContent = 'Room ' + roomNumber + (hotel.city ? ' — ' + hotel.city : '');
+      document.getElementById('hotel-name-ty').textContent = hotel.name;
+      document.title = 'Welco — ' + hotel.name;
+      document.getElementById('welcome-msg').style.display = 'inline-block';
+      if (hotel.dept_guest_options) deptGuestOptions = hotel.dept_guest_options;
+      loadAnnouncement();
     }
+  } catch(e) {
+    document.getElementById('hotel-name').textContent = '🏨 Welco';
+    document.getElementById('room-label').textContent = 'Room ' + roomNumber;
+  }
+}
+
+async function loadAnnouncement() {
+  try {
+    var res = await fetch('/announcements?hotel_id=' + hotelId);
+    var data = await res.json();
+    if (Array.isArray(data)) {
+      var active = data.find(function(a){ return a.is_active; });
+      if (active) { document.getElementById('announcement-text').textContent = active.message; document.getElementById('announcement-banner').style.display = 'block'; }
+    }
+  } catch(e) {}
+}
+
+// ── HOME: SERVICE REQUEST ──
+async function selectCat(btn, cat) {
+  document.querySelectorAll('.cat-btn').forEach(function(b){ b.classList.remove('selected'); });
+  btn.classList.add('selected');
+  selectedCategory = cat; selectedQuicks = []; deptIsClosed = false;
+  document.getElementById('dept-closed-box').style.display = 'none';
+  document.getElementById('services-section').style.display = 'none';
+  document.getElementById('eta-badge').style.display = 'none';
+  document.getElementById('submit-btn').disabled = false;
+  try {
+    var hotelRes = await fetch('/hotels');
+    var hotels = await hotelRes.json();
+    var latestHotel = hotels.find(function(h){ return h.hotel_id === hotelId; });
+    if (latestHotel && latestHotel.dept_guest_options) deptGuestOptions = latestHotel.dept_guest_options;
+  } catch(e) {}
+  var savedDeptFull = deptGuestOptions[cat];
+  if (savedDeptFull && savedDeptFull.hours) {
+    var h = savedDeptFull.hours; var closed = false;
+    if (h.isOpen === true) { closed = false; }
+    else if (h.isOpen === false) {
+      if (h.openTime && h.closeTime) {
+        var now = new Date(); var curMins = now.getHours()*60+now.getMinutes();
+        var op = h.openTime.split(':'); var cl = h.closeTime.split(':');
+        var openMins = parseInt(op[0])*60+parseInt(op[1]); var closeMins = parseInt(cl[0])*60+parseInt(cl[1]);
+        closed = (closeMins > openMins) ? (curMins < openMins || curMins >= closeMins) : true;
+      } else { closed = true; }
+    } else if (h.openTime && h.closeTime) {
+      var now2 = new Date(); var curMins2 = now2.getHours()*60+now2.getMinutes();
+      var op2 = h.openTime.split(':'); var cl2 = h.closeTime.split(':');
+      var openMins2 = parseInt(op2[0])*60+parseInt(op2[1]); var closeMins2 = parseInt(cl2[0])*60+parseInt(cl2[1]);
+      if (closeMins2 > openMins2) closed = curMins2 < openMins2 || curMins2 >= closeMins2;
+    }
+    if (closed) { deptIsClosed = true; showClosedBox(cat, h); document.getElementById('submit-btn').disabled = true; return; }
+  }
+  currentCatSlaMap = (savedDeptFull && savedDeptFull.slaMap) ? savedDeptFull.slaMap : {};
+  renderDeptServices(cat);
+  document.getElementById('services-section').style.display = 'block';
+  document.getElementById('eta-time').textContent = etaMap[cat] || '10 mins';
+  document.getElementById('eta-badge').style.display = 'block';
+}
+
+function showClosedBox(cat, h) {
+  function fmt(t) { if(!t)return''; var p=t.split(':'); var hr=parseInt(p[0]),mn=parseInt(p[1]); var ampm=hr>=12?'PM':'AM'; hr=hr%12||12; return hr+(mn>0?':'+String(mn).padStart(2,'0'):'')+' '+ampm; }
+  var deptEmojis={'Housekeeping':'🛏️','Room Service':'🍽️','Maintenance':'🔧','Front Desk':'🛎️'};
+  document.getElementById('closed-title').textContent = (deptEmojis[cat]||'') + ' ' + cat + ' is Closed Right Now';
+  document.getElementById('closed-msg').textContent = h.closedMsg || "We're currently closed. Please try again during service hours.";
+  var timingEl = document.getElementById('closed-timing');
+  if (h.openTime && h.closeTime) { timingEl.textContent = '⏰ Service hours: ' + fmt(h.openTime) + ' – ' + fmt(h.closeTime); timingEl.style.display = 'block'; }
+  else { timingEl.style.display = 'none'; }
+  document.getElementById('dept-closed-box').style.display = 'block';
+}
+
+function renderDeptServices(cat) {
+  var grid = document.getElementById('services-grid'); grid.innerHTML = '';
+  var savedDept = deptGuestOptions[cat];
+  var enabledKeys, customItems;
+  if (savedDept && savedDept.enabled !== undefined) {
+    enabledKeys = savedDept.enabled.filter(function(k){ return k.indexOf('CUSTOM::') !== 0; });
+    customItems = (savedDept.custom || []).filter(function(c){ return savedDept.enabled.indexOf(c.key) !== -1; });
+  } else { enabledKeys = DEPT_DEFAULTS[cat] || []; customItems = []; }
+  enabledKeys.forEach(function(key){ addServiceBtn(grid, key, key); });
+  customItems.forEach(function(c){ addServiceBtn(grid, c.key, c.label); });
+}
+
+function addServiceBtn(grid, key, label) {
+  var el = document.createElement('button');
+  el.className = 'service-item'; el.textContent = label; el.setAttribute('data-key', key);
+  el.onclick = function() {
+    var idx = selectedQuicks.indexOf(key);
+    if (idx === -1) { selectedQuicks.push(key); el.classList.add('selected'); }
+    else { selectedQuicks.splice(idx, 1); el.classList.remove('selected'); }
+    var msgParts = selectedQuicks.map(function(k){ return k.replace(/CUSTOM::[^:]+::\d+/, '').replace('::', '') || k; });
+    document.getElementById('message').value = msgParts.join(', ');
+    if (selectedQuicks.length > 0) {
+      var maxSla = 0; selectedQuicks.forEach(function(k){ var s = currentCatSlaMap[k] || OPTION_SLA_DEFAULTS[k] || 15; if(s>maxSla)maxSla=s; });
+      document.getElementById('eta-time').textContent = maxSla + ' mins';
+    } else { document.getElementById('eta-time').textContent = etaMap[selectedCategory] || '10 mins'; }
+  };
+  grid.appendChild(el);
+}
+
+function getMaxSla() {
+  if (selectedQuicks.length === 0) return 15;
+  var maxSla = 0; selectedQuicks.forEach(function(k){ var s = currentCatSlaMap[k] || OPTION_SLA_DEFAULTS[k] || 15; if(s>maxSla)maxSla=s; });
+  return maxSla || 15;
+}
+
+async function submitRequest() {
+  if (!selectedCategory) { alert('Please select a category first!'); return; }
+  if (deptIsClosed) { alert("This department is currently closed."); return; }
+  var message = document.getElementById('message').value.trim() || selectedQuicks.join(', ');
+  try {
+    var res = await fetch('/requests', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ hotel_id:hotelId, room_id:roomId, room_number:roomNumber, category:selectedCategory, message:message, sla_minutes:getMaxSla() }) });
+    var data = await res.json();
+    if (data && data.id) {
+      currentRequestId = data.id;
+      document.getElementById('success').style.display = 'block';
+      setTimeout(function(){
+        document.getElementById('request-card').style.display = 'none';
+        showTracking(selectedCategory, message);
+      }, 1500);
+      document.getElementById('message').value = '';
+      document.querySelectorAll('.cat-btn').forEach(function(b){ b.classList.remove('selected'); });
+      document.querySelectorAll('.service-item').forEach(function(q){ q.classList.remove('selected'); });
+      selectedCategory = ''; selectedQuicks = []; deptIsClosed = false;
+      pollInterval = setInterval(checkIfDone, 5000);
+    } else { alert('Something went wrong. Please try again.'); }
+  } catch(e) { alert('Could not send request. Please try again.'); }
+}
+
+function showTracking(category, message) {
+  var icons = {'Housekeeping':'🛏️','Room Service':'🍽️','Maintenance':'🔧','Front Desk':'🛎️'};
+  document.getElementById('tracking-icon').textContent = icons[category] || '📋';
+  document.getElementById('tracking-title').textContent = category + ' — Request Received!';
+  document.getElementById('tracking-sub').textContent = message ? '"' + message + '"' : 'Your request has been sent.';
+  document.getElementById('eta-track-text').textContent = 'Estimated: ' + (etaMap[category] || '10–15 mins');
+  document.getElementById('tracking-card').style.display = 'block';
+  setTimeout(function(){ document.getElementById('eta-fill').style.width = '60%'; }, 500);
+}
+
+function updateTrackingStatus(status) {
+  if (status === 'in_progress') {
+    document.getElementById('step-2').classList.add('active'); document.getElementById('check-2').textContent = '✓';
+    document.getElementById('tracking-title').textContent = 'Staff On The Way! 👷';
+    document.getElementById('eta-fill').style.width = '80%';
+  } else if (status === 'done') {
+    document.getElementById('step-3').classList.add('active','done'); document.getElementById('check-3').textContent = '✓';
+    document.getElementById('tracking-title').textContent = 'Completed! ✅';
+    document.getElementById('eta-fill').style.width = '100%';
+  }
+}
+
+async function checkIfDone() {
+  try {
+    var res = await fetch('/requests?hotel_id=' + hotelId);
+    var requests = await res.json();
+    var req = requests.find(function(r){ return r.id === currentRequestId; });
+    if (req) {
+      updateTrackingStatus(req.status);
+      if (req.status === 'done' && !req.feedback_rating) {
+        clearInterval(pollInterval);
+        setTimeout(function(){ document.getElementById('tracking-card').style.display = 'none'; document.getElementById('feedback-card').style.display = 'block'; }, 2000);
+      }
+    }
+  } catch(e) {}
+}
+
+function newRequest() {
+  clearInterval(pollInterval);
+  document.getElementById('tracking-card').style.display = 'none';
+  document.getElementById('request-card').style.display = 'block';
+  document.getElementById('success').style.display = 'none';
+  document.getElementById('dept-closed-box').style.display = 'none';
+  document.getElementById('services-section').style.display = 'none';
+  document.getElementById('eta-badge').style.display = 'none';
+  document.getElementById('submit-btn').disabled = false;
+  document.getElementById('eta-fill').style.width = '10%';
+  document.getElementById('step-2').classList.remove('active'); document.getElementById('step-3').classList.remove('active','done');
+  document.getElementById('check-2').textContent = '⏳'; document.getElementById('check-3').textContent = '⏳';
+  currentRequestId = null; deptIsClosed = false;
+}
+
+function setRating(r) {
+  selectedRating = r;
+  var labels = ['','😞 Poor','😐 Fair','🙂 Good','😊 Great','🤩 Excellent!'];
+  document.getElementById('rating-label').textContent = labels[r] || '';
+  document.querySelectorAll('#stars span').forEach(function(s,i){ s.style.opacity = i < r ? '1' : '0.3'; });
+}
+
+async function submitFeedback() {
+  if (!selectedRating) { alert('Please select a rating!'); return; }
+  var comment = document.getElementById('comment').value;
+  await fetch('/requests/'+currentRequestId+'/feedback', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ rating:selectedRating, feedback_comments:comment }) });
+  document.getElementById('feedback-card').style.display = 'none';
+  document.getElementById('thankyou').style.display = 'block';
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(function(b){ b.classList.remove('active'); });
+  event.target.classList.add('active');
+}
+
+// ── AI CONCIERGE ──
+function openAIChat() { document.getElementById('ai-chat-modal').style.display = 'block'; document.getElementById('ai-chat-input').focus(); loadUpsellOffers(); }
+function closeAIChat() { document.getElementById('ai-chat-modal').style.display = 'none'; }
+
+function addChatMessage(text, isUser) {
+  var msgs = document.getElementById('ai-chat-messages');
+  var div = document.createElement('div');
+  div.className = isUser ? 'ai-msg-user' : 'ai-msg-bot';
+  div.textContent = text;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+async function sendAIMessage() {
+  var input = document.getElementById('ai-chat-input');
+  var text = input.value.trim(); if (!text) return;
+  input.value = '';
+  addChatMessage(text, true);
+  var typing = document.createElement('div'); typing.className = 'ai-msg-bot'; typing.id = 'ai-typing'; typing.textContent = '✨ Thinking...';
+  document.getElementById('ai-chat-messages').appendChild(typing);
+  try {
+    var res = await fetch('/ai/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ message:text, hotel_name:document.getElementById('hotel-name').textContent, room_number:roomNumber, hotel_id:hotelId }) });
+    var data = await res.json();
+    document.getElementById('ai-typing').remove();
+    addChatMessage(data.reply || 'Our team will assist you shortly!', false);
+    if (data.needs_staff && data.department && data.task) {
+      setTimeout(function(){ addChatMessage('✅ I\'ve notified the ' + data.department + ' team. They\'ll be with you shortly!', false); autoSubmitAIRequest(data); }, 600);
+    }
+  } catch(e) { if(document.getElementById('ai-typing'))document.getElementById('ai-typing').remove(); addChatMessage('Sorry, having trouble connecting. Please use the request form.', false); }
+}
+
+async function autoSubmitAIRequest(aiData) {
+  try { await fetch('/requests', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ hotel_id:hotelId, room_id:roomId, room_number:roomNumber, category:aiData.department||'Front Desk', message:aiData.english_message||aiData.task||'Guest request via AI', sla_minutes:aiData.priority==='urgent'?5:15 }) }); } catch(e) {}
+}
+
+async function loadUpsellOffers() {
+  if (!hotelId) return;
+  try {
+    var hour = new Date().getHours();
+    var timeOfDay = hour<11?'morning':hour<14?'lunch time':hour<18?'afternoon':hour<21?'evening':'night';
+    var res = await fetch('/ai/upsell', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ hotel_name:document.getElementById('hotel-name').textContent, room_number:roomNumber, time_of_day:timeOfDay, recent_requests:[] }) });
+    var data = await res.json();
+    if (data.offers && data.offers.length > 0) {
+      var widget = document.getElementById('upsell-widget');
+      document.getElementById('upsell-offers').innerHTML = data.offers.map(function(o){
+        return '<div onclick="requestUpsell(\''+o.title+'\')" style="display:flex;align-items:center;gap:12px;padding:10px;background:white;border-radius:10px;margin-bottom:8px;cursor:pointer;border:1px solid #fde68a">'
+          + '<span style="font-size:24px">'+o.emoji+'</span>'
+          + '<div style="flex:1"><div style="font-size:13px;font-weight:700">'+o.title+'</div><div style="font-size:11px;color:#888">'+o.desc+'</div></div>'
+          + '<div style="font-size:13px;font-weight:700;color:#ca8a04">'+o.price+'</div></div>';
+      }).join('');
+      widget.style.display = 'block';
+    }
+  } catch(e) {}
+}
+
+function requestUpsell(title) { openAIChat(); document.getElementById('ai-chat-input').value = 'I would like to order: ' + title; sendAIMessage(); }
+
+// ── MENU TAB ──
+async function loadMenu() {
+  if (!hotelId) return;
+  try {
+    var res = await fetch('/menu?hotel_id=' + hotelId);
+    menuData = await res.json();
+    renderMenu();
+  } catch(e) {
+    document.getElementById('menu-list').innerHTML = '<div class="empty-menu"><div class="em-icon">🍽️</div><p>Menu not available yet.</p></div>';
+  }
+}
+
+function renderMenu() {
+  var search = (document.getElementById('menu-search').value || '').toLowerCase();
+  var filtered = menuData.filter(function(item){
+    var matchSearch = !search || item.name.toLowerCase().includes(search) || (item.description||'').toLowerCase().includes(search);
+    var matchCat = activeMenuCat === 'All' || item.category === activeMenuCat;
+    return matchSearch && matchCat;
+  });
+
+  // Build category buttons
+  var cats = ['All'];
+  menuData.forEach(function(item){ if(item.category && cats.indexOf(item.category)===-1) cats.push(item.category); });
+  document.getElementById('menu-cats').innerHTML = cats.map(function(c){
+    return '<button class="menu-cat-btn'+(c===activeMenuCat?' active':'')+'" onclick="setMenuCat(\''+c+'\')">'+c+'</button>';
+  }).join('');
+
+  if (filtered.length === 0) {
+    document.getElementById('menu-list').innerHTML = '<div class="empty-menu"><div class="em-icon">🍽️</div><p>'+(menuData.length===0?'The menu is being set up. Check back soon!':'No items found.')+'</p></div>';
+    return;
   }
 
-  // Load upsell after portal loads
-  setTimeout(loadUpsellOffers, 3000);
-  </script>
+  // Group by category
+  var groups = {};
+  filtered.forEach(function(item){
+    var cat = item.category || 'Other';
+    if (!groups[cat]) groups[cat] = [];
+    groups[cat].push(item);
+  });
+
+  var html = '';
+  Object.keys(groups).forEach(function(cat){
+    if (activeMenuCat === 'All') html += '<div class="menu-section-title">'+cat+'</div>';
+    groups[cat].forEach(function(item){
+      var inCart = cart[item.id] ? cart[item.id].qty : 0;
+      var badge = item.is_veg ? '<span class="menu-veg-badge"></span>' : '<span class="menu-nonveg-badge"></span>';
+      html += '<div class="menu-item-card">'
+        + '<div class="menu-item-img">' + (item.image_url ? '<img src="'+item.image_url+'" style="width:100%;height:100%;object-fit:cover;border-radius:12px">' : (item.emoji||'🍽️')) + '</div>'
+        + '<div class="menu-item-info">'
+        + '<div class="menu-item-name">'+badge+item.name+'</div>'
+        + (item.description ? '<div class="menu-item-desc">'+item.description+'</div>' : '')
+        + '<div class="menu-item-price">₹'+item.price+'</div>'
+        + '</div>'
+        + '<div id="menu-action-'+item.id+'">'
+        + (inCart > 0
+            ? '<div class="order-count"><button class="count-btn" onclick="updateCart(\''+item.id+'\', -1)">−</button><span class="count-num">'+inCart+'</span><button class="count-btn" onclick="updateCart(\''+item.id+'\', 1)">+</button></div>'
+            : '<button class="order-btn" onclick="addToCart('+JSON.stringify(item).replace(/"/g,"'")+')" >Add</button>')
+        + '</div></div>';
+    });
+  });
+  document.getElementById('menu-list').innerHTML = html;
+  updateCartBar();
+}
+
+function setMenuCat(cat) { activeMenuCat = cat; renderMenu(); }
+function filterMenu() { renderMenu(); }
+
+function addToCart(item) {
+  if (!cart[item.id]) cart[item.id] = { item: item, qty: 0 };
+  cart[item.id].qty++;
+  renderMenu();
+}
+
+function updateCart(itemId, delta) {
+  if (!cart[itemId]) return;
+  cart[itemId].qty += delta;
+  if (cart[itemId].qty <= 0) delete cart[itemId];
+  renderMenu();
+}
+
+function updateCartBar() {
+  var totalItems = 0, totalPrice = 0;
+  Object.values(cart).forEach(function(c){ totalItems += c.qty; totalPrice += c.qty * c.item.price; });
+  var bar = document.getElementById('cart-bar');
+  if (totalItems > 0) {
+    bar.style.display = 'block';
+    document.getElementById('cart-count-label').textContent = totalItems + ' item' + (totalItems>1?'s':'');
+    document.getElementById('cart-total-label').textContent = '₹' + totalPrice;
+    document.getElementById('menu-badge').textContent = totalItems;
+    document.getElementById('menu-badge').style.display = 'block';
+  } else {
+    bar.style.display = 'none';
+    document.getElementById('menu-badge').style.display = 'none';
+  }
+}
+
+async function placeOrder() {
+  var items = Object.values(cart);
+  if (items.length === 0) return;
+  var orderText = items.map(function(c){ return c.qty+'x '+c.item.name; }).join(', ');
+  var total = items.reduce(function(s,c){ return s + c.qty * c.item.price; }, 0);
+  var message = 'Room Service Order: ' + orderText + ' | Total: ₹' + total;
+  try {
+    await fetch('/requests', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ hotel_id:hotelId, room_id:roomId, room_number:roomNumber, category:'Room Service', message:message, sla_minutes:20 }) });
+    cart = {};
+    renderMenu();
+    alert('✅ Order placed! Your food will be delivered to Room ' + roomNumber + ' shortly.');
+  } catch(e) { alert('Could not place order. Please try again.'); }
+}
+
+// ── GUIDE TAB ──
+async function loadGuide() {
+  if (!hotelId) return;
+  try {
+    var res = await fetch('/room-guide?hotel_id=' + hotelId);
+    var guide = await res.json();
+    renderGuide(guide);
+  } catch(e) {
+    document.getElementById('guide-content').innerHTML = '<div class="empty-guide"><div style="font-size:48px;margin-bottom:12px">📖</div><p>Guide not available yet.</p></div>';
+  }
+}
+
+function renderGuide(guide) {
+  if (!guide || Object.keys(guide).length === 0) {
+    document.getElementById('guide-content').innerHTML = '<div class="empty-guide"><div style="font-size:48px;margin-bottom:12px">📖</div><p style="color:rgba(255,255,255,0.5)">The hotel guide is being set up.<br>Check back soon!</p></div>';
+    return;
+  }
+
+  var sections = [
+    { key:'room', icon:'🛏️', title:'Your Room', type:'items' },
+    { key:'facilities', icon:'🏊', title:'Facilities & Timings', type:'items' },
+    { key:'dining', icon:'🍽️', title:'Dining & Food', type:'items' },
+    { key:'ac_tv', icon:'📺', title:'AC & TV Guide', type:'items' },
+    { key:'wifi', icon:'📶', title:'WiFi & Internet', type:'items' },
+    { key:'local', icon:'📍', title:'Local Area Guide', type:'places' },
+    { key:'transport', icon:'🚗', title:'Transport', type:'items' },
+    { key:'rules', icon:'📋', title:'Hotel Policies', type:'items' },
+    { key:'emergency', icon:'🚨', title:'Emergency Contacts', type:'items' },
+  ];
+
+  var html = '';
+  sections.forEach(function(s, idx){
+    var data = guide[s.key];
+    if (!data || (Array.isArray(data) && data.length === 0)) return;
+    html += '<div class="guide-section">';
+    html += '<div class="guide-section-header" onclick="toggleGuide(this,' + idx + ')">';
+    html += '<span class="gs-icon">'+s.icon+'</span>';
+    html += '<span class="gs-title">'+s.title+'</span>';
+    html += '<span class="gs-arrow">▼</span>';
+    html += '</div>';
+    html += '<div class="guide-section-body" id="guide-body-'+idx+'">';
+
+    if (s.type === 'places' && Array.isArray(data)) {
+      data.forEach(function(place){
+        html += '<div class="local-place">';
+        html += '<div class="local-place-icon">'+(place.emoji||'📍')+'</div>';
+        html += '<div class="local-place-info">';
+        html += '<div class="local-place-name">'+place.name+'</div>';
+        if (place.description) html += '<div class="local-place-desc">'+place.description+'</div>';
+        if (place.distance) html += '<div class="local-place-dist">📏 '+place.distance+'</div>';
+        html += '</div></div>';
+      });
+    } else if (Array.isArray(data)) {
+      data.forEach(function(item){
+        html += '<div class="guide-item">';
+        html += '<div class="guide-item-title">'+(item.title||item)+'</div>';
+        if (item.description) html += '<div class="guide-item-desc">'+item.description+'</div>';
+        html += '</div>';
+      });
+    } else if (typeof data === 'string') {
+      html += '<div class="guide-item"><div class="guide-item-desc">'+data+'</div></div>';
+    }
+
+    html += '</div></div>';
+  });
+
+  if (!html) {
+    html = '<div class="empty-guide"><div style="font-size:48px;margin-bottom:12px">📖</div><p style="color:rgba(255,255,255,0.5)">Guide content coming soon!</p></div>';
+  }
+
+  document.getElementById('guide-content').innerHTML = html;
+}
+
+function toggleGuide(header, idx) {
+  header.classList.toggle('open');
+  var body = document.getElementById('guide-body-'+idx);
+  body.classList.toggle('open');
+}
+
+// ── CHAT TAB ──
+var lastChatId = 0;
+var chatRead = false;
+
+async function loadChat() {
+  if (!hotelId) return;
+  try {
+    var res = await fetch('/chat?hotel_id=' + hotelId + '&room_number=' + roomNumber);
+    var messages = await res.json();
+    renderChatMessages(messages);
+    if (chatPollInterval) clearInterval(chatPollInterval);
+    chatPollInterval = setInterval(pollChat, 4000);
+  } catch(e) {}
+}
+
+async function pollChat() {
+  try {
+    var res = await fetch('/chat?hotel_id=' + hotelId + '&room_number=' + roomNumber);
+    var messages = await res.json();
+    renderChatMessages(messages);
+    // Check for unread staff messages
+    var unread = messages.filter(function(m){ return m.sender === 'staff' && !m.is_read; });
+    if (unread.length > 0 && document.getElementById('panel-chat').classList.contains('active')) {
+      markChatRead();
+    }
+  } catch(e) {}
+}
+
+function renderChatMessages(messages) {
+  var el = document.getElementById('chat-messages');
+  if (!messages || messages.length === 0) {
+    el.innerHTML = '<div class="chat-empty"><div style="font-size:48px;margin-bottom:12px">💬</div><p style="color:rgba(255,255,255,0.5);font-size:14px">No messages yet.<br>Say hello to our Front Desk!</p></div>';
+    return;
+  }
+  el.innerHTML = messages.map(function(m){
+    var isGuest = m.sender === 'guest';
+    var time = new Date(m.created_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+    return '<div class="chat-msg '+(isGuest?'guest':'staff')+'">'
+      + m.message
+      + '<div class="chat-msg-meta">'+(isGuest?'You':'Front Desk')+' · '+time+'</div>'
+      + '</div>';
+  }).join('');
+  el.scrollTop = el.scrollHeight;
+
+  // Update badge
+  var unread = messages.filter(function(m){ return m.sender==='staff' && !m.is_read; }).length;
+  var badge = document.getElementById('chat-badge');
+  if (unread > 0 && !document.getElementById('panel-chat').classList.contains('active')) {
+    badge.textContent = unread; badge.style.display = 'block';
+  } else { badge.style.display = 'none'; }
+}
+
+async function sendChat() {
+  var input = document.getElementById('chat-input');
+  var text = input.value.trim(); if (!text) return;
+  input.value = '';
+  try {
+    await fetch('/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ hotel_id:hotelId, room_number:roomNumber, message:text, sender:'guest' }) });
+    loadChat();
+  } catch(e) { alert('Could not send message. Please try again.'); }
+}
+
+async function markChatRead() {
+  try {
+    var res = await fetch('/chat?hotel_id=' + hotelId + '&room_number=' + roomNumber);
+    var messages = await res.json();
+    messages.filter(function(m){ return m.sender==='staff' && !m.is_read; }).forEach(async function(m){
+      await fetch('/chat/'+m.id+'/read', { method:'POST' });
+    });
+    document.getElementById('chat-badge').style.display = 'none';
+  } catch(e) {}
+}
+
+// ── INIT ──
+loadBranding();
+setTimeout(loadUpsellOffers, 3000);
+</script>
+
+  <div style="text-align:center;padding:16px;font-size:10px;color:rgba(255,255,255,0.3);position:relative;z-index:1">
+    © 2026 <strong>Welco™</strong> · All Rights Reserved · Built in India 🇮🇳
+  </div>
 
 </body>
 </html>

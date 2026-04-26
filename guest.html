@@ -10,7 +10,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welco - Guest Services</title>
   <style>
-    :root { --brand: #1a1a2e; }
+    :root { --brand: #1a1a2e; --brand-light: #7fdbda; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: sans-serif; min-height: 100vh; background: #1a1a2e; display: flex; flex-direction: column; position: relative; padding-bottom: 70px; }
 
@@ -27,20 +27,14 @@
     .header { position: relative; z-index: 5; color: white; text-align: center; padding: 0; min-height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
     .header-inner { position: relative; z-index: 5; padding: 20px 20px 10px; width: 100%; }
     .hotel-logo-circle { width: 64px; height: 64px; border-radius: 50%; background: white; border: 3px solid rgba(255,255,255,0.8); margin: 0 auto 10px; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
-    .hotel-logo-circle img { width: 100%; height: 100%; object-fit: cover; }
     .hotel-logo-emoji { font-size: 30px; }
     .header h1 { font-size: 24px; font-weight: 800; text-shadow: 0 2px 12px rgba(0,0,0,0.8); letter-spacing: -0.5px; }
     .header p { font-size: 13px; opacity: 0.9; margin-top: 4px; text-shadow: 0 1px 6px rgba(0,0,0,0.6); }
     .welcome-msg { font-size: 12px; margin-top: 8px; background: rgba(255,255,255,0.15); border-radius: 20px; padding: 4px 14px; display: inline-block; }
 
-    /* LANG BAR */
-    .lang-bar { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; padding: 10px 16px; background: rgba(0,0,0,0.35); backdrop-filter: blur(8px); position: relative; z-index: 5; }
-    .lang-btn { padding: 5px 10px; border: 1.5px solid rgba(255,255,255,0.3); border-radius: 20px; background: rgba(255,255,255,0.1); color: white; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
-    .lang-btn.active { background: white; color: #1a1a2e; border-color: white; }
-
     /* ANNOUNCEMENT */
-    .announcement-banner { display: none; background: linear-gradient(90deg, #ee9b00, #ca6702); color: white; padding: 10px 16px; font-size: 13px; font-weight: 500; text-align: center; line-height: 1.5; }
-    .announcement-banner .ann-dismiss { background: rgba(255,255,255,0.25); border: none; color: white; border-radius: 20px; padding: 2px 10px; font-size: 11px; cursor: pointer; margin-left: 10px; }
+    .announcement-banner { display: none; background: linear-gradient(90deg, #ee9b00, #ca6702); color: white; padding: 10px 16px; font-size: 13px; font-weight: 500; text-align: center; line-height: 1.5; position: relative; z-index: 5; }
+    .ann-dismiss { background: rgba(255,255,255,0.25); border: none; color: white; border-radius: 20px; padding: 2px 10px; font-size: 11px; cursor: pointer; margin-left: 10px; }
 
     /* BOTTOM NAV */
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; background: rgba(10,10,20,0.95); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.1); display: flex; }
@@ -49,22 +43,29 @@
     .nav-btn .nav-icon { font-size: 20px; margin-bottom: 3px; }
     .nav-btn .nav-label { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
     .nav-btn.active .nav-label { color: var(--brand-light, #7fdbda); }
-    .nav-badge { position: absolute; top: 6px; right: calc(50% - 20px); background: #e63946; color: white; border-radius: 10px; font-size: 9px; font-weight: 700; padding: 1px 5px; display: none; }
-    .nav-btn { position: relative; }
 
     /* TAB PANELS */
     .tab-panel { display: none; position: relative; z-index: 5; }
     .tab-panel.active { display: block; }
 
-    /* ── HOME TAB ── */
+    /* CARDS */
     .container { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 16px; }
-    .card { background: rgba(255,255,255,0.96); backdrop-filter: blur(12px); border-radius: 20px; padding: 24px; width: 100%; max-width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); }
+    .card { background: rgba(255,255,255,0.96); backdrop-filter: blur(12px); border-radius: 20px; padding: 24px; width: 100%; max-width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); margin-bottom: 16px; }
     .card h2 { font-size: 17px; margin-bottom: 16px; color: #222; text-align: center; }
+    .section-label { font-size: 11px; color: #005f73; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; margin-top: 4px; }
+
+    /* FORM INPUTS */
+    .form-group { margin-bottom: 12px; }
+    .form-group label { font-size: 11px; color: #888; font-weight: 600; display: block; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px 14px; border: 1.5px solid #e0ddd8; border-radius: 10px; font-size: 14px; outline: none; font-family: sans-serif; background: white; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--brand); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    /* CATEGORIES (During Stay) */
     .categories { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
     .cat-btn { padding: 14px 10px; border: 2px solid #eee; border-radius: 12px; background: white; cursor: pointer; font-size: 14px; text-align: center; transition: all 0.2s; color: #333; }
     .cat-btn.selected { border-color: var(--brand); background: var(--brand); color: white; }
     .services-section { margin-bottom: 14px; display: none; }
-    .services-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
     .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .service-item { padding: 10px 12px; background: #f0f9f9; border: 1.5px solid #e0f0f0; border-radius: 12px; font-size: 13px; cursor: pointer; color: #005f73; transition: all 0.2s; text-align: center; }
     .service-item.selected { background: var(--brand); color: white; border-color: var(--brand); }
@@ -78,7 +79,10 @@
     textarea:focus { outline: none; border-color: var(--brand); }
     .submit-btn { width: 100%; padding: 15px; background: var(--brand); color: white; border: none; border-radius: 12px; font-size: 16px; cursor: pointer; margin-top: 12px; font-weight: bold; transition: opacity 0.2s; }
     .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .success { background: #e8f5e9; color: #2e7d32; padding: 14px; border-radius: 10px; margin-top: 12px; display: none; font-size: 14px; text-align: center; }
+    .success-box { background: #e8f5e9; color: #2e7d32; padding: 14px; border-radius: 10px; margin-top: 12px; display: none; font-size: 14px; text-align: center; }
+    .msg-box { padding: 12px 14px; border-radius: 10px; font-size: 13px; margin-bottom: 12px; display: none; text-align: center; }
+    .msg-success { background: #d1fae5; color: #065f46; display: block; }
+    .msg-error { background: #fde8ea; color: #e63946; display: block; }
 
     /* TRACKING */
     .tracking-card { background: rgba(255,255,255,0.96); border-radius: 20px; padding: 28px; width: 100%; max-width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); display: none; text-align: center; }
@@ -99,13 +103,20 @@
 
     /* FEEDBACK */
     .feedback-card { background: rgba(255,255,255,0.96); border-radius: 20px; padding: 28px; width: 100%; max-width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); display: none; text-align: center; }
-    .stars { font-size: 42px; cursor: pointer; margin-bottom: 12px; }
-    .stars span { display: inline-block; transition: transform 0.1s; }
+    .stars span { font-size: 38px; cursor: pointer; display: inline-block; }
     .comment-box { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 14px; resize: none; height: 80px; margin-bottom: 12px; font-family: sans-serif; }
     .feedback-btn { width: 100%; padding: 14px; background: #2ecc71; color: white; border: none; border-radius: 12px; font-size: 15px; cursor: pointer; font-weight: bold; }
     .thankyou { background: rgba(255,255,255,0.96); color: #2e7d32; padding: 32px; border-radius: 20px; text-align: center; display: none; font-size: 18px; width: 100%; max-width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); line-height: 1.6; }
 
-    /* AI CHAT MODAL */
+    /* ID UPLOAD */
+    .upload-area { border: 2px dashed #b2e8e8; border-radius: 10px; padding: 16px; text-align: center; cursor: pointer; background: #f0fdf9; }
+    .upload-area:hover { border-color: #0a9396; }
+    .upload-icon { font-size: 24px; margin-bottom: 6px; }
+    .upload-text { font-size: 13px; font-weight: 600; color: #005f73; }
+    .upload-hint { font-size: 11px; color: #aaa; margin-top: 4px; }
+    #id-preview-img { width: 100%; border-radius: 8px; max-height: 150px; object-fit: cover; margin-top: 8px; display: none; }
+
+    /* AI CHAT */
     #ai-chat-modal { display:none; position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.7); backdrop-filter:blur(8px); }
     .ai-modal-inner { position:absolute; bottom:0; left:0; right:0; background:white; border-radius:24px 24px 0 0; padding:20px; max-height:80vh; display:flex; flex-direction:column; }
     .ai-msg-list { flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:10px; margin-bottom:14px; max-height:40vh; min-height:100px; }
@@ -115,92 +126,21 @@
     .ai-input-row input { flex:1; padding:12px 16px; border:1.5px solid #e0e0e0; border-radius:12px; font-size:14px; outline:none; }
     .ai-send-btn { padding:12px 18px; background:linear-gradient(135deg,#667eea,#764ba2); color:white; border:none; border-radius:12px; font-size:18px; cursor:pointer; }
 
-    /* UPSELL */
-    #upsell-widget { display:none; margin-top:16px; background:linear-gradient(135deg,#fff9e6,#fff3cd); border:1.5px solid #ffd166; border-radius:14px; padding:14px; }
+    /* LOCKED STATE */
+    .locked-card { background: rgba(255,255,255,0.96); border-radius: 20px; padding: 36px 24px; width: 100%; max-width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); text-align: center; }
+    .locked-icon { font-size: 52px; margin-bottom: 16px; }
+    .locked-title { font-size: 18px; font-weight: 700; color: #0d1b1e; margin-bottom: 8px; }
+    .locked-msg { font-size: 13px; color: #888; line-height: 1.6; }
 
-    /* ── MENU TAB ── */
-    .menu-tab { background: rgba(10,10,20,0.7); backdrop-filter: blur(12px); min-height: calc(100vh - 140px); padding: 16px; }
-    .menu-search { width: 100%; padding: 12px 16px; border: 1.5px solid rgba(255,255,255,0.2); border-radius: 12px; background: rgba(255,255,255,0.1); color: white; font-size: 14px; margin-bottom: 16px; outline: none; }
-    .menu-search::placeholder { color: rgba(255,255,255,0.4); }
-    .menu-cats { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 16px; padding-bottom: 4px; }
-    .menu-cat-btn { padding: 7px 16px; border-radius: 20px; border: 1.5px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: white; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
-    .menu-cat-btn.active { background: var(--brand); border-color: var(--brand); color: white; }
-    .menu-section-title { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; margin-top: 8px; }
-    .menu-item-card { background: rgba(255,255,255,0.95); border-radius: 16px; padding: 14px; margin-bottom: 12px; display: flex; gap: 12px; align-items: center; }
-    .menu-item-img { width: 72px; height: 72px; border-radius: 12px; object-fit: cover; background: #f0f0f0; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 28px; }
-    .menu-item-info { flex: 1; }
-    .menu-item-name { font-size: 14px; font-weight: 700; color: #1a1a2e; margin-bottom: 3px; }
-    .menu-item-desc { font-size: 12px; color: #888; line-height: 1.4; margin-bottom: 6px; }
-    .menu-item-price { font-size: 15px; font-weight: 800; color: var(--brand); }
-    .menu-veg-badge { display: inline-block; width: 14px; height: 14px; border: 1.5px solid #2ecc71; border-radius: 2px; margin-right: 4px; position: relative; top: 1px; }
-    .menu-veg-badge::after { content:''; width: 8px; height: 8px; background: #2ecc71; border-radius: 50%; position: absolute; top: 1px; left: 1px; }
-    .menu-nonveg-badge { display: inline-block; width: 14px; height: 14px; border: 1.5px solid #e63946; border-radius: 2px; margin-right: 4px; position: relative; top: 1px; }
-    .menu-nonveg-badge::after { content:''; width: 8px; height: 8px; background: #e63946; border-radius: 50%; position: absolute; top: 1px; left: 1px; }
-    .order-btn { padding: 8px 16px; background: var(--brand); color: white; border: none; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; }
-    .order-count { display: flex; align-items: center; gap: 8px; }
-    .count-btn { width: 28px; height: 28px; border-radius: 50%; border: none; background: var(--brand); color: white; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-    .count-num { font-size: 15px; font-weight: 700; min-width: 20px; text-align: center; }
-    .cart-bar { position: fixed; bottom: 70px; left: 16px; right: 16px; background: var(--brand); color: white; border-radius: 16px; padding: 14px 20px; display: none; z-index: 90; cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
-    .cart-bar-inner { display: flex; justify-content: space-between; align-items: center; }
-    .cart-bar .cart-count { font-size: 13px; opacity: 0.85; }
-    .cart-bar .cart-total { font-size: 16px; font-weight: 800; }
-    .cart-bar .cart-action { font-size: 13px; font-weight: 700; background: white; color: var(--brand); padding: 6px 14px; border-radius: 10px; }
-    .empty-menu { text-align: center; padding: 60px 20px; color: rgba(255,255,255,0.4); }
-    .empty-menu .em-icon { font-size: 48px; margin-bottom: 12px; }
-
-    /* ── GUIDE TAB ── */
-    .guide-tab { background: rgba(10,10,20,0.7); backdrop-filter: blur(12px); min-height: calc(100vh - 140px); padding: 16px; }
-    .guide-section { background: rgba(255,255,255,0.95); border-radius: 16px; margin-bottom: 14px; overflow: hidden; }
-    .guide-section-header { padding: 14px 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; }
-    .guide-section-header .gs-icon { font-size: 22px; }
-    .guide-section-header .gs-title { font-size: 15px; font-weight: 700; color: #1a1a2e; flex: 1; }
-    .guide-section-header .gs-arrow { font-size: 12px; color: #aaa; transition: transform 0.3s; }
-    .guide-section-header.open .gs-arrow { transform: rotate(180deg); }
-    .guide-section-body { display: none; padding: 0 16px 16px; border-top: 1px solid #f0f0f0; }
-    .guide-section-body.open { display: block; }
-    .guide-item { padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
-    .guide-item:last-child { border-bottom: none; }
-    .guide-item-title { font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 3px; }
-    .guide-item-desc { font-size: 12px; color: #666; line-height: 1.5; }
-    .local-place { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
-    .local-place:last-child { border-bottom: none; }
-    .local-place-icon { font-size: 24px; width: 40px; text-align: center; flex-shrink: 0; }
-    .local-place-info { flex: 1; }
-    .local-place-name { font-size: 13px; font-weight: 700; color: #1a1a2e; }
-    .local-place-desc { font-size: 11px; color: #888; margin-top: 2px; }
-    .local-place-dist { font-size: 11px; color: var(--brand); font-weight: 600; }
-    .empty-guide { text-align: center; padding: 60px 20px; color: rgba(255,255,255,0.4); }
-
-    /* ── CHAT TAB ── */
-    .chat-tab { display: flex; flex-direction: column; height: calc(100vh - 210px); }
-    .chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
-    .chat-msg { max-width: 80%; padding: 10px 14px; border-radius: 16px; font-size: 14px; line-height: 1.5; }
-    .chat-msg.guest { background: var(--brand); color: white; align-self: flex-end; border-radius: 16px 16px 4px 16px; margin-left: auto; }
-    .chat-msg.staff { background: rgba(255,255,255,0.95); color: #1a1a2e; align-self: flex-start; border-radius: 16px 16px 16px 4px; }
-    .chat-msg-meta { font-size: 10px; opacity: 0.6; margin-top: 4px; }
-    .chat-msg.staff .chat-msg-meta { color: #888; }
-    .chat-msg.guest .chat-msg-meta { color: rgba(255,255,255,0.7); }
-    .chat-input-area { padding: 12px 16px; background: rgba(10,10,20,0.8); backdrop-filter: blur(12px); border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 10px; align-items: center; }
-    .chat-input { flex: 1; padding: 12px 16px; border: 1.5px solid rgba(255,255,255,0.2); border-radius: 24px; background: rgba(255,255,255,0.1); color: white; font-size: 14px; outline: none; font-family: sans-serif; }
-    .chat-input::placeholder { color: rgba(255,255,255,0.4); }
-    .chat-send-btn { width: 44px; height: 44px; border-radius: 50%; background: var(--brand); color: white; border: none; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .chat-empty { text-align: center; padding: 40px 20px; color: rgba(255,255,255,0.4); }
-    .chat-header-info { padding: 12px 16px; background: rgba(0,0,0,0.3); backdrop-filter: blur(8px); text-align: center; }
-    .chat-header-info p { font-size: 12px; color: rgba(255,255,255,0.6); }
-    .typing-indicator { display: none; padding: 8px 14px; background: rgba(255,255,255,0.15); border-radius: 16px; align-self: flex-start; color: white; font-size: 12px; }
+    /* CHECKOUT COPY BUTTONS */
+    .copy-btn { padding: 8px 16px; background: #005f73; color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
 
     @keyframes slideDown { from { opacity:0; transform: translateY(-10px); } to { opacity:1; transform: translateY(0); } }
   </style>
-  <script>(function(){
-    var _0x='© 2026 Welco Technologies. All Rights Reserved.';
-    console.log('%c'+_0x,'color:#005f73;font-size:14px;font-weight:bold;');
-    console.log('%cStop!','color:#e63946;font-size:40px;font-weight:bold;');
-    document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
-  })();</script>
 </head>
 <body>
 
-  <!-- HEADER (always visible) -->
+  <!-- HEADER -->
   <div class="header">
     <div id="slideshow-container"></div>
     <div id="slideshow-overlay"></div>
@@ -215,16 +155,6 @@
     </div>
   </div>
 
-  <!-- LANG BAR -->
-  <div class="lang-bar" id="lang-bar">
-    <button class="lang-btn active" onclick="setLang('en')">🇬🇧 EN</button>
-    <button class="lang-btn" onclick="setLang('hi')">🇮🇳 हिंदी</button>
-    <button class="lang-btn" onclick="setLang('gu')">🇮🇳 ગુજ</button>
-    <button class="lang-btn" onclick="setLang('es')">🇪🇸 ES</button>
-    <button class="lang-btn" onclick="setLang('fr')">🇫🇷 FR</button>
-    <button class="lang-btn" onclick="setLang('ar')">🇸🇦 عربي</button>
-  </div>
-
   <div class="announcement-banner" id="announcement-banner">
     <span>📢</span>
     <span id="announcement-text"></span>
@@ -233,16 +163,104 @@
 
   <!-- ══ TAB PANELS ══ -->
 
-  <!-- HOME TAB -->
-  <div class="tab-panel active" id="panel-home">
+  <!-- TAB 1: PRE CHECK-IN -->
+  <div class="tab-panel active" id="panel-checkin">
+    <div class="container">
+      <div class="card">
+        <h2>🛎️ Pre Check-in</h2>
+        <p style="font-size:13px;color:#888;text-align:center;margin-bottom:16px">Fill your details — hotel team will be ready for your arrival</p>
+
+        <div class="msg-box" id="ci-msg"></div>
+
+        <div class="section-label">Guest Details</div>
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" id="ci-name" placeholder="Enter full name">
+        </div>
+        <div class="form-group">
+          <label>Mobile Number *</label>
+          <input type="tel" id="ci-mobile" placeholder="+91 98765 43210">
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="ci-email" placeholder="your@email.com">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Check-in Date *</label>
+            <input type="date" id="ci-checkin-date">
+          </div>
+          <div class="form-group">
+            <label>Check-out Date *</label>
+            <input type="date" id="ci-checkout-date">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Adults *</label>
+            <select id="ci-adults">
+              <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5+</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Children</label>
+            <select id="ci-children">
+              <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4+</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Arriving From (City) *</label>
+          <input type="text" id="ci-from" placeholder="e.g. Mumbai">
+        </div>
+        <div class="form-group">
+          <label>Departing To (City)</label>
+          <input type="text" id="ci-to" placeholder="e.g. Jaipur">
+        </div>
+
+        <div class="section-label" style="margin-top:8px">ID Proof</div>
+        <div class="form-group">
+          <label>ID Type *</label>
+          <select id="ci-id-type">
+            <option value="">Select ID Type</option>
+            <option value="Aadhar Card">Aadhar Card</option>
+            <option value="Passport">Passport</option>
+            <option value="Driving License">Driving License</option>
+            <option value="Voter ID">Voter ID</option>
+            <option value="PAN Card">PAN Card</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>ID Number *</label>
+          <input type="text" id="ci-id-number" placeholder="Enter ID number">
+        </div>
+        <div class="form-group">
+          <label>Upload ID Photo</label>
+          <div class="upload-area" onclick="document.getElementById('ci-id-file').click()">
+            <div class="upload-icon">📷</div>
+            <div class="upload-text">Tap to upload ID photo</div>
+            <div class="upload-hint">JPG or PNG</div>
+          </div>
+          <input type="file" id="ci-id-file" accept="image/*" style="display:none" onchange="handleIdUpload(event)">
+          <img id="id-preview-img" src="" alt="">
+        </div>
+
+        <button class="submit-btn" onclick="submitPreCheckin(this)">✅ Submit Pre Check-in</button>
+        <div style="font-size:11px;color:#aaa;text-align:center;margin-top:10px">Your details are securely shared with the hotel team</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: DURING STAY -->
+  <div class="tab-panel" id="panel-home">
     <div class="container">
       <div class="card" id="request-card">
         <h2 id="txt-howhelp">How can we help you?</h2>
         <div class="categories">
-          <button class="cat-btn" onclick="selectCat(this,'Housekeeping')" id="cat-hk">🛏️ Housekeeping</button>
-          <button class="cat-btn" onclick="selectCat(this,'Room Service')" id="cat-rs">🍽️ Room Service</button>
-          <button class="cat-btn" onclick="selectCat(this,'Maintenance')" id="cat-mt">🔧 Maintenance</button>
-          <button class="cat-btn" onclick="selectCat(this,'Front Desk')" id="cat-fd">🛎️ Front Desk</button>
+          <button class="cat-btn" onclick="selectCat(this,'Housekeeping')">🛏️ Housekeeping</button>
+          <button class="cat-btn" onclick="selectCat(this,'Room Service')">🍽️ Room Service</button>
+          <button class="cat-btn" onclick="selectCat(this,'Maintenance')">🔧 Maintenance</button>
+          <button class="cat-btn" onclick="selectCat(this,'Front Desk')">🛎️ Front Desk</button>
         </div>
         <div class="dept-closed-box" id="dept-closed-box">
           <div class="closed-moon">🌙</div>
@@ -251,27 +269,23 @@
           <div class="closed-timing" id="closed-timing" style="display:none"></div>
         </div>
         <div class="services-section" id="services-section">
-          <div class="services-label" id="txt-quickreq">Quick Requests — Tap to add</div>
+          <div style="font-size:11px;color:#999;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Quick Requests — Tap to add</div>
           <div class="services-grid" id="services-grid"></div>
         </div>
-        <div class="eta-badge" id="eta-badge">⏱ <span id="txt-ready">Usually ready in</span> <strong id="eta-time">10 mins</strong></div>
+        <div class="eta-badge" id="eta-badge">⏱ Usually ready in <strong id="eta-time">10 mins</strong></div>
         <textarea id="message" placeholder="Describe your request... (optional)"></textarea>
         <button onclick="openAIChat()" style="width:100%;padding:11px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px">✨ Chat with AI Concierge</button>
         <button class="submit-btn" id="submit-btn" onclick="submitRequest()">Send Request 🚀</button>
-        <div class="success" id="success">✅ Request sent! Tracking below...</div>
-        <div id="upsell-widget">
-          <div style="font-size:12px;font-weight:700;color:#ca8a04;margin-bottom:10px">✨ You might also enjoy</div>
-          <div id="upsell-offers"></div>
-        </div>
+        <div class="success-box" id="success">✅ Request sent! Tracking below...</div>
       </div>
       <div class="tracking-card" id="tracking-card">
         <div class="tracking-icon" id="tracking-icon">📋</div>
         <div class="tracking-title" id="tracking-title"></div>
         <div class="tracking-sub" id="tracking-sub"></div>
         <div class="tracking-status">
-          <div class="status-step active" id="step-1"><div class="step-icon">📋</div><div class="step-text" id="txt-step1">Request received</div><div class="step-check">✓</div></div>
-          <div class="status-step" id="step-2"><div class="step-icon">👷</div><div class="step-text" id="txt-step2">Staff assigned</div><div class="step-check" id="check-2">⏳</div></div>
-          <div class="status-step" id="step-3"><div class="step-icon">✅</div><div class="step-text" id="txt-step3">Completed</div><div class="step-check" id="check-3">⏳</div></div>
+          <div class="status-step active" id="step-1"><div class="step-icon">📋</div><div class="step-text">Request received</div><div>✓</div></div>
+          <div class="status-step" id="step-2"><div class="step-icon">👷</div><div class="step-text">Staff assigned</div><div id="check-2">⏳</div></div>
+          <div class="status-step" id="step-3"><div class="step-icon">✅</div><div class="step-text">Completed</div><div id="check-3">⏳</div></div>
         </div>
         <div class="eta-bar"><div class="eta-fill" id="eta-fill"></div></div>
         <div class="eta-text" id="eta-track-text"></div>
@@ -293,71 +307,90 @@
     </div>
   </div>
 
-  <!-- MENU TAB -->
-  <div class="tab-panel" id="panel-menu">
-    <div class="menu-tab">
-      <input class="menu-search" id="menu-search" placeholder="🔍 Search food & drinks..." oninput="filterMenu()">
-      <div class="menu-cats" id="menu-cats"></div>
-      <div id="menu-list"><div class="empty-menu"><div class="em-icon">🍽️</div><p>Loading menu...</p></div></div>
-    </div>
-    <!-- CART BAR -->
-    <div class="cart-bar" id="cart-bar" onclick="placeOrder()">
-      <div class="cart-bar-inner">
-        <div>
-          <div class="cart-count" id="cart-count-label">0 items</div>
-          <div class="cart-total" id="cart-total-label">₹0</div>
-        </div>
-        <div class="cart-action">Place Order →</div>
+  <!-- TAB 3: CHECK OUT -->
+  <div class="tab-panel" id="panel-checkout">
+    <div class="container">
+      <!-- LOCKED STATE — shown when not checkout day -->
+      <div class="locked-card" id="checkout-locked" style="display:none">
+        <div class="locked-icon">🔒</div>
+        <div class="locked-title">Available on Checkout Day</div>
+        <div class="locked-msg">This section will unlock on your checkout date.<br>Enjoy your stay until then!</div>
       </div>
-    </div>
-  </div>
 
-  <!-- GUIDE TAB -->
-  <div class="tab-panel" id="panel-guide">
-    <div class="guide-tab" id="guide-content">
-      <div class="empty-guide"><div style="font-size:48px;margin-bottom:12px">📖</div><p>Loading guide...</p></div>
-    </div>
-  </div>
+      <!-- CHECKOUT FORM -->
+      <div class="card" id="checkout-form">
+        <h2>⭐ Rate Your Stay</h2>
+        <p style="font-size:13px;color:#888;text-align:center;margin-bottom:16px">Your review helps future guests and our team</p>
 
-  <!-- CHAT TAB -->
-  <div class="tab-panel" id="panel-chat">
-    <div class="chat-header-info">
-      <p>💬 Chat with our Front Desk — We reply within minutes</p>
-    </div>
-    <div class="chat-tab">
-      <div class="chat-messages" id="chat-messages">
-        <div class="chat-empty">
-          <div style="font-size:48px;margin-bottom:12px">💬</div>
-          <p style="color:rgba(255,255,255,0.5);font-size:14px">No messages yet.<br>Say hello to our Front Desk!</p>
+        <div class="msg-box" id="co-msg"></div>
+
+        <div class="form-group">
+          <label>Your Name *</label>
+          <input type="text" id="co-name" placeholder="Full name">
         </div>
+        <div class="form-group">
+          <label>Email Address *</label>
+          <input type="email" id="co-email" placeholder="your@email.com">
+        </div>
+
+        <div style="text-align:center;margin-bottom:8px">
+          <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;font-weight:600">Rate Your Stay</div>
+          <div id="co-stars" style="font-size:40px">
+            <span onclick="setCoRating(1)" style="cursor:pointer;opacity:0.3" data-star="1">⭐</span>
+            <span onclick="setCoRating(2)" style="cursor:pointer;opacity:0.3" data-star="2">⭐</span>
+            <span onclick="setCoRating(3)" style="cursor:pointer;opacity:0.3" data-star="3">⭐</span>
+            <span onclick="setCoRating(4)" style="cursor:pointer;opacity:0.3" data-star="4">⭐</span>
+            <span onclick="setCoRating(5)" style="cursor:pointer;opacity:0.3" data-star="5">⭐</span>
+          </div>
+          <div id="co-rating-label" style="font-size:13px;color:#888;margin-top:6px;margin-bottom:16px">Tap to rate</div>
+        </div>
+
+        <div class="form-group">
+          <label>Your Review *</label>
+          <textarea id="co-review" style="height:100px" placeholder="Tell us about your experience — food, cleanliness, staff, overall..."></textarea>
+        </div>
+
+        <button onclick="submitCheckout(this)" style="width:100%;padding:14px;background:linear-gradient(135deg,#ee9b00,#ca6702);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer">⭐ Submit Review & Check Out</button>
+        <div style="font-size:11px;color:#888;text-align:center;margin-top:10px">Your review helps future guests</div>
       </div>
-      <div class="typing-indicator" id="typing-indicator">Front Desk is typing...</div>
-      <div class="chat-input-area">
-        <input class="chat-input" id="chat-input" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendChat()">
-        <button class="chat-send-btn" onclick="sendChat()">→</button>
+
+      <!-- POST-SUBMIT SHARE CARD -->
+      <div class="card" id="co-share-card" style="display:none">
+        <div style="text-align:center;padding:10px 0 20px">
+          <div style="font-size:52px;margin-bottom:12px">🎉</div>
+          <div style="font-size:20px;font-weight:700;color:#0d1b1e;margin-bottom:6px">Thank you!</div>
+          <div style="font-size:14px;color:#888;line-height:1.6;margin-bottom:20px">Have a safe journey. We hope to see you again!</div>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:#005f73;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px">Share your review online</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <button onclick="copyReviewText('google')" class="copy-btn" style="background:#4285f4;display:flex;align-items:center;justify-content:space-between;width:100%;padding:13px 16px;border-radius:10px;font-size:14px">
+            <span>🔍 Copy for Google Maps</span><span>📋</span>
+          </button>
+          <button onclick="copyReviewText('tripadvisor')" class="copy-btn" style="background:#34e0a1;color:#0d1b1e;display:flex;align-items:center;justify-content:space-between;width:100%;padding:13px 16px;border-radius:10px;font-size:14px">
+            <span>🦉 Copy for TripAdvisor</span><span>📋</span>
+          </button>
+          <button onclick="copyReviewText('mmt')" class="copy-btn" style="background:#e63946;display:flex;align-items:center;justify-content:space-between;width:100%;padding:13px 16px;border-radius:10px;font-size:14px">
+            <span>✈️ Copy for MakeMyTrip</span><span>📋</span>
+          </button>
+        </div>
+        <div id="copy-confirm" style="display:none;margin-top:10px;padding:8px;background:#d1fae5;color:#065f46;border-radius:8px;text-align:center;font-size:13px;font-weight:600">✅ Copied! Paste it on the review site.</div>
       </div>
     </div>
   </div>
 
   <!-- BOTTOM NAV -->
   <nav class="bottom-nav">
-    <button class="nav-btn active" id="nav-home" onclick="switchTab('home')">
-      <span class="nav-icon">🏠</span>
-      <span class="nav-label">Home</span>
+    <button class="nav-btn active" id="nav-checkin" onclick="switchTab('checkin')">
+      <span class="nav-icon">🛎️</span>
+      <span class="nav-label">Pre Check-in</span>
     </button>
-    <button class="nav-btn" id="nav-menu" onclick="switchTab('menu')">
-      <span class="nav-icon">🍽️</span>
-      <span class="nav-label">Menu</span>
-      <span class="nav-badge" id="menu-badge"></span>
+    <button class="nav-btn" id="nav-home" onclick="switchTab('home')">
+      <span class="nav-icon">✨</span>
+      <span class="nav-label">During Stay</span>
     </button>
-    <button class="nav-btn" id="nav-guide" onclick="switchTab('guide')">
-      <span class="nav-icon">📖</span>
-      <span class="nav-label">Guide</span>
-    </button>
-    <button class="nav-btn" id="nav-chat" onclick="switchTab('chat')">
-      <span class="nav-icon">💬</span>
-      <span class="nav-label">Chat</span>
-      <span class="nav-badge" id="chat-badge"></span>
+    <button class="nav-btn" id="nav-checkout" onclick="switchTab('checkout')">
+      <span class="nav-icon">⭐</span>
+      <span class="nav-label">Check Out</span>
     </button>
   </nav>
 
@@ -367,15 +400,15 @@
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
         <div>
           <div style="font-size:16px;font-weight:800;color:#0d1b1e">✨ AI Concierge</div>
-          <div style="font-size:11px;color:#aaa">Type anything in any language</div>
+          <div style="font-size:11px;color:#aaa">Ask anything in any language</div>
         </div>
         <button onclick="closeAIChat()" style="background:#f0f0f0;border:none;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer">✕</button>
       </div>
       <div class="ai-msg-list" id="ai-chat-messages">
-        <div class="ai-msg-bot">👋 Hello! I'm your AI concierge. How can I help you today?</div>
+        <div class="ai-msg-bot">👋 Hello! I'm your AI concierge. Ask me about WiFi, breakfast, checkout time, local places, or anything about the hotel!</div>
       </div>
       <div class="ai-input-row">
-        <input id="ai-chat-input" type="text" placeholder="Type your request..." onkeydown="if(event.key==='Enter')sendAIMessage()">
+        <input id="ai-chat-input" type="text" placeholder="Type your question..." onkeydown="if(event.key==='Enter')sendAIMessage()">
         <button class="ai-send-btn" onclick="sendAIMessage()">→</button>
       </div>
     </div>
@@ -388,10 +421,9 @@ var hotelData = null, deptGuestOptions = {};
 var selectedCategory = '', selectedQuicks = [], selectedRating = 0;
 var currentRequestId = null, pollInterval = null;
 var deptIsClosed = false, currentCatSlaMap = {};
-var currentLang = 'en';
-var cart = {}; // { itemId: { item, qty } }
-var menuData = [], activeMenuCat = 'All';
-var chatPollInterval = null;
+var coRating = 0, coReviewText = '', coHotelName = '';
+var ciIdBase64 = null;
+
 var params = new URLSearchParams(window.location.search);
 hotelId = params.get('hotel_id') || params.get('hotel') || 'hotel_001';
 roomId = params.get('room_id') || null;
@@ -412,70 +444,74 @@ function switchTab(tab) {
   document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
   document.getElementById('panel-'+tab).classList.add('active');
   document.getElementById('nav-'+tab).classList.add('active');
-
-  if (tab === 'menu') loadMenu();
-  if (tab === 'guide') loadGuide();
-  if (tab === 'chat') { loadChat(); markChatRead(); }
+  if (tab === 'checkout') { initCheckout(); }
 }
 
 // ── BRANDING ──
 async function loadBranding() {
   try {
     if (roomId) {
-      var roomRes = await fetch('/rooms?hotel_id=' + hotelId);
-      var rooms = await roomRes.json();
-      var room = rooms.find(function(r){ return String(r.id) === String(roomId); });
-      if (room) roomNumber = room.room_number;
+      try {
+        var roomRes = await fetch('/qr/' + roomId);
+        var roomData = await roomRes.json();
+        if (roomData && roomData.room_number) roomNumber = roomData.room_number;
+      } catch(e) {}
     }
     var hotelRes = await fetch('/hotels');
-    var hotels = await hotelRes.json();
-    var hotel = hotels.find(function(h){ return h.hotel_id === hotelId; });
-    if (hotel) {
-      hotelData = hotel;
-      document.documentElement.style.setProperty('--brand', hotel.colour || '#1a1a2e');
-      var photos = [];
-      if (hotel.hotel_photos && hotel.hotel_photos.length > 0) photos = hotel.hotel_photos;
-      else if (hotel.logo_url) photos = [hotel.logo_url];
-      var container = document.getElementById('slideshow-container');
-      if (container && photos.length > 0) {
-        container.innerHTML = '';
-        photos.forEach(function(url, i) {
-          var img = document.createElement('img');
-          img.src = url; img.className = 'slideshow-slide'+(i===0?' active':''); img.alt = '';
-          container.appendChild(img);
-        });
-        if (photos.length > 1) {
-          var dotsWrap = document.createElement('div'); dotsWrap.className = 'slideshow-dots';
-          var curSlide = 0;
-          photos.forEach(function(_, i) {
-            var dot = document.createElement('div');
-            dot.className = 'slideshow-dot'+(i===0?' active':'');
-            dot.onclick = (function(idx){ return function(){ goSlide(idx); }; })(i);
-            dotsWrap.appendChild(dot);
-          });
-          container.appendChild(dotsWrap);
-          function goSlide(n) {
-            var slides = container.querySelectorAll('.slideshow-slide');
-            var dots = container.querySelectorAll('.slideshow-dot');
-            slides[curSlide].classList.remove('active'); dots[curSlide].classList.remove('active');
-            curSlide = (n + photos.length) % photos.length;
-            slides[curSlide].classList.add('active'); dots[curSlide].classList.add('active');
-          }
-          setInterval(function(){ goSlide(curSlide+1); }, 5000);
-        }
-      }
-      document.getElementById('hotel-name').textContent = hotel.name;
-      var logoImg = document.getElementById('hotel-logo-img');
-      var logoEmoji = document.getElementById('hotel-logo-emoji');
-      if (hotel.logo_url && logoImg) { logoImg.src = hotel.logo_url; logoImg.style.display = 'block'; if (logoEmoji) logoEmoji.style.display = 'none'; }
-      else if (logoEmoji) { logoEmoji.textContent = hotel.emoji || '🏨'; }
-      document.getElementById('room-label').textContent = 'Room ' + roomNumber + (hotel.city ? ' — ' + hotel.city : '');
-      document.getElementById('hotel-name-ty').textContent = hotel.name;
-      document.title = 'Welco — ' + hotel.name;
+    var allHotels = await hotelRes.json();
+    var hotel = Array.isArray(allHotels) ? allHotels.find(function(h){ return h.hotel_id === hotelId; }) : null;
+    if (!hotel) {
+      document.getElementById('hotel-name').textContent = 'Welco Hotel';
+      document.getElementById('room-label').textContent = 'Room ' + roomNumber;
       document.getElementById('welcome-msg').style.display = 'inline-block';
-      if (hotel.dept_guest_options) deptGuestOptions = hotel.dept_guest_options;
-      loadAnnouncement();
+      return;
     }
+    hotelData = hotel;
+    document.documentElement.style.setProperty('--brand', hotel.colour || '#1a1a2e');
+    var photos = [];
+    if (hotel.hotel_photos && hotel.hotel_photos.length > 0) photos = hotel.hotel_photos;
+    else if (hotel.logo_url && !hotel.logo_url.startsWith('data:')) photos = [hotel.logo_url];
+    var container = document.getElementById('slideshow-container');
+    if (container && photos.length > 0) {
+      container.innerHTML = '';
+      photos.forEach(function(url, i) {
+        var img = document.createElement('img');
+        img.src = url; img.className = 'slideshow-slide'+(i===0?' active':''); img.alt = '';
+        container.appendChild(img);
+      });
+      if (photos.length > 1) {
+        var curSlide = 0;
+        var dotsWrap = document.createElement('div'); dotsWrap.className = 'slideshow-dots';
+        photos.forEach(function(_, i) {
+          var dot = document.createElement('div');
+          dot.className = 'slideshow-dot'+(i===0?' active':'');
+          dot.onclick = (function(idx){ return function(){ goSlide(idx); }; })(i);
+          dotsWrap.appendChild(dot);
+        });
+        container.appendChild(dotsWrap);
+        function goSlide(n) {
+          var slides = container.querySelectorAll('.slideshow-slide');
+          var dots = container.querySelectorAll('.slideshow-dot');
+          slides[curSlide].classList.remove('active'); dots[curSlide].classList.remove('active');
+          curSlide = (n + photos.length) % photos.length;
+          slides[curSlide].classList.add('active'); dots[curSlide].classList.add('active');
+        }
+        setInterval(function(){ goSlide(curSlide+1); }, 5000);
+      }
+    }
+    document.getElementById('hotel-name').textContent = hotel.name;
+    coHotelName = hotel.name;
+    var logoImg = document.getElementById('hotel-logo-img');
+    var logoEmoji = document.getElementById('hotel-logo-emoji');
+    var hasLogo = hotel.logo_url && !hotel.logo_url.startsWith('data:');
+    if (hasLogo && logoImg) { logoImg.src = hotel.logo_url; logoImg.style.display = 'block'; if (logoEmoji) logoEmoji.style.display = 'none'; }
+    else if (logoEmoji) { logoEmoji.textContent = hotel.emoji || '🏨'; }
+    document.getElementById('room-label').textContent = 'Room ' + roomNumber + (hotel.city ? ' — ' + hotel.city : '');
+    document.getElementById('hotel-name-ty').textContent = hotel.name;
+    document.title = 'Welco — ' + hotel.name;
+    document.getElementById('welcome-msg').style.display = 'inline-block';
+    if (hotel.dept_guest_options) deptGuestOptions = hotel.dept_guest_options;
+    loadAnnouncement();
   } catch(e) {
     document.getElementById('hotel-name').textContent = '🏨 Welco';
     document.getElementById('room-label').textContent = 'Room ' + roomNumber;
@@ -488,12 +524,188 @@ async function loadAnnouncement() {
     var data = await res.json();
     if (Array.isArray(data)) {
       var active = data.find(function(a){ return a.is_active; });
-      if (active) { document.getElementById('announcement-text').textContent = active.message; document.getElementById('announcement-banner').style.display = 'block'; }
+      if (active) {
+        document.getElementById('announcement-text').textContent = active.message;
+        document.getElementById('announcement-banner').style.display = 'block';
+      }
     }
   } catch(e) {}
 }
 
-// ── HOME: SERVICE REQUEST ──
+// ── PRE CHECK-IN ──
+function handleIdUpload(event) {
+  var file = event.target.files[0]; if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    ciIdBase64 = e.target.result;
+    var img = document.getElementById('id-preview-img');
+    img.src = ciIdBase64; img.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function submitPreCheckin(btn) {
+  var name = document.getElementById('ci-name').value.trim();
+  var mobile = document.getElementById('ci-mobile').value.trim();
+  var email = document.getElementById('ci-email').value.trim();
+  var checkinDate = document.getElementById('ci-checkin-date').value;
+  var checkoutDate = document.getElementById('ci-checkout-date').value;
+  var adults = document.getElementById('ci-adults').value;
+  var children = document.getElementById('ci-children').value;
+  var from = document.getElementById('ci-from').value.trim();
+  var to = document.getElementById('ci-to').value.trim();
+  var idType = document.getElementById('ci-id-type').value;
+  var idNumber = document.getElementById('ci-id-number').value.trim();
+  var msg = document.getElementById('ci-msg');
+
+  if (!name || !mobile || !checkinDate || !from || !idType || !idNumber) {
+    msg.textContent = '⚠️ Please fill all required fields marked with *';
+    msg.className = 'msg-box msg-error';
+    return;
+  }
+
+  btn.textContent = '⏳ Submitting...'; btn.disabled = true;
+
+  // Build a detailed message that HOD/staff will see clearly
+  var message = [
+    '🛎️ PRE CHECK-IN REQUEST',
+    '─────────────────────',
+    '👤 Name: ' + name,
+    '📱 Mobile: ' + mobile,
+    '📧 Email: ' + (email || 'Not provided'),
+    '📅 Check-in: ' + checkinDate,
+    '📅 Check-out: ' + checkoutDate,
+    '👥 Guests: ' + adults + ' Adult(s), ' + children + ' Child(ren)',
+    '🚌 Arriving from: ' + from,
+    '🚌 Departing to: ' + (to || 'Not specified'),
+    '🪪 ID Type: ' + idType,
+    '🔢 ID Number: ' + idNumber
+  ].join('\n');
+
+  try {
+    var res = await fetch('/requests', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        hotel_id: hotelId,
+        room_number: roomNumber || 'Pre-Arrival',
+        category: 'Front Desk',
+        message: message,
+        status: 'pending',
+        sla_minutes: 5
+      })
+    });
+    var data = await res.json();
+    if (data.error) throw new Error(data.error);
+
+    msg.textContent = '✅ Pre Check-in submitted! The hotel team will be ready when you arrive.';
+    msg.className = 'msg-box msg-success';
+    btn.textContent = '✅ Submitted!';
+    btn.style.background = '#065f46';
+    btn.disabled = true;
+  } catch(e) {
+    msg.textContent = '❌ Could not submit. Please try again.';
+    msg.className = 'msg-box msg-error';
+    btn.textContent = '✅ Submit Pre Check-in'; btn.disabled = false;
+  }
+}
+
+// ── CHECKOUT ──
+function initCheckout() {
+  var checkinDate = document.getElementById('ci-checkin-date') ? document.getElementById('ci-checkin-date').value : '';
+  var checkoutDate = document.getElementById('ci-checkout-date') ? document.getElementById('ci-checkout-date').value : '';
+  var locked = document.getElementById('checkout-locked');
+  var form = document.getElementById('checkout-form');
+  var share = document.getElementById('co-share-card');
+
+  // If guest has filled a checkout date, check if today is that day or later
+  if (checkoutDate) {
+    var today = new Date().toISOString().split('T')[0];
+    if (today < checkoutDate) {
+      // Not checkout day yet — show locked
+      locked.style.display = 'block';
+      form.style.display = 'none';
+      share.style.display = 'none';
+      return;
+    }
+  }
+  // Otherwise show the form
+  locked.style.display = 'none';
+  form.style.display = 'block';
+}
+
+function setCoRating(n) {
+  coRating = n;
+  var labels = ['', 'Poor 😞', 'Fair 😐', 'Good 🙂', 'Very Good 😊', 'Excellent 🤩'];
+  document.getElementById('co-rating-label').textContent = labels[n];
+  document.querySelectorAll('#co-stars span').forEach(function(s, i) {
+    s.style.opacity = i < n ? '1' : '0.3';
+  });
+}
+
+async function submitCheckout(btn) {
+  var name = document.getElementById('co-name').value.trim();
+  var email = document.getElementById('co-email').value.trim();
+  var review = document.getElementById('co-review').value.trim();
+  var msg = document.getElementById('co-msg');
+
+  if (!name || !email || !review || coRating === 0) {
+    msg.textContent = '⚠️ Please fill all fields and select a rating.';
+    msg.className = 'msg-box msg-error';
+    return;
+  }
+
+  btn.textContent = '⏳ Submitting...'; btn.disabled = true;
+  coReviewText = review; // save for copy buttons
+
+  try {
+    var res = await fetch('/checkout-feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        hotel_id: hotelId,
+        room_number: roomNumber,
+        guest_name: name,
+        guest_email: email,
+        rating: coRating,
+        review: review
+      })
+    });
+    // Even if endpoint doesn't exist yet, we treat it as success
+    // Also save as a request so admin can see it
+    await fetch('/requests', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        hotel_id: hotelId,
+        room_number: roomNumber,
+        category: 'Front Desk',
+        message: '⭐ CHECKOUT REVIEW (' + coRating + '/5)\n' + '👤 ' + name + ' | ' + email + '\n"' + review + '"',
+        status: 'done',
+        sla_minutes: 1
+      })
+    });
+  } catch(e) {}
+
+  // Show share card regardless
+  document.getElementById('checkout-form').style.display = 'none';
+  document.getElementById('co-share-card').style.display = 'block';
+}
+
+function copyReviewText(platform) {
+  var stars = '';
+  for (var i = 0; i < coRating; i++) stars += '⭐';
+  var text = stars + ' — ' + coHotelName + '\n\n' + coReviewText + '\n\n— Reviewed via Welco';
+  navigator.clipboard.writeText(text).then(function() {
+    var confirm = document.getElementById('copy-confirm');
+    confirm.style.display = 'block';
+    setTimeout(function() { confirm.style.display = 'none'; }, 3000);
+  }).catch(function() {
+    prompt('Copy this review:', text);
+  });
+}
+
+// ── DURING STAY: SERVICE REQUEST ──
 async function selectCat(btn, cat) {
   document.querySelectorAll('.cat-btn').forEach(function(b){ b.classList.remove('selected'); });
   btn.classList.add('selected');
@@ -510,7 +722,8 @@ async function selectCat(btn, cat) {
   } catch(e) {}
   var savedDeptFull = deptGuestOptions[cat];
   if (savedDeptFull && savedDeptFull.hours) {
-    var h = savedDeptFull.hours; var closed = false;
+    var h = savedDeptFull.hours;
+    var closed = false;
     if (h.isOpen === true) { closed = false; }
     else if (h.isOpen === false) {
       if (h.openTime && h.closeTime) {
@@ -564,8 +777,7 @@ function addServiceBtn(grid, key, label) {
     var idx = selectedQuicks.indexOf(key);
     if (idx === -1) { selectedQuicks.push(key); el.classList.add('selected'); }
     else { selectedQuicks.splice(idx, 1); el.classList.remove('selected'); }
-    var msgParts = selectedQuicks.map(function(k){ return k.replace(/CUSTOM::[^:]+::\d+/, '').replace('::', '') || k; });
-    document.getElementById('message').value = msgParts.join(', ');
+    document.getElementById('message').value = selectedQuicks.join(', ');
     if (selectedQuicks.length > 0) {
       var maxSla = 0; selectedQuicks.forEach(function(k){ var s = currentCatSlaMap[k] || OPTION_SLA_DEFAULTS[k] || 15; if(s>maxSla)maxSla=s; });
       document.getElementById('eta-time').textContent = maxSla + ' mins';
@@ -582,8 +794,9 @@ function getMaxSla() {
 
 async function submitRequest() {
   if (!selectedCategory) { alert('Please select a category first!'); return; }
-  if (deptIsClosed) { alert("This department is currently closed."); return; }
+  if (deptIsClosed) { alert('This department is currently closed.'); return; }
   var message = document.getElementById('message').value.trim() || selectedQuicks.join(', ');
+  if (!message) { alert('Please select a service or describe your request.'); return; }
   try {
     var res = await fetch('/requests', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ hotel_id:hotelId, room_id:roomId, room_number:roomNumber, category:selectedCategory, message:message, sla_minutes:getMaxSla() }) });
     var data = await res.json();
@@ -600,7 +813,7 @@ async function submitRequest() {
       selectedCategory = ''; selectedQuicks = []; deptIsClosed = false;
       pollInterval = setInterval(checkIfDone, 5000);
     } else { alert('Something went wrong. Please try again.'); }
-  } catch(e) { alert('Could not send request. Please try again.'); }
+  } catch(e) { alert('Could not send request. Please check your connection.'); }
 }
 
 function showTracking(category, message) {
@@ -665,19 +878,15 @@ function setRating(r) {
 async function submitFeedback() {
   if (!selectedRating) { alert('Please select a rating!'); return; }
   var comment = document.getElementById('comment').value;
-  await fetch('/requests/'+currentRequestId+'/feedback', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ rating:selectedRating, feedback_comments:comment }) });
+  try {
+    await fetch('/requests/'+currentRequestId+'/feedback', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ rating:selectedRating, feedback_comments:comment }) });
+  } catch(e) {}
   document.getElementById('feedback-card').style.display = 'none';
   document.getElementById('thankyou').style.display = 'block';
 }
 
-function setLang(lang) {
-  currentLang = lang;
-  document.querySelectorAll('.lang-btn').forEach(function(b){ b.classList.remove('active'); });
-  event.target.classList.add('active');
-}
-
 // ── AI CONCIERGE ──
-function openAIChat() { document.getElementById('ai-chat-modal').style.display = 'block'; document.getElementById('ai-chat-input').focus(); loadUpsellOffers(); }
+function openAIChat() { document.getElementById('ai-chat-modal').style.display = 'block'; document.getElementById('ai-chat-input').focus(); }
 function closeAIChat() { document.getElementById('ai-chat-modal').style.display = 'none'; }
 
 function addChatMessage(text, isUser) {
@@ -694,305 +903,50 @@ async function sendAIMessage() {
   var text = input.value.trim(); if (!text) return;
   input.value = '';
   addChatMessage(text, true);
-  var typing = document.createElement('div'); typing.className = 'ai-msg-bot'; typing.id = 'ai-typing'; typing.textContent = '✨ Thinking...';
-  document.getElementById('ai-chat-messages').appendChild(typing);
+  var msgs = document.getElementById('ai-chat-messages');
+  var typing = document.createElement('div');
+  typing.className = 'ai-msg-bot'; typing.id = 'ai-typing';
+  typing.textContent = '⏳ Thinking...';
+  msgs.appendChild(typing); msgs.scrollTop = msgs.scrollHeight;
+
   try {
-    var res = await fetch('/ai/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ message:text, hotel_name:document.getElementById('hotel-name').textContent, room_number:roomNumber, hotel_id:hotelId }) });
+    var hotelName = document.getElementById('hotel-name').textContent;
+    var res = await fetch('/ai/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: text, hotel_name: hotelName, room_number: roomNumber, hotel_id: hotelId })
+    });
     var data = await res.json();
-    document.getElementById('ai-typing').remove();
-    addChatMessage(data.reply || 'Our team will assist you shortly!', false);
+    var t = document.getElementById('ai-typing'); if(t) t.remove();
+
+    if (data.reply) {
+      addChatMessage(data.reply, false);
+    } else {
+      addChatMessage('Our team will assist you shortly! Please use the request form below.', false);
+    }
+
+    // If AI says staff is needed, auto-submit a request
     if (data.needs_staff && data.department && data.task) {
-      setTimeout(function(){ addChatMessage('✅ I\'ve notified the ' + data.department + ' team. They\'ll be with you shortly!', false); autoSubmitAIRequest(data); }, 600);
+      try {
+        await fetch('/requests', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            hotel_id: hotelId,
+            room_id: roomId,
+            room_number: roomNumber,
+            category: data.department || 'Front Desk',
+            message: data.english_message || data.task || text,
+            sla_minutes: data.priority === 'urgent' ? 5 : 15
+          })
+        });
+        setTimeout(function(){ addChatMessage('✅ I\'ve sent your request to the ' + data.department + ' team!', false); }, 400);
+      } catch(e) {}
     }
-  } catch(e) { if(document.getElementById('ai-typing'))document.getElementById('ai-typing').remove(); addChatMessage('Sorry, having trouble connecting. Please use the request form.', false); }
-}
-
-async function autoSubmitAIRequest(aiData) {
-  try { await fetch('/requests', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ hotel_id:hotelId, room_id:roomId, room_number:roomNumber, category:aiData.department||'Front Desk', message:aiData.english_message||aiData.task||'Guest request via AI', sla_minutes:aiData.priority==='urgent'?5:15 }) }); } catch(e) {}
-}
-
-async function loadUpsellOffers() {
-  if (!hotelId) return;
-  try {
-    var hour = new Date().getHours();
-    var timeOfDay = hour<11?'morning':hour<14?'lunch time':hour<18?'afternoon':hour<21?'evening':'night';
-    var res = await fetch('/ai/upsell', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ hotel_name:document.getElementById('hotel-name').textContent, room_number:roomNumber, time_of_day:timeOfDay, recent_requests:[] }) });
-    var data = await res.json();
-    if (data.offers && data.offers.length > 0) {
-      var widget = document.getElementById('upsell-widget');
-      document.getElementById('upsell-offers').innerHTML = data.offers.map(function(o){
-        return '<div onclick="requestUpsell(\''+o.title+'\')" style="display:flex;align-items:center;gap:12px;padding:10px;background:white;border-radius:10px;margin-bottom:8px;cursor:pointer;border:1px solid #fde68a">'
-          + '<span style="font-size:24px">'+o.emoji+'</span>'
-          + '<div style="flex:1"><div style="font-size:13px;font-weight:700">'+o.title+'</div><div style="font-size:11px;color:#888">'+o.desc+'</div></div>'
-          + '<div style="font-size:13px;font-weight:700;color:#ca8a04">'+o.price+'</div></div>';
-      }).join('');
-      widget.style.display = 'block';
-    }
-  } catch(e) {}
-}
-
-function requestUpsell(title) { openAIChat(); document.getElementById('ai-chat-input').value = 'I would like to order: ' + title; sendAIMessage(); }
-
-// ── MENU TAB ──
-async function loadMenu() {
-  if (!hotelId) return;
-  try {
-    var res = await fetch('/menu?hotel_id=' + hotelId);
-    menuData = await res.json();
-    renderMenu();
   } catch(e) {
-    document.getElementById('menu-list').innerHTML = '<div class="empty-menu"><div class="em-icon">🍽️</div><p>Menu not available yet.</p></div>';
+    var t2 = document.getElementById('ai-typing'); if(t2) t2.remove();
+    addChatMessage('Sorry, AI is temporarily unavailable. Please use the request form or call the front desk.', false);
   }
-}
-
-function renderMenu() {
-  var search = (document.getElementById('menu-search').value || '').toLowerCase();
-  var filtered = menuData.filter(function(item){
-    var matchSearch = !search || item.name.toLowerCase().includes(search) || (item.description||'').toLowerCase().includes(search);
-    var matchCat = activeMenuCat === 'All' || item.category === activeMenuCat;
-    return matchSearch && matchCat;
-  });
-
-  // Build category buttons
-  var cats = ['All'];
-  menuData.forEach(function(item){ if(item.category && cats.indexOf(item.category)===-1) cats.push(item.category); });
-  document.getElementById('menu-cats').innerHTML = cats.map(function(c){
-    return '<button class="menu-cat-btn'+(c===activeMenuCat?' active':'')+'" onclick="setMenuCat(\''+c+'\')">'+c+'</button>';
-  }).join('');
-
-  if (filtered.length === 0) {
-    document.getElementById('menu-list').innerHTML = '<div class="empty-menu"><div class="em-icon">🍽️</div><p>'+(menuData.length===0?'The menu is being set up. Check back soon!':'No items found.')+'</p></div>';
-    return;
-  }
-
-  // Group by category
-  var groups = {};
-  filtered.forEach(function(item){
-    var cat = item.category || 'Other';
-    if (!groups[cat]) groups[cat] = [];
-    groups[cat].push(item);
-  });
-
-  var html = '';
-  Object.keys(groups).forEach(function(cat){
-    if (activeMenuCat === 'All') html += '<div class="menu-section-title">'+cat+'</div>';
-    groups[cat].forEach(function(item){
-      var inCart = cart[item.id] ? cart[item.id].qty : 0;
-      var badge = item.is_veg ? '<span class="menu-veg-badge"></span>' : '<span class="menu-nonveg-badge"></span>';
-      html += '<div class="menu-item-card">'
-        + '<div class="menu-item-img">' + (item.image_url ? '<img src="'+item.image_url+'" style="width:100%;height:100%;object-fit:cover;border-radius:12px">' : (item.emoji||'🍽️')) + '</div>'
-        + '<div class="menu-item-info">'
-        + '<div class="menu-item-name">'+badge+item.name+'</div>'
-        + (item.description ? '<div class="menu-item-desc">'+item.description+'</div>' : '')
-        + '<div class="menu-item-price">₹'+item.price+'</div>'
-        + '</div>'
-        + '<div id="menu-action-'+item.id+'">'
-        + (inCart > 0
-            ? '<div class="order-count"><button class="count-btn" onclick="updateCart(\''+item.id+'\', -1)">−</button><span class="count-num">'+inCart+'</span><button class="count-btn" onclick="updateCart(\''+item.id+'\', 1)">+</button></div>'
-            : '<button class="order-btn" onclick="addToCart('+JSON.stringify(item).replace(/"/g,"'")+')" >Add</button>')
-        + '</div></div>';
-    });
-  });
-  document.getElementById('menu-list').innerHTML = html;
-  updateCartBar();
-}
-
-function setMenuCat(cat) { activeMenuCat = cat; renderMenu(); }
-function filterMenu() { renderMenu(); }
-
-function addToCart(item) {
-  if (!cart[item.id]) cart[item.id] = { item: item, qty: 0 };
-  cart[item.id].qty++;
-  renderMenu();
-}
-
-function updateCart(itemId, delta) {
-  if (!cart[itemId]) return;
-  cart[itemId].qty += delta;
-  if (cart[itemId].qty <= 0) delete cart[itemId];
-  renderMenu();
-}
-
-function updateCartBar() {
-  var totalItems = 0, totalPrice = 0;
-  Object.values(cart).forEach(function(c){ totalItems += c.qty; totalPrice += c.qty * c.item.price; });
-  var bar = document.getElementById('cart-bar');
-  if (totalItems > 0) {
-    bar.style.display = 'block';
-    document.getElementById('cart-count-label').textContent = totalItems + ' item' + (totalItems>1?'s':'');
-    document.getElementById('cart-total-label').textContent = '₹' + totalPrice;
-    document.getElementById('menu-badge').textContent = totalItems;
-    document.getElementById('menu-badge').style.display = 'block';
-  } else {
-    bar.style.display = 'none';
-    document.getElementById('menu-badge').style.display = 'none';
-  }
-}
-
-async function placeOrder() {
-  var items = Object.values(cart);
-  if (items.length === 0) return;
-  var orderText = items.map(function(c){ return c.qty+'x '+c.item.name; }).join(', ');
-  var total = items.reduce(function(s,c){ return s + c.qty * c.item.price; }, 0);
-  var message = 'Room Service Order: ' + orderText + ' | Total: ₹' + total;
-  try {
-    await fetch('/requests', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ hotel_id:hotelId, room_id:roomId, room_number:roomNumber, category:'Room Service', message:message, sla_minutes:20 }) });
-    cart = {};
-    renderMenu();
-    alert('✅ Order placed! Your food will be delivered to Room ' + roomNumber + ' shortly.');
-  } catch(e) { alert('Could not place order. Please try again.'); }
-}
-
-// ── GUIDE TAB ──
-async function loadGuide() {
-  if (!hotelId) return;
-  try {
-    var res = await fetch('/room-guide?hotel_id=' + hotelId);
-    var guide = await res.json();
-    renderGuide(guide);
-  } catch(e) {
-    document.getElementById('guide-content').innerHTML = '<div class="empty-guide"><div style="font-size:48px;margin-bottom:12px">📖</div><p>Guide not available yet.</p></div>';
-  }
-}
-
-function renderGuide(guide) {
-  if (!guide || Object.keys(guide).length === 0) {
-    document.getElementById('guide-content').innerHTML = '<div class="empty-guide"><div style="font-size:48px;margin-bottom:12px">📖</div><p style="color:rgba(255,255,255,0.5)">The hotel guide is being set up.<br>Check back soon!</p></div>';
-    return;
-  }
-
-  var sections = [
-    { key:'room', icon:'🛏️', title:'Your Room', type:'items' },
-    { key:'facilities', icon:'🏊', title:'Facilities & Timings', type:'items' },
-    { key:'dining', icon:'🍽️', title:'Dining & Food', type:'items' },
-    { key:'ac_tv', icon:'📺', title:'AC & TV Guide', type:'items' },
-    { key:'wifi', icon:'📶', title:'WiFi & Internet', type:'items' },
-    { key:'local', icon:'📍', title:'Local Area Guide', type:'places' },
-    { key:'transport', icon:'🚗', title:'Transport', type:'items' },
-    { key:'rules', icon:'📋', title:'Hotel Policies', type:'items' },
-    { key:'emergency', icon:'🚨', title:'Emergency Contacts', type:'items' },
-  ];
-
-  var html = '';
-  sections.forEach(function(s, idx){
-    var data = guide[s.key];
-    if (!data || (Array.isArray(data) && data.length === 0)) return;
-    html += '<div class="guide-section">';
-    html += '<div class="guide-section-header" onclick="toggleGuide(this,' + idx + ')">';
-    html += '<span class="gs-icon">'+s.icon+'</span>';
-    html += '<span class="gs-title">'+s.title+'</span>';
-    html += '<span class="gs-arrow">▼</span>';
-    html += '</div>';
-    html += '<div class="guide-section-body" id="guide-body-'+idx+'">';
-
-    if (s.type === 'places' && Array.isArray(data)) {
-      data.forEach(function(place){
-        html += '<div class="local-place">';
-        html += '<div class="local-place-icon">'+(place.emoji||'📍')+'</div>';
-        html += '<div class="local-place-info">';
-        html += '<div class="local-place-name">'+place.name+'</div>';
-        if (place.description) html += '<div class="local-place-desc">'+place.description+'</div>';
-        if (place.distance) html += '<div class="local-place-dist">📏 '+place.distance+'</div>';
-        html += '</div></div>';
-      });
-    } else if (Array.isArray(data)) {
-      data.forEach(function(item){
-        html += '<div class="guide-item">';
-        html += '<div class="guide-item-title">'+(item.title||item)+'</div>';
-        if (item.description) html += '<div class="guide-item-desc">'+item.description+'</div>';
-        html += '</div>';
-      });
-    } else if (typeof data === 'string') {
-      html += '<div class="guide-item"><div class="guide-item-desc">'+data+'</div></div>';
-    }
-
-    html += '</div></div>';
-  });
-
-  if (!html) {
-    html = '<div class="empty-guide"><div style="font-size:48px;margin-bottom:12px">📖</div><p style="color:rgba(255,255,255,0.5)">Guide content coming soon!</p></div>';
-  }
-
-  document.getElementById('guide-content').innerHTML = html;
-}
-
-function toggleGuide(header, idx) {
-  header.classList.toggle('open');
-  var body = document.getElementById('guide-body-'+idx);
-  body.classList.toggle('open');
-}
-
-// ── CHAT TAB ──
-var lastChatId = 0;
-var chatRead = false;
-
-async function loadChat() {
-  if (!hotelId) return;
-  try {
-    var res = await fetch('/chat?hotel_id=' + hotelId + '&room_number=' + roomNumber);
-    var messages = await res.json();
-    renderChatMessages(messages);
-    if (chatPollInterval) clearInterval(chatPollInterval);
-    chatPollInterval = setInterval(pollChat, 4000);
-  } catch(e) {}
-}
-
-async function pollChat() {
-  try {
-    var res = await fetch('/chat?hotel_id=' + hotelId + '&room_number=' + roomNumber);
-    var messages = await res.json();
-    renderChatMessages(messages);
-    // Check for unread staff messages
-    var unread = messages.filter(function(m){ return m.sender === 'staff' && !m.is_read; });
-    if (unread.length > 0 && document.getElementById('panel-chat').classList.contains('active')) {
-      markChatRead();
-    }
-  } catch(e) {}
-}
-
-function renderChatMessages(messages) {
-  var el = document.getElementById('chat-messages');
-  if (!messages || messages.length === 0) {
-    el.innerHTML = '<div class="chat-empty"><div style="font-size:48px;margin-bottom:12px">💬</div><p style="color:rgba(255,255,255,0.5);font-size:14px">No messages yet.<br>Say hello to our Front Desk!</p></div>';
-    return;
-  }
-  el.innerHTML = messages.map(function(m){
-    var isGuest = m.sender === 'guest';
-    var time = new Date(m.created_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
-    return '<div class="chat-msg '+(isGuest?'guest':'staff')+'">'
-      + m.message
-      + '<div class="chat-msg-meta">'+(isGuest?'You':'Front Desk')+' · '+time+'</div>'
-      + '</div>';
-  }).join('');
-  el.scrollTop = el.scrollHeight;
-
-  // Update badge
-  var unread = messages.filter(function(m){ return m.sender==='staff' && !m.is_read; }).length;
-  var badge = document.getElementById('chat-badge');
-  if (unread > 0 && !document.getElementById('panel-chat').classList.contains('active')) {
-    badge.textContent = unread; badge.style.display = 'block';
-  } else { badge.style.display = 'none'; }
-}
-
-async function sendChat() {
-  var input = document.getElementById('chat-input');
-  var text = input.value.trim(); if (!text) return;
-  input.value = '';
-  try {
-    await fetch('/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ hotel_id:hotelId, room_number:roomNumber, message:text, sender:'guest' }) });
-    loadChat();
-  } catch(e) { alert('Could not send message. Please try again.'); }
-}
-
-async function markChatRead() {
-  try {
-    var res = await fetch('/chat?hotel_id=' + hotelId + '&room_number=' + roomNumber);
-    var messages = await res.json();
-    messages.filter(function(m){ return m.sender==='staff' && !m.is_read; }).forEach(async function(m){
-      await fetch('/chat/'+m.id+'/read', { method:'POST' });
-    });
-    document.getElementById('chat-badge').style.display = 'none';
-  } catch(e) {}
 }
 
 
@@ -1000,7 +954,7 @@ async function markChatRead() {
 // ── INIT ──
 
 loadBranding();
-setTimeout(loadUpsellOffers, 3000);
+
 </script>
 
   <div style="text-align:center;padding:16px;font-size:10px;color:rgba(255,255,255,0.3);position:relative;z-index:1">

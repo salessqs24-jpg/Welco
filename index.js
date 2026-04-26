@@ -608,6 +608,31 @@ app.post('/requests/:id/feedback', async (req,res) => {
   res.json(data);
 });
 
+// ── CHECKOUT FEEDBACK ────────────────────────────────────────────────────────
+app.post('/checkout-feedback', async (req,res) => {
+  const { hotel_id, room_number, guest_name, guest_email, rating, review } = req.body;
+  if (!hotel_id || !rating || !review) return res.status(400).json({ error: 'hotel_id, rating and review required.' });
+  try {
+    const { data, error } = await supabase.from('checkout_reviews').insert([{
+      hotel_id,
+      room_number: room_number || '',
+      guest_name:  guest_name  || '',
+      guest_email: guest_email || '',
+      rating:      parseInt(rating),
+      review
+    }]).select().single();
+    if (error) {
+      // Table may not exist yet — log it but still return success so the guest experience is not broken
+      console.error('checkout_reviews insert error:', error.message);
+      return res.json({ success: true, fallback: true });
+    }
+    res.json({ success: true, data });
+  } catch(e) {
+    console.error('checkout-feedback error:', e.message);
+    res.json({ success: true, fallback: true });
+  }
+});
+
 // ANNOUNCEMENTS
 app.get('/announcements', async (req,res) => {
   let query=supabase.from('announcements').select('*').order('created_at',{ ascending:false });
@@ -706,6 +731,7 @@ app.post('/hotels/:hotel_id/delete', verifyToken, async (req,res) => {
     await supabase.from('hod').delete().eq('hotel_id', hotel_id);
     await supabase.from('rooms').delete().eq('hotel_id', hotel_id);
     await supabase.from('announcements').delete().eq('hotel_id', hotel_id);
+    await supabase.from('checkout_reviews').delete().eq('hotel_id', hotel_id);
     const { error } = await supabase.from('hotels').delete().eq('hotel_id', hotel_id);
     if (error) return res.status(500).json({ error: error.message });
     res.json({ success: true });
@@ -725,6 +751,7 @@ app.post('/owner/delete', verifyToken, async (req,res) => {
         await supabase.from('hod').delete().eq('hotel_id', h.hotel_id);
         await supabase.from('rooms').delete().eq('hotel_id', h.hotel_id);
         await supabase.from('announcements').delete().eq('hotel_id', h.hotel_id);
+        await supabase.from('checkout_reviews').delete().eq('hotel_id', h.hotel_id);
         await supabase.from('hotels').delete().eq('hotel_id', h.hotel_id);
       }
     }

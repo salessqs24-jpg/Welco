@@ -1,6 +1,18 @@
+<!--
+  © 2026 WELCO TECHNOLOGIES — ALL RIGHTS RESERVED
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    (function(){
+      document.addEventListener('contextmenu',function(e){e.preventDefault();});
+      var threshold=160;
+      setInterval(function(){
+        if(window.outerWidth-window.innerWidth>threshold||window.outerHeight-window.innerHeight>threshold){}
+      },1000);
+    })();
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welco Staff</title>
@@ -8,117 +20,208 @@
   <meta name="theme-color" content="#0a9396">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Welco Staff">
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({ appId: "20e9e447-6ecd-488d-bdf2-c9c2e81bdee9", notifyButton: { enable: false }, allowLocalhostAsSecureOrigin: true });
+    });</script>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: sans-serif; background: #f0f2f5; min-height: 100vh; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:sans-serif; background:#f0f2f5 url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80') center/cover fixed no-repeat; min-height:100vh; }
+    #login-screen { min-height:100vh; background:linear-gradient(160deg,#005f73,#0a9396); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px; }
+    .hotel-logo-img { width:56px; height:56px; border-radius:12px; object-fit:cover; border:2px solid rgba(255,255,255,0.5); display:none; }
+    .hotel-logo { font-size:52px; text-align:center; }
+    .hotel-name { color:white; font-size:24px; font-weight:bold; margin-bottom:4px; text-align:center; }
+    .hotel-sub { color:rgba(255,255,255,0.7); font-size:13px; margin-bottom:32px; text-align:center; }
+    .login-card { background:white; border-radius:20px; padding:28px; width:100%; max-width:340px; }
+    .login-card label { font-size:12px; color:#888; display:block; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.08em; }
+    .login-card input[type="text"] { width:100%; padding:12px 14px; border:1.5px solid #e0ddd8; border-radius:10px; font-size:15px; margin-bottom:20px; outline:none; background:white; }
+    .login-card input:focus { border-color:#0a9396; }
+    .staff-id-hint { background:#e8f4f4; border-radius:10px; padding:12px 14px; margin-bottom:16px; font-size:12px; color:#005f73; line-height:1.6; }
+    .pin-label { font-size:12px; color:#888; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.08em; }
+    .pin-dots { display:flex; gap:12px; justify-content:center; margin-bottom:20px; }
+    .pin-dot { width:14px; height:14px; border-radius:50%; background:#ddd; transition:background 0.2s; }
+    .pin-dot.filled { background:#0a9396; }
+    .pin-pad { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px; }
+    .pin-btn { padding:16px; border:none; border-radius:12px; background:#f5f5f5; font-size:20px; font-weight:bold; cursor:pointer; transition:all 0.15s; }
+    .pin-btn:active { background:#0a9396; color:white; transform:scale(0.95); }
+    .pin-clear { background:#fde8ea; color:#e63946; }
+    .login-btn { width:100%; padding:14px; background:#005f73; color:white; border:none; border-radius:12px; font-size:16px; font-weight:bold; cursor:pointer; }
+    .login-error { color:#e63946; font-size:13px; text-align:center; margin-top:10px; display:none; line-height:1.5; }
+    .notif-prompt { background:#e8f4f4; border:1.5px solid #0a9396; border-radius:12px; padding:14px; margin-bottom:16px; display:none; }
+    .notif-prompt p { font-size:13px; color:#005f73; margin-bottom:10px; line-height:1.5; }
+    .notif-prompt-btns { display:flex; gap:8px; }
+    .btn-allow { flex:1; padding:10px; background:#0a9396; color:white; border:none; border-radius:8px; font-size:13px; font-weight:bold; cursor:pointer; }
+    .btn-skip { padding:10px 14px; background:#f0f0f0; color:#888; border:none; border-radius:8px; font-size:13px; cursor:pointer; }
+    #dashboard-screen { display:none; }
+    .dash-header { background:linear-gradient(90deg,#005f73,#0a9396); color:white; padding:14px 16px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:50; }
+    .dash-header-left { display:flex; align-items:center; gap:10px; }
+    .dash-header-logo { width:36px; height:36px; border-radius:8px; object-fit:cover; border:2px solid rgba(255,255,255,0.4); display:none; }
+    .dash-header-emoji { font-size:22px; }
+    .dash-hotel { font-size:17px; font-weight:bold; }
+    .dash-staff { font-size:12px; opacity:0.8; margin-top:2px; }
+    .header-right { display:flex; gap:8px; align-items:center; }
+    .notif-badge { background:#ee9b00; color:white; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:bold; }
+    .notif-badge.zero { background:rgba(255,255,255,0.2); }
+    .logout-btn { background:rgba(255,255,255,0.15); border:none; color:white; padding:6px 14px; border-radius:8px; font-size:12px; cursor:pointer; }
+    .duty-bar { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid rgba(0,0,0,0.06); transition:background 0.3s; }
+    .duty-bar.on-duty { background:#d1fae5; }
+    .duty-bar.off-duty { background:#fde8ea; }
+    .duty-info { display:flex; align-items:center; gap:12px; }
+    .duty-dot { width:12px; height:12px; border-radius:50%; flex-shrink:0; }
+    .duty-dot.on { background:#2ecc71; box-shadow:0 0 0 4px rgba(46,204,113,0.2); animation:pdot 2s infinite; }
+    .duty-dot.off { background:#e63946; }
+    @keyframes pdot { 0%,100%{box-shadow:0 0 0 4px rgba(46,204,113,0.2)} 50%{box-shadow:0 0 0 8px rgba(46,204,113,0.08)} }
+    .duty-label { font-size:14px; font-weight:700; }
+    .duty-label.on { color:#065f46; }
+    .duty-label.off { color:#c1121f; }
+    .duty-sub-text { font-size:11px; color:#888; margin-top:2px; }
+    .clock-btn { padding:10px 22px; border:none; border-radius:10px; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; }
+    .clock-btn.in { background:#2ecc71; color:white; }
+    .clock-btn.out { background:#e63946; color:white; }
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:200; align-items:center; justify-content:center; padding:20px; }
+    .modal-overlay.open { display:flex; }
+    .modal-box { background:white; border-radius:20px; padding:28px; max-width:320px; width:100%; text-align:center; }
+    .modal-icon { font-size:52px; margin-bottom:12px; }
+    .modal-title { font-size:18px; font-weight:700; color:#1a1a2e; margin-bottom:8px; }
+    .modal-desc { font-size:14px; color:#666; margin-bottom:24px; line-height:1.6; }
+    .modal-btns { display:flex; gap:10px; }
+    .mbtn-cancel { flex:1; padding:12px; background:#f0f0f0; color:#666; border:none; border-radius:10px; font-size:14px; cursor:pointer; font-weight:600; }
+    .mbtn-confirm { flex:1; padding:12px; background:#e63946; color:white; border:none; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; }
+    .notif-status-bar { display:none; background:#fff3cd; border-bottom:1px solid #ffd166; padding:10px 16px; font-size:12px; color:#8a6000; text-align:center; cursor:pointer; }
+    .notif-status-bar.granted { background:#d1fae5; color:#065f46; border-color:#6ee7b7; cursor:default; }
+    .staff-announcement { display:none; background:linear-gradient(90deg,#ee9b00,#ca6702); color:white; padding:10px 16px; font-size:13px; font-weight:500; text-align:center; line-height:1.5; }
+    .filter-tabs { display:flex; background:white; border-bottom:1px solid #eee; overflow-x:auto; }
+    .filter-tab { padding:12px 16px; font-size:13px; font-weight:500; color:#999; cursor:pointer; white-space:nowrap; border-bottom:2px solid transparent; }
+    .filter-tab.active { color:#005f73; border-bottom-color:#005f73; }
+    .dash-container { padding:14px; max-width:600px; margin:0 auto; }
+    .section-label { font-size:11px; color:#aaa; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; font-weight:600; }
+    .task-card { background:rgba(255,255,255,0.93); border-radius:14px; padding:16px; margin-bottom:12px; box-shadow:0 4px 20px rgba(0,0,0,0.12); border-left:4px solid #ee9b00; }
+    .task-card.urgent { border-left-color:#e63946; }
+    .task-card.in-progress { border-left-color:#0a9396; }
+    .task-card.done { border-left-color:#2ecc71; opacity:0.6; }
+    .task-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+    .task-room { font-weight:bold; font-size:16px; color:#1a1a2e; }
+    .task-cat { background:#005f73; color:white; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:500; }
+    .task-msg { color:#555; font-size:14px; margin-bottom:8px; line-height:1.4; }
+    .task-time { font-size:11px; color:#aaa; margin-bottom:8px; }
+    .timer-bar { height:4px; background:#eee; border-radius:4px; margin-bottom:10px; overflow:hidden; }
+    .timer-fill { height:100%; border-radius:4px; background:#2ecc71; }
+    .timer-fill.warning { background:#ee9b00; }
+    .timer-fill.urgent { background:#e63946; }
+    .task-sla { font-size:12px; color:#888; margin-bottom:10px; }
+    .task-sla.urgent-text { color:#e63946; font-weight:bold; }
+    .task-actions { display:flex; gap:8px; flex-wrap:wrap; }
+    .btn-accept { padding:9px 18px; background:#0a9396; color:white; border:none; border-radius:8px; font-size:13px; font-weight:bold; cursor:pointer; }
+    .btn-done { padding:9px 18px; background:#2ecc71; color:white; border:none; border-radius:8px; font-size:13px; font-weight:bold; cursor:pointer; }
+    .btn-done:disabled { background:#ccc; cursor:default; }
+    .claimed-badge { background:#e8f4f4; color:#005f73; padding:8px 14px; border-radius:8px; font-size:13px; }
+    .empty-state { text-align:center; padding:60px 20px; color:#aaa; }
+    .empty-state .icon { font-size:48px; margin-bottom:12px; }
+    .refresh-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+    .refresh-btn { background:#f0f2f5; border:none; border-radius:8px; padding:6px 12px; font-size:12px; color:#666; cursor:pointer; }
 
-    #login-screen { min-height: 100vh; background: linear-gradient(160deg, #005f73, #0a9396); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
-    .hotel-logo { font-size: 52px; margin-bottom: 8px; text-align: center; }
-    .hotel-name { color: white; font-size: 24px; font-weight: bold; margin-bottom: 4px; text-align: center; }
-    .hotel-sub { color: rgba(255,255,255,0.7); font-size: 13px; margin-bottom: 32px; text-align: center; }
-    .login-card { background: white; border-radius: 20px; padding: 28px; width: 100%; max-width: 340px; }
-    .login-card label { font-size: 12px; color: #888; display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.08em; }
-    .login-card select, .login-card input[type="text"] { width: 100%; padding: 12px 14px; border: 1.5px solid #e0ddd8; border-radius: 10px; font-size: 15px; margin-bottom: 20px; outline: none; background: white; }
-    .login-card select:focus, .login-card input:focus { border-color: #0a9396; }
-    .pin-label { font-size: 12px; color: #888; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.08em; }
-    .pin-dots { display: flex; gap: 12px; justify-content: center; margin-bottom: 20px; }
-    .pin-dot { width: 14px; height: 14px; border-radius: 50%; background: #ddd; transition: background 0.2s; }
-    .pin-dot.filled { background: #0a9396; }
-    .pin-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-    .pin-btn { padding: 16px; border: none; border-radius: 12px; background: #f5f5f5; font-size: 20px; font-weight: bold; cursor: pointer; transition: all 0.15s; }
-    .pin-btn:active { background: #0a9396; color: white; transform: scale(0.95); }
-    .pin-clear { background: #fde8ea; color: #e63946; }
-    .login-btn { width: 100%; padding: 14px; background: #005f73; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; }
-    .login-error { color: #e63946; font-size: 13px; text-align: center; margin-top: 10px; display: none; line-height: 1.5; }
+    /* ── CHAT INBOX ── */
+    #chat-panel { display:none; }
+    .chat-rooms { padding:14px; max-width:600px; margin:0 auto; }
+    .chat-room-card { background:rgba(255,255,255,0.93); border-radius:14px; padding:16px; margin-bottom:12px; box-shadow:0 4px 20px rgba(0,0,0,0.12); cursor:pointer; display:flex; align-items:center; gap:14px; }
+    .chat-room-card:hover { background:rgba(255,255,255,0.98); }
+    .chat-room-avatar { width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#005f73,#0a9396); display:flex; align-items:center; justify-content:center; color:white; font-size:16px; font-weight:700; flex-shrink:0; }
+    .chat-room-info { flex:1; }
+    .chat-room-name { font-size:14px; font-weight:700; color:#1a1a2e; }
+    .chat-room-preview { font-size:12px; color:#888; margin-top:2px; }
+    .chat-room-meta { text-align:right; }
+    .chat-room-time { font-size:10px; color:#aaa; }
+    .chat-room-unread { background:#e63946; color:white; border-radius:10px; font-size:10px; font-weight:700; padding:2px 7px; margin-top:4px; display:inline-block; }
 
-    #dashboard-screen { display: none; }
-    .dash-header { background: linear-gradient(90deg, #005f73, #0a9396); color: white; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; }
-    .dash-hotel { font-size: 17px; font-weight: bold; }
-    .dash-staff { font-size: 12px; opacity: 0.8; margin-top: 2px; }
-    .header-right { display: flex; gap: 10px; align-items: center; }
-    .notif-badge { background: #ee9b00; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-    .notif-badge.zero { background: rgba(255,255,255,0.2); }
-    .logout-btn { background: rgba(255,255,255,0.15); border: none; color: white; padding: 6px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; }
-
-    .filter-tabs { display: flex; background: white; border-bottom: 1px solid #eee; overflow-x: auto; }
-    .filter-tab { padding: 12px 16px; font-size: 13px; font-weight: 500; color: #999; cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; }
-    .filter-tab.active { color: #005f73; border-bottom-color: #005f73; }
-
-    .dash-container { padding: 14px; max-width: 600px; margin: 0 auto; }
-    .section-label { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; font-weight: 600; }
-
-    .task-card { background: white; border-radius: 14px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); border-left: 4px solid #ee9b00; }
-    .task-card.urgent { border-left-color: #e63946; }
-    .task-card.in-progress { border-left-color: #0a9396; }
-    .task-card.done { border-left-color: #2ecc71; opacity: 0.6; }
-    .task-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-    .task-room { font-weight: bold; font-size: 16px; color: #1a1a2e; }
-    .task-cat { background: #005f73; color: white; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
-    .task-msg { color: #555; font-size: 14px; margin-bottom: 8px; line-height: 1.4; }
-    .task-time { font-size: 11px; color: #aaa; margin-bottom: 8px; }
-    .timer-bar { height: 4px; background: #eee; border-radius: 4px; margin-bottom: 10px; overflow: hidden; }
-    .timer-fill { height: 100%; border-radius: 4px; background: #2ecc71; }
-    .timer-fill.warning { background: #ee9b00; }
-    .timer-fill.urgent { background: #e63946; }
-    .task-sla { font-size: 12px; color: #888; margin-bottom: 10px; }
-    .task-sla.urgent-text { color: #e63946; font-weight: bold; }
-    .task-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-    .btn-accept { padding: 9px 18px; background: #0a9396; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; }
-    .btn-done { padding: 9px 18px; background: #2ecc71; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; }
-    .btn-done:disabled { background: #ccc; cursor: default; }
-    .claimed-badge { background: #e8f4f4; color: #005f73; padding: 8px 14px; border-radius: 8px; font-size: 13px; }
-    .empty-state { text-align: center; padding: 60px 20px; color: #aaa; }
-    .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
-    .refresh-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .refresh-btn { background: #f0f2f5; border: none; border-radius: 8px; padding: 6px 12px; font-size: 12px; color: #666; cursor: pointer; }
+    /* CHAT WINDOW */
+    .chat-window { display:none; position:fixed; inset:0; background:white; z-index:100; flex-direction:column; }
+    .chat-window.open { display:flex; }
+    .chat-win-header { background:linear-gradient(90deg,#005f73,#0a9396); color:white; padding:14px 16px; display:flex; align-items:center; gap:12px; }
+    .chat-win-back { background:none; border:none; color:white; font-size:20px; cursor:pointer; padding:4px; }
+    .chat-win-title { font-size:16px; font-weight:700; flex:1; }
+    .chat-win-room { font-size:11px; opacity:0.8; }
+    .chat-win-messages { flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:10px; background:#f5f5f5; }
+    .chat-win-msg { max-width:80%; padding:10px 14px; border-radius:16px; font-size:14px; line-height:1.5; }
+    .chat-win-msg.guest { background:white; color:#1a1a2e; align-self:flex-start; border-radius:16px 16px 16px 4px; box-shadow:0 1px 4px rgba(0,0,0,0.1); }
+    .chat-win-msg.staff-msg { background:#005f73; color:white; align-self:flex-end; border-radius:16px 16px 4px 16px; }
+    .chat-win-msg-meta { font-size:10px; opacity:0.6; margin-top:4px; }
+    .chat-win-input-area { padding:12px 16px; background:white; border-top:1px solid #eee; display:flex; gap:10px; align-items:center; }
+    .chat-win-input { flex:1; padding:12px 16px; border:1.5px solid #e0ddd8; border-radius:24px; font-size:14px; outline:none; font-family:sans-serif; }
+    .chat-win-send { width:44px; height:44px; border-radius:50%; background:#005f73; color:white; border:none; font-size:18px; cursor:pointer; }
+    .chat-empty-inbox { text-align:center; padding:60px 20px; color:#aaa; }
   </style>
+  <script>(function(){
+    var _0x='© 2026 Welco Technologies. All Rights Reserved.';
+    console.log('%c'+_0x,'color:#005f73;font-size:14px;font-weight:bold;');
+    document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+    var threshold = 160;
+    setInterval(function(){
+      if(window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold){
+        document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#1a1a2e;color:white;font-size:20px;font-family:sans-serif;text-align:center;padding:20px"><div><div style="font-size:60px;margin-bottom:20px">🔒</div><div style="font-weight:bold;margin-bottom:10px">© 2026 Welco Technologies</div><div style="font-size:14px;opacity:0.7">Developer tools detected.</div></div></div>';
+      }
+    }, 1000);
+  })();</script>
+  <script src="/welco-protect.js"></script>
 </head>
 <body>
 
 <div id="login-screen">
-  <div class="hotel-logo" id="login-emoji">🏨</div>
+  <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px">
+    <img class="hotel-logo-img" id="login-logo-img" src="" alt="">
+    <div class="hotel-logo" id="login-emoji">🏨</div>
+  </div>
   <div class="hotel-name" id="login-hotel-name">Welco Staff</div>
-  <div class="hotel-sub" id="login-hotel-sub">Loading hotels...</div>
+  <div class="hotel-sub" id="login-hotel-sub">Staff Portal</div>
   <div class="login-card">
-    <label>Select Hotel</label>
-    <select id="hotel-select" onchange="switchHotel(this.value)">
-      <option value="">Loading...</option>
-    </select>
-    <label>Your Name (exactly as added by manager)</label>
-    <input type="text" id="staff-name" placeholder="e.g. Rahul">
+    <div class="staff-id-hint">📋 Your <strong>Staff ID</strong> is given by your admin<br>Example: <strong style="letter-spacing:1px">FAT760-1234</strong></div>
+    <label>Staff ID</label>
+    <input type="text" id="staff-id-input" placeholder="e.g. FAT760-1234" autocomplete="off" style="text-transform:uppercase;letter-spacing:1px;font-weight:700" oninput="this.value=this.value.toUpperCase()">
     <div class="pin-label">Enter Your PIN</div>
     <div class="pin-dots">
-      <div class="pin-dot" id="dot-0"></div>
-      <div class="pin-dot" id="dot-1"></div>
-      <div class="pin-dot" id="dot-2"></div>
-      <div class="pin-dot" id="dot-3"></div>
+      <div class="pin-dot" id="dot-0"></div><div class="pin-dot" id="dot-1"></div>
+      <div class="pin-dot" id="dot-2"></div><div class="pin-dot" id="dot-3"></div>
     </div>
     <div class="pin-pad">
-      <button class="pin-btn" onclick="addPin('1')">1</button>
-      <button class="pin-btn" onclick="addPin('2')">2</button>
-      <button class="pin-btn" onclick="addPin('3')">3</button>
-      <button class="pin-btn" onclick="addPin('4')">4</button>
-      <button class="pin-btn" onclick="addPin('5')">5</button>
-      <button class="pin-btn" onclick="addPin('6')">6</button>
-      <button class="pin-btn" onclick="addPin('7')">7</button>
-      <button class="pin-btn" onclick="addPin('8')">8</button>
-      <button class="pin-btn" onclick="addPin('9')">9</button>
-      <button class="pin-btn pin-clear" onclick="clearPin()">✕</button>
-      <button class="pin-btn" onclick="addPin('0')">0</button>
-      <button class="pin-btn" onclick="deletePin()">⌫</button>
+      <button class="pin-btn" onclick="addPin('1')">1</button><button class="pin-btn" onclick="addPin('2')">2</button><button class="pin-btn" onclick="addPin('3')">3</button>
+      <button class="pin-btn" onclick="addPin('4')">4</button><button class="pin-btn" onclick="addPin('5')">5</button><button class="pin-btn" onclick="addPin('6')">6</button>
+      <button class="pin-btn" onclick="addPin('7')">7</button><button class="pin-btn" onclick="addPin('8')">8</button><button class="pin-btn" onclick="addPin('9')">9</button>
+      <button class="pin-btn pin-clear" onclick="clearPin()">✕</button><button class="pin-btn" onclick="addPin('0')">0</button><button class="pin-btn" onclick="deletePin()">⌫</button>
     </div>
-    <button class="login-btn" onclick="doLogin()">Login to Dashboard</button>
+    <div class="notif-prompt" id="notif-prompt">
+      <p>🔔 Enable push notifications to get alerted for new guest requests!</p>
+      <div class="notif-prompt-btns">
+        <button class="btn-allow" onclick="enablePush()">🔔 Allow</button>
+        <button class="btn-skip" onclick="skipPush()">Skip</button>
+      </div>
+    </div>
+    <button class="login-btn" id="login-btn" onclick="doLogin()">Login to Dashboard</button>
     <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="offduty-modal">
+  <div class="modal-box">
+    <div class="modal-icon">⚠️</div>
+    <div class="modal-title">You're Currently Off Duty</div>
+    <div class="modal-desc">Accepting this request will be recorded while off duty. Continue?</div>
+    <div class="modal-btns">
+      <button class="mbtn-cancel" onclick="cancelClaim()">Cancel</button>
+      <button class="mbtn-confirm" onclick="confirmClaim()">Accept Anyway</button>
+    </div>
   </div>
 </div>
 
 <div id="dashboard-screen">
   <div class="dash-header" id="dash-header">
-    <div>
-      <div class="dash-hotel" id="dash-hotel">Welco Staff</div>
-      <div class="dash-staff" id="dash-staff">Staff</div>
+    <div class="dash-header-left">
+      <img class="dash-header-logo" id="dash-header-logo" src="" alt="">
+      <span class="dash-header-emoji" id="dash-header-emoji"></span>
+      <div>
+        <div class="dash-hotel" id="dash-hotel">Welco Staff</div>
+        <div class="dash-staff" id="dash-staff">Staff</div>
+      </div>
     </div>
     <div class="header-right">
       <span class="notif-badge" id="pending-count">0 pending</span>
@@ -126,198 +229,417 @@
     </div>
   </div>
 
-  <div class="filter-tabs">
-    <div class="filter-tab active" onclick="setFilter('all')">All</div>
-    <div class="filter-tab" onclick="setFilter('pending')">⏳ Pending</div>
-    <div class="filter-tab" onclick="setFilter('in_progress')">🔄 In Progress</div>
-    <div class="filter-tab" onclick="setFilter('done')">✅ Done</div>
+  <div class="duty-bar off-duty" id="duty-bar">
+    <div class="duty-info">
+      <div class="duty-dot off" id="duty-dot"></div>
+      <div>
+        <div class="duty-label off" id="duty-label">🔴 Off Duty</div>
+        <div class="duty-sub-text" id="duty-sub">Clock in to receive notifications</div>
+      </div>
+    </div>
+    <button class="clock-btn in" id="clock-btn" onclick="toggleDuty()">Clock In</button>
   </div>
 
-  <div class="dash-container">
-    <div class="refresh-row">
-      <div class="section-label">Live Requests</div>
-      <button class="refresh-btn" onclick="loadTasks()">🔄 Refresh</button>
+  <div class="notif-status-bar" id="notif-status-bar" onclick="enablePush()">🔕 Tap here to enable push notifications</div>
+  <div class="staff-announcement" id="staff-announcement"><span>📢 </span><span id="staff-announcement-text"></span></div>
+
+  <div class="filter-tabs">
+    <div class="filter-tab active" onclick="setFilter('all')" id="ft-all">All</div>
+    <div class="filter-tab" onclick="setFilter('pending')" id="ft-pending">⏳ Pending</div>
+    <div class="filter-tab" onclick="setFilter('in_progress')" id="ft-in_progress">🔄 In Progress</div>
+    <div class="filter-tab" onclick="setFilter('done')" id="ft-done">✅ Done</div>
+    <div class="filter-tab" onclick="setFilter('chat')" id="ft-chat" style="display:none">
+      💬 Chat <span id="chat-unread-badge" style="background:#e63946;color:white;border-radius:10px;padding:1px 6px;font-size:10px;margin-left:4px;display:none">0</span>
     </div>
-    <div id="task-list"></div>
+  </div>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;padding:8px 16px;background:white;border-bottom:1px solid #eee;font-size:11px">
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:3px;background:#4361EE;display:inline-block"></span>🛏️ Housekeeping</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:3px;background:#F77F00;display:inline-block"></span>🍽️ Room Service</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:3px;background:#e63946;display:inline-block"></span>🔧 Maintenance</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:3px;background:#9B5DE5;display:inline-block"></span>🛎️ Front Desk</span>
+  </div>
+
+  <!-- REQUESTS PANEL -->
+  <div id="requests-panel">
+    <div class="dash-container">
+      <div class="refresh-row">
+        <div class="section-label" id="req-label">Live Requests</div>
+        <button class="refresh-btn" onclick="loadTasks()">🔄 Refresh</button>
+      </div>
+      <div id="task-list"></div>
+    </div>
+  </div>
+
+  <!-- CHAT PANEL -->
+  <div id="chat-panel">
+    <div class="chat-rooms">
+      <div class="refresh-row">
+        <div class="section-label">Guest Chat Inbox</div>
+        <button class="refresh-btn" onclick="loadChatInbox()">🔄 Refresh</button>
+      </div>
+      <div id="chat-rooms-list"><div class="chat-empty-inbox"><div style="font-size:48px;margin-bottom:12px">💬</div><p>No guest messages yet</p></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT WINDOW (full screen overlay) -->
+<div class="chat-window" id="chat-window">
+  <div class="chat-win-header">
+    <button class="chat-win-back" onclick="closeChatWindow()">←</button>
+    <div>
+      <div class="chat-win-title" id="chat-win-title">Room Chat</div>
+      <div class="chat-win-room" id="chat-win-room">Guest</div>
+    </div>
+  </div>
+  <div class="chat-win-messages" id="chat-win-messages"></div>
+  <div class="chat-win-input-area">
+    <input class="chat-win-input" id="chat-win-input" placeholder="Reply to guest..." onkeydown="if(event.key==='Enter')sendStaffReply()">
+    <button class="chat-win-send" onclick="sendStaffReply()">→</button>
   </div>
 </div>
 
 <script>
-var pin = '';
-var loggedInStaff = '';
-var currentHotelId = '';
-var currentFilter = 'all';
-var knownRequestIds = null;
-var allHotels = [];
-var refreshInterval = null;
+var pin='', loggedInStaff='', loggedInStaffDbId=null, isOnDuty=false;
+var currentHotelId='', currentFilter='all', knownRequestIds=null;
+var refreshInterval=null, audioCtx=null, pendingClaimId=null;
+var staffDepartment = '';
+var activeChatRoom = null;
+var chatWindowInterval = null;
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(function(){});
-if ('Notification' in window) Notification.requestPermission();
 
-function loadAllHotels() {
-  fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
-    allHotels = hotels;
-    var select = document.getElementById('hotel-select');
-    select.innerHTML = hotels.map(function(h){
-      return '<option value="'+h.hotel_id+'">'+(h.emoji||'🏨')+' '+h.name+' — '+(h.city||'')+'</option>';
-    }).join('');
-    if (hotels.length > 0) { currentHotelId = hotels[0].hotel_id; applyBranding(hotels[0]); }
-  }).catch(function(){
-    document.getElementById('login-hotel-sub').textContent = 'Staff Portal';
-  });
-}
-
-function applyBranding(hotel) {
-  var color = hotel.colour || '#0a9396';
-  document.getElementById('login-emoji').textContent = hotel.emoji || '🏨';
-  document.getElementById('login-hotel-name').textContent = hotel.name;
-  document.getElementById('login-hotel-sub').textContent = (hotel.city||'') + ' · Staff Portal';
-  document.getElementById('login-screen').style.background = 'linear-gradient(160deg, '+color+'dd, '+color+'88)';
-}
-
-function switchHotel(hotelId) {
-  currentHotelId = hotelId;
-  var hotel = allHotels.find(function(h){return h.hotel_id===hotelId;});
-  if (hotel) applyBranding(hotel);
-}
-
-function addPin(num) { if (pin.length < 4) { pin += num; updateDots(); } }
-function deletePin() { pin = pin.slice(0,-1); updateDots(); }
-function clearPin() { pin = ''; updateDots(); }
-function updateDots() {
-  for (var i=0;i<4;i++) document.getElementById('dot-'+i).classList.toggle('filled', i<pin.length);
-}
-
-function doLogin() {
-  var name = document.getElementById('staff-name').value.trim();
-  if (!name) { showLoginErr('Please enter your name.'); return; }
-  if (!currentHotelId) { showLoginErr('Please select a hotel.'); return; }
-  if (pin.length !== 4) { showLoginErr('Please enter your 4-digit PIN.'); return; }
-
-  var btn = document.querySelector('.login-btn');
-  btn.textContent = 'Verifying...';
-  btn.disabled = true;
-
-  fetch('/staff/verify', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({hotel_id: currentHotelId, name: name, pin: pin})
-  }).then(function(r){return r.json().then(function(d){return {ok:r.ok,d:d};});})
-  .then(function(res){
-    btn.textContent = 'Login to Dashboard';
-    btn.disabled = false;
-    if (!res.ok) { showLoginErr(res.d.error || 'Invalid name or PIN.'); clearPin(); return; }
-    loggedInStaff = name;
-    document.getElementById('login-error').style.display = 'none';
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('dashboard-screen').style.display = 'block';
-    document.getElementById('dash-staff').textContent = '👋 ' + name;
-    var hotel = allHotels.find(function(h){return h.hotel_id===currentHotelId;});
-    if (hotel) {
-      var color = hotel.colour || '#0a9396';
-      document.getElementById('dash-hotel').textContent = (hotel.emoji||'🏨')+' '+hotel.name;
-      document.getElementById('dash-header').style.background = 'linear-gradient(90deg, '+color+'dd, '+color+'88)';
+window.addEventListener('load', function(){
+  try {
+    var saved = localStorage.getItem('welco_staff_session');
+    if (saved) {
+      var s = JSON.parse(saved);
+      var age = Date.now() - (s.savedAt || 0);
+      if (age < 12 * 60 * 60 * 1000) {
+        currentHotelId = s.hotel_id; loggedInStaff = s.name; loggedInStaffDbId = s.id;
+        isOnDuty = !!s.is_on_duty; staffDepartment = s.department || '';
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('dashboard-screen').style.display = 'block';
+        document.getElementById('dash-staff').textContent = '👋 ' + s.name + (s.department ? ' · ' + s.department : '');
+        updateDutyUI();
+        fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
+          var h = hotels.find(function(x){return x.hotel_id===currentHotelId;})||{};
+          applyBranding(h);
+        }).catch(function(){applyBranding({});});
+        if (staffDepartment === 'Front Desk') document.getElementById('ft-chat').style.display = '';
+        loadTasks();
+        refreshInterval = setInterval(function(){ loadTasks(); checkUnreadChats(); }, 5000);
+        return;
+      } else { localStorage.removeItem('welco_staff_session'); }
     }
+  } catch(e) { localStorage.removeItem('welco_staff_session'); }
+  if ('Notification' in window && Notification.permission==='default') document.getElementById('notif-prompt').style.display='block';
+});
+
+function enablePush(){ document.getElementById('notif-prompt').style.display='none'; OneSignalDeferred.push(async function(OS){ try{ await OS.Notifications.requestPermission(); showNotifBar(OS.Notifications.permission); }catch(e){} }); }
+function skipPush(){ document.getElementById('notif-prompt').style.display='none'; }
+function showNotifBar(granted){ var b=document.getElementById('notif-status-bar'); if(granted){ b.textContent='🔔 Push notifications ON!'; b.className='notif-status-bar granted'; b.style.display='block'; setTimeout(function(){b.style.display='none';},4000); } else{ b.textContent='🔕 Tap here to enable push notifications'; b.className='notif-status-bar'; b.style.display='block'; } }
+function playChime(){ try{ if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); [523,659,784].forEach(function(f,i){ var o=audioCtx.createOscillator(),g=audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); o.type='sine'; o.frequency.value=f; var t=audioCtx.currentTime+i*0.15; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.35,t+0.05); g.gain.exponentialRampToValueAtTime(0.001,t+0.7); o.start(t); o.stop(t+0.7); }); }catch(e){} }
+function sendPush(title,body){ OneSignalDeferred.push(async function(OS){ try{ if(!OS.Notifications.permission)return; var r=await navigator.serviceWorker.ready; r.showNotification(title,{body:body,icon:'/favicon.ico',vibrate:[200,100,200],tag:'welco-req',renotify:true}); }catch(e){} }); }
+function addPin(n){ if(pin.length<4){pin+=n;updateDots();} }
+function deletePin(){ pin=pin.slice(0,-1);updateDots(); }
+function clearPin(){ pin='';updateDots(); }
+function updateDots(){ for(var i=0;i<4;i++) document.getElementById('dot-'+i).classList.toggle('filled',i<pin.length); }
+
+function doLogin(){
+  var sid=document.getElementById('staff-id-input').value.trim().toUpperCase();
+  var btn=document.getElementById('login-btn');
+  if(!sid){showLoginErr('Please enter your Staff ID.');return;}
+  if(pin.length!==4){showLoginErr('Please enter your 4-digit PIN.');return;}
+  attemptLogin(sid,pin,btn,1);
+}
+
+function attemptLogin(sid,pinVal,btn,attempt){
+  var msgs=['Verifying…','Server waking up… (30s)','Almost there…'];
+  btn.textContent=msgs[Math.min(attempt-1,msgs.length-1)]; btn.disabled=true;
+  var ctrl=new AbortController(), tid=setTimeout(function(){ctrl.abort();},70000);
+  fetch('/staff/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({staff_id:sid,pin:pinVal}),signal:ctrl.signal})
+  .then(function(r){clearTimeout(tid);return r.json().then(function(d){return{ok:r.ok,d:d};});})
+  .then(function(res){
+    btn.textContent='Login to Dashboard'; btn.disabled=false;
+    if(!res.ok){showLoginErr(res.d.error||'Invalid Staff ID or PIN.');clearPin();return;}
+    var s=res.d.staff;
+    currentHotelId=s.hotel_id; loggedInStaff=s.name; loggedInStaffDbId=s.id; isOnDuty=!!s.is_on_duty; staffDepartment=s.department||'';
+    localStorage.setItem('welco_staff_session', JSON.stringify({ hotel_id:s.hotel_id, name:s.name, id:s.id, is_on_duty:!!s.is_on_duty, department:s.department||'', staff_id:s.staff_id||'', savedAt:Date.now() }));
+    if (res.d.token) localStorage.setItem('welco_token', res.d.token);
+    fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
+      var h=hotels.find(function(x){return x.hotel_id===currentHotelId;})||{}; applyBranding(h);
+    }).catch(function(){applyBranding({});});
+    document.getElementById('login-error').style.display='none';
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('dashboard-screen').style.display='block';
+    document.getElementById('dash-staff').textContent='👋 '+s.name+(s.department?' · '+s.department:'');
+    // Show chat tab for Front Desk staff
+    if (staffDepartment === 'Front Desk') document.getElementById('ft-chat').style.display = '';
+    updateDutyUI();
+    try{audioCtx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}
+    OneSignalDeferred.push(async function(OS){if(!OS.Notifications.permission)showNotifBar(false);});
     loadTasks();
-    refreshInterval = setInterval(loadTasks, 5000);
-  }).catch(function(){
-    btn.textContent = 'Login to Dashboard';
-    btn.disabled = false;
-    showLoginErr('Connection error. Try again.');
+    refreshInterval = setInterval(function(){ loadTasks(); checkUnreadChats(); }, 5000);
+  })
+  .catch(function(){
+    clearTimeout(tid);
+    if(attempt<3){setTimeout(function(){attemptLogin(sid,pinVal,btn,attempt+1);},5000);}
+    else{btn.textContent='Login to Dashboard';btn.disabled=false;showLoginErr('Server taking too long. Wait 1 min and try again.');}
   });
 }
 
-function showLoginErr(msg) {
-  var el = document.getElementById('login-error');
-  el.textContent = msg; el.style.display = 'block';
+function applyBranding(hotel){
+  var c=hotel.colour||'#0a9396';
+  document.getElementById('dash-header').style.background='linear-gradient(90deg,'+c+'dd,'+c+'88)';
+  if(hotel.logo_url){ document.body.style.backgroundImage='url('+hotel.logo_url+')'; document.body.style.backgroundSize='cover'; document.body.style.backgroundPosition='center'; document.body.style.backgroundAttachment='fixed'; }
+  else { document.body.style.backgroundImage="url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80')"; document.body.style.backgroundSize='cover'; document.body.style.backgroundPosition='center'; document.body.style.backgroundAttachment='fixed'; }
+  if(hotel.logo_url){ document.getElementById('dash-header-logo').src=hotel.logo_url; document.getElementById('dash-header-logo').style.display='block'; document.getElementById('dash-header-emoji').style.display='none'; }
+  else { document.getElementById('dash-header-logo').style.display='none'; document.getElementById('dash-header-emoji').style.display='inline'; document.getElementById('dash-header-emoji').textContent=hotel.emoji||'🏨'; }
+  document.getElementById('dash-hotel').textContent=hotel.name||'Hotel';
+  fetch('/announcements?hotel_id='+currentHotelId).then(function(r){return r.json();}).then(function(data){
+    if(Array.isArray(data)){var a=data.find(function(x){return x.is_active;});if(a){document.getElementById('staff-announcement-text').textContent=a.message;document.getElementById('staff-announcement').style.display='block';}}
+  }).catch(function(){});
 }
 
-function doLogout() {
-  clearInterval(refreshInterval);
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('dashboard-screen').style.display = 'none';
-  pin = ''; clearPin();
-  document.getElementById('staff-name').value = '';
-  knownRequestIds = null;
+function updateDutyUI(){
+  var bar=document.getElementById('duty-bar'),dot=document.getElementById('duty-dot');
+  var lbl=document.getElementById('duty-label'),sub=document.getElementById('duty-sub'),btn=document.getElementById('clock-btn');
+  if(isOnDuty){ bar.className='duty-bar on-duty'; dot.className='duty-dot on'; lbl.className='duty-label on'; lbl.textContent='🟢 On Duty'; sub.textContent='You will receive push notifications'; btn.className='clock-btn out'; btn.textContent='Clock Out'; }
+  else { bar.className='duty-bar off-duty'; dot.className='duty-dot off'; lbl.className='duty-label off'; lbl.textContent='🔴 Off Duty'; sub.textContent='Clock in to receive push notifications'; btn.className='clock-btn in'; btn.textContent='Clock In'; }
 }
 
-function setFilter(f) {
-  currentFilter = f;
-  document.querySelectorAll('.filter-tab').forEach(function(t,i){
-    t.classList.toggle('active', ['all','pending','in_progress','done'][i]===f);
-  });
-  loadTasks();
+function toggleDuty(){
+  var newStatus=!isOnDuty;
+  authFetch('/staff/'+loggedInStaffDbId+'/duty',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({is_on_duty:newStatus})})
+  .then(function(r){return r.json();}).then(function(d){
+    if(d.error){alert(d.error);return;}
+    isOnDuty=newStatus; updateDutyUI(); if(isOnDuty) showNotifBar(true);
+    try { var saved=JSON.parse(localStorage.getItem('welco_staff_session')||'{}'); saved.is_on_duty=newStatus; saved.savedAt=Date.now(); localStorage.setItem('welco_staff_session',JSON.stringify(saved)); } catch(e) {}
+  }).catch(function(){alert('Connection error. Try again.');});
 }
 
-function checkNewRequests(data) {
-  var currentIds = data.map(function(r){return r.id;}).join(',');
-  if (knownRequestIds === null) { knownRequestIds = currentIds; return; }
-  if (currentIds !== knownRequestIds) {
-    data.forEach(function(r){
-      if (r.status==='pending' && !knownRequestIds.includes(String(r.id)) && Notification.permission==='granted') {
-        new Notification('🔔 New Request', {
-          body: 'Room '+(r.room_number||'?')+': '+(r.category||'')+' — '+(r.message||''),
-          icon: 'https://cdn-icons-png.flaticon.com/512/1257/1257163.png'
-        });
-      }
-    });
-    knownRequestIds = currentIds;
+function authFetch(url, options) {
+  options = options || {}; options.headers = options.headers || {};
+  var token = localStorage.getItem('welco_token');
+  if (token) options.headers['Authorization'] = 'Bearer ' + token;
+  return fetch(url, options);
+}
+
+function doLogout(){
+  clearInterval(refreshInterval); clearInterval(chatWindowInterval);
+  localStorage.removeItem('welco_staff_session'); localStorage.removeItem('welco_token');
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('dashboard-screen').style.display='none';
+  document.getElementById('notif-status-bar').style.display='none';
+  document.body.style.backgroundImage="url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80')";
+  pin='';clearPin();document.getElementById('staff-id-input').value='';
+  knownRequestIds=null;currentHotelId='';loggedInStaffDbId=null;isOnDuty=false;staffDepartment='';
+}
+
+function setFilter(f){
+  currentFilter=f;
+  document.querySelectorAll('.filter-tab').forEach(function(t){ t.classList.remove('active'); });
+  document.getElementById('ft-'+f).classList.add('active');
+  if (f === 'chat') {
+    document.getElementById('requests-panel').style.display = 'none';
+    document.getElementById('chat-panel').style.display = 'block';
+    loadChatInbox();
+  } else {
+    document.getElementById('requests-panel').style.display = 'block';
+    document.getElementById('chat-panel').style.display = 'none';
+    loadTasks();
   }
 }
 
-function loadTasks() {
+function checkNewRequests(data){
+  var ids=data.map(function(r){return r.id;}).join(',');
+  if(knownRequestIds===null){knownRequestIds=ids;return;}
+  if(ids!==knownRequestIds){
+    var newOnes=data.filter(function(r){return r.status==='pending'&&!knownRequestIds.includes(String(r.id));});
+    if(newOnes.length>0&&isOnDuty){ playChime(); newOnes.forEach(function(r){sendPush('🔔 New Request — Room '+(r.room_number||'?'),(r.category||'General')+': '+(r.message||'No details'));}); }
+    knownRequestIds=ids;
+  }
+}
+
+async function checkUnreadChats(){
+  if (staffDepartment !== 'Front Desk') return;
+  try {
+    var res = await fetch('/chat/unread?hotel_id=' + currentHotelId);
+    var unread = await res.json();
+    var badge = document.getElementById('chat-unread-badge');
+    if (unread.length > 0) { badge.textContent = unread.length; badge.style.display = 'inline'; playChime(); }
+    else { badge.style.display = 'none'; }
+  } catch(e) {}
+}
+
+function loadTasks(){
   fetch('/requests?hotel_id='+currentHotelId).then(function(r){return r.json();}).then(function(data){
-    if (!Array.isArray(data)) return;
-    var pending = data.filter(function(r){return r.status==='pending';}).length;
-    var badge = document.getElementById('pending-count');
-    badge.textContent = pending+' pending';
-    badge.className = 'notif-badge'+(pending===0?' zero':'');
+    if(!Array.isArray(data))return;
+    var pending=data.filter(function(r){return r.status==='pending';}).length;
+    var badge=document.getElementById('pending-count');
+    badge.textContent=pending+' pending'; badge.className='notif-badge'+(pending===0?' zero':'');
     checkNewRequests(data);
-    var filtered = currentFilter==='all' ? data : data.filter(function(r){return r.status===currentFilter;});
-    var list = document.getElementById('task-list');
-    if (filtered.length===0) {
-      list.innerHTML = '<div class="empty-state"><div class="icon">🎉</div><p>'+(currentFilter==='all'?'No requests yet!':'No '+currentFilter.replace('_',' ')+' requests')+'</p></div>';
-      return;
-    }
-    list.innerHTML = filtered.map(function(r){
-      var SLA=15;
-      var elapsed=(Date.now()-new Date(r.created_at).getTime())/60000;
-      var remaining=Math.max(0,SLA-elapsed);
-      var pct=Math.max(0,(remaining/SLA)*100);
-      var mins=Math.floor(remaining);
-      var secs=Math.floor((remaining-mins)*60);
-      var timerClass=pct>50?'':pct>25?'warning':'urgent';
-      var cardClass=r.status==='done'?'done':r.status==='in_progress'?'in-progress':pct===0?'urgent':'';
-      var timeAgo=Math.floor(elapsed)>0?Math.floor(elapsed)+'m ago':'Just now';
-      var actionsHtml='';
-      if (r.status==='pending') actionsHtml='<button class="btn-accept" onclick="claimTask('+r.id+')">👋 Accept</button>';
-      else if (r.status==='in_progress') actionsHtml='<span class="claimed-badge">✅ '+(r.claimed_by||'Staff')+'</span><button class="btn-done" onclick="markDone('+r.id+')">Mark Done ✓</button>';
-      else actionsHtml='<button class="btn-done" disabled>✅ Completed</button>';
-      return '<div class="task-card '+cardClass+'">'+
-        '<div class="task-top"><span class="task-room">Room '+(r.room_number||'?')+'</span><span class="task-cat">'+(r.category||'General')+'</span></div>'+
-        '<div class="task-msg">'+(r.message||'No details')+'</div>'+
-        '<div class="task-time">🕐 '+timeAgo+'</div>'+
-        (r.status!=='done'?'<div class="task-sla'+(pct<25?' urgent-text':'')+'">⏱ '+mins+'m '+secs+'s remaining</div>'+
-        '<div class="timer-bar"><div class="timer-fill '+timerClass+'" style="width:'+pct+'%"></div></div>':'')+
-        '<div class="task-actions">'+actionsHtml+'</div></div>';
+    var filtered=currentFilter==='all'||currentFilter==='chat'?data:data.filter(function(r){return r.status===currentFilter;});
+    if (currentFilter === 'chat') return;
+    var list=document.getElementById('task-list');
+    if(filtered.length===0){list.innerHTML='<div class="empty-state"><div class="icon">🎉</div><p>'+(currentFilter==='all'?'No requests yet!':'No '+currentFilter.replace('_',' ')+' requests')+'</p></div>';return;}
+    var deptConfig = { 'Housekeeping':{color:'#4361EE',bg:'#eef0fd',emoji:'🛏️'}, 'Room Service':{color:'#F77F00',bg:'#fff3e0',emoji:'🍽️'}, 'Maintenance':{color:'#e63946',bg:'#fde8ea',emoji:'🔧'}, 'Front Desk':{color:'#9B5DE5',bg:'#f3eefe',emoji:'🛎️'}, 'General':{color:'#0a9396',bg:'#e8f4f4',emoji:'👤'} };
+    list.innerHTML=filtered.map(function(r){
+      var SLA=r.sla_minutes||15,elapsed=(Date.now()-new Date(r.created_at).getTime())/60000;
+      var remaining=Math.max(0,SLA-elapsed),pct=Math.max(0,(remaining/SLA)*100);
+      var mins=Math.floor(remaining),secs=Math.floor((remaining-mins)*60);
+      var tc=pct>50?'':pct>25?'warning':'urgent';
+      var isDone=r.status==='done'; var isUrgent=pct===0&&!isDone;
+      var ta=Math.floor(elapsed)>0?Math.floor(elapsed)+'m ago':'Just now';
+      var dept=deptConfig[r.category]||deptConfig['General'];
+      var act='';
+      if(r.status==='pending') act='<button class="btn-accept" onclick="claimTask('+r.id+')" style="background:'+dept.color+'">👋 Accept</button>';
+      else if(r.status==='in_progress') act='<span class="claimed-badge">✅ '+(r.claimed_by||'Staff')+'</span><button class="btn-done" onclick="markDone('+r.id+',\''+encodeURIComponent(r.message||'')+'\')" >Mark Done ✓</button>';
+      else act='<button class="btn-done" disabled>✅ Completed</button>';
+      return '<div class="task-card" style="border-left:4px solid '+dept.color+';background:'+dept.bg+(isDone?';opacity:0.65':'')+'">'
+        +'<div class="task-top"><span class="task-room">Room '+(r.room_number||'?')+'</span><span class="task-cat" style="background:'+dept.color+'">'+dept.emoji+' '+(r.category||'General')+'</span></div>'
+        +'<div class="task-msg">'+(r.message||'No details')+'</div>'
+        +'<div class="task-time">🕐 '+ta+'</div>'
+        +(r.status!=='done'?'<div class="task-sla'+(pct<25?' urgent-text':'')+'">⏱ '+mins+'m '+secs+'s remaining</div><div class="timer-bar"><div class="timer-fill '+tc+'" style="width:'+pct+'%"></div></div>':'')
+        +'<div class="task-actions">'+act+'</div></div>';
     }).join('');
   }).catch(function(){});
 }
 
-function claimTask(id) {
-  fetch('/requests/'+id+'/claim',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({claimed_by:loggedInStaff})})
-    .then(function(r){return r.json();}).then(function(data){
-      if (data.error) { alert('Error: '+data.error); return; }
-      loadTasks();
-    }).catch(function(){ alert('Connection error'); });
+function claimTask(id){ if(!isOnDuty){ pendingClaimId=id; document.getElementById('offduty-modal').classList.add('open'); return; } doClaimTask(id); }
+function cancelClaim(){ pendingClaimId=null; document.getElementById('offduty-modal').classList.remove('open'); }
+function confirmClaim(){ document.getElementById('offduty-modal').classList.remove('open'); if(pendingClaimId!==null){doClaimTask(pendingClaimId);pendingClaimId=null;} }
+function doClaimTask(id){ authFetch('/requests/'+id+'/claim',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({claimed_by:loggedInStaff})}).then(function(r){return r.json();}).then(function(d){if(d.error){alert('Error: '+d.error);return;}loadTasks();}).catch(function(){alert('Connection error');}); }
+
+function markDone(id, msgEncoded) {
+  var msg = decodeURIComponent(msgEncoded);
+  authFetch('/requests/'+id+'/complete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})}).then(function(){
+    loadTasks();
+    if (msg) showAISuggestion(msg);
+  });
 }
 
-function markDone(id) {
-  fetch('/requests/'+id+'/complete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})})
-    .then(function(){ loadTasks(); });
+function showAISuggestion(requestMsg) {
+  fetch('/ai/suggest-response', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ request_message:requestMsg, staff_name:loggedInStaff, hotel_name:currentHotelId, department:'Hotel Staff' }) })
+  .then(function(r){ return r.json(); }).then(function(data) {
+    if (!data.suggestions || !data.suggestions.length) return;
+    var toast = document.createElement('div');
+    toast.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#0d1b1e;color:white;border-radius:16px;padding:16px 20px;z-index:999;width:90%;max-width:360px;box-shadow:0 8px 32px rgba(0,0,0,.3)';
+    toast.innerHTML = '<div style="font-size:11px;color:#0a9396;font-weight:700;margin-bottom:8px;text-transform:uppercase;letter-spacing:.1em">✨ AI Suggested Reply</div>'
+      + data.suggestions.slice(0,2).map(function(s){ return '<div onclick="copyReply(\''+s.replace(/'/g,'\\\'')+'\')" style="background:rgba(255,255,255,.08);border-radius:8px;padding:8px 12px;margin-bottom:6px;font-size:13px;cursor:pointer">'+s+'</div>'; }).join('')
+      + '<button onclick="this.parentElement.remove()" style="width:100%;padding:8px;background:rgba(255,255,255,.1);color:white;border:none;border-radius:8px;margin-top:4px;cursor:pointer;font-size:12px">Dismiss</button>';
+    document.body.appendChild(toast);
+    setTimeout(function(){ if(toast.parentElement) toast.remove(); }, 8000);
+  }).catch(function(){});
 }
 
-loadAllHotels();
+function copyReply(text) { if(navigator.clipboard){ navigator.clipboard.writeText(text).then(function(){ alert('✅ Copied!'); }); } else { alert('Reply: '+text); } }
+function showLoginErr(msg){ var e=document.getElementById('login-error'); e.textContent=msg; e.style.display='block'; }
+
+// ── CHAT INBOX ──
+async function loadChatInbox() {
+  if (!currentHotelId) return;
+  try {
+    var res = await fetch('/chat?hotel_id=' + currentHotelId);
+    var allChats = await res.json();
+    // Group by room_number
+    var rooms = {};
+    allChats.forEach(function(m){
+      var room = m.room_number || '?';
+      if (!rooms[room]) rooms[room] = { messages:[], unread:0 };
+      rooms[room].messages.push(m);
+      if (m.sender === 'guest' && !m.is_read) rooms[room].unread++;
+    });
+
+    var el = document.getElementById('chat-rooms-list');
+    var keys = Object.keys(rooms);
+    if (keys.length === 0) { el.innerHTML = '<div class="chat-empty-inbox"><div style="font-size:48px;margin-bottom:12px">💬</div><p>No guest messages yet</p></div>'; return; }
+
+    // Sort by latest message
+    keys.sort(function(a,b){
+      var la = rooms[a].messages[rooms[a].messages.length-1].created_at;
+      var lb = rooms[b].messages[rooms[b].messages.length-1].created_at;
+      return new Date(lb) - new Date(la);
+    });
+
+    el.innerHTML = keys.map(function(room){
+      var data = rooms[room];
+      var last = data.messages[data.messages.length-1];
+      var time = new Date(last.created_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+      var preview = (last.sender==='guest'?'Guest: ':loggedInStaff+': ') + last.message.substring(0,40) + (last.message.length>40?'...':'');
+      return '<div class="chat-room-card" onclick="openChatWindow(\''+room+'\')">'
+        + '<div class="chat-room-avatar">'+room+'</div>'
+        + '<div class="chat-room-info">'
+        + '<div class="chat-room-name">Room '+room+'</div>'
+        + '<div class="chat-room-preview">'+preview+'</div>'
+        + '</div>'
+        + '<div class="chat-room-meta">'
+        + '<div class="chat-room-time">'+time+'</div>'
+        + (data.unread>0?'<div class="chat-room-unread">'+data.unread+' new</div>':'')
+        + '</div></div>';
+    }).join('');
+
+    // Update badge
+    var totalUnread = keys.reduce(function(s,k){ return s + rooms[k].unread; }, 0);
+    var badge = document.getElementById('chat-unread-badge');
+    if (totalUnread > 0) { badge.textContent = totalUnread; badge.style.display = 'inline'; }
+    else { badge.style.display = 'none'; }
+  } catch(e) {}
+}
+
+function openChatWindow(room) {
+  activeChatRoom = room;
+  document.getElementById('chat-win-title').textContent = 'Room ' + room;
+  document.getElementById('chat-win-room').textContent = 'Guest Chat';
+  document.getElementById('chat-window').classList.add('open');
+  loadChatWindow();
+  clearInterval(chatWindowInterval);
+  chatWindowInterval = setInterval(loadChatWindow, 3000);
+}
+
+function closeChatWindow() {
+  document.getElementById('chat-window').classList.remove('open');
+  clearInterval(chatWindowInterval);
+  activeChatRoom = null;
+  loadChatInbox();
+}
+
+async function loadChatWindow() {
+  if (!activeChatRoom) return;
+  try {
+    var res = await fetch('/chat?hotel_id='+currentHotelId+'&room_number='+activeChatRoom);
+    var messages = await res.json();
+    var el = document.getElementById('chat-win-messages');
+    el.innerHTML = messages.map(function(m){
+      var isGuest = m.sender === 'guest';
+      var time = new Date(m.created_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+      return '<div class="chat-win-msg '+(isGuest?'guest':'staff-msg')+'">'
+        + m.message
+        + '<div class="chat-win-msg-meta">'+(isGuest?'Guest':'You')+' · '+time+'</div>'
+        + '</div>';
+    }).join('');
+    el.scrollTop = el.scrollHeight;
+    // Mark guest messages as read
+    messages.filter(function(m){ return m.sender==='guest' && !m.is_read; }).forEach(async function(m){
+      await fetch('/chat/'+m.id+'/read', { method:'POST' });
+    });
+  } catch(e) {}
+}
+
+async function sendStaffReply() {
+  var input = document.getElementById('chat-win-input');
+  var text = input.value.trim(); if (!text || !activeChatRoom) return;
+  input.value = '';
+  try {
+    await fetch('/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ hotel_id:currentHotelId, room_number:activeChatRoom, message:text, sender:'staff' }) });
+    loadChatWindow();
+  } catch(e) { alert('Could not send message.'); }
+}
 </script>
+
+  <div style="text-align:center;padding:12px;font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:0.05em;background:rgba(0,0,0,0.2)">
+    © 2026 Welco Technologies. All rights reserved.
+  </div>
 </body>
 </html>

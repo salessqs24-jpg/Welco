@@ -633,6 +633,23 @@ app.post('/checkout-feedback', async (req,res) => {
   }
 });
 
+// GET CHECKOUT REVIEWS — for admin panel
+app.get('/checkout-reviews', verifyToken, async (req,res) => {
+  const hotel_id = req.query.hotel_id;
+  if (!hotel_id) return res.status(400).json({ error: 'hotel_id required.' });
+  try {
+    const { data, error } = await supabase
+      .from('checkout_reviews')
+      .select('*')
+      .eq('hotel_id', hotel_id)
+      .order('created_at', { ascending: false });
+    if (error) return res.status(500).json({ error: error.message });
+    res.json(data || []);
+  } catch(e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // ANNOUNCEMENTS
 app.get('/announcements', async (req,res) => {
   let query=supabase.from('announcements').select('*').order('created_at',{ ascending:false });

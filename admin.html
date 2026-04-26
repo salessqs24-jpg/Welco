@@ -2,14 +2,6 @@
   ╔═══════════════════════════════════════════════════════╗
   ║ © 2026 WELCO TECHNOLOGIES ║
   ║ ALL RIGHTS RESERVED ║
-  ║ ║
-  ║ This software is proprietary and confidential. ║
-  ║ Unauthorized copying, modification, distribution, ║
-  ║ or use of this software, via any medium, is ║
-  ║ strictly prohibited without written permission. ║
-  ║ ║
-  ║ Welco® is a registered trademark. ║
-  ║ Patent pending. Protected by copyright law. ║
   ╚═══════════════════════════════════════════════════════╝
 -->
 <!DOCTYPE html>
@@ -17,20 +9,12 @@
 <head>
 
   <script>
-    /* © 2026 Welco™ - Protected Source */
     (function(){
-      var _0x4a2b=function(){};
-      try{
-        var d=new Date();
-        if(d.getFullYear()<2026){}
-      }catch(e){}
-      // Disable right-click
       document.addEventListener('contextmenu',function(e){e.preventDefault();});
-      // Detect devtools open
       var threshold=160;
       setInterval(function(){
         if(window.outerWidth-window.innerWidth>threshold||window.outerHeight-window.innerHeight>threshold){
-          // devtools detected - do nothing but could add protection here
+          document.body.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#1a1a2e;color:white;font-size:20px;font-family:sans-serif;text-align:center;padding:20px"><div><div style="font-size:60px;margin-bottom:20px">🔒</div><div style="font-weight:bold;margin-bottom:10px">© 2026 Welco Technologies</div><div style="font-size:14px;opacity:0.7">Developer tools detected.<br>This software is protected.</div></div></div>';
         }
       },1000);
     })();
@@ -74,18 +58,15 @@
 
     .hotel-switcher { position: relative; display: none; }
     .hotel-switcher-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.35); color: white; padding: 6px 10px 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-family: sans-serif; white-space: nowrap; }
-    .hotel-switcher-btn:hover { background: rgba(255,255,255,0.25); }
     .switcher-arrow { font-size: 10px; opacity: 0.8; transition: transform 0.2s; }
     .hotel-switcher.open .switcher-arrow { transform: rotate(180deg); }
     .hotel-dropdown { position: absolute; top: calc(100% + 8px); right: 0; background: white; border-radius: 14px; box-shadow: 0 8px 30px rgba(0,0,0,0.18); min-width: 220px; z-index: 200; overflow: hidden; display: none; }
     .hotel-switcher.open .hotel-dropdown { display: block; }
     .hotel-dropdown-header { padding: 10px 16px 8px; font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid #f0f0f0; }
     .hotel-dropdown-item { padding: 12px 16px; font-size: 13px; color: #0d1b1e; cursor: pointer; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #f5f5f5; transition: background 0.15s; }
-    .hotel-dropdown-item:last-child { border-bottom: none; }
     .hotel-dropdown-item:hover { background: #f0fafa; }
     .hotel-dropdown-item.active { background: #e8f4f4; font-weight: 700; color: var(--brand); }
     .h-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-    .h-item-text { flex: 1; }
     .h-item-name { font-size: 13px; font-weight: 600; }
     .h-item-city { font-size: 11px; color: #999; margin-top: 1px; }
     .h-check { color: var(--brand); font-size: 14px; margin-left: auto; }
@@ -120,12 +101,6 @@
     .add-row input:focus { border-color: var(--brand2); }
     .btn-add { padding: 10px 18px; background: var(--brand); color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; }
 
-    .staff-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
-    .staff-row:last-child { border-bottom: none; }
-    .staff-name-txt { font-size: 14px; font-weight: 500; }
-    .staff-pin { font-family: monospace; font-size: 16px; font-weight: bold; color: var(--brand2); background: #e8f4f4; padding: 4px 10px; border-radius: 6px; }
-    .btn-remove { background: #fde8ea; color: #e63946; border: none; border-radius: 6px; padding: 4px 10px; font-size: 11px; cursor: pointer; }
-
     .request-row { padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
     .request-row:last-child { border-bottom: none; }
     .req-top { display: flex; justify-content: space-between; margin-bottom: 4px; }
@@ -148,34 +123,16 @@
     .msg-success { background: #d1fae5; color: #065f46; display: block; }
     .msg-error { background: #fde8ea; color: #e63946; display: block; }
 
-    .logo-upload-area { display: flex; align-items: center; gap: 16px; padding: 16px; border: 2px dashed #e0ddd8; border-radius: 12px; margin-bottom: 14px; cursor: pointer; transition: border-color 0.2s; }
+    .logo-upload-area { display: flex; align-items: center; gap: 16px; padding: 16px; border: 2px dashed #e0ddd8; border-radius: 12px; margin-bottom: 14px; cursor: pointer; }
     .logo-upload-area:hover { border-color: var(--brand2); }
     .logo-preview-wrap { width: 64px; height: 64px; border-radius: 12px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 30px; overflow: hidden; flex-shrink: 0; border: 1px solid #e0e0e0; }
     .logo-preview-wrap img { width: 100%; height: 100%; object-fit: cover; }
-    .logo-upload-text { flex: 1; }
     .logo-upload-text strong { display: block; font-size: 13px; color: #333; margin-bottom: 4px; }
     .logo-upload-text span { font-size: 11px; color: #aaa; }
     .logo-upload-btn { padding: 8px 14px; background: var(--brand); color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; white-space: nowrap; }
     .logo-remove-btn { padding: 6px 10px; background: #fde8ea; color: #e63946; border: none; border-radius: 8px; font-size: 11px; cursor: pointer; margin-top: 6px; display: none; }
     #logo-file-input { display: none; }
     .logo-size-note { font-size: 11px; color: #aaa; margin-top: -8px; margin-bottom: 14px; }
-
-    .ann-compose { display: flex; gap: 8px; flex-direction: column; }
-    .ann-compose textarea { width: 100%; padding: 12px 14px; border: 1.5px solid #e0ddd8; border-radius: 10px; font-size: 14px; resize: none; height: 80px; font-family: sans-serif; outline: none; }
-    .ann-compose textarea:focus { border-color: var(--brand2); }
-    .ann-compose-row { display: flex; gap: 8px; }
-    .btn-post { flex: 1; padding: 12px; background: #ee9b00; color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; }
-    .ann-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid #f0f0f0; gap: 10px; }
-    .ann-row:last-child { border-bottom: none; }
-    .ann-msg { font-size: 14px; color: #333; line-height: 1.5; flex: 1; }
-    .ann-meta { font-size: 11px; color: #aaa; margin-top: 4px; }
-    .ann-active-badge { display: inline-block; background: #d1fae5; color: #065f46; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 500; }
-    .ann-inactive-badge { display: inline-block; background: #f0f0f0; color: #999; padding: 2px 8px; border-radius: 10px; font-size: 11px; }
-    .ann-actions { display: flex; gap: 6px; flex-shrink: 0; }
-    .btn-toggle-on { padding: 5px 10px; background: #d1fae5; color: #065f46; border: none; border-radius: 6px; font-size: 11px; cursor: pointer; }
-    .btn-toggle-off { padding: 5px 10px; background: #fff3cd; color: #8a6000; border: none; border-radius: 6px; font-size: 11px; cursor: pointer; }
-    .preview-banner { display: flex; align-items: center; gap: 10px; background: linear-gradient(90deg,#ee9b00,#ca6702); color: white; padding: 12px 16px; border-radius: 10px; font-size: 13px; margin-bottom: 16px; }
-    .preview-banner .prev-icon { font-size: 18px; }
 
     .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
     .modal.open { display: flex; }
@@ -185,7 +142,7 @@
     .btn-dl { padding: 10px 20px; background: var(--brand2); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; }
     .btn-close { padding: 10px 20px; background: #eee; color: #333; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; }
 
-    /* ── ANALYTICS / REPORTS ── */
+    /* REPORTS */
     .rpt-stat-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin-bottom: 16px; }
     .rpt-stat-box { background: rgba(255,255,255,0.92); border-radius: 12px; padding: 16px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
     .rpt-stat-num { font-size: 28px; font-weight: 700; color: var(--brand2); }
@@ -207,41 +164,16 @@
     .empty { text-align: center; padding: 40px; color: #aaa; font-size: 14px; }
     .loading { text-align: center; padding: 40px; color: #aaa; }
     select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; outline: none; background: white; }
-  
-  /* ── Welco™ Center Watermark ── */
-  body::after {
-    content: '';
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 500px;
-    height: 500px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500'%3E%3Ctext x='50%25' y='50%25' font-family='Georgia, serif' font-size='52' font-weight='bold' fill='%23005f73' fill-opacity='0.045' text-anchor='middle' dominant-baseline='middle' transform='rotate(-20, 250, 250)'%3E%C2%A9 Welco%E2%84%A2%3C/text%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: center;
-    pointer-events: none;
-    z-index: 9998;
-  }
 
+    body::after { content:''; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:500px; height:500px; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500'%3E%3Ctext x='50%25' y='50%25' font-family='Georgia, serif' font-size='52' font-weight='bold' fill='%23005f73' fill-opacity='0.045' text-anchor='middle' dominant-baseline='middle' transform='rotate(-20, 250, 250)'%3E%C2%A9 Welco%E2%84%A2%3C/text%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:center; pointer-events:none; z-index:9998; }
   </style>
 
   <script>(function(){
- var _0x='© 2026 Welco Technologies. All Rights Reserved.';
- console.log('%c'+_0x,'color:#005f73;font-size:14px;font-weight:bold;');
- console.log('%cStop!','color:#e63946;font-size:40px;font-weight:bold;');
- console.log('%cThis is a browser feature for developers. If someone told you to copy-paste something here, it is a scam.','color:#333;font-size:14px;');
- document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
- var threshold = 160;
- setInterval(function(){
- if(window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold){
- document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#1a1a2e;color:white;font-size:20px;font-family:sans-serif;text-align:center;padding:20px">' +
- '<div><div style="font-size:60px;margin-bottom:20px">🔒</div>' +
- '<div style="font-weight:bold;margin-bottom:10px">© 2026 Welco Technologies</div>' +
- '<div style="font-size:14px;opacity:0.7">Developer tools detected.<br>This software is protected.</div></div></div>';
- }
- }, 1000);
- })();</script>
+    var _0x='© 2026 Welco Technologies. All Rights Reserved.';
+    console.log('%c'+_0x,'color:#005f73;font-size:14px;font-weight:bold;');
+    console.log('%cStop!','color:#e63946;font-size:40px;font-weight:bold;');
+    document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+  })();</script>
   <script src="/welco-protect.js"></script>
 </head>
 <body>
@@ -263,7 +195,7 @@
       <a onclick="showForgot()" style="color:#e63946;cursor:pointer;font-weight:500">Forgot password?</a>
     </div>
     <div style="margin-top:16px;padding-top:16px;border-top:1px solid #f0f0f0">
-      <a href="/demo.html" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;background:linear-gradient(135deg,#e8f4f4,#d0f0f0);color:#005f73;border:1.5px solid #0a9396;border-radius:12px;font-size:14px;font-weight:700;text-decoration:none;transition:all .2s" onmouseover="this.style.background='linear-gradient(135deg,#d0f0f0,#b8e8e8)'" onmouseout="this.style.background='linear-gradient(135deg,#e8f4f4,#d0f0f0)'">
+      <a href="/demo.html" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;background:linear-gradient(135deg,#e8f4f4,#d0f0f0);color:#005f73;border:1.5px solid #0a9396;border-radius:12px;font-size:14px;font-weight:700;text-decoration:none">
         🎮 Try Live Demo — No Signup Needed
       </a>
     </div>
@@ -306,11 +238,9 @@
 
 <!-- APP SCREEN -->
 <div id="app-screen">
-  <!-- DEMO MODE BANNER -->
   <div id="demo-banner" style="display:none;background:linear-gradient(90deg,#ee9b00,#ca6702);color:#0d1b1e;padding:10px 20px;font-size:13px;font-weight:700;text-align:center;position:sticky;top:0;z-index:60">
     🎮 Demo Mode — Data resets every 24 hours &nbsp;·&nbsp; No real data is saved &nbsp;
     <a href="/signup.html" style="background:rgba(0,0,0,.2);color:#0d1b1e;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;margin-left:8px">Sign Up Free →</a>
-    <button onclick="window.location.href='/demo.html'" style="background:rgba(0,0,0,.15);color:#0d1b1e;border:none;padding:4px 12px;border-radius:20px;font-size:12px;cursor:pointer;margin-left:6px;font-weight:700">Back to Demo</button>
   </div>
   <div class="topbar">
     <div class="topbar-left">
@@ -341,7 +271,7 @@
     <div class="tab active" onclick="showTab('overview')">📊 Overview</div>
     <div class="tab" onclick="showTab('rooms')">🚪 Rooms</div>
     <div class="tab" onclick="showTab('hod')">🎯 HOD</div>
-    <div class="tab" onclick="showTab('feedback')">⭐ Feedback</div>
+    <div class="tab" onclick="showTab('feedback')">⭐ Reviews</div>
     <div class="tab" onclick="showTab('reports')">📈 Reports</div>
     <div class="tab" onclick="showTab('settings')">⚙️ Settings</div>
   </div>
@@ -376,7 +306,6 @@
         </div>
         <div style="border-top:1px solid #f0f0f0;padding-top:16px">
           <div style="font-size:12px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Bulk Add — Range</div>
-          <div style="font-size:12px;color:#aaa;margin-bottom:10px">Type a range like <strong>101-120</strong> to add multiple rooms at once</div>
           <div class="add-row" style="margin-bottom:8px">
             <input type="text" id="bulk-room-start" placeholder="Start e.g. 101" style="max-width:120px">
             <span style="padding:10px 4px;color:#aaa;font-size:18px">—</span>
@@ -387,18 +316,16 @@
           <div class="msg-box" id="bulk-msg"></div>
         </div>
       </div>
-      <!-- BULK QR DOWNLOAD -->
       <div class="card" style="border:2px solid #0a9396">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
           <div>
             <div class="card-title">📥 Bulk QR Download</div>
-            <div class="card-sub" style="margin-bottom:0">Download QR codes for all rooms at once as a printable PDF</div>
+            <div class="card-sub" style="margin-bottom:0">Download QR codes for all rooms as a printable PDF</div>
           </div>
           <button onclick="downloadAllQRs(this)" style="padding:12px 22px;background:linear-gradient(135deg,#005f73,#0a9396);color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">📥 Download All QRs</button>
         </div>
         <div id="bulk-qr-msg" style="display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:13px"></div>
       </div>
-
       <div class="card">
         <div class="card-title">All Rooms</div>
         <div class="card-sub" id="rooms-count">Loading...</div>
@@ -447,7 +374,7 @@
       </div>
     </div>
 
-    <!-- FEEDBACK -->
+    <!-- ══ CHECKOUT REVIEWS (replaces old Feedback tab) ══ -->
     <div class="tab-panel" id="panel-feedback">
       <div class="stat-grid" style="grid-template-columns:repeat(4,1fr)">
         <div class="stat-box"><div class="stat-num" id="fb-total">-</div><div class="stat-label">Total Reviews</div></div>
@@ -455,6 +382,7 @@
         <div class="stat-box"><div class="stat-num" id="fb-5star" style="color:#2ecc71">-</div><div class="stat-label">5 Stars</div></div>
         <div class="stat-box"><div class="stat-num" id="fb-low" style="color:#e63946">-</div><div class="stat-label">Below 3 ⚠️</div></div>
       </div>
+
       <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
         <select id="fb-filter-stars" onchange="loadFeedback()">
           <option value="">All Ratings</option>
@@ -466,25 +394,28 @@
         </select>
         <select id="fb-filter-comment" onchange="loadFeedback()">
           <option value="">All Feedback</option>
-          <option value="with">With Comments Only</option>
+          <option value="with">With Reviews Only</option>
           <option value="without">Ratings Only</option>
         </select>
       </div>
+
       <div style="background:linear-gradient(135deg,#e8f4f4,#d0f0f0);border:1.5px solid #0a9396;border-radius:12px;padding:14px 16px;margin-bottom:16px;display:flex;gap:12px;align-items:flex-start">
         <div style="font-size:22px">💡</div>
-        <div><div style="font-size:13px;font-weight:700;color:#005f73;margin-bottom:4px">How to post to Google or TripAdvisor</div><div style="font-size:12px;color:#555;line-height:1.6">Tap <strong>📋 Copy</strong> on any review → open Google Maps or TripAdvisor → paste as owner response.</div></div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:#005f73;margin-bottom:4px">How to post reviews online</div>
+          <div style="font-size:12px;color:#555;line-height:1.6">Tap <strong>Copy</strong> on any review → open Google Maps, MakeMyTrip or TripAdvisor → paste in the review section.</div>
+        </div>
       </div>
+
       <div class="card">
-        <div class="card-title">Guest Reviews</div>
+        <div class="card-title">⭐ Guest Checkout Reviews</div>
         <div class="card-sub" id="fb-subtitle">Loading reviews...</div>
         <div id="feedback-list"><div class="loading">Loading...</div></div>
       </div>
     </div>
 
-    <!-- ══ REPORTS — ANALYTICS DASHBOARD ══ -->
+    <!-- REPORTS -->
     <div class="tab-panel" id="panel-reports">
-
-      <!-- Date range picker -->
       <div class="card" style="border:2px solid #0a9396">
         <div class="card-title">📈 Analytics Dashboard</div>
         <div class="card-sub">Filter by date range or view all time</div>
@@ -502,16 +433,12 @@
           <button onclick="loadReports()" style="padding:10px 18px;background:#005f73;color:white;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">Apply</button>
         </div>
       </div>
-
-      <!-- KPI stats -->
-      <div class="rpt-stat-grid" style="grid-template-columns:repeat(2,1fr)">
+      <div class="rpt-stat-grid">
         <div class="rpt-stat-box"><div class="rpt-stat-num" id="rpt-total">-</div><div class="rpt-stat-label">Total Requests</div></div>
         <div class="rpt-stat-box"><div class="rpt-stat-num" id="rpt-done" style="color:#2ecc71">-</div><div class="rpt-stat-label">Completed</div></div>
         <div class="rpt-stat-box"><div class="rpt-stat-num" id="rpt-pending" style="color:#ee9b00">-</div><div class="rpt-stat-label">Pending</div></div>
         <div class="rpt-stat-box"><div class="rpt-stat-num" id="rpt-rating" style="color:#ee9b00">-</div><div class="rpt-stat-label">Avg Rating</div></div>
       </div>
-
-      <!-- Status donut + Line chart -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
         <div class="card" style="padding:16px">
           <div class="card-title" style="font-size:13px">Request Status</div>
@@ -526,37 +453,27 @@
           <div style="height:150px"><canvas id="rpt-chart-ratings"></canvas></div>
         </div>
       </div>
-
-      <!-- Requests over time -->
       <div class="card">
         <div class="card-title">📅 Requests Over Time</div>
         <div class="card-sub" id="rpt-timeline-sub">Last 14 days</div>
         <div class="chart-wrap"><canvas id="rpt-chart-line"></canvas></div>
       </div>
-
-      <!-- Department breakdown -->
       <div class="card">
         <div class="card-title">🏢 Department Breakdown</div>
         <div class="card-sub">Which department gets the most requests</div>
         <div id="rpt-dept-bars"><div class="loading">Loading...</div></div>
       </div>
-
-      <!-- Top rooms -->
       <div class="card">
         <div class="card-title">🚪 Most Active Rooms</div>
         <div class="card-sub">Rooms with highest request count</div>
         <div id="rpt-top-rooms"><div class="loading">Loading...</div></div>
       </div>
-
-      <!-- Download -->
       <div class="card" style="border:2px solid #0a9396">
         <div class="card-title">📥 Download Report</div>
         <div class="card-sub">Download the filtered data as CSV</div>
         <button onclick="downloadRptCSV()" style="width:100%;padding:13px;background:#005f73;color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer">📄 Download CSV</button>
         <div id="rpt-dl-msg" style="font-size:12px;color:#aaa;text-align:center;margin-top:8px"></div>
       </div>
-
-      <!-- AI ANALYTICS -->
       <div class="card" style="border:2px solid #667eea;background:linear-gradient(135deg,#f8f7ff,#f0f0ff)">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
           <span style="font-size:24px">✨</span>
@@ -577,7 +494,6 @@
         </div>
         <div id="ai-answer" style="display:none;background:white;border-radius:12px;padding:16px;font-size:14px;color:#0d1b1e;line-height:1.7;border:1px solid #e0e0ff"></div>
       </div>
-
     </div>
 
     <!-- SETTINGS -->
@@ -600,14 +516,14 @@
           <div style="background:#f0fdf9;border:1.5px solid #b2e8e8;border-radius:12px;padding:14px;margin-bottom:10px">
             <div style="font-size:12px;color:#005f73;margin-bottom:10px;font-weight:600">📸 Upload up to 5 photos — they rotate every 5 seconds in guest portal</div>
             <div id="photo-urls-list" style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px"></div>
-            <div onclick="document.getElementById('slideshow-file-input').click()" style="border:2px dashed #b2e8e8;border-radius:10px;padding:16px;text-align:center;cursor:pointer;background:white;transition:all .2s" onmouseover="this.style.borderColor='#0a9396'" onmouseout="this.style.borderColor='#b2e8e8'">
+            <div onclick="document.getElementById('slideshow-file-input').click()" style="border:2px dashed #b2e8e8;border-radius:10px;padding:16px;text-align:center;cursor:pointer;background:white">
               <div style="font-size:24px;margin-bottom:6px">📷</div>
               <div style="font-size:13px;font-weight:600;color:#005f73">Click to upload photos</div>
-              <div style="font-size:11px;color:#aaa;margin-top:4px">JPG, PNG or WebP · Max 5 photos · Auto compressed</div>
+              <div style="font-size:11px;color:#aaa;margin-top:4px">JPG, PNG or WebP · Max 5 photos</div>
             </div>
             <input type="file" id="slideshow-file-input" accept="image/jpeg,image/png,image/webp" multiple style="display:none" onchange="handleSlideshowUpload(event)">
           </div>
-          <label style="margin-top:6px">Hotel Photo (Single / Logo)</label>
+          <label style="margin-top:6px">Hotel Logo / Single Photo</label>
           <div class="logo-upload-area" onclick="document.getElementById('logo-file-input').click()">
             <div class="logo-preview-wrap" id="logo-preview-wrap">
               <img id="logo-preview-img" src="" alt="" style="display:none">
@@ -622,15 +538,14 @@
           <button class="logo-remove-btn" id="logo-remove-btn" onclick="removeLogo()">✕ Remove photo</button>
           <p class="logo-size-note" id="logo-size-note"></p>
           <input type="file" id="logo-file-input" accept="image/jpeg,image/png,image/webp" onchange="handleLogoUpload(event)">
-
-                    <button class="save-btn" onclick="saveSettings()" style="margin-top:4px">Save Changes</button>
+          <button class="save-btn" onclick="saveSettings()" style="margin-top:4px">Save Changes</button>
         </div>
       </div>
 
-      <!-- SUBSCRIPTION CARD -->
+      <!-- SUBSCRIPTION -->
       <div class="card" style="border:2px solid #0a9396">
         <div class="card-title">💳 Subscription & Billing</div>
-        <div class="card-sub">Manage your Welco plan and payment details</div>
+        <div class="card-sub">Manage your Welco plan</div>
         <div style="background:#e8f4f4;border-radius:12px;padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
           <div style="font-size:32px">🏆</div>
           <div style="flex:1">
@@ -639,21 +554,10 @@
           </div>
           <div style="background:#d1fae5;color:#065f46;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700">✅ Active</div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
-          <div style="background:#f9f9f9;border-radius:10px;padding:14px;text-align:center;border:1px solid #eee">
-            <div style="font-size:11px;color:#aaa;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Plan</div>
-            <div style="font-size:16px;font-weight:700;color:#0d1b1e">Pro</div>
-          </div>
-          <div style="background:#f9f9f9;border-radius:10px;padding:14px;text-align:center;border:1px solid #eee">
-            <div style="font-size:11px;color:#aaa;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Billing</div>
-            <div style="font-size:16px;font-weight:700;color:#0d1b1e">Monthly</div>
-          </div>
-        </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button onclick="openPaymentModal()" style="flex:1;padding:11px;background:#005f73;color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer">💳 Update Payment Details</button>
-          <button onclick="openCancelModal()" style="flex:1;padding:11px;background:#fff3cd;color:#8a6000;border:1px solid #ffd166;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer">⏸️ Cancel Subscription</button>
+          <button onclick="openPaymentModal()" style="flex:1;padding:11px;background:#005f73;color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer">💳 Update Payment</button>
+          <button onclick="openCancelModal()" style="flex:1;padding:11px;background:#fff3cd;color:#8a6000;border:1px solid #ffd166;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer">⏸️ Cancel</button>
         </div>
-        <div style="font-size:11px;color:#aaa;margin-top:10px;text-align:center">Cancel anytime · No hidden fees · Data kept for 30 days after cancellation</div>
       </div>
 
       <!-- DANGER ZONE -->
@@ -663,904 +567,559 @@
           <div class="card-title" style="color:#e63946;margin-bottom:0">Danger Zone</div>
         </div>
         <div class="card-sub">These actions are permanent and cannot be undone.</div>
-
         <div style="border:1px solid #fde8ea;border-radius:12px;padding:16px;margin-bottom:12px">
           <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
             <div>
               <div style="font-size:14px;font-weight:600;color:#1a1a2e">Delete This Hotel</div>
               <div style="font-size:12px;color:#aaa;margin-top:3px">Permanently removes this hotel, all rooms, staff, and requests.</div>
             </div>
-            <button onclick="openDeleteHotelModal()" style="padding:10px 18px;background:#fde8ea;color:#e63946;border:1px solid #e63946;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">🗑️ Delete Hotel</button>
+            <button onclick="openDeleteHotelModal()" style="padding:10px 18px;background:#fde8ea;color:#e63946;border:1px solid #e63946;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer">🗑️ Delete Hotel</button>
           </div>
         </div>
-
         <div style="border:1px solid #fde8ea;border-radius:12px;padding:16px">
           <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
             <div>
               <div style="font-size:14px;font-weight:600;color:#1a1a2e">Delete My Account</div>
-              <div style="font-size:12px;color:#aaa;margin-top:3px">Permanently deletes your account and all hotels under it. Cannot be recovered.</div>
+              <div style="font-size:12px;color:#aaa;margin-top:3px">Permanently deletes your account and all hotels under it.</div>
             </div>
-            <button onclick="openDeleteAccountModal()" style="padding:10px 18px;background:#e63946;color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">💀 Delete Account</button>
+            <button onclick="openDeleteAccountModal()" style="padding:10px 18px;background:#e63946;color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer">💀 Delete Account</button>
           </div>
         </div>
       </div>
-
     </div>
 
-<!-- ADD HOTEL MODAL -->
-<div class="modal" id="add-hotel-modal">
-  <div class="modal-box" style="max-width:420px;text-align:left;padding:28px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-      <div><div style="font-size:18px;font-weight:700;color:#0d1b1e">🏨 Add New Hotel</div><div style="font-size:12px;color:#aaa;margin-top:3px">Added to your existing account</div></div>
-      <span onclick="closeAddHotelModal()" style="cursor:pointer;font-size:22px;color:#aaa;line-height:1">✕</span>
-    </div>
-    <div class="msg-box" id="add-hotel-msg"></div>
-    <div style="margin-bottom:12px">
-      <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:6px;font-weight:600">Hotel Name</label>
-      <input type="text" id="ah-modal-name" placeholder="Hotel name" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none">
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
-      <div>
-        <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:6px;font-weight:600">City</label>
-        <input type="text" id="ah-modal-city" placeholder="City" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none">
-      </div>
-      <div>
-        <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:6px;font-weight:600">Rooms</label>
-        <input type="number" id="ah-modal-rooms" placeholder="e.g. 20" min="0" max="500" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none">
-      </div>
-    </div>
-    <div style="margin-bottom:20px">
-      <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:6px;font-weight:600">Brand Colour</label>
-      <div style="display:flex;gap:8px;align-items:center">
-        <input type="color" id="ah-modal-colorpicker" value="#005f73" oninput="document.getElementById('ah-modal-colortext').value=this.value" style="width:48px;height:44px;border-radius:8px;border:1.5px solid #e0ddd8;padding:3px;cursor:pointer">
-        <input type="text" id="ah-modal-colortext" value="#005f73" style="flex:1;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none">
-      </div>
-    </div>
-    <button onclick="submitAddHotel(this)" style="width:100%;padding:14px;background:#005f73;color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer">➕ Add Hotel to My Account</button>
-  </div>
-</div>
-
-<!-- PAYMENT MODAL -->
-<div class="modal" id="payment-modal">
-  <div class="modal-box" style="max-width:400px;text-align:left;padding:28px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-      <div><div style="font-size:18px;font-weight:700;color:#0d1b1e">💳 Payment Details</div><div style="font-size:12px;color:#aaa;margin-top:3px">Secure · Encrypted · Cancel anytime</div></div>
-      <span onclick="document.getElementById('payment-modal').classList.remove('open')" style="cursor:pointer;font-size:22px;color:#aaa">✕</span>
-    </div>
-    <div style="background:#e8f4f4;border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:13px;color:#005f73;line-height:1.6">
-      🔒 Payment processed securely via Razorpay. Your card details are never stored on our servers.
-    </div>
-    <div style="margin-bottom:12px">
-      <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px;font-weight:600">Cardholder Name</label>
-      <input type="text" id="pay-name" placeholder="Name on card" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none">
-    </div>
-    <div style="margin-bottom:12px">
-      <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px;font-weight:600">UPI ID or Card</label>
-      <input type="text" id="pay-upi" placeholder="yourname@upi or card number" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none">
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px">
-      <div>
-        <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px;font-weight:600">Plan</label>
-        <select id="pay-plan" style="width:100%;padding:11px 12px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:13px;outline:none;background:white">
-          <option value="basic_monthly">⚡ Basic — ₹1,599/mo</option>
-          <option value="basic_annual">⚡ Basic — ₹1,279/mo (Annual)</option>
-          <option value="pro_monthly" selected>🏆 Pro — ₹2,999/mo</option>
-          <option value="pro_annual">🏆 Pro — ₹2,399/mo (Annual)</option>
-        </select>
-      </div>
-      <div>
-        <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px;font-weight:600">Phone</label>
-        <input type="tel" id="pay-phone" placeholder="+91 9999999999" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none">
+    <!-- ADD HOTEL MODAL -->
+    <div class="modal" id="add-hotel-modal">
+      <div class="modal-box" style="max-width:420px;text-align:left;padding:28px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+          <div><div style="font-size:18px;font-weight:700;color:#0d1b1e">🏨 Add New Hotel</div></div>
+          <span onclick="closeAddHotelModal()" style="cursor:pointer;font-size:22px;color:#aaa">✕</span>
+        </div>
+        <div class="msg-box" id="add-hotel-msg"></div>
+        <div style="margin-bottom:12px">
+          <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:6px;font-weight:600">Hotel Name</label>
+          <input type="text" id="ah-modal-name" placeholder="Hotel name" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+          <div>
+            <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:6px;font-weight:600">City</label>
+            <input type="text" id="ah-modal-city" placeholder="City" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none">
+          </div>
+          <div>
+            <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:6px;font-weight:600">Rooms</label>
+            <input type="number" id="ah-modal-rooms" placeholder="e.g. 20" min="0" max="500" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none">
+          </div>
+        </div>
+        <div style="margin-bottom:20px">
+          <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:6px;font-weight:600">Brand Colour</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="color" id="ah-modal-colorpicker" value="#005f73" oninput="document.getElementById('ah-modal-colortext').value=this.value" style="width:48px;height:44px;border-radius:8px;border:1.5px solid #e0ddd8;padding:3px;cursor:pointer">
+            <input type="text" id="ah-modal-colortext" value="#005f73" style="flex:1;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none">
+          </div>
+        </div>
+        <button onclick="submitAddHotel(this)" style="width:100%;padding:14px;background:#005f73;color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer">➕ Add Hotel to My Account</button>
       </div>
     </div>
-    <div id="pay-msg" style="display:none;margin-bottom:12px;padding:10px 14px;border-radius:8px;font-size:13px"></div>
-    <button onclick="submitPayment(this)" style="width:100%;padding:14px;background:linear-gradient(135deg,#005f73,#0a9396);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer">💳 Activate Subscription →</button>
-    <div style="font-size:11px;color:#aaa;margin-top:10px;text-align:center">By subscribing you agree to our terms. Cancel anytime from Settings.</div>
-  </div>
-</div>
 
-<!-- CANCEL SUBSCRIPTION MODAL -->
-<div class="modal" id="cancel-modal">
-  <div class="modal-box" style="max-width:340px;padding:28px">
-    <div style="font-size:48px;margin-bottom:16px">⏸️</div>
-    <div style="font-size:18px;font-weight:700;color:#0d1b1e;margin-bottom:8px">Cancel Subscription?</div>
-    <div style="font-size:14px;color:#666;margin-bottom:8px;line-height:1.6">Your hotel will remain active until the end of your billing period. After that, guest requests will be paused.</div>
-    <div style="background:#fff3cd;border-radius:10px;padding:12px;margin-bottom:20px;font-size:13px;color:#8a6000;line-height:1.6">⚠️ Your data will be kept for 30 days after cancellation. You can reactivate anytime.</div>
-    <div style="display:flex;gap:10px">
-      <button onclick="document.getElementById('cancel-modal').classList.remove('open')" style="flex:1;padding:12px;background:#f0f0f0;color:#555;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer">Keep Plan</button>
-      <button onclick="confirmCancelSub(this)" style="flex:1;padding:12px;background:#ee9b00;color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer">Yes, Cancel</button>
+    <!-- PAYMENT MODAL -->
+    <div class="modal" id="payment-modal">
+      <div class="modal-box" style="max-width:400px;text-align:left;padding:28px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+          <div><div style="font-size:18px;font-weight:700;color:#0d1b1e">💳 Payment Details</div></div>
+          <span onclick="document.getElementById('payment-modal').classList.remove('open')" style="cursor:pointer;font-size:22px;color:#aaa">✕</span>
+        </div>
+        <div style="margin-bottom:12px">
+          <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px;font-weight:600">Cardholder Name</label>
+          <input type="text" id="pay-name" placeholder="Name on card" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none">
+        </div>
+        <div style="margin-bottom:12px">
+          <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px;font-weight:600">UPI ID or Card</label>
+          <input type="text" id="pay-upi" placeholder="yourname@upi or card number" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px">
+          <div>
+            <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px;font-weight:600">Plan</label>
+            <select id="pay-plan" style="width:100%;padding:11px 12px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:13px;outline:none;background:white">
+              <option value="pro_monthly" selected>🏆 Pro — ₹2,999/mo</option>
+              <option value="pro_annual">🏆 Pro — ₹2,399/mo (Annual)</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px;font-weight:600">Phone</label>
+            <input type="tel" id="pay-phone" placeholder="+91 9999999999" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none">
+          </div>
+        </div>
+        <div id="pay-msg" style="display:none;margin-bottom:12px;padding:10px 14px;border-radius:8px;font-size:13px"></div>
+        <button onclick="submitPayment(this)" style="width:100%;padding:14px;background:linear-gradient(135deg,#005f73,#0a9396);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer">💳 Activate Subscription →</button>
+      </div>
     </div>
-  </div>
-</div>
 
-<!-- DELETE HOTEL MODAL -->
-<div class="modal" id="delete-hotel-modal">
-  <div class="modal-box" style="max-width:340px;padding:28px">
-    <div style="font-size:48px;margin-bottom:16px">🗑️</div>
-    <div style="font-size:18px;font-weight:700;color:#0d1b1e;margin-bottom:8px">Delete This Hotel?</div>
-    <div style="font-size:14px;color:#666;margin-bottom:16px;line-height:1.6">This will permanently delete <strong id="del-hotel-name">this hotel</strong>, all its rooms, staff, HODs, and request history.</div>
-    <div style="margin-bottom:16px">
-      <label style="font-size:12px;color:#888;display:block;margin-bottom:6px">Type <strong>DELETE</strong> to confirm</label>
-      <input type="text" id="del-hotel-confirm" placeholder="Type DELETE" style="width:100%;padding:11px 14px;border:1.5px solid #e63946;border-radius:10px;font-size:14px;outline:none;text-transform:uppercase">
+    <!-- CANCEL MODAL -->
+    <div class="modal" id="cancel-modal">
+      <div class="modal-box" style="max-width:340px;padding:28px">
+        <div style="font-size:48px;margin-bottom:16px">⏸️</div>
+        <div style="font-size:18px;font-weight:700;color:#0d1b1e;margin-bottom:8px">Cancel Subscription?</div>
+        <div style="font-size:14px;color:#666;margin-bottom:20px;line-height:1.6">Your hotel will remain active until the end of your billing period.</div>
+        <div style="display:flex;gap:10px">
+          <button onclick="document.getElementById('cancel-modal').classList.remove('open')" style="flex:1;padding:12px;background:#f0f0f0;color:#555;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer">Keep Plan</button>
+          <button onclick="confirmCancelSub(this)" style="flex:1;padding:12px;background:#ee9b00;color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer">Yes, Cancel</button>
+        </div>
+      </div>
     </div>
-    <div id="del-hotel-msg" style="display:none;margin-bottom:12px;padding:10px;border-radius:8px;font-size:13px;background:#fde8ea;color:#e63946"></div>
-    <div style="display:flex;gap:10px">
-      <button onclick="document.getElementById('delete-hotel-modal').classList.remove('open')" style="flex:1;padding:12px;background:#f0f0f0;color:#555;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer">Cancel</button>
-      <button onclick="confirmDeleteHotel(this)" style="flex:1;padding:12px;background:#e63946;color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer">🗑️ Delete Hotel</button>
-    </div>
-  </div>
-</div>
 
-<!-- DELETE ACCOUNT MODAL -->
-<div class="modal" id="delete-account-modal">
-  <div class="modal-box" style="max-width:340px;padding:28px">
-    <div style="font-size:48px;margin-bottom:16px">💀</div>
-    <div style="font-size:18px;font-weight:700;color:#e63946;margin-bottom:8px">Delete Entire Account?</div>
-    <div style="font-size:14px;color:#666;margin-bottom:16px;line-height:1.6">This will permanently delete your account and <strong>all hotels</strong> under it. All data will be lost forever.</div>
-    <div style="background:#fde8ea;border-radius:10px;padding:12px;margin-bottom:16px;font-size:13px;color:#e63946;line-height:1.5">🚨 This action cannot be undone. All rooms, staff, requests and feedback across all your hotels will be deleted.</div>
-    <div style="margin-bottom:16px">
-      <label style="font-size:12px;color:#888;display:block;margin-bottom:6px">Type <strong>DELETE MY ACCOUNT</strong> to confirm</label>
-      <input type="text" id="del-acc-confirm" placeholder="Type DELETE MY ACCOUNT" style="width:100%;padding:11px 14px;border:1.5px solid #e63946;border-radius:10px;font-size:13px;outline:none">
+    <!-- DELETE HOTEL MODAL -->
+    <div class="modal" id="delete-hotel-modal">
+      <div class="modal-box" style="max-width:340px;padding:28px">
+        <div style="font-size:48px;margin-bottom:16px">🗑️</div>
+        <div style="font-size:18px;font-weight:700;color:#0d1b1e;margin-bottom:8px">Delete This Hotel?</div>
+        <div style="font-size:14px;color:#666;margin-bottom:16px;line-height:1.6">This will permanently delete <strong id="del-hotel-name">this hotel</strong>, all its rooms, staff, HODs, and request history.</div>
+        <div style="margin-bottom:16px">
+          <label style="font-size:12px;color:#888;display:block;margin-bottom:6px">Type <strong>DELETE</strong> to confirm</label>
+          <input type="text" id="del-hotel-confirm" placeholder="Type DELETE" style="width:100%;padding:11px 14px;border:1.5px solid #e63946;border-radius:10px;font-size:14px;outline:none;text-transform:uppercase">
+        </div>
+        <div id="del-hotel-msg" style="display:none;margin-bottom:12px;padding:10px;border-radius:8px;font-size:13px;background:#fde8ea;color:#e63946"></div>
+        <div style="display:flex;gap:10px">
+          <button onclick="document.getElementById('delete-hotel-modal').classList.remove('open')" style="flex:1;padding:12px;background:#f0f0f0;color:#555;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer">Cancel</button>
+          <button onclick="confirmDeleteHotel(this)" style="flex:1;padding:12px;background:#e63946;color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer">🗑️ Delete Hotel</button>
+        </div>
+      </div>
     </div>
-    <div id="del-acc-msg" style="display:none;margin-bottom:12px;padding:10px;border-radius:8px;font-size:13px;background:#fde8ea;color:#e63946"></div>
-    <div style="display:flex;gap:10px">
-      <button onclick="document.getElementById('delete-account-modal').classList.remove('open')" style="flex:1;padding:12px;background:#f0f0f0;color:#555;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer">Cancel</button>
-      <button onclick="confirmDeleteAccount(this)" style="flex:1;padding:12px;background:#e63946;color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer">💀 Delete All</button>
-    </div>
-  </div>
-</div>
 
-<!-- QR MODAL -->
-<div class="modal" id="qr-modal">
-  <div class="modal-box">
-    <h3 id="qr-title" style="margin-bottom:4px">Room QR</h3>
-    <p id="qr-sub" style="color:#888;font-size:13px;margin-bottom:16px">Scan to open guest portal</p>
-    <div id="qr-output"></div>
-    <div class="modal-btns">
-      <button class="btn-dl" onclick="downloadQR()">Save QR</button>
-      <button class="btn-close" onclick="document.getElementById('qr-modal').classList.remove('open')">Close</button>
+    <!-- DELETE ACCOUNT MODAL -->
+    <div class="modal" id="delete-account-modal">
+      <div class="modal-box" style="max-width:340px;padding:28px">
+        <div style="font-size:48px;margin-bottom:16px">💀</div>
+        <div style="font-size:18px;font-weight:700;color:#e63946;margin-bottom:8px">Delete Entire Account?</div>
+        <div style="font-size:14px;color:#666;margin-bottom:16px;line-height:1.6">This will permanently delete your account and <strong>all hotels</strong> under it.</div>
+        <div style="margin-bottom:16px">
+          <label style="font-size:12px;color:#888;display:block;margin-bottom:6px">Type <strong>DELETE MY ACCOUNT</strong> to confirm</label>
+          <input type="text" id="del-acc-confirm" placeholder="Type DELETE MY ACCOUNT" style="width:100%;padding:11px 14px;border:1.5px solid #e63946;border-radius:10px;font-size:13px;outline:none">
+        </div>
+        <div id="del-acc-msg" style="display:none;margin-bottom:12px;padding:10px;border-radius:8px;font-size:13px;background:#fde8ea;color:#e63946"></div>
+        <div style="display:flex;gap:10px">
+          <button onclick="document.getElementById('delete-account-modal').classList.remove('open')" style="flex:1;padding:12px;background:#f0f0f0;color:#555;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer">Cancel</button>
+          <button onclick="confirmDeleteAccount(this)" style="flex:1;padding:12px;background:#e63946;color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer">💀 Delete All</button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
-<script>var hotel = null;
+    <!-- QR MODAL -->
+    <div class="modal" id="qr-modal">
+      <div class="modal-box">
+        <h3 id="qr-title" style="margin-bottom:4px">Room QR</h3>
+        <p id="qr-sub" style="color:#888;font-size:13px;margin-bottom:16px">Scan to open guest portal</p>
+        <div id="qr-output"></div>
+        <div class="modal-btns">
+          <button class="btn-dl" onclick="downloadQR()">Save QR</button>
+          <button class="btn-close" onclick="document.getElementById('qr-modal').classList.remove('open')">Close</button>
+        </div>
+      </div>
+    </div>
+
+<script>
+var hotel = null;
 var allHotels = [];
 var currentQRRoom = '';
 var LIVE_URL = 'https://usewelco.in';
 var pendingLogoBase64 = null;
-var rptAllRequests = []; 
+var rptAllRequests = [];
 var rptCharts = {};
+var hotelPhotos = [];
+
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw-admin.js').catch(function(){});
+
 function authFetch(url, options) {
- options = options || {};
- options.headers = options.headers || {};
- var token = localStorage.getItem('welco_token');
- if (token) options.headers['Authorization'] = 'Bearer ' + token;
- return fetch(url, options);
+  options = options || {};
+  options.headers = options.headers || {};
+  var token = localStorage.getItem('welco_token');
+  if (token) options.headers['Authorization'] = 'Bearer ' + token;
+  return fetch(url, options);
 }
+
+// ── LOGIN ──
 function doLogin() {
- var email = document.getElementById('l-email').value.trim();
- var password = document.getElementById('l-password').value;
- var btn = document.querySelector('.login-btn');
- if (!email || !password) { showErr('Please enter email and password.'); return; }
- attemptLogin(email, password, btn, 1);
+  var email = document.getElementById('l-email').value.trim();
+  var password = document.getElementById('l-password').value;
+  var btn = document.querySelector('.login-btn');
+  if (!email || !password) { showErr('Please enter email and password.'); return; }
+  attemptLogin(email, password, btn, 1);
 }
 function attemptLogin(email, password, btn, attempt) {
- var messages = ['Logging in…', 'Server waking up… (30s)', 'Almost there…'];
- btn.textContent = messages[Math.min(attempt - 1, messages.length - 1)];
- btn.disabled = true;
- var controller = new AbortController();
- var timeoutId = setTimeout(function() { controller.abort(); }, 70000);
- fetch('/login', {
- method: 'POST', headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ email: email, password: password }), signal: controller.signal
- }).then(function(r) {
- clearTimeout(timeoutId);
- return r.json().then(function(d) { return { ok: r.ok, d: d }; });
- }).then(function(res) {
- btn.textContent = 'Login to Admin'; btn.disabled = false;
- if (!res.ok) { showErr(res.d.error || 'Invalid email or password.'); return; }
- allHotels = res.d.hotels || (res.d.hotel ? [res.d.hotel] : []);
- hotel = res.d.hotel || allHotels[0] || null;
- if (!hotel) { showErr('No hotel found for this account.'); return; }
- localStorage.setItem('welco_admin_hotel', JSON.stringify(hotel));
- localStorage.setItem('welco_admin_hotels', JSON.stringify(allHotels));
- if (res.d.token) localStorage.setItem('welco_token', res.d.token);
- startApp();
- }).catch(function() {
- clearTimeout(timeoutId);
- if (attempt < 3) { setTimeout(function() { attemptLogin(email, password, btn, attempt + 1); }, 5000); }
- else { btn.textContent = 'Login to Admin'; btn.disabled = false; showErr('Server timeout. Wait 1 min and try again.'); }
- });
+  var messages = ['Logging in…', 'Server waking up… (30s)', 'Almost there…'];
+  btn.textContent = messages[Math.min(attempt-1, messages.length-1)];
+  btn.disabled = true;
+  var controller = new AbortController();
+  var timeoutId = setTimeout(function() { controller.abort(); }, 70000);
+  fetch('/login', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({ email:email, password:password }), signal:controller.signal
+  }).then(function(r) {
+    clearTimeout(timeoutId);
+    return r.json().then(function(d){ return { ok:r.ok, d:d }; });
+  }).then(function(res) {
+    btn.textContent = 'Login to Admin'; btn.disabled = false;
+    if (!res.ok) { showErr(res.d.error || 'Invalid email or password.'); return; }
+    allHotels = res.d.hotels || (res.d.hotel ? [res.d.hotel] : []);
+    hotel = res.d.hotel || allHotels[0] || null;
+    if (!hotel) { showErr('No hotel found for this account.'); return; }
+    localStorage.setItem('welco_admin_hotel', JSON.stringify(hotel));
+    localStorage.setItem('welco_admin_hotels', JSON.stringify(allHotels));
+    if (res.d.token) localStorage.setItem('welco_token', res.d.token);
+    startApp();
+  }).catch(function() {
+    clearTimeout(timeoutId);
+    if (attempt < 3) { setTimeout(function(){ attemptLogin(email, password, btn, attempt+1); }, 5000); }
+    else { btn.textContent = 'Login to Admin'; btn.disabled = false; showErr('Server timeout. Wait 1 min and try again.'); }
+  });
 }
-function showErr(msg) { var el = document.getElementById('login-err'); el.textContent = msg; el.style.display = 'block'; }
-function doLogout() { localStorage.removeItem('welco_admin_hotel'); localStorage.removeItem('welco_admin_hotels'); localStorage.removeItem('welco_token'); allHotels = []; hotel = null; document.getElementById('app-screen').style.display = 'none'; document.getElementById('login-screen').style.display = 'flex'; document.getElementById('login-err').style.display = 'none'; }
+function showErr(msg) { var el=document.getElementById('login-err'); el.textContent=msg; el.style.display='block'; }
+function doLogout() { localStorage.removeItem('welco_admin_hotel'); localStorage.removeItem('welco_admin_hotels'); localStorage.removeItem('welco_token'); allHotels=[]; hotel=null; document.getElementById('app-screen').style.display='none'; document.getElementById('login-screen').style.display='flex'; document.getElementById('login-err').style.display='none'; }
+
+// ── START APP ──
 function startApp() {
- try { var stored = localStorage.getItem('welco_admin_hotels'); if (stored) allHotels = JSON.parse(stored); } catch(e) {}
- var sw = document.getElementById('hotel-switcher'); sw.style.display = 'block';
- document.getElementById('switcher-label').textContent = hotel.name;
- renderHotelDropdown();
- document.getElementById('login-screen').style.display = 'none';
- document.getElementById('app-screen').style.display = 'block';
- // Show demo banner if in demo mode
- if (localStorage.getItem('welco_is_demo') === 'true') {
-   var db = document.getElementById('demo-banner');
-   if (db) db.style.display = 'block';
- }
- // Load hotel photos for slideshow manager
- loadPhotos();
- document.getElementById('t-name').textContent = hotel.name;
- document.getElementById('t-city').textContent = hotel.city || '';
- document.documentElement.style.setProperty('--brand', hotel.colour || '#005f73');
- document.documentElement.style.setProperty('--brand2', hotel.colour || '#0a9396');
- document.getElementById('set-name').value = hotel.name || '';
- document.getElementById('set-city').value = hotel.city || '';
- document.getElementById('set-colortext').value = hotel.colour || '#0a9396';
- document.getElementById('set-colorpicker').value = hotel.colour || '#0a9396';
- applyLogoOrEmoji(hotel.logo_url, null);
- if (hotel.logo_url) {
- document.body.style.backgroundImage = 'url(' + hotel.logo_url + ')';
- document.body.style.backgroundSize = 'cover';
- document.body.style.backgroundPosition = 'center';
- document.body.style.backgroundAttachment = 'fixed';
- } else {
- document.body.style.backgroundImage = "url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80')";
- document.body.style.backgroundSize = 'cover';
- document.body.style.backgroundPosition = 'center';
- document.body.style.backgroundAttachment = 'fixed';
- }
- pendingLogoBase64 = null;
- showTab('overview');
- loadOverview();
- loadRooms();
+  try { var s=localStorage.getItem('welco_admin_hotels'); if(s) allHotels=JSON.parse(s); } catch(e){}
+  var sw=document.getElementById('hotel-switcher'); sw.style.display='block';
+  document.getElementById('switcher-label').textContent=hotel.name;
+  renderHotelDropdown();
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app-screen').style.display='block';
+  if (localStorage.getItem('welco_is_demo')==='true') { var db=document.getElementById('demo-banner'); if(db) db.style.display='block'; }
+  loadPhotos();
+  document.getElementById('t-name').textContent=hotel.name;
+  document.getElementById('t-city').textContent=hotel.city||'';
+  document.documentElement.style.setProperty('--brand',hotel.colour||'#005f73');
+  document.documentElement.style.setProperty('--brand2',hotel.colour||'#0a9396');
+  document.getElementById('set-name').value=hotel.name||'';
+  document.getElementById('set-city').value=hotel.city||'';
+  document.getElementById('set-colortext').value=hotel.colour||'#0a9396';
+  document.getElementById('set-colorpicker').value=hotel.colour||'#0a9396';
+  applyLogoOrEmoji(hotel.logo_url, null);
+  if (hotel.logo_url) { document.body.style.backgroundImage='url('+hotel.logo_url+')'; document.body.style.backgroundSize='cover'; document.body.style.backgroundPosition='center'; document.body.style.backgroundAttachment='fixed'; }
+  else { document.body.style.backgroundImage="url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80')"; document.body.style.backgroundSize='cover'; document.body.style.backgroundPosition='center'; document.body.style.backgroundAttachment='fixed'; }
+  pendingLogoBase64=null;
+  showTab('overview');
+  loadOverview();
+  loadRooms();
 }
+
 function toggleSwitcher(e) { e.stopPropagation(); document.getElementById('hotel-switcher').classList.toggle('open'); }
 function renderHotelDropdown() {
- var dd = document.getElementById('hotel-dropdown');
- dd.innerHTML = '<div class="hotel-dropdown-header">Your Hotels</div>';
- allHotels.forEach(function(h) {
- var isActive = h.hotel_id === hotel.hotel_id;
- var item = document.createElement('div');
- item.className = 'hotel-dropdown-item' + (isActive ? ' active' : '');
- item.innerHTML = '<div class="h-dot" style="background:' + (h.colour || '#005f73') + '"></div><div class="h-item-text"><div class="h-item-name">' + h.name + '</div><div class="h-item-city">' + (h.city || '') + '</div></div>' + (isActive ? '<span class="h-check">✓</span>' : '');
- item.onclick = function() { switchToHotel(h.hotel_id); };
- dd.appendChild(item);
- });
- var addBtn = document.createElement('div');
- addBtn.className = 'hotel-dropdown-add';
- addBtn.innerHTML = '<span>➕</span><span>Add New Hotel</span>';
- addBtn.onclick = function() { document.getElementById('hotel-switcher').classList.remove('open'); openAddHotelModal(); };
- dd.appendChild(addBtn);
+  var dd=document.getElementById('hotel-dropdown');
+  dd.innerHTML='<div class="hotel-dropdown-header">Your Hotels</div>';
+  allHotels.forEach(function(h) {
+    var isActive=h.hotel_id===hotel.hotel_id;
+    var item=document.createElement('div');
+    item.className='hotel-dropdown-item'+(isActive?' active':'');
+    item.innerHTML='<div class="h-dot" style="background:'+(h.colour||'#005f73')+'"></div><div><div class="h-item-name">'+h.name+'</div><div class="h-item-city">'+(h.city||'')+'</div></div>'+(isActive?'<span class="h-check">✓</span>':'');
+    item.onclick=function(){ switchToHotel(h.hotel_id); };
+    dd.appendChild(item);
+  });
+  var addBtn=document.createElement('div'); addBtn.className='hotel-dropdown-add';
+  addBtn.innerHTML='<span>➕</span><span>Add New Hotel</span>';
+  addBtn.onclick=function(){ document.getElementById('hotel-switcher').classList.remove('open'); openAddHotelModal(); };
+  dd.appendChild(addBtn);
 }
-function switchToHotel(hotel_id) { var h = allHotels.find(function(x){return x.hotel_id===hotel_id;}); if(!h)return; hotel=h; localStorage.setItem('welco_admin_hotel',JSON.stringify(hotel)); document.getElementById('hotel-switcher').classList.remove('open'); document.getElementById('switcher-label').textContent=hotel.name; startApp(); }
+function switchToHotel(hotel_id) { var h=allHotels.find(function(x){return x.hotel_id===hotel_id;}); if(!h)return; hotel=h; localStorage.setItem('welco_admin_hotel',JSON.stringify(hotel)); document.getElementById('hotel-switcher').classList.remove('open'); document.getElementById('switcher-label').textContent=hotel.name; startApp(); }
 document.addEventListener('click', function(e) { var sw=document.getElementById('hotel-switcher'); if(sw&&!sw.contains(e.target))sw.classList.remove('open'); });
-function applyLogoOrEmoji(logoUrl, emoji) {
- var imgEl=document.getElementById('topbar-logo-img'); var emojiEl=document.getElementById('topbar-logo-emoji');
- var previewImg=document.getElementById('logo-preview-img'); var previewEmoji=document.getElementById('logo-preview-emoji');
- var removeBtn=document.getElementById('logo-remove-btn');
- if(logoUrl){imgEl.src=logoUrl;imgEl.style.display='block';emojiEl.style.display='none';previewImg.src=logoUrl;previewImg.style.display='block';previewEmoji.style.display='none';removeBtn.style.display='block';}
- else{imgEl.style.display='none';emojiEl.textContent='🏨';emojiEl.style.display='block';previewImg.style.display='none';previewEmoji.textContent='🏨';previewEmoji.style.display='block';removeBtn.style.display='none';}
+
+function applyLogoOrEmoji(logoUrl) {
+  var imgEl=document.getElementById('topbar-logo-img'); var emojiEl=document.getElementById('topbar-logo-emoji');
+  var previewImg=document.getElementById('logo-preview-img'); var previewEmoji=document.getElementById('logo-preview-emoji');
+  var removeBtn=document.getElementById('logo-remove-btn');
+  if(logoUrl){imgEl.src=logoUrl;imgEl.style.display='block';emojiEl.style.display='none';previewImg.src=logoUrl;previewImg.style.display='block';previewEmoji.style.display='none';removeBtn.style.display='block';}
+  else{imgEl.style.display='none';emojiEl.textContent='🏨';emojiEl.style.display='block';previewImg.style.display='none';previewEmoji.textContent='🏨';previewEmoji.style.display='block';removeBtn.style.display='none';}
 }
+
 function handleLogoUpload(event) {
- var file=event.target.files[0]; if(!file)return;
- var note=document.getElementById('logo-size-note');
- note.textContent='⏳ Processing image...'; note.style.color='#888';
- var reader=new FileReader();
- reader.onload=function(e){
- var img=new Image();
- img.onload=function(){
- var maxW=1200, maxH=900;
- var w=img.width, h=img.height;
- if(w>maxW){h=Math.round(h*maxW/w);w=maxW;}
- if(h>maxH){w=Math.round(w*maxH/h);h=maxH;}
- var canvas=document.createElement('canvas');
- canvas.width=w; canvas.height=h;
- var ctx=canvas.getContext('2d');
- ctx.drawImage(img,0,0,w,h);
- var compressed=canvas.toDataURL('image/jpeg',0.75);
- var kb=Math.round(compressed.length*0.75/1024);
- pendingLogoBase64=compressed;
- applyLogoOrEmoji(compressed, hotel.emoji);
- note.textContent='✅ '+file.name+' ready (compressed to ~'+kb+'KB) — click Save Changes to apply.';
- note.style.color='#065f46';
- };
- img.src=e.target.result;
- };
- reader.readAsDataURL(file);
+  var file=event.target.files[0]; if(!file)return;
+  var note=document.getElementById('logo-size-note'); note.textContent='⏳ Processing...'; note.style.color='#888';
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var img=new Image();
+    img.onload=function(){
+      var maxW=1200,maxH=900,w=img.width,h=img.height;
+      if(w>maxW){h=Math.round(h*maxW/w);w=maxW;} if(h>maxH){w=Math.round(w*maxH/h);h=maxH;}
+      var canvas=document.createElement('canvas'); canvas.width=w; canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      var compressed=canvas.toDataURL('image/jpeg',0.75);
+      var kb=Math.round(compressed.length*0.75/1024);
+      pendingLogoBase64=compressed; applyLogoOrEmoji(compressed);
+      note.textContent='✅ Ready (~'+kb+'KB) — click Save Changes to apply.'; note.style.color='#065f46';
+    }; img.src=e.target.result;
+  }; reader.readAsDataURL(file);
 }
-function removeLogo(){pendingLogoBase64='';applyLogoOrEmoji(null,null);document.getElementById('logo-size-note').textContent='Photo will be removed when you click Save Changes.';document.getElementById('logo-size-note').style.color='#888';document.getElementById('logo-file-input').value='';}
+function removeLogo(){pendingLogoBase64='';applyLogoOrEmoji(null);document.getElementById('logo-size-note').textContent='Photo will be removed when you Save.';document.getElementById('logo-file-input').value='';}
+
+// ── TABS ──
 function showTab(name) {
- var names=['overview','rooms','hod','feedback','reports','settings'];
- document.querySelectorAll('.tab').forEach(function(t,i){t.classList.toggle('active',names[i]===name);});
- document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
- document.getElementById('panel-'+name).classList.add('active');
- if(name==='reports')loadReports();
- if(name==='rooms')loadRooms();
- if(name==='feedback')loadFeedback();
- if(name==='hod'){loadHOD();loadAdminServiceControls();document.getElementById('hod-hotel-code').textContent=hotel.hotel_code||'N/A';}
+  var names=['overview','rooms','hod','feedback','reports','settings'];
+  document.querySelectorAll('.tab').forEach(function(t,i){t.classList.toggle('active',names[i]===name);});
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
+  document.getElementById('panel-'+name).classList.add('active');
+  if(name==='reports') loadReports();
+  if(name==='rooms') loadRooms();
+  if(name==='feedback') loadFeedback();
+  if(name==='hod'){loadHOD();loadAdminServiceControls();document.getElementById('hod-hotel-code').textContent=hotel.hotel_code||'N/A';}
 }
+
+// ── OVERVIEW ──
 function loadOverview() {
- Promise.all([fetch('/rooms?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}),fetch('/requests?hotel_id='+hotel.hotel_id).then(function(r){return r.json();})]).then(function(res){
- var rooms=res[0],reqs=res[1];
- document.getElementById('s-rooms').textContent=Array.isArray(rooms)?rooms.length:0;
- if(Array.isArray(reqs)){
- document.getElementById('s-pending').textContent=reqs.filter(function(r){return r.status==='pending';}).length;
- document.getElementById('s-done').textContent=reqs.filter(function(r){return r.status==='done';}).length;
- var rated=reqs.filter(function(r){return r.feedback_rating;});
- document.getElementById('s-rating').textContent=rated.length?(rated.reduce(function(a,r){return a+r.feedback_rating;},0)/rated.length).toFixed(1)+'⭐':'N/A';
- document.getElementById('recent-list').innerHTML=reqs.slice(0,10).length?reqs.slice(0,10).map(reqRow).join(''):'<div class="empty">No requests yet</div>';
- }
- }).catch(function(){});
+  Promise.all([
+    fetch('/rooms?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}),
+    fetch('/requests?hotel_id='+hotel.hotel_id).then(function(r){return r.json();})
+  ]).then(function(res){
+    var rooms=res[0],reqs=res[1];
+    document.getElementById('s-rooms').textContent=Array.isArray(rooms)?rooms.length:0;
+    if(Array.isArray(reqs)){
+      document.getElementById('s-pending').textContent=reqs.filter(function(r){return r.status==='pending';}).length;
+      document.getElementById('s-done').textContent=reqs.filter(function(r){return r.status==='done';}).length;
+      var rated=reqs.filter(function(r){return r.feedback_rating;});
+      document.getElementById('s-rating').textContent=rated.length?(rated.reduce(function(a,r){return a+r.feedback_rating;},0)/rated.length).toFixed(1)+'⭐':'N/A';
+      document.getElementById('recent-list').innerHTML=reqs.slice(0,10).length?reqs.slice(0,10).map(reqRow).join(''):'<div class="empty">No requests yet</div>';
+    }
+  }).catch(function(){});
 }
+
+// ── ROOMS ──
 function loadRooms() {
- fetch('/rooms?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(rooms){
- if(!Array.isArray(rooms))return;
- document.getElementById('rooms-count').textContent=rooms.length+' rooms total';
- document.getElementById('rooms-grid').innerHTML=rooms.length===0?'<div class="empty" style="grid-column:1/-1">No rooms yet</div>':rooms.map(function(r){return '<div class="room-card"><div class="room-num">Room '+r.room_number+'</div><div class="room-floor">Floor '+(r.floor||1)+'</div><div class="room-actions"><button class="btn-qr" onclick="showQR(\''+hotel.hotel_id+'\',\''+r.id+'\',\''+r.room_number+'\')">QR</button><button class="btn-del" onclick="deleteRoom('+r.id+')">✕</button></div></div>';}).join('');
- }).catch(function(){});
+  fetch('/rooms?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(rooms){
+    if(!Array.isArray(rooms))return;
+    document.getElementById('rooms-count').textContent=rooms.length+' rooms total';
+    document.getElementById('rooms-grid').innerHTML=rooms.length===0?'<div class="empty" style="grid-column:1/-1">No rooms yet</div>':rooms.map(function(r){return '<div class="room-card"><div class="room-num">Room '+r.room_number+'</div><div class="room-floor">Floor '+(r.floor||1)+'</div><div class="room-actions"><button class="btn-qr" onclick="showQR(\''+hotel.hotel_id+'\',\''+r.id+'\',\''+r.room_number+'\')">QR</button><button class="btn-del" onclick="deleteRoom('+r.id+')">✕</button></div></div>';}).join('');
+  }).catch(function(){});
 }
 function addRoom(){var num=document.getElementById('new-room-num').value.trim();var floor=document.getElementById('new-room-floor').value||1;if(!num){alert('Enter a room number!');return;}authFetch('/rooms',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hotel.hotel_id,room_number:num,floor:parseInt(floor),is_active:true})}).then(function(){document.getElementById('new-room-num').value='';document.getElementById('new-room-floor').value='';loadRooms();loadOverview();});}
-function addBulkRooms(){
- var startVal=document.getElementById('bulk-room-start').value.trim();var endVal=document.getElementById('bulk-room-end').value.trim();var floor=parseInt(document.getElementById('bulk-room-floor').value)||1;var msg=document.getElementById('bulk-msg');
- if(!startVal||!endVal){msg.textContent='Please enter both start and end room numbers.';msg.className='msg-box msg-error';return;}
- var start=parseInt(startVal);var end=parseInt(endVal);
- if(isNaN(start)||isNaN(end)){msg.textContent='Please enter numeric room numbers.';msg.className='msg-box msg-error';return;}
- if(start>end){msg.textContent='Start must be less than end.';msg.className='msg-box msg-error';return;}
- if(end-start>99){msg.textContent='Maximum 100 rooms at a time.';msg.className='msg-box msg-error';return;}
- var total=end-start+1;msg.textContent='⏳ Adding '+total+' rooms...';msg.className='msg-box msg-success';
- var rooms=[];for(var i=start;i<=end;i++)rooms.push({hotel_id:hotel.hotel_id,room_number:String(i),floor:floor,is_active:true});
- var added=0,errors=0;
- function addNext(index){if(index>=rooms.length){msg.textContent='✅ '+added+' rooms added'+(errors>0?' ('+errors+' already exist)':'')+' !';msg.className='msg-box msg-success';document.getElementById('bulk-room-start').value='';document.getElementById('bulk-room-end').value='';document.getElementById('bulk-room-floor').value='';loadRooms();loadOverview();return;}authFetch('/rooms',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(rooms[index])}).then(function(r){return r.json();}).then(function(d){if(d.error)errors++;else added++;addNext(index+1);}).catch(function(){errors++;addNext(index+1);});}
- addNext(0);
-}
+function addBulkRooms(){var startVal=document.getElementById('bulk-room-start').value.trim();var endVal=document.getElementById('bulk-room-end').value.trim();var floor=parseInt(document.getElementById('bulk-room-floor').value)||1;var msg=document.getElementById('bulk-msg');if(!startVal||!endVal){msg.textContent='Please enter both start and end room numbers.';msg.className='msg-box msg-error';return;}var start=parseInt(startVal);var end=parseInt(endVal);if(isNaN(start)||isNaN(end)){msg.textContent='Please enter numeric room numbers.';msg.className='msg-box msg-error';return;}if(start>end){msg.textContent='Start must be less than end.';msg.className='msg-box msg-error';return;}if(end-start>99){msg.textContent='Maximum 100 rooms at a time.';msg.className='msg-box msg-error';return;}var total=end-start+1;msg.textContent='⏳ Adding '+total+' rooms...';msg.className='msg-box msg-success';var rooms=[];for(var i=start;i<=end;i++)rooms.push({hotel_id:hotel.hotel_id,room_number:String(i),floor:floor,is_active:true});var added=0,errors=0;function addNext(index){if(index>=rooms.length){msg.textContent='✅ '+added+' rooms added'+(errors>0?' ('+errors+' skipped)':'')+' !';loadRooms();loadOverview();return;}authFetch('/rooms',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(rooms[index])}).then(function(r){return r.json();}).then(function(d){if(d.error)errors++;else added++;addNext(index+1);}).catch(function(){errors++;addNext(index+1);});}addNext(0);}
 function deleteRoom(id){if(!confirm('Delete this room?'))return;authFetch('/rooms/'+id,{method:'DELETE'}).then(function(){loadRooms();loadOverview();});}
+
+// ── CHECKOUT REVIEWS (new loadFeedback) ──
 function loadFeedback() {
- fetch('/requests?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(reqs){
- if(!Array.isArray(reqs))return;
- var rated=reqs.filter(function(r){return r.feedback_rating;});
- var starFilter=document.getElementById('fb-filter-stars').value;
- var commentFilter=document.getElementById('fb-filter-comment').value;
- var filtered=rated;
- if(starFilter)filtered=filtered.filter(function(r){return String(r.feedback_rating)===starFilter;});
- if(commentFilter==='with')filtered=filtered.filter(function(r){return r.feedback_comments&&r.feedback_comments.trim();});
- if(commentFilter==='without')filtered=filtered.filter(function(r){return !r.feedback_comments||!r.feedback_comments.trim();});
- document.getElementById('fb-total').textContent=rated.length;
- var avg=rated.length?(rated.reduce(function(a,r){return a+r.feedback_rating;},0)/rated.length).toFixed(1):'-';
- document.getElementById('fb-avg').textContent=avg==='-'?'-':avg+' ⭐';
- document.getElementById('fb-5star').textContent=rated.filter(function(r){return r.feedback_rating===5;}).length;
- document.getElementById('fb-low').textContent=rated.filter(function(r){return r.feedback_rating<3;}).length;
- document.getElementById('fb-subtitle').textContent=filtered.length+' review(s) shown';
- var list=document.getElementById('feedback-list');
- if(filtered.length===0){list.innerHTML='<div class="empty">No reviews match your filter</div>';return;}
- list.innerHTML=filtered.map(function(r,idx){
- var stars='';for(var i=1;i<=5;i++)stars+=i<=r.feedback_rating?'⭐':'☆';
- var time=new Date(r.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
- var comment=r.feedback_comments?r.feedback_comments.trim():'';
- var bgColor=r.feedback_rating>=4?'#f0fdf4':r.feedback_rating===3?'#fffbeb':'#fef2f2';
- var borderColor=r.feedback_rating>=4?'#86efac':r.feedback_rating===3?'#fde68a':'#fca5a5';
- var copyText=stars+' — '+hotel.name+'\n'+(comment?'"'+comment+'"\n':'')+'Room '+(r.room_number||'?')+' · '+(r.category||'')+' · '+time;
- return '<div style="background:'+bgColor+';border:1.5px solid '+borderColor+';border-radius:14px;padding:16px;margin-bottom:12px"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;flex-wrap:wrap;gap:8px"><div><div style="font-size:22px;margin-bottom:4px">'+stars+'</div><div style="font-size:12px;color:#555">Room '+(r.room_number||'?')+' · '+(r.category||'General')+'</div></div><div style="text-align:right"><div style="font-size:11px;color:#aaa">'+time+'</div>'+(r.claimed_by?'<div style="font-size:11px;color:#888;margin-top:2px">👷 '+r.claimed_by+'</div>':'')+'</div></div>'+(comment?'<div style="background:white;border-radius:10px;padding:12px 14px;font-size:14px;color:#333;line-height:1.6;margin-bottom:12px;font-style:italic">"'+comment+'"</div>':'<div style="font-size:12px;color:#aaa;margin-bottom:12px;font-style:italic">No written comment</div>')+'<div style="display:flex;gap:8px;flex-wrap:wrap"><button onclick="copyFbText(\''+encodeURIComponent(copyText)+'\')" style="padding:8px 16px;background:#005f73;color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">📋 Copy</button></div></div>';
- }).join('');
- }).catch(function(){document.getElementById('feedback-list').innerHTML='<div class="empty">Could not load</div>';});
+  authFetch('/checkout-reviews?hotel_id=' + hotel.hotel_id)
+    .then(function(r) { return r.json(); })
+    .then(function(reviews) {
+      if (!Array.isArray(reviews) || reviews.length === 0) {
+        document.getElementById('fb-total').textContent = '0';
+        document.getElementById('fb-avg').textContent = '-';
+        document.getElementById('fb-5star').textContent = '0';
+        document.getElementById('fb-low').textContent = '0';
+        document.getElementById('fb-subtitle').textContent = '0 reviews';
+        document.getElementById('feedback-list').innerHTML = '<div class="empty">No checkout reviews yet.<br><span style="font-size:12px;color:#bbb">Guests submit reviews from the Check Out tab in the guest portal.</span></div>';
+        return;
+      }
+
+      var starFilter = document.getElementById('fb-filter-stars').value;
+      var commentFilter = document.getElementById('fb-filter-comment').value;
+      var filtered = reviews;
+      if (starFilter) filtered = filtered.filter(function(r){ return String(r.rating) === starFilter; });
+      if (commentFilter === 'with') filtered = filtered.filter(function(r){ return r.review && r.review.trim(); });
+      if (commentFilter === 'without') filtered = filtered.filter(function(r){ return !r.review || !r.review.trim(); });
+
+      // Stats from ALL reviews
+      document.getElementById('fb-total').textContent = reviews.length;
+      var avg = (reviews.reduce(function(a,r){ return a + r.rating; }, 0) / reviews.length).toFixed(1);
+      document.getElementById('fb-avg').textContent = avg + ' ⭐';
+      document.getElementById('fb-5star').textContent = reviews.filter(function(r){ return r.rating === 5; }).length;
+      document.getElementById('fb-low').textContent = reviews.filter(function(r){ return r.rating < 3; }).length;
+      document.getElementById('fb-subtitle').textContent = filtered.length + ' review(s) shown';
+
+      if (filtered.length === 0) {
+        document.getElementById('feedback-list').innerHTML = '<div class="empty">No reviews match your filter.</div>';
+        return;
+      }
+
+      document.getElementById('feedback-list').innerHTML = filtered.map(function(r) {
+        var stars = '';
+        for (var i = 1; i <= 5; i++) stars += i <= r.rating ? '⭐' : '☆';
+        var time = new Date(r.created_at).toLocaleString('en-IN', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+        var review = (r.review || '').trim();
+        var guestName = r.guest_name || 'Guest';
+        var roomNum = r.room_number || '?';
+        var bgColor = r.rating >= 4 ? '#f0fdf4' : r.rating === 3 ? '#fffbeb' : '#fef2f2';
+        var borderColor = r.rating >= 4 ? '#86efac' : r.rating === 3 ? '#fde68a' : '#fca5a5';
+
+        // Nicely formatted text for copying to any platform
+        var copyText = stars + ' — ' + hotel.name + '\n\n' +
+          (review ? '"' + review + '"\n\n' : '') +
+          '— ' + guestName + (roomNum !== '?' ? ' · Room ' + roomNum : '') + ' · ' + time + '\n' +
+          'Reviewed via Welco Guest Portal';
+        var enc = encodeURIComponent(copyText);
+
+        return '<div style="background:' + bgColor + ';border:1.5px solid ' + borderColor + ';border-radius:14px;padding:18px;margin-bottom:14px">' +
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;flex-wrap:wrap;gap:8px">' +
+            '<div>' +
+              '<div style="font-size:22px;margin-bottom:4px">' + stars + '</div>' +
+              '<div style="font-size:15px;font-weight:700;color:#0d1b1e">' + guestName + '</div>' +
+              '<div style="font-size:12px;color:#888;margin-top:2px">Room ' + roomNum + (r.guest_email ? ' · ' + r.guest_email : '') + '</div>' +
+            '</div>' +
+            '<div style="text-align:right;font-size:11px;color:#aaa">' + time + '</div>' +
+          '</div>' +
+          (review
+            ? '<div style="background:white;border-radius:10px;padding:14px;font-size:14px;color:#333;line-height:1.7;margin-bottom:14px;font-style:italic;border:1px solid rgba(0,0,0,0.06)">"' + review + '"</div>'
+            : '<div style="font-size:12px;color:#aaa;margin-bottom:14px;padding:8px;font-style:italic">No written review — rating only</div>') +
+          '<div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">📋 Copy & paste to:</div>' +
+          '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+            '<button onclick="copyReview(\'' + enc + '\',this)" style="padding:9px 16px;background:#4285f4;color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">🔍 Google Maps</button>' +
+            '<button onclick="copyReview(\'' + enc + '\',this)" style="padding:9px 16px;background:#e63946;color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">✈️ MakeMyTrip</button>' +
+            '<button onclick="copyReview(\'' + enc + '\',this)" style="padding:9px 16px;background:#34e0a1;color:#0d1b1e;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">🦉 TripAdvisor</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    })
+    .catch(function() {
+      document.getElementById('feedback-list').innerHTML = '<div class="empty">Could not load reviews. Make sure the checkout_reviews table exists in Supabase.</div>';
+    });
 }
-function copyFbText(enc){var text=decodeURIComponent(enc);navigator.clipboard.writeText(text).catch(function(){prompt('Copy:',text);});}
+
+function copyReview(encoded, btn) {
+  var text = decodeURIComponent(encoded);
+  navigator.clipboard.writeText(text).then(function() {
+    var orig = btn.innerHTML;
+    var origBg = btn.style.background;
+    btn.innerHTML = '✅ Copied!';
+    btn.style.background = '#065f46';
+    setTimeout(function() { btn.innerHTML = orig; btn.style.background = origBg; }, 2500);
+  }).catch(function() { prompt('Copy this review:', text); });
+}
+
+// ── REPORTS ──
 function setRptToday(){var t=new Date().toISOString().split('T')[0];document.getElementById('rpt-from').value=t;document.getElementById('rpt-to').value=t;}
 function setRptMonth(){var now=new Date();var first=new Date(now.getFullYear(),now.getMonth(),1).toISOString().split('T')[0];var last=new Date(now.getFullYear(),now.getMonth()+1,0).toISOString().split('T')[0];document.getElementById('rpt-from').value=first;document.getElementById('rpt-to').value=last;}
 function loadReports() {
- fetch('/requests?hotel_id='+hotel.hotel_id+'&all=true').then(function(r){return r.json();}).then(function(reqs){
- if(!Array.isArray(reqs))return;
- var from=document.getElementById('rpt-from').value;
- var to=document.getElementById('rpt-to').value;
- var filtered=reqs;
- if(from)filtered=filtered.filter(function(r){return new Date(r.created_at)>=new Date(from+'T00:00:00');});
- if(to)filtered=filtered.filter(function(r){return new Date(r.created_at)<=new Date(to+'T23:59:59');});
- rptAllRequests=filtered;
- var total=filtered.length;
- var done=filtered.filter(function(r){return r.status==='done';}).length;
- var pending=filtered.filter(function(r){return r.status==='pending';}).length;
- var inprog=filtered.filter(function(r){return r.status==='in_progress';}).length;
- var rated=filtered.filter(function(r){return r.feedback_rating;});
- var avg=rated.length?(rated.reduce(function(a,r){return a+r.feedback_rating;},0)/rated.length).toFixed(1):'-';
- document.getElementById('rpt-total').textContent=total;
- document.getElementById('rpt-done').textContent=done;
- document.getElementById('rpt-pending').textContent=pending;
- document.getElementById('rpt-rating').textContent=avg==='-'?'-':avg+'⭐';
- document.getElementById('rpt-donut-num').textContent=total;
- if(rptCharts.status)rptCharts.status.destroy();
- rptCharts.status=new Chart(document.getElementById('rpt-chart-status').getContext('2d'),{
- type:'doughnut',
- data:{labels:['Pending','In Progress','Done'],datasets:[{data:[pending,inprog,done],backgroundColor:['#EE9B00','#0A9396','#2ECC71'],borderWidth:0,hoverOffset:4}]},
- options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{display:false}}}
- });
- document.getElementById('rpt-legend-status').innerHTML=['Pending','In Progress','Done'].map(function(l,i){return '<div class="legend-item"><div class="legend-dot" style="background:'+['#EE9B00','#0A9396','#2ECC71'][i]+'"></div>'+l+'</div>';}).join('');
- var rCounts=[5,4,3,2,1].map(function(s){return rated.filter(function(r){return r.feedback_rating===s;}).length;});
- if(rptCharts.ratings)rptCharts.ratings.destroy();
- rptCharts.ratings=new Chart(document.getElementById('rpt-chart-ratings').getContext('2d'),{
- type:'bar',
- data:{labels:['5⭐','4⭐','3⭐','2⭐','1⭐'],datasets:[{data:rCounts,backgroundColor:['#2ECC71','#0A9396','#EE9B00','#F77F00','#E63946'],borderRadius:6,borderWidth:0}]},
- options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{beginAtZero:true,ticks:{stepSize:1,font:{size:10}},grid:{color:'#f0f0f0'}}}}
- });
- var days=[],counts=[];
- for(var i=13;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);days.push(d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}));var ds=d.toDateString();counts.push(filtered.filter(function(r){return new Date(r.created_at).toDateString()===ds;}).length);}
- if(rptCharts.line)rptCharts.line.destroy();
- var dc=hotel.colour||'#0A9396';
- rptCharts.line=new Chart(document.getElementById('rpt-chart-line').getContext('2d'),{
- type:'line',
- data:{labels:days,datasets:[{data:counts,borderColor:dc,backgroundColor:dc+'22',borderWidth:2.5,pointBackgroundColor:dc,pointRadius:4,fill:true,tension:0.4}]},
- options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#aaa'}},y:{beginAtZero:true,ticks:{stepSize:1,font:{size:10},color:'#aaa'},grid:{color:'#f0f0f0'}}}}
- });
- var depts=['Housekeeping','Room Service','Maintenance','Front Desk'];
- var deptColors={'Housekeeping':'#4361EE','Room Service':'#F77F00','Maintenance':'#E63946','Front Desk':'#9B5DE5'};
- var deptCounts=depts.map(function(d){return filtered.filter(function(r){return r.category===d;}).length;});
- var maxCount=Math.max.apply(null,deptCounts)||1;
- document.getElementById('rpt-dept-bars').innerHTML=depts.map(function(d,i){
- var pct=Math.round(deptCounts[i]/maxCount*100);
- return '<div class="dept-bar-row"><div class="dept-bar-label">'+d.split(' ')[0]+'</div><div class="dept-bar-track"><div class="dept-bar-fill" style="width:'+pct+'%;background:'+deptColors[d]+'"></div></div><div class="dept-bar-count">'+deptCounts[i]+'</div></div>';
- }).join('');
- var roomMap={};
- filtered.forEach(function(r){var rn=r.room_number||'?';if(!roomMap[rn])roomMap[rn]=0;roomMap[rn]++;});
- var topRooms=Object.entries(roomMap).sort(function(a,b){return b[1]-a[1];}).slice(0,5);
- document.getElementById('rpt-top-rooms').innerHTML=topRooms.length===0?'<div class="empty">No data yet</div>':topRooms.map(function(entry,i){
- var medals=['🥇','🥈','🥉','4️⃣','5️⃣'];
- return '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f0f0f0"><span style="font-size:18px">'+medals[i]+'</span><span style="flex:1;font-size:14px;font-weight:600;color:#0d1b1e">Room '+entry[0]+'</span><span style="font-size:13px;color:#0a9396;font-weight:700">'+entry[1]+' requests</span></div>';
- }).join('');
- }).catch(function(){});
+  fetch('/requests?hotel_id='+hotel.hotel_id+'&all=true').then(function(r){return r.json();}).then(function(reqs){
+    if(!Array.isArray(reqs))return;
+    var from=document.getElementById('rpt-from').value;var to=document.getElementById('rpt-to').value;
+    var filtered=reqs;
+    if(from)filtered=filtered.filter(function(r){return new Date(r.created_at)>=new Date(from+'T00:00:00');});
+    if(to)filtered=filtered.filter(function(r){return new Date(r.created_at)<=new Date(to+'T23:59:59');});
+    rptAllRequests=filtered;
+    var total=filtered.length;var done=filtered.filter(function(r){return r.status==='done';}).length;var pending=filtered.filter(function(r){return r.status==='pending';}).length;var inprog=filtered.filter(function(r){return r.status==='in_progress';}).length;
+    var rated=filtered.filter(function(r){return r.feedback_rating;});var avg=rated.length?(rated.reduce(function(a,r){return a+r.feedback_rating;},0)/rated.length).toFixed(1):'-';
+    document.getElementById('rpt-total').textContent=total;document.getElementById('rpt-done').textContent=done;document.getElementById('rpt-pending').textContent=pending;document.getElementById('rpt-rating').textContent=avg==='-'?'-':avg+'⭐';document.getElementById('rpt-donut-num').textContent=total;
+    if(rptCharts.status)rptCharts.status.destroy();
+    rptCharts.status=new Chart(document.getElementById('rpt-chart-status').getContext('2d'),{type:'doughnut',data:{labels:['Pending','In Progress','Done'],datasets:[{data:[pending,inprog,done],backgroundColor:['#EE9B00','#0A9396','#2ECC71'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{display:false}}}});
+    document.getElementById('rpt-legend-status').innerHTML=['Pending','In Progress','Done'].map(function(l,i){return '<div class="legend-item"><div class="legend-dot" style="background:'+['#EE9B00','#0A9396','#2ECC71'][i]+'"></div>'+l+'</div>';}).join('');
+    var rCounts=[5,4,3,2,1].map(function(s){return rated.filter(function(r){return r.feedback_rating===s;}).length;});
+    if(rptCharts.ratings)rptCharts.ratings.destroy();
+    rptCharts.ratings=new Chart(document.getElementById('rpt-chart-ratings').getContext('2d'),{type:'bar',data:{labels:['5⭐','4⭐','3⭐','2⭐','1⭐'],datasets:[{data:rCounts,backgroundColor:['#2ECC71','#0A9396','#EE9B00','#F77F00','#E63946'],borderRadius:6,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{beginAtZero:true,ticks:{stepSize:1},grid:{color:'#f0f0f0'}}}}});
+    var days=[],counts=[];for(var i=13;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);days.push(d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}));var ds=d.toDateString();counts.push(filtered.filter(function(r){return new Date(r.created_at).toDateString()===ds;}).length);}
+    if(rptCharts.line)rptCharts.line.destroy();
+    var dc=hotel.colour||'#0A9396';
+    rptCharts.line=new Chart(document.getElementById('rpt-chart-line').getContext('2d'),{type:'line',data:{labels:days,datasets:[{data:counts,borderColor:dc,backgroundColor:dc+'22',borderWidth:2.5,pointBackgroundColor:dc,pointRadius:4,fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#aaa'}},y:{beginAtZero:true,ticks:{stepSize:1},grid:{color:'#f0f0f0'}}}}});
+    var depts=['Housekeeping','Room Service','Maintenance','Front Desk'];var deptColors={'Housekeeping':'#4361EE','Room Service':'#F77F00','Maintenance':'#E63946','Front Desk':'#9B5DE5'};
+    var deptCounts=depts.map(function(d){return filtered.filter(function(r){return r.category===d;}).length;});var maxCount=Math.max.apply(null,deptCounts)||1;
+    document.getElementById('rpt-dept-bars').innerHTML=depts.map(function(d,i){var pct=Math.round(deptCounts[i]/maxCount*100);return '<div class="dept-bar-row"><div class="dept-bar-label">'+d.split(' ')[0]+'</div><div class="dept-bar-track"><div class="dept-bar-fill" style="width:'+pct+'%;background:'+deptColors[d]+'"></div></div><div class="dept-bar-count">'+deptCounts[i]+'</div></div>';}).join('');
+    var roomMap={};filtered.forEach(function(r){var rn=r.room_number||'?';if(!roomMap[rn])roomMap[rn]=0;roomMap[rn]++;});
+    var topRooms=Object.entries(roomMap).sort(function(a,b){return b[1]-a[1];}).slice(0,5);
+    document.getElementById('rpt-top-rooms').innerHTML=topRooms.length===0?'<div class="empty">No data yet</div>':topRooms.map(function(entry,i){var medals=['🥇','🥈','🥉','4️⃣','5️⃣'];return '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f0f0f0"><span style="font-size:18px">'+medals[i]+'</span><span style="flex:1;font-size:14px;font-weight:600;color:#0d1b1e">Room '+entry[0]+'</span><span style="font-size:13px;color:#0a9396;font-weight:700">'+entry[1]+' requests</span></div>';}).join('');
+  }).catch(function(){});
 }
-function downloadRptCSV(){
- if(rptAllRequests.length===0){document.getElementById('rpt-dl-msg').textContent='⚠️ No data to download.';return;}
- var rows=[['Date','Time','Room','Category','Request','Status','Handled By','Rating','Comment']];
- rptAllRequests.forEach(function(r){
- var d=new Date(r.created_at);
- rows.push([
- d.toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'}),
- d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),
- 'Room '+(r.room_number||'?'),r.category||'',r.message||'',
- r.status==='done'?'Completed':r.status==='in_progress'?'In Progress':'Pending',
- r.claimed_by||'Unclaimed',r.feedback_rating||'',r.feedback_comments||''
- ]);
- });
- function escCSV(v){if(v===null||v===undefined)return '';var s=String(v);if(s.includes(',')||s.includes('"')||s.includes('\n'))return '"'+s.replace(/"/g,'""')+'"';return s;}
- var csv=rows.map(function(row){return row.map(escCSV).join(',');}).join('\n');
- var blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
- var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;
- a.download='Welco_'+hotel.name.replace(/\s/g,'_')+'_Report.csv';a.click();URL.revokeObjectURL(url);
- document.getElementById('rpt-dl-msg').textContent='✅ Downloaded '+rptAllRequests.length+' records.';
-}
-function reqRow(r){
- var bc=r.status==='done'?'badge-done':r.status==='in_progress'?'badge-progress':'badge-pending';
- var bt=r.status==='done'?'Done':r.status==='in_progress'?'In Progress':'Pending';
- var time=new Date(r.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
- return '<div class="request-row"><div class="req-top"><span class="req-room">Room '+(r.room_number||'-')+'</span><span class="req-cat">'+(r.category||'General')+'</span></div><div class="req-msg">'+(r.message||'No details')+'</div><div class="req-meta"><span class="badge '+bc+'">'+bt+'</span>'+(r.claimed_by?'<span>👷 '+r.claimed_by+'</span>':'')+(r.feedback_rating?'<span>⭐ '+r.feedback_rating+'/5</span>':'')+'<span>'+time+'</span></div></div>';
-}
+function downloadRptCSV(){if(rptAllRequests.length===0){document.getElementById('rpt-dl-msg').textContent='⚠️ No data to download.';return;}var rows=[['Date','Time','Room','Category','Request','Status','Handled By','Rating','Comment']];rptAllRequests.forEach(function(r){var d=new Date(r.created_at);rows.push([d.toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'}),d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),'Room '+(r.room_number||'?'),r.category||'',r.message||'',r.status==='done'?'Completed':r.status==='in_progress'?'In Progress':'Pending',r.claimed_by||'',r.feedback_rating||'',r.feedback_comments||'']);});function escCSV(v){if(v===null||v===undefined)return '';var s=String(v);if(s.includes(',')||s.includes('"')||s.includes('\n'))return '"'+s.replace(/"/g,'""')+'"';return s;}var csv=rows.map(function(row){return row.map(escCSV).join(',');}).join('\n');var blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download='Welco_'+hotel.name.replace(/\s/g,'_')+'_Report.csv';a.click();URL.revokeObjectURL(url);document.getElementById('rpt-dl-msg').textContent='✅ Downloaded '+rptAllRequests.length+' records.';}
+
+function reqRow(r){var bc=r.status==='done'?'badge-done':r.status==='in_progress'?'badge-progress':'badge-pending';var bt=r.status==='done'?'Done':r.status==='in_progress'?'In Progress':'Pending';var time=new Date(r.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});return '<div class="request-row"><div class="req-top"><span class="req-room">Room '+(r.room_number||'-')+'</span><span class="req-cat">'+(r.category||'General')+'</span></div><div class="req-msg">'+(r.message||'No details')+'</div><div class="req-meta"><span class="badge '+bc+'">'+bt+'</span>'+(r.claimed_by?'<span>👷 '+r.claimed_by+'</span>':'')+(r.feedback_rating?'<span>⭐ '+r.feedback_rating+'/5</span>':'')+'<span>'+time+'</span></div></div>';}
+
+// ── SETTINGS ──
 function saveSettings(){
- var name=document.getElementById('set-name').value.trim();
- var city=document.getElementById('set-city').value.trim();
- var colour=document.getElementById('set-colortext').value.trim();
- if(!name){alert('Hotel name cannot be empty.');return;}
-
- var msg=document.getElementById('settings-msg');
- msg.textContent='⏳ Saving...';
- msg.className='msg-box msg-success';
-
- // Save basic settings first (without photos - they're too large)
- var basicPayload={name:name,city:city,colour:colour};
- if(pendingLogoBase64!==null) basicPayload.logo_url=pendingLogoBase64;
-
- authFetch('/hotels/'+hotel.hotel_id+'/update',{
-   method:'POST',
-   headers:{'Content-Type':'application/json'},
-   body:JSON.stringify(basicPayload)
- }).then(function(r){
-   if(!r.ok){
-     return r.json().then(function(e){
-       msg.textContent='❌ ' + (e.error || 'Save failed — code '+r.status);
-       msg.className='msg-box msg-success';
-     });
-   }
-   // Update local hotel object
-   var newLogo=pendingLogoBase64!==null?pendingLogoBase64:hotel.logo_url;
-   hotel=Object.assign({},hotel,{name:name,city:city,colour:colour,logo_url:newLogo,hotel_photos:hotelPhotos});
-   localStorage.setItem('welco_admin_hotel',JSON.stringify(hotel));
-   for(var i=0;i<allHotels.length;i++){if(allHotels[i].hotel_id===hotel.hotel_id){allHotels[i]=hotel;break;}}
-   localStorage.setItem('welco_admin_hotels',JSON.stringify(allHotels));
-   document.getElementById('t-name').textContent=name;
-   document.getElementById('t-city').textContent=city;
-   document.documentElement.style.setProperty('--brand',colour);
-   applyLogoOrEmoji(hotel.logo_url,null);
-   if(allHotels.length>1)renderHotelDropdown();
-   pendingLogoBase64=null;
-   document.getElementById('logo-size-note').textContent='';
-
-   // Now save photos separately if any
-   if(hotelPhotos.length>0){
-     msg.textContent='⏳ Saving photos...';
-     authFetch('/hotels/'+hotel.hotel_id+'/photos',{
-       method:'POST',
-       headers:{'Content-Type':'application/json'},
-       body:JSON.stringify({hotel_photos:hotelPhotos})
-     }).then(function(r2){
-       if(r2.ok){
-         msg.textContent='✅ Settings & photos saved!';
-       } else {
-         msg.textContent='✅ Settings saved! Photos may need re-upload.';
-       }
-       msg.className='msg-box msg-success';
-       setTimeout(function(){msg.className='msg-box';},4000);
-     }).catch(function(){
-       msg.textContent='✅ Settings saved! Photos: try saving again.';
-       setTimeout(function(){msg.className='msg-box';},4000);
-     });
-   } else {
-     msg.textContent='✅ Settings saved!';
-     msg.className='msg-box msg-success';
-     setTimeout(function(){msg.className='msg-box';},3000);
-   }
- }).catch(function(){
-   msg.textContent='❌ Connection error. Try again.';
- });
+  var name=document.getElementById('set-name').value.trim();var city=document.getElementById('set-city').value.trim();var colour=document.getElementById('set-colortext').value.trim();
+  if(!name){alert('Hotel name cannot be empty.');return;}
+  var msg=document.getElementById('settings-msg'); msg.textContent='⏳ Saving...'; msg.className='msg-box msg-success';
+  var payload={name:name,city:city,colour:colour};if(pendingLogoBase64!==null) payload.logo_url=pendingLogoBase64;
+  authFetch('/hotels/'+hotel.hotel_id+'/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).then(function(r){
+    if(!r.ok){return r.json().then(function(e){msg.textContent='❌ '+(e.error||'Save failed');});}
+    var newLogo=pendingLogoBase64!==null?pendingLogoBase64:hotel.logo_url;
+    hotel=Object.assign({},hotel,{name:name,city:city,colour:colour,logo_url:newLogo,hotel_photos:hotelPhotos});
+    localStorage.setItem('welco_admin_hotel',JSON.stringify(hotel));
+    for(var i=0;i<allHotels.length;i++){if(allHotels[i].hotel_id===hotel.hotel_id){allHotels[i]=hotel;break;}}
+    localStorage.setItem('welco_admin_hotels',JSON.stringify(allHotels));
+    document.getElementById('t-name').textContent=name;document.getElementById('t-city').textContent=city;
+    document.documentElement.style.setProperty('--brand',colour);applyLogoOrEmoji(hotel.logo_url);
+    if(allHotels.length>1)renderHotelDropdown();pendingLogoBase64=null;document.getElementById('logo-size-note').textContent='';
+    if(hotelPhotos.length>0){
+      msg.textContent='⏳ Saving photos...';
+      authFetch('/hotels/'+hotel.hotel_id+'/photos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_photos:hotelPhotos})}).then(function(r2){msg.textContent=r2.ok?'✅ Settings & photos saved!':'✅ Settings saved! Photos may need re-upload.';setTimeout(function(){msg.className='msg-box';},4000);}).catch(function(){msg.textContent='✅ Settings saved!';setTimeout(function(){msg.className='msg-box';},3000);});
+    } else { msg.textContent='✅ Settings saved!'; setTimeout(function(){msg.className='msg-box';},3000); }
+  }).catch(function(){msg.textContent='❌ Connection error.';});
 }
+
+// ── QR ──
 function showQR(hotelId,roomId,roomNum){currentQRRoom='Room-'+roomNum;document.getElementById('qr-title').textContent='Room '+roomNum;document.getElementById('qr-sub').textContent=hotel.name;var output=document.getElementById('qr-output');output.innerHTML='';new QRCode(output,{text:LIVE_URL+'/guest.html?hotel_id='+hotelId+'&room_id='+roomId,width:180,height:180,colorDark:hotel.colour||'#005f73',colorLight:'#ffffff'});document.getElementById('qr-modal').classList.add('open');}
 function downloadQR(){var canvas=document.querySelector('#qr-output canvas');if(!canvas)return;var link=document.createElement('a');link.download='welco-'+currentQRRoom+'.png';link.href=canvas.toDataURL();link.click();}
-function copyHotelCode(){var code=document.getElementById('hod-hotel-code').textContent;if(!code||code==='...')return;navigator.clipboard.writeText(code).then(function(){var btn=document.getElementById('copy-code-btn');btn.textContent='✅ Copied!';setTimeout(function(){btn.textContent='📋 Copy Code';},2000);}).catch(function(){prompt('Copy this hotel code:',code);});}
+
+// ── HOD ──
+function copyHotelCode(){var code=document.getElementById('hod-hotel-code').textContent;if(!code||code==='...')return;navigator.clipboard.writeText(code).then(function(){var btn=document.getElementById('copy-code-btn');btn.textContent='✅ Copied!';setTimeout(function(){btn.textContent='📋 Copy Code';},2000);}).catch(function(){prompt('Copy:',code);});}
 function loadHOD(){
- fetch('/hod?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(list){
- var el=document.getElementById('hod-list');
- if(!Array.isArray(list)||list.length===0){el.innerHTML='<div class="empty">No HODs added yet.</div>';return;}
- var deptColors={'Housekeeping':'#4361EE','Room Service':'#F77F00','Maintenance':'#E63946','Front Desk':'#9B5DE5'};
- var deptEmojis={'Housekeeping':'🛏️','Room Service':'🍽️','Maintenance':'🔧','Front Desk':'🛎️'};
- var PERMS=[{key:'announcements',label:'📢 Announcements'},{key:'schedule',label:'🔧 Scheduling'},{key:'guest_options',label:'🎯 Guest Options'},{key:'service_hours',label:'🕐 Service Hours'},{key:'staff',label:'👷 Staff Mgmt'},{key:'analytics',label:'📊 Analytics'},{key:'ai_kb',label:'✨ AI Knowledge Base'}];
- el.innerHTML=list.map(function(h){
- var color=deptColors[h.department]||'#005f73';
- var perms=h.permissions||{announcements:true,schedule:true,guest_options:true,service_hours:true,staff:true,analytics:true};
- var permToggles=PERMS.map(function(p){var isOn=perms[p.key]!==false;return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:'+(isOn?'#f0fdf4':'#fafafa')+';border-radius:8px;border:1px solid '+(isOn?'#86efac':'#eee')+';margin-bottom:6px"><div style="font-size:13px;font-weight:600;color:'+(isOn?'#065f46':'#888')+'">'+p.label+'</div><label style="position:relative;display:inline-block;width:42px;height:24px;cursor:pointer;flex-shrink:0"><input type="checkbox" '+(isOn?'checked':'')+' data-hod-id="'+h.id+'" data-perm="'+p.key+'" onchange="toggleHodPerm(this)" style="opacity:0;width:0;height:0"><span style="position:absolute;inset:0;background:'+(isOn?'#0a9396':'#ddd')+';border-radius:24px;transition:0.3s"></span><span style="position:absolute;top:3px;left:'+(isOn?'21px':'3px')+';width:18px;height:18px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></span></label></div>';}).join('');
- return '<div style="background:white;border-radius:14px;padding:16px;margin-bottom:14px;border:1px solid #eee;box-shadow:0 2px 8px rgba(0,0,0,0.06)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div style="display:flex;align-items:center;gap:10px"><div style="width:40px;height:40px;border-radius:10px;background:'+color+'20;display:flex;align-items:center;justify-content:center;font-size:20px">'+(deptEmojis[h.department]||'👤')+'</div><div><div style="font-size:15px;font-weight:700;color:#0d1b1e">'+h.name+'</div><div style="font-size:11px;color:#888;margin-top:2px">'+h.department+' · PIN: '+h.pin+'</div></div></div><button class="btn-remove" onclick="removeHOD('+h.id+')">Remove</button></div><div style="font-size:11px;color:#aaa;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Permissions</div>'+permToggles+'</div>';
- }).join('');
- }).catch(function(){});
+  fetch('/hod?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(list){
+    var el=document.getElementById('hod-list');
+    if(!Array.isArray(list)||list.length===0){el.innerHTML='<div class="empty">No HODs added yet.</div>';return;}
+    var deptColors={'Housekeeping':'#4361EE','Room Service':'#F77F00','Maintenance':'#E63946','Front Desk':'#9B5DE5'};
+    var deptEmojis={'Housekeeping':'🛏️','Room Service':'🍽️','Maintenance':'🔧','Front Desk':'🛎️'};
+    var PERMS=[{key:'announcements',label:'📢 Announcements'},{key:'schedule',label:'🔧 Scheduling'},{key:'guest_options',label:'🎯 Guest Options'},{key:'service_hours',label:'🕐 Service Hours'},{key:'staff',label:'👷 Staff Mgmt'},{key:'analytics',label:'📊 Analytics'},{key:'ai_kb',label:'✨ AI Knowledge Base'}];
+    el.innerHTML=list.map(function(h){
+      var color=deptColors[h.department]||'#005f73';var perms=h.permissions||{};
+      var permToggles=PERMS.map(function(p){var isOn=perms[p.key]!==false;return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:'+(isOn?'#f0fdf4':'#fafafa')+';border-radius:8px;border:1px solid '+(isOn?'#86efac':'#eee')+';margin-bottom:6px"><div style="font-size:13px;font-weight:600;color:'+(isOn?'#065f46':'#888')+'">'+p.label+'</div><label style="position:relative;display:inline-block;width:42px;height:24px;cursor:pointer;flex-shrink:0"><input type="checkbox" '+(isOn?'checked':'')+' data-hod-id="'+h.id+'" data-perm="'+p.key+'" onchange="toggleHodPerm(this)" style="opacity:0;width:0;height:0"><span style="position:absolute;inset:0;background:'+(isOn?'#0a9396':'#ddd')+';border-radius:24px;transition:0.3s"></span><span style="position:absolute;top:3px;left:'+(isOn?'21px':'3px')+';width:18px;height:18px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></span></label></div>';}).join('');
+      return '<div style="background:white;border-radius:14px;padding:16px;margin-bottom:14px;border:1px solid #eee;box-shadow:0 2px 8px rgba(0,0,0,0.06)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div style="display:flex;align-items:center;gap:10px"><div style="width:40px;height:40px;border-radius:10px;background:'+color+'20;display:flex;align-items:center;justify-content:center;font-size:20px">'+(deptEmojis[h.department]||'👤')+'</div><div><div style="font-size:15px;font-weight:700;color:#0d1b1e">'+h.name+'</div><div style="font-size:11px;color:#888;margin-top:2px">'+h.department+' · PIN: '+h.pin+'</div></div></div><button class="btn-del" onclick="removeHOD('+h.id+')">Remove</button></div><div style="font-size:11px;color:#aaa;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Permissions</div>'+permToggles+'</div>';
+    }).join('');
+  }).catch(function(){});
 }
-function toggleHodPerm(checkbox){
- var hodId=checkbox.getAttribute('data-hod-id');var permKey=checkbox.getAttribute('data-perm');var isOn=checkbox.checked;
- fetch('/hod?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(list){
- var hod=list.find(function(h){return String(h.id)===String(hodId);});if(!hod)return;
- var perms=hod.permissions||{};perms[permKey]=isOn;
- return authFetch('/hod/'+hodId+'/permissions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({permissions:perms})});
- }).then(function(r){if(r&&r.ok)loadHOD();}).catch(function(){alert('Failed to update permission.');loadHOD();});
-}
-function addHOD(){
- var name=document.getElementById('new-hod-name').value.trim();var dept=document.getElementById('new-hod-dept').value;var pin=document.getElementById('new-hod-pin').value.trim();
- if(!name||pin.length!==4){alert('Enter full name and exactly 4-digit PIN');return;}
- authFetch('/hod',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hotel.hotel_id,name:name,department:dept,pin:pin})}).then(function(r){return r.json();}).then(function(data){
- if(data.error){alert(data.error);return;}
- document.getElementById('new-hod-name').value='';document.getElementById('new-hod-pin').value='';
- var msg=document.getElementById('hod-msg');msg.textContent='✅ '+name+' added as HOD for '+dept+'!';msg.className='msg-box msg-success';setTimeout(function(){msg.className='msg-box';},5000);loadHOD();
- });
-}
+function toggleHodPerm(checkbox){var hodId=checkbox.getAttribute('data-hod-id');var permKey=checkbox.getAttribute('data-perm');var isOn=checkbox.checked;fetch('/hod?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(list){var hod=list.find(function(h){return String(h.id)===String(hodId);});if(!hod)return;var perms=hod.permissions||{};perms[permKey]=isOn;return authFetch('/hod/'+hodId+'/permissions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({permissions:perms})});}).then(function(r){if(r&&r.ok)loadHOD();}).catch(function(){alert('Failed to update permission.');loadHOD();});}
+function addHOD(){var name=document.getElementById('new-hod-name').value.trim();var dept=document.getElementById('new-hod-dept').value;var pin=document.getElementById('new-hod-pin').value.trim();if(!name||pin.length!==4){alert('Enter full name and exactly 4-digit PIN');return;}authFetch('/hod',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hotel.hotel_id,name:name,department:dept,pin:pin})}).then(function(r){return r.json();}).then(function(data){if(data.error){alert(data.error);return;}document.getElementById('new-hod-name').value='';document.getElementById('new-hod-pin').value='';var msg=document.getElementById('hod-msg');msg.textContent='✅ '+name+' added as HOD for '+dept+'!';msg.className='msg-box msg-success';setTimeout(function(){msg.className='msg-box';},5000);loadHOD();});}
 function removeHOD(id){if(!confirm('Remove this HOD?'))return;authFetch('/hod/'+id,{method:'DELETE'}).then(function(){loadHOD();});}
+
 var adminDeptOptions={};
-function loadAdminServiceControls(){
- fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
- var h=hotels.find(function(x){return x.hotel_id===hotel.hotel_id;});
- adminDeptOptions=(h&&h.dept_guest_options)?h.dept_guest_options:{};
- var depts=[{key:'Housekeeping',emoji:'🛏️'},{key:'Room Service',emoji:'🍽️'},{key:'Maintenance',emoji:'🔧'},{key:'Front Desk',emoji:'🛎️'}];
- var el=document.getElementById('admin-service-controls');
- el.innerHTML=depts.map(function(d){
- var saved=adminDeptOptions[d.key]||{};var hours=saved.hours||{};var isOpen=hours.isOpen!==false;var openTime=hours.openTime||'07:00';var closeTime=hours.closeTime||'23:00';
- return '<div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:'+(isOpen?'#f0fdf4':'#fff5f5')+';border-radius:12px;border:1.5px solid '+(isOpen?'#86efac':'#fca5a5')+';margin-bottom:10px"><div style="display:flex;align-items:center;gap:10px"><div style="font-size:22px">'+d.emoji+'</div><div><div style="font-size:14px;font-weight:700;color:#0d1b1e">'+d.key+'</div><div style="font-size:11px;color:#aaa;margin-top:2px">'+(isOpen?'🟢 Open':'🔴 Closed')+' · '+formatTime12(openTime)+' – '+formatTime12(closeTime)+'</div></div></div><button onclick="adminToggleService(\''+d.key+'\','+(!isOpen)+')" style="padding:8px 16px;background:'+(isOpen?'#fde8ea':'#d1fae5')+';color:'+(isOpen?'#e63946':'#065f46')+';border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">'+(isOpen?'🔴 Close Now':'🟢 Open Now')+'</button></div>';
- }).join('');
- }).catch(function(){document.getElementById('admin-service-controls').innerHTML='<div class="empty">Could not load</div>';});
-}
-function formatTime12(t){if(!t)return '';var p=t.split(':');var hr=parseInt(p[0]),mn=parseInt(p[1]);var ampm=hr>=12?'PM':'AM';hr=hr%12||12;return hr+(mn>0?':'+String(mn).padStart(2,'0'):'')+' '+ampm;}
-function adminToggleService(dept,setOpen){
- if(!adminDeptOptions[dept])adminDeptOptions[dept]={};
- if(!adminDeptOptions[dept].hours)adminDeptOptions[dept].hours={openTime:'07:00',closeTime:'23:00',closedMsg:"We're currently closed."};
- adminDeptOptions[dept].hours.isOpen=setOpen;
- fetch('/hotels/'+hotel.hotel_id+'/dept-guest-options',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({dept_guest_options:adminDeptOptions})}).then(function(r){return r.json();}).then(function(){loadAdminServiceControls();}).catch(function(){alert('Failed to update. Try again.');});
-}
+function loadAdminServiceControls(){fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){var h=hotels.find(function(x){return x.hotel_id===hotel.hotel_id;});adminDeptOptions=(h&&h.dept_guest_options)?h.dept_guest_options:{};var depts=[{key:'Housekeeping',emoji:'🛏️'},{key:'Room Service',emoji:'🍽️'},{key:'Maintenance',emoji:'🔧'},{key:'Front Desk',emoji:'🛎️'}];var el=document.getElementById('admin-service-controls');el.innerHTML=depts.map(function(d){var saved=adminDeptOptions[d.key]||{};var hours=saved.hours||{};var isOpen=hours.isOpen!==false;var openTime=hours.openTime||'07:00';var closeTime=hours.closeTime||'23:00';function fmt(t){if(!t)return'';var p=t.split(':');var hr=parseInt(p[0]),mn=parseInt(p[1]);var ampm=hr>=12?'PM':'AM';hr=hr%12||12;return hr+(mn>0?':'+String(mn).padStart(2,'0'):'')+' '+ampm;}return '<div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:'+(isOpen?'#f0fdf4':'#fff5f5')+';border-radius:12px;border:1.5px solid '+(isOpen?'#86efac':'#fca5a5')+';margin-bottom:10px"><div style="display:flex;align-items:center;gap:10px"><div style="font-size:22px">'+d.emoji+'</div><div><div style="font-size:14px;font-weight:700;color:#0d1b1e">'+d.key+'</div><div style="font-size:11px;color:#aaa;margin-top:2px">'+(isOpen?'🟢 Open':'🔴 Closed')+' · '+fmt(openTime)+' – '+fmt(closeTime)+'</div></div></div><button onclick="adminToggleService(\''+d.key+'\','+(!isOpen)+')" style="padding:8px 16px;background:'+(isOpen?'#fde8ea':'#d1fae5')+';color:'+(isOpen?'#e63946':'#065f46')+';border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">'+(isOpen?'🔴 Close Now':'🟢 Open Now')+'</button></div>';}).join('');}).catch(function(){document.getElementById('admin-service-controls').innerHTML='<div class="empty">Could not load</div>';});}
+function adminToggleService(dept,setOpen){if(!adminDeptOptions[dept])adminDeptOptions[dept]={};if(!adminDeptOptions[dept].hours)adminDeptOptions[dept].hours={openTime:'07:00',closeTime:'23:00',closedMsg:"We're currently closed."};adminDeptOptions[dept].hours.isOpen=setOpen;fetch('/hotels/'+hotel.hotel_id+'/dept-guest-options',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({dept_guest_options:adminDeptOptions})}).then(function(r){return r.json();}).then(function(){loadAdminServiceControls();}).catch(function(){alert('Failed. Try again.');});}
+
+// ── ADD HOTEL MODAL ──
 function openAddHotelModal(){document.getElementById('ah-modal-name').value='';document.getElementById('ah-modal-city').value='';document.getElementById('ah-modal-rooms').value='';document.getElementById('ah-modal-colortext').value='#005f73';document.getElementById('ah-modal-colorpicker').value='#005f73';document.getElementById('add-hotel-msg').className='msg-box';document.getElementById('add-hotel-modal').classList.add('open');}
 function closeAddHotelModal(){document.getElementById('add-hotel-modal').classList.remove('open');}
-function submitAddHotel(btn){
- var name=document.getElementById('ah-modal-name').value.trim();var city=document.getElementById('ah-modal-city').value.trim();var rooms=parseInt(document.getElementById('ah-modal-rooms').value)||0;var colour=document.getElementById('ah-modal-colortext').value.trim()||'#005f73';var msg=document.getElementById('add-hotel-msg');
- if(!name){msg.textContent='Please enter a hotel name.';msg.className='msg-box msg-error';return;}
- btn.textContent='Adding...';btn.disabled=true;
- fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
- var current=hotels.find(function(h){return h.hotel_id===hotel.hotel_id;});var owner_id=current?current.owner_id:null;if(!owner_id)throw new Error('Owner ID not found.');
- return authFetch('/owner/add-hotel',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({owner_id:owner_id,hotelName:name,city:city,roomCount:rooms,colour:colour,emoji:'🏨'})});
- }).then(function(r){return r.json();}).then(function(data){
- btn.textContent='➕ Add Hotel to My Account';btn.disabled=false;
- if(data.error){msg.textContent=data.error;msg.className='msg-box msg-error';return;}
- allHotels.push(data.hotel);localStorage.setItem('welco_admin_hotels',JSON.stringify(allHotels));
- msg.textContent='✅ '+name+' added! Switching now...';msg.className='msg-box msg-success';
- setTimeout(function(){closeAddHotelModal();hotel=data.hotel;localStorage.setItem('welco_admin_hotel',JSON.stringify(hotel));startApp();},1500);
- }).catch(function(e){btn.textContent='➕ Add Hotel to My Account';btn.disabled=false;msg.textContent=e.message||'Failed. Try again.';msg.className='msg-box msg-error';});
-}
+function submitAddHotel(btn){var name=document.getElementById('ah-modal-name').value.trim();var city=document.getElementById('ah-modal-city').value.trim();var rooms=parseInt(document.getElementById('ah-modal-rooms').value)||0;var colour=document.getElementById('ah-modal-colortext').value.trim()||'#005f73';var msg=document.getElementById('add-hotel-msg');if(!name){msg.textContent='Please enter a hotel name.';msg.className='msg-box msg-error';return;}btn.textContent='Adding...';btn.disabled=true;fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){var current=hotels.find(function(h){return h.hotel_id===hotel.hotel_id;});var owner_id=current?current.owner_id:null;if(!owner_id)throw new Error('Owner ID not found.');return authFetch('/owner/add-hotel',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({owner_id:owner_id,hotelName:name,city:city,roomCount:rooms,colour:colour,emoji:'🏨'});});}).then(function(r){return r.json();}).then(function(data){btn.textContent='➕ Add Hotel to My Account';btn.disabled=false;if(data.error){msg.textContent=data.error;msg.className='msg-box msg-error';return;}allHotels.push(data.hotel);localStorage.setItem('welco_admin_hotels',JSON.stringify(allHotels));msg.textContent='✅ '+name+' added! Switching now...';msg.className='msg-box msg-success';setTimeout(function(){closeAddHotelModal();hotel=data.hotel;localStorage.setItem('welco_admin_hotel',JSON.stringify(hotel));startApp();},1500);}).catch(function(e){btn.textContent='➕ Add Hotel to My Account';btn.disabled=false;msg.textContent=e.message||'Failed. Try again.';msg.className='msg-box msg-error';});}
+
+// ── FORGOT PASSWORD ──
 function showForgot(){document.getElementById('forgot-modal').style.display='flex';}
 function hideForgot(){document.getElementById('forgot-modal').style.display='none';}
-function fpFindAccount(btn){var email=document.getElementById('fp-email').value.trim();var err=document.getElementById('fp-err1');if(!email){err.textContent='Enter your email.';err.style.display='block';return;}btn.textContent='Searching…';btn.disabled=true;fetch('/owner/secret-question?email='+encodeURIComponent(email)).then(function(r){return r.json().then(function(d){return{ok:r.ok,d:d};});}).then(function(res){btn.textContent='Find My Account →';btn.disabled=false;if(!res.ok){err.textContent=res.d.error||'Account not found.';err.style.display='block';return;}err.style.display='none';document.getElementById('fp-q-text').textContent='What is your mother\'s maiden name?';document.getElementById('fp1').style.display='none';document.getElementById('fp2').style.display='block';}).catch(function(){btn.textContent='Find My Account →';btn.disabled=false;err.textContent='Connection error.';err.style.display='block';});}
+function fpFindAccount(btn){var email=document.getElementById('fp-email').value.trim();var err=document.getElementById('fp-err1');if(!email){err.textContent='Enter your email.';err.style.display='block';return;}btn.textContent='Searching…';btn.disabled=true;fetch('/owner/secret-question?email='+encodeURIComponent(email)).then(function(r){return r.json().then(function(d){return{ok:r.ok,d:d};});}).then(function(res){btn.textContent='Find My Account →';btn.disabled=false;if(!res.ok){err.textContent=res.d.error||'Account not found.';err.style.display='block';return;}err.style.display='none';document.getElementById('fp-q-text').textContent="What is your mother's maiden name?";document.getElementById('fp1').style.display='none';document.getElementById('fp2').style.display='block';}).catch(function(){btn.textContent='Find My Account →';btn.disabled=false;err.textContent='Connection error.';err.style.display='block';});}
 function fpReset(btn){var ans=document.getElementById('fp-ans').value.trim();var np=document.getElementById('fp-np').value;var cp=document.getElementById('fp-cp').value;var err=document.getElementById('fp-err2');var email=document.getElementById('fp-email').value.trim();if(!ans){err.textContent='Enter your secret answer.';err.style.display='block';return;}if(np.length<6){err.textContent='Password must be at least 6 characters.';err.style.display='block';return;}if(np!==cp){err.textContent='Passwords do not match.';err.style.display='block';return;}btn.textContent='Resetting…';btn.disabled=true;fetch('/owner/reset-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,secret_answer:ans,new_password:np})}).then(function(r){return r.json().then(function(d){return{ok:r.ok,d:d};});}).then(function(res){btn.textContent='Reset Password';btn.disabled=false;if(!res.ok){err.textContent=res.d.error||'Reset failed.';err.style.display='block';return;}document.getElementById('fp2').style.display='none';document.getElementById('fp3').style.display='block';}).catch(function(){btn.textContent='Reset Password';btn.disabled=false;err.textContent='Connection error.';err.style.display='block';});}
-window.onload=function(){try{var stored=localStorage.getItem('welco_admin_hotel');if(stored){hotel=JSON.parse(stored);var storedHotels=localStorage.getItem('welco_admin_hotels');if(storedHotels)allHotels=JSON.parse(storedHotels);startApp();}}catch(e){}};
 
-
+// ── AI ANALYTICS ──
 async function askAI(question) {
-  var input = document.getElementById('ai-question-input');
-  var q = question || (input && input.value.trim());
-  if (!q) { if(input) input.focus(); return; }
-  if (input) input.value = q;
-
-  var answerDiv = document.getElementById('ai-answer');
-  answerDiv.style.display = 'block';
-  answerDiv.innerHTML = '<span style="color:#667eea">✨ Analyzing your hotel data...</span>';
-
-  // Build summary from current report data
-  var summary = {
-    hotel: hotel ? hotel.name : '',
-    total_requests: document.getElementById('rpt-total') ? document.getElementById('rpt-total').textContent : 'unknown',
-    avg_response: document.getElementById('rpt-avg') ? document.getElementById('rpt-avg').textContent : 'unknown',
-    rating: document.getElementById('rpt-rating') ? document.getElementById('rpt-rating').textContent : 'unknown'
-  };
-
-  try {
-    var res = await authFetch('/ai/analytics', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question: q, hotel_name: hotel ? hotel.name : '', requests_summary: summary })
-    });
-    var data = await res.json();
-    answerDiv.innerHTML = '✨ ' + (data.answer || 'Unable to analyze right now.');
-    if (input) input.value = '';
-  } catch(e) {
-    answerDiv.innerHTML = '❌ AI unavailable. Check API key in Render environment.';
-  }
-}
-var hotelPhotos = [];
-
-function renderPhotoUrls() {
-  var list = document.getElementById('photo-urls-list');
-  if (!list) return;
-  if (hotelPhotos.length === 0) {
-    list.innerHTML = '<div style="font-size:12px;color:#aaa;padding:6px 0;width:100%">No photos yet. Click above to upload.</div>';
-    return;
-  }
-  list.innerHTML = hotelPhotos.map(function(url, i) {
-    return '<div style="position:relative;width:80px;height:60px;border-radius:8px;overflow:hidden;border:1px solid #eee;flex-shrink:0">' +
-      '<img src="' + url + '" style="width:100%;height:100%;object-fit:cover">' +
-      '<button onclick="removePhoto(' + i + ')" style="position:absolute;top:2px;right:2px;background:rgba(230,57,70,.9);color:white;border:none;border-radius:50%;width:18px;height:18px;font-size:10px;cursor:pointer;line-height:18px;text-align:center;padding:0">✕</button>' +
-      '</div>';
-  }).join('');
+  var input=document.getElementById('ai-question-input');var q=question||(input&&input.value.trim());if(!q){if(input)input.focus();return;}if(input)input.value=q;
+  var answerDiv=document.getElementById('ai-answer');answerDiv.style.display='block';answerDiv.innerHTML='<span style="color:#667eea">✨ Analyzing your hotel data...</span>';
+  var summary={hotel:hotel?hotel.name:'',total_requests:document.getElementById('rpt-total')?document.getElementById('rpt-total').textContent:'unknown',rating:document.getElementById('rpt-rating')?document.getElementById('rpt-rating').textContent:'unknown'};
+  try{var res=await authFetch('/ai/analytics',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q,hotel_name:hotel?hotel.name:'',requests_summary:summary})});var data=await res.json();answerDiv.innerHTML='✨ '+(data.answer||'Unable to analyze right now.');if(input)input.value='';}catch(e){answerDiv.innerHTML='❌ AI unavailable. Check API key in Render environment.';}
 }
 
-function handleSlideshowUpload(event) {
-  var files = Array.from(event.target.files);
-  if (hotelPhotos.length + files.length > 5) {
-    alert('Maximum 5 photos allowed. You have ' + hotelPhotos.length + ' already.');
-    event.target.value = '';
-    return;
-  }
-  var remaining = 5 - hotelPhotos.length;
-  files = files.slice(0, remaining);
-  var processed = 0;
-  files.forEach(function(file) {
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      // Compress image aggressively for Supabase storage
-      var img = new Image();
-      img.onload = function() {
-        var canvas = document.createElement('canvas');
-        var MAX = 600;
-        var w = img.width, h = img.height;
-        if (w > h) { if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; } }
-        else { if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; } }
-        canvas.width = w; canvas.height = h;
-        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        var compressed = canvas.toDataURL('image/jpeg', 0.5);
-        hotelPhotos.push(compressed);
-        processed++;
-        if (processed === files.length) renderPhotoUrls();
-      };
-      img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  });
-  event.target.value = '';
-}
+// ── PHOTOS ──
+function renderPhotoUrls(){var list=document.getElementById('photo-urls-list');if(!list)return;if(hotelPhotos.length===0){list.innerHTML='<div style="font-size:12px;color:#aaa;padding:6px 0;width:100%">No photos yet.</div>';return;}list.innerHTML=hotelPhotos.map(function(url,i){return '<div style="position:relative;width:80px;height:60px;border-radius:8px;overflow:hidden;border:1px solid #eee;flex-shrink:0"><img src="'+url+'" style="width:100%;height:100%;object-fit:cover"><button onclick="removePhoto('+i+')" style="position:absolute;top:2px;right:2px;background:rgba(230,57,70,.9);color:white;border:none;border-radius:50%;width:18px;height:18px;font-size:10px;cursor:pointer;line-height:18px;text-align:center;padding:0">✕</button></div>';}).join('');}
+function handleSlideshowUpload(event){var files=Array.from(event.target.files);if(hotelPhotos.length+files.length>5){alert('Maximum 5 photos allowed.');event.target.value='';return;}var remaining=5-hotelPhotos.length;files=files.slice(0,remaining);var processed=0;files.forEach(function(file){var reader=new FileReader();reader.onload=function(e){var img=new Image();img.onload=function(){var canvas=document.createElement('canvas');var MAX=600;var w=img.width,h=img.height;if(w>h){if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}}else{if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}}canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);var compressed=canvas.toDataURL('image/jpeg',0.5);hotelPhotos.push(compressed);processed++;if(processed===files.length)renderPhotoUrls();};img.src=e.target.result;};reader.readAsDataURL(file);});event.target.value='';}
+function removePhoto(i){hotelPhotos.splice(i,1);renderPhotoUrls();}
+function loadPhotos(){hotelPhotos=(hotel&&hotel.hotel_photos)?hotel.hotel_photos:[];renderPhotoUrls();}
 
-function removePhoto(i) {
-  hotelPhotos.splice(i, 1);
-  renderPhotoUrls();
-}
+// ── BULK QR ──
+function downloadAllQRs(btn){if(!hotel)return;var msg=document.getElementById('bulk-qr-msg');btn.textContent='⏳ Generating...';btn.disabled=true;fetch('/rooms?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(rooms){if(!rooms||rooms.length===0){msg.textContent='⚠️ No rooms found.';msg.style.display='block';msg.style.background='#fff3cd';msg.style.color='#8a6000';btn.textContent='📥 Download All QRs';btn.disabled=false;return;}var container=document.createElement('div');container.style.cssText='position:fixed;left:-9999px;top:0;display:flex;flex-wrap:wrap;gap:0;background:white;padding:20px;width:794px;';document.body.appendChild(container);rooms.forEach(function(room){var cell=document.createElement('div');cell.style.cssText='width:180px;padding:12px;text-align:center;border:1px solid #eee;margin:4px;border-radius:8px;font-family:sans-serif;';cell.innerHTML='<div style="font-size:13px;font-weight:700;color:#005f73;margin-bottom:6px">Room '+room.room_number+'</div><div id="qr_room_'+room.id+'"></div><div style="font-size:10px;color:#aaa;margin-top:6px">'+(hotel.name||'Hotel')+'</div>';container.appendChild(cell);new QRCode(cell.querySelector('#qr_room_'+room.id),{text:LIVE_URL+'/guest.html?hotel_id='+hotel.hotel_id+'&room_id='+room.id+'&room='+room.room_number,width:150,height:150,colorDark:hotel.colour||'#005f73',colorLight:'#ffffff'});});setTimeout(function(){var printWindow=window.open('','_blank','width=900,height=700');printWindow.document.write('<html><head><title>Welco QR Codes — '+hotel.name+'</title><style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:sans-serif;background:white;padding:20px;}.grid{display:flex;flex-wrap:wrap;gap:8px;}.cell{width:170px;padding:12px;text-align:center;border:1px solid #ddd;border-radius:10px;}.room-label{font-size:14px;font-weight:700;color:#005f73;margin-bottom:6px;}.hotel-label{font-size:10px;color:#aaa;margin-top:6px;}@media print{.no-print{display:none;}}</style></head><body>');printWindow.document.write('<div style="margin-bottom:16px" class="no-print"><button onclick="window.print()" style="padding:10px 24px;background:#005f73;color:white;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer">🖨️ Print All QR Codes</button><button onclick="window.close()" style="margin-left:10px;padding:10px 20px;background:#eee;color:#555;border:none;border-radius:8px;font-size:14px;cursor:pointer">Close</button></div>');printWindow.document.write('<div class="grid">');rooms.forEach(function(room){var canvas=container.querySelectorAll('#qr_room_'+room.id+' canvas')[0];var imgData=canvas?canvas.toDataURL('image/png'):'';printWindow.document.write('<div class="cell"><div class="room-label">Room '+room.room_number+'</div><img src="'+imgData+'" width="140" height="140"><div class="hotel-label">'+(hotel.name||'')+'</div></div>');});printWindow.document.write('</div></body></html>');printWindow.document.close();document.body.removeChild(container);msg.textContent='✅ '+rooms.length+' QR codes ready!';msg.style.display='block';msg.style.background='#d1fae5';msg.style.color='#065f46';btn.textContent='📥 Download All QRs';btn.disabled=false;},1200);}).catch(function(){msg.textContent='❌ Failed. Try again.';msg.style.display='block';msg.style.background='#fde8ea';msg.style.color='#e63946';btn.textContent='📥 Download All QRs';btn.disabled=false;});}
 
-function addPhotoUrl() {} // kept for compatibility
+// ── SUBSCRIPTION ──
+function openPaymentModal(){var d=new Date();d.setMonth(d.getMonth()+1);var el=document.getElementById('sub-renew-date');if(el)el.textContent=d.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});document.getElementById('payment-modal').classList.add('open');}
+function openCancelModal(){document.getElementById('cancel-modal').classList.add('open');}
+function submitPayment(btn){var name=document.getElementById('pay-name').value.trim();var upi=document.getElementById('pay-upi').value.trim();var phone=document.getElementById('pay-phone').value.trim();var msg=document.getElementById('pay-msg');if(!name||!upi||!phone){msg.textContent='⚠️ Please fill all fields.';msg.style.display='block';msg.style.background='#fff3cd';msg.style.color='#8a6000';return;}btn.textContent='Processing…';btn.disabled=true;setTimeout(function(){msg.textContent='✅ Subscription activated!';msg.style.display='block';msg.style.background='#d1fae5';msg.style.color='#065f46';btn.textContent='💳 Activate Subscription →';btn.disabled=false;setTimeout(function(){document.getElementById('payment-modal').classList.remove('open');},2000);},1500);}
+function confirmCancelSub(btn){btn.textContent='Cancelling…';btn.disabled=true;setTimeout(function(){document.getElementById('cancel-modal').classList.remove('open');alert('✅ Subscription cancelled.');btn.textContent='Yes, Cancel';btn.disabled=false;},1000);}
 
-function loadPhotos() {
-  hotelPhotos = (hotel && hotel.hotel_photos) ? hotel.hotel_photos : [];
-  renderPhotoUrls();
-}
-function downloadAllQRs(btn) {
-  if (!hotel) return;
-  var msg = document.getElementById('bulk-qr-msg');
-  btn.textContent = '⏳ Generating...'; btn.disabled = true;
-  fetch('/rooms?hotel_id=' + hotel.hotel_id).then(function(r){ return r.json(); }).then(function(rooms) {
-    if (!rooms || rooms.length === 0) {
-      msg.textContent = '⚠️ No rooms found. Add rooms first.';
-      msg.style.display = 'block'; msg.style.background = '#fff3cd'; msg.style.color = '#8a6000';
-      btn.textContent = '📥 Download All QRs'; btn.disabled = false; return;
-    }
-    // Create a hidden container for generating QR codes
-    var container = document.createElement('div');
-    container.style.cssText = 'position:fixed;left:-9999px;top:0;display:flex;flex-wrap:wrap;gap:0;background:white;padding:20px;width:794px;';
-    document.body.appendChild(container);
+// ── DELETE HOTEL ──
+function openDeleteHotelModal(){document.getElementById('del-hotel-name').textContent=(hotel&&hotel.name)?hotel.name:'this hotel';document.getElementById('del-hotel-confirm').value='';document.getElementById('del-hotel-msg').style.display='none';document.getElementById('delete-hotel-modal').classList.add('open');}
+function confirmDeleteHotel(btn){var val=document.getElementById('del-hotel-confirm').value.trim().toUpperCase();var msg=document.getElementById('del-hotel-msg');if(val!=='DELETE'){msg.textContent='⚠️ Type DELETE exactly to confirm.';msg.style.display='block';return;}btn.textContent='Deleting…';btn.disabled=true;authFetch('/hotels/'+hotel.hotel_id+'/delete',{method:'POST',headers:{'Content-Type':'application/json'}}).then(function(){allHotels=allHotels.filter(function(h){return h.hotel_id!==hotel.hotel_id;});localStorage.setItem('welco_admin_hotels',JSON.stringify(allHotels));if(allHotels.length>0){hotel=allHotels[0];localStorage.setItem('welco_admin_hotel',JSON.stringify(hotel));document.getElementById('delete-hotel-modal').classList.remove('open');startApp();alert('✅ Hotel deleted. Switched to '+hotel.name+'.');}else{localStorage.removeItem('welco_admin_hotel');localStorage.removeItem('welco_admin_hotels');localStorage.removeItem('welco_token');document.getElementById('delete-hotel-modal').classList.remove('open');document.getElementById('app-screen').style.display='none';document.getElementById('login-screen').style.display='flex';alert('✅ Hotel deleted.');}}).catch(function(){msg.textContent='❌ Failed. Try again.';msg.style.display='block';btn.textContent='🗑️ Delete Hotel';btn.disabled=false;});}
 
-    var generated = 0;
-    rooms.forEach(function(room) {
-      var cell = document.createElement('div');
-      cell.style.cssText = 'width:180px;padding:12px;text-align:center;border:1px solid #eee;margin:4px;border-radius:8px;font-family:sans-serif;page-break-inside:avoid;';
-      cell.innerHTML = '<div style="font-size:13px;font-weight:700;color:#005f73;margin-bottom:6px">Room ' + room.room_number + '</div><div id="qr_room_' + room.id + '"></div><div style="font-size:10px;color:#aaa;margin-top:6px">' + (hotel.name || 'Hotel') + '</div>';
-      container.appendChild(cell);
-      new QRCode(cell.querySelector('#qr_room_' + room.id), {
-        text: LIVE_URL + '/guest.html?hotel_id=' + hotel.hotel_id + '&room_id=' + room.id + '&room=' + room.room_number,
-        width: 150, height: 150,
-        colorDark: hotel.colour || '#005f73',
-        colorLight: '#ffffff'
-      });
-      generated++;
-    });
+// ── DELETE ACCOUNT ──
+function openDeleteAccountModal(){document.getElementById('del-acc-confirm').value='';document.getElementById('del-acc-msg').style.display='none';document.getElementById('delete-account-modal').classList.add('open');}
+function confirmDeleteAccount(btn){var val=document.getElementById('del-acc-confirm').value.trim().toUpperCase();var msg=document.getElementById('del-acc-msg');if(val!=='DELETE MY ACCOUNT'){msg.textContent='⚠️ Type DELETE MY ACCOUNT exactly.';msg.style.display='block';return;}btn.textContent='Deleting everything…';btn.disabled=true;authFetch('/owner/delete',{method:'POST',headers:{'Content-Type':'application/json'}}).then(function(){localStorage.clear();document.getElementById('delete-account-modal').classList.remove('open');document.getElementById('app-screen').style.display='none';document.getElementById('login-screen').style.display='flex';alert('✅ Account permanently deleted.');}).catch(function(){localStorage.clear();document.getElementById('delete-account-modal').classList.remove('open');document.getElementById('app-screen').style.display='none';document.getElementById('login-screen').style.display='flex';});}
 
-    // Wait for all QRs to render then capture as image
-    setTimeout(function() {
-      // Convert each canvas to a printable page
-      var printWindow = window.open('', '_blank', 'width=900,height=700');
-      printWindow.document.write('<html><head><title>Welco QR Codes — ' + hotel.name + '</title><style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:sans-serif;background:white;padding:20px;}.page-title{font-size:20px;font-weight:700;color:#005f73;margin-bottom:6px;}.page-sub{font-size:13px;color:#888;margin-bottom:20px;border-bottom:1px solid #eee;padding-bottom:12px;}.grid{display:flex;flex-wrap:wrap;gap:8px;}.cell{width:170px;padding:12px;text-align:center;border:1px solid #ddd;border-radius:10px;page-break-inside:avoid;}.room-label{font-size:14px;font-weight:700;color:#005f73;margin-bottom:6px;}.hotel-label{font-size:10px;color:#aaa;margin-top:6px;}@media print{.no-print{display:none;}.cell{border:1px solid #ccc;}}</style></head><body>');
-      printWindow.document.write('<div class="page-title">📱 QR Codes — ' + hotel.name + '</div><div class="page-sub">Scan to submit guest requests · usewelco.in · ' + rooms.length + ' rooms</div>');
-      printWindow.document.write('<div style="margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap" class="no-print"><button onclick="window.print()" style="padding:10px 24px;background:#005f73;color:white;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer">🖨️ Print All QR Codes</button><button onclick="window.close()" style="padding:10px 20px;background:#eee;color:#555;border:none;border-radius:8px;font-size:14px;cursor:pointer">Close</button></div>');
-      printWindow.document.write('<div class="grid">');
+// ── ON LOAD ──
+window.onload=function(){try{var stored=localStorage.getItem('welco_admin_hotel');if(stored){hotel=JSON.parse(stored);var storedHotels=localStorage.getItem('welco_admin_hotels');if(storedHotels)allHotels=JSON.parse(storedHotels);startApp();}}catch(e){}};
+</script>
 
-      var cells = container.querySelectorAll('canvas');
-      var roomIndex = 0;
-      rooms.forEach(function(room) {
-        var canvas = container.querySelectorAll('#qr_room_' + room.id + ' canvas')[0];
-        var imgData = canvas ? canvas.toDataURL('image/png') : '';
-        printWindow.document.write('<div class="cell"><div class="room-label">Room ' + room.room_number + '</div><img src="' + imgData + '" width="140" height="140"><div class="hotel-label">' + (hotel.name || '') + '</div></div>');
-        roomIndex++;
-      });
-
-      printWindow.document.write('</div></body></html>');
-      printWindow.document.close();
-      document.body.removeChild(container);
-
-      msg.textContent = '✅ ' + rooms.length + ' QR codes ready! Print window opened.';
-      msg.style.display = 'block'; msg.style.background = '#d1fae5'; msg.style.color = '#065f46';
-      btn.textContent = '📥 Download All QRs'; btn.disabled = false;
-    }, 1200);
-  }).catch(function() {
-    msg.textContent = '❌ Failed to load rooms. Try again.';
-    msg.style.display = 'block'; msg.style.background = '#fde8ea'; msg.style.color = '#e63946';
-    btn.textContent = '📥 Download All QRs'; btn.disabled = false;
-  });
-}
-
-/* ── SUBSCRIPTION & BILLING ── */
-function openPaymentModal() {
-  // Set renewal date
-  var d = new Date(); d.setMonth(d.getMonth() + 1);
-  var el = document.getElementById('sub-renew-date');
-  if (el) el.textContent = d.toLocaleDateString('en-IN', {day:'numeric', month:'long', year:'numeric'});
-  document.getElementById('payment-modal').classList.add('open');
-}
-function openCancelModal() { document.getElementById('cancel-modal').classList.add('open'); }
-
-function submitPayment(btn) {
-  var name = document.getElementById('pay-name').value.trim();
-  var upi = document.getElementById('pay-upi').value.trim();
-  var phone = document.getElementById('pay-phone').value.trim();
-  var msg = document.getElementById('pay-msg');
-  if (!name || !upi || !phone) {
-    msg.textContent = '⚠️ Please fill all fields.';
-    msg.style.display = 'block'; msg.style.background = '#fff3cd'; msg.style.color = '#8a6000'; return;
-  }
-  btn.textContent = 'Processing…'; btn.disabled = true;
-  // In production this would call Razorpay. For now simulate activation.
-  setTimeout(function() {
-    msg.textContent = '✅ Subscription activated! Your hotel is now live on Pro plan.';
-    msg.style.display = 'block'; msg.style.background = '#d1fae5'; msg.style.color = '#065f46';
-    btn.textContent = '💳 Activate Subscription →'; btn.disabled = false;
-    // Store subscription status
-    var subData = { plan: document.getElementById('pay-plan').value, active: true, since: new Date().toISOString() };
-    localStorage.setItem('welco_sub_' + (hotel ? hotel.hotel_id : ''), JSON.stringify(subData));
-    setTimeout(function() { document.getElementById('payment-modal').classList.remove('open'); }, 2000);
-  }, 1500);
-}
-
-function confirmCancelSub(btn) {
-  btn.textContent = 'Cancelling…'; btn.disabled = true;
-  setTimeout(function() {
-    document.getElementById('cancel-modal').classList.remove('open');
-    alert('✅ Subscription cancelled. Your hotel stays active until the end of this billing period.');
-    btn.textContent = 'Yes, Cancel'; btn.disabled = false;
-  }, 1000);
-}
-
-/* ── DELETE HOTEL ── */
-function openDeleteHotelModal() {
-  document.getElementById('del-hotel-name').textContent = (hotel && hotel.name) ? hotel.name : 'this hotel';
-  document.getElementById('del-hotel-confirm').value = '';
-  document.getElementById('del-hotel-msg').style.display = 'none';
-  document.getElementById('delete-hotel-modal').classList.add('open');
-}
-
-function confirmDeleteHotel(btn) {
-  var val = document.getElementById('del-hotel-confirm').value.trim().toUpperCase();
-  var msg = document.getElementById('del-hotel-msg');
-  if (val !== 'DELETE') {
-    msg.textContent = '⚠️ Type DELETE exactly to confirm.';
-    msg.style.display = 'block'; return;
-  }
-  btn.textContent = 'Deleting…'; btn.disabled = true;
-  // Delete all rooms then the hotel record
-  authFetch('/hotels/' + hotel.hotel_id + '/delete', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
-  .then(function(r) {
-    // Even if route doesn't exist yet, clear locally
-    allHotels = allHotels.filter(function(h) { return h.hotel_id !== hotel.hotel_id; });
-    localStorage.setItem('welco_admin_hotels', JSON.stringify(allHotels));
-    if (allHotels.length > 0) {
-      hotel = allHotels[0];
-      localStorage.setItem('welco_admin_hotel', JSON.stringify(hotel));
-      document.getElementById('delete-hotel-modal').classList.remove('open');
-      startApp();
-      alert('✅ Hotel deleted. Switched to ' + hotel.name + '.');
-    } else {
-      localStorage.removeItem('welco_admin_hotel');
-      localStorage.removeItem('welco_admin_hotels');
-      localStorage.removeItem('welco_token');
-      document.getElementById('delete-hotel-modal').classList.remove('open');
-      document.getElementById('app-screen').style.display = 'none';
-      document.getElementById('login-screen').style.display = 'flex';
-      alert('✅ Hotel deleted. Please create a new hotel to continue.');
-    }
-  }).catch(function() {
-    msg.textContent = '❌ Failed. Try again or contact support.';
-    msg.style.display = 'block';
-    btn.textContent = '🗑️ Delete Hotel'; btn.disabled = false;
-  });
-}
-
-/* ── DELETE ACCOUNT ── */
-function openDeleteAccountModal() {
-  document.getElementById('del-acc-confirm').value = '';
-  document.getElementById('del-acc-msg').style.display = 'none';
-  document.getElementById('delete-account-modal').classList.add('open');
-}
-
-function confirmDeleteAccount(btn) {
-  var val = document.getElementById('del-acc-confirm').value.trim().toUpperCase();
-  var msg = document.getElementById('del-acc-msg');
-  if (val !== 'DELETE MY ACCOUNT') {
-    msg.textContent = '⚠️ Type DELETE MY ACCOUNT exactly to confirm.';
-    msg.style.display = 'block'; return;
-  }
-  btn.textContent = 'Deleting everything…'; btn.disabled = true;
-  authFetch('/owner/delete', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
-  .then(function() {
-    localStorage.clear();
-    document.getElementById('delete-account-modal').classList.remove('open');
-    document.getElementById('app-screen').style.display = 'none';
-    document.getElementById('login-screen').style.display = 'flex';
-    alert('✅ Your account has been permanently deleted. Thank you for using Welco.');
-  }).catch(function() {
-    // Clear locally even if server fails
-    localStorage.clear();
-    document.getElementById('delete-account-modal').classList.remove('open');
-    document.getElementById('app-screen').style.display = 'none';
-    document.getElementById('login-screen').style.display = 'flex';
-  });
-}</script>
-
-  <!-- COPYRIGHT -->
   <div style="text-align:center;padding:12px;font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:0.05em;background:rgba(0,0,0,0.2)">
-    © 2026 Welco Technologies. All rights reserved. Unauthorized use prohibited.
+    © 2026 Welco Technologies. All rights reserved.
   </div>
-
-  <!-- Welco Copyright Footer -->
+  
   <div style="text-align:center;padding:16px;font-size:11px;color:rgba(255,255,255,0.4);position:relative;z-index:1;margin-top:auto">
-    © 2026 <strong>Welco™</strong> · All Rights Reserved · Built in India 🇮🇳<br>
-    Unauthorized copying or distribution is prohibited.
+    © 2026 <strong>Welco™</strong> · All Rights Reserved · Built in India 🇮🇳
   </div>
 
 </body>

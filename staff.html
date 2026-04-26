@@ -305,6 +305,7 @@ var currentHotelId='', currentFilter='all', knownRequestIds=null;
 var refreshInterval=null, audioCtx=null, pendingClaimId=null;
 var staffDepartment = '';
 var activeChatRoom = null;
+var activeChatSession = null;
 var chatWindowInterval = null;
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(function(){});
@@ -538,19 +539,28 @@ function copyReply(text) { if(navigator.clipboard){ navigator.clipboard.writeTex
 function showLoginErr(msg){ var e=document.getElementById('login-error'); e.textContent=msg; e.style.display='block'; }
 
 // ── CHAT INBOX ──
+var knownChatCount = 0;
+
 async function loadChatInbox() {
   if (!currentHotelId) return;
   try {
-    var res = await fetch('/chat?hotel_id=' + currentHotelId);
+    var res = await fetch('/chat/rooms?hotel_id=' + currentHotelId);
     var allChats = await res.json();
-    // Group by room_number
+    // Group by room+session
     var rooms = {};
     allChats.forEach(function(m){
-      var room = m.room_number || '?';
-      if (!rooms[room]) rooms[room] = { messages:[], unread:0 };
-      rooms[room].messages.push(m);
-      if (m.sender === 'guest' && !m.is_read) rooms[room].unread++;
+      var key = (m.room_number || '?') + '::' + (m.session_id || 'default');
+      if (!rooms[key]) rooms[key] = { room: m.room_number||'?', session_id: m.session_id, messages:[], unread:0 };
+      rooms[key].messages.push(m);
+      if (m.sender === 'guest' && !m.is_read) rooms[key].unread++;
     });
+    // Check for new messages — play sound
+    var totalMsgs = allChats.length;
+    if (knownChatCount > 0 && totalMsgs > knownChatCount) {
+      var newOnes = allChats.slice(0, totalMsgs - knownChatCount);
+      if (newOnes.some(function(m){ return m.sender === 'guest'; })) playChatChime();
+    }
+    knownChatCount = totalMsgs;
 
     var el = document.getElementById('chat-rooms-list');
     var keys = Object.keys(rooms);
@@ -608,22 +618,30 @@ function closeChatWindow() {
 async function loadChatWindow() {
   if (!activeChatRoom) return;
   try {
-    var res = await fetch('/chat?hotel_id='+currentHotelId+'&room_number='+activeChatRoom);
+    var url = '/chat?hotel_id='+currentHotelId+'&room_number='+encodeURIComponent(activeChatRoom);
+    if (activeChatSession) url += '&session_id='+encodeURIComponent(activeChatSession);
+    var res = await fetch(url);
     var messages = await res.json();
     var el = document.getElementById('chat-win-messages');
-    el.innerHTML = messages.map(function(m){
-      var isGuest = m.sender === 'guest';
-      var time = new Date(m.created_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
-      return '<div class="chat-win-msg '+(isGuest?'guest':'staff-msg')+'">'
-        + m.message
-        + '<div class="chat-win-msg-meta">'+(isGuest?'Guest':'You')+' · '+time+'</div>'
-        + '</div>';
-    }).join('');
-    el.scrollTop = el.scrollHeight;
-    // Mark guest messages as read
-    messages.filter(function(m){ return m.sender==='guest' && !m.is_read; }).forEach(async function(m){
-      await fetch('/chat/'+m.id+'/read', { method:'POST' });
-    });
+    var wasAtBottom = el.scrollHeight - el.scrollTop <= el.clientHeight + 60;
+    if (messages.length === 0) {
+      el.innerHTML = '<div style="text-align:center;padding:40px;color:#aaa"><div style="font-size:40px;margin-bottom:10px">💬</div><p>No messages yet</p></div>';
+    } else {
+      el.innerHTML = messages.map(function(m){
+        var isGuest = m.sender === 'guest';
+        var time = new Date(m.created_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+        var readTick = (!isGuest && m.is_read) ? ' ✓✓' : (!isGuest ? ' ✓' : '');
+        return '<div class="chat-win-msg '+(isGuest?'guest':'staff-msg')+'">'
+          + m.message
+          + '<div class="chat-win-msg-meta">'+(isGuest?'Guest':'You')+' · '+time+readTick+'</div>'
+          + '</div>';
+      }).join('');
+    }
+    if (wasAtBottom) el.scrollTop = el.scrollHeight;
+    // Mark all guest messages as read
+    if (messages.some(function(m){ return m.sender==='guest' && !m.is_read; })) {
+      fetch('/chat/room/read', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ hotel_id:currentHotelId, room_number:activeChatRoom, session_id:activeChatSession }) });
+    }
   } catch(e) {}
 }
 
@@ -631,10 +649,18 @@ async function sendStaffReply() {
   var input = document.getElementById('chat-win-input');
   var text = input.value.trim(); if (!text || !activeChatRoom) return;
   input.value = '';
+  // Optimistic UI
+  var el = document.getElementById('chat-win-messages');
+  var div = document.createElement('div');
+  div.className = 'chat-win-msg staff-msg';
+  div.style.opacity = '0.6';
+  div.innerHTML = text + '<div class="chat-win-msg-meta">You · sending...</div>';
+  el.appendChild(div);
+  el.scrollTop = el.scrollHeight;
   try {
-    await fetch('/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ hotel_id:currentHotelId, room_number:activeChatRoom, message:text, sender:'staff' }) });
-    loadChatWindow();
-  } catch(e) { alert('Could not send message.'); }
+    await fetch('/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ hotel_id:currentHotelId, room_number:activeChatRoom, message:text, sender:'staff', session_id:activeChatSession }) });
+    loadChatWindow(); // Refresh immediately
+  } catch(e) { div.remove(); alert('Could not send message.'); }
 }
 </script>
 

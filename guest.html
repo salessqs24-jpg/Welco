@@ -468,7 +468,7 @@ async function loadBranding() {
     try {
       var controller = new AbortController();
       var timeout = setTimeout(function(){ controller.abort(); }, 8000);
-      var hotelRes = await fetch('/hotel?hotel_id=' + hotelId, { signal: controller.signal });
+      var hotelRes = await fetch('/hotels?hotel_id=' + hotelId, { signal: controller.signal });
       clearTimeout(timeout);
       hotel = await hotelRes.json();
       if (!hotel || hotel.error) hotel = null;

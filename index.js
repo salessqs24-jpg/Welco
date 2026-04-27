@@ -319,6 +319,53 @@ app.post('/ai/suggest-response', async (req, res) => {
 
 app.get('/health', (req,res) => res.json({ status:'ok', ts:Date.now() }));
 
+// ── SUPABASE STORAGE UPLOAD ──────────────────────────────────────────────────
+// Accepts base64 image, uploads to Supabase Storage, returns public URL
+app.post('/upload', async (req, res) => {
+  try {
+    const { base64, filename, folder } = req.body;
+    if (!base64) return res.status(400).json({ error: 'base64 required' });
+
+    // Decode base64 — strip data URL prefix if present
+    const matches = base64.match(/^data:([A-Za-z-+/]+);base64,(.+)$/);
+    let buffer, contentType;
+    if (matches) {
+      contentType = matches[1];
+      buffer = Buffer.from(matches[2], 'base64');
+    } else {
+      buffer = Buffer.from(base64, 'base64');
+      contentType = 'image/jpeg';
+    }
+
+    const ext = contentType.includes('png') ? 'png' : 'jpg';
+    const safeFolder = (folder || 'uploads').replace(/[^a-z0-9_-]/gi, '');
+    const safeFile = (filename || ('img_' + Date.now())).replace(/[^a-z0-9_.-]/gi, '');
+    const path = `${safeFolder}/${safeFile}.${ext}`;
+
+    const { data, error } = await supabase.storage
+      .from('welco-ids')
+      .upload(path, buffer, {
+        contentType,
+        upsert: true
+      });
+
+    if (error) {
+      console.error('Supabase storage upload error:', error.message);
+      return res.status(500).json({ error: error.message });
+    }
+
+    // Get public URL
+    const { data: urlData } = supabase.storage
+      .from('welco-ids')
+      .getPublicUrl(path);
+
+    res.json({ success: true, url: urlData.publicUrl, path });
+  } catch(e) {
+    console.error('Upload error:', e.message);
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // ── DEMO LOGIN ─────────────────────────────────────────────────────────────
 const DEMO_HOTEL_ID = 'hotel_demo_welco';
 

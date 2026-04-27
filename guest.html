@@ -1,1274 +1,844 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script>
-    (function(){
-      document.addEventListener('contextmenu',function(e){e.preventDefault();});
-    })();
-  </script>
+  <script>(function(){ document.addEventListener('contextmenu',function(e){e.preventDefault();}); })();</script>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welco - Guest Services</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Welco — Guest Services</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    :root { --brand: #1a1a2e; --brand-light: #7fdbda; }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: sans-serif; min-height: 100vh; background: #1a1a2e; display: flex; flex-direction: column; position: relative; padding-bottom: 70px; }
+    :root {
+      --navy: #0a0f1e;
+      --navy2: #111827;
+      --navy3: #1a2235;
+      --gold: #c9a84c;
+      --gold2: #e8c97a;
+      --gold3: #f5e4b0;
+      --white: #ffffff;
+      --muted: rgba(255,255,255,0.45);
+      --glass: rgba(255,255,255,0.05);
+      --glass2: rgba(255,255,255,0.08);
+      --border: rgba(201,168,76,0.2);
+      --border2:rgba(201,168,76,0.4);
+      --brand: #0a0f1e;
+      --radius: 16px;
+      --shadow: 0 24px 60px rgba(0,0,0,0.5);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html { scroll-behavior:smooth; }
+    body { font-family:'Inter',sans-serif; background:var(--navy); color:var(--white); min-height:100vh; padding-bottom:80px; overflow-x:hidden; }
 
     /* SLIDESHOW */
-    #slideshow-container { position: fixed; inset: 0; z-index: 0; overflow: hidden; }
-    .slideshow-slide { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.5s ease; }
-    .slideshow-slide.active { opacity: 1; }
-    #slideshow-overlay { position: fixed; inset: 0; z-index: 1; background: linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.7) 100%); pointer-events: none; }
-    .slideshow-dots { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 10; }
-    .slideshow-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; transition: all .3s; }
-    .slideshow-dot.active { background: white; width: 18px; border-radius: 3px; }
+    #slideshow-container { position:fixed; inset:0; z-index:0; }
+    .slideshow-slide { position:absolute; inset:0; background-size:cover; background-position:center; opacity:0; transition:opacity 2s ease; }
+    .slideshow-slide.active { opacity:1; }
+    #slideshow-overlay { position:fixed; inset:0; z-index:1; background:linear-gradient(180deg,rgba(10,15,30,0.72) 0%,rgba(10,15,30,0.28) 35%,rgba(10,15,30,0.55) 65%,rgba(10,15,30,0.94) 100%); }
+    .slideshow-dots { position:fixed; bottom:88px; left:50%; transform:translateX(-50%); display:flex; gap:6px; z-index:10; }
+    .slideshow-dot { width:5px; height:5px; border-radius:50%; background:rgba(255,255,255,0.28); cursor:pointer; transition:all .3s; }
+    .slideshow-dot.active { background:var(--gold); width:20px; border-radius:3px; }
 
     /* HEADER */
-    .header { position: relative; z-index: 5; color: white; text-align: center; padding: 0; min-height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
-    .header-inner { position: relative; z-index: 5; padding: 20px 20px 10px; width: 100%; }
-    .hotel-logo-circle { width: 64px; height: 64px; border-radius: 50%; background: white; border: 3px solid rgba(255,255,255,0.8); margin: 0 auto 10px; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
-    .hotel-logo-emoji { font-size: 30px; }
-    .header h1 { font-size: 24px; font-weight: 800; text-shadow: 0 2px 12px rgba(0,0,0,0.8); letter-spacing: -0.5px; }
-    .header p { font-size: 13px; opacity: 0.9; margin-top: 4px; text-shadow: 0 1px 6px rgba(0,0,0,0.6); }
-    .welcome-msg { font-size: 12px; margin-top: 8px; background: rgba(255,255,255,0.15); border-radius: 20px; padding: 4px 14px; display: inline-block; }
+    .header { position:relative; z-index:5; text-align:center; padding:60px 24px 24px; min-height:230px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; }
+    .hotel-logo-wrap { width:74px; height:74px; border-radius:50%; background:rgba(201,168,76,0.1); border:1.5px solid var(--border2); margin:0 auto 14px; display:flex; align-items:center; justify-content:center; overflow:hidden; backdrop-filter:blur(12px); box-shadow:0 0 0 8px rgba(201,168,76,0.05); }
+    .hotel-logo-wrap img { width:100%; height:100%; object-fit:cover; display:none; }
+    .hotel-logo-emoji { font-size:32px; }
+    .hotel-name { font-family:'Cormorant Garamond',serif; font-size:30px; font-weight:300; letter-spacing:0.12em; color:var(--white); text-shadow:0 2px 24px rgba(0,0,0,0.7); margin-bottom:5px; }
+    .hotel-room { font-size:10px; font-weight:500; letter-spacing:0.26em; text-transform:uppercase; color:var(--gold); margin-bottom:10px; }
+    .welcome-pill { display:inline-flex; align-items:center; gap:7px; background:rgba(201,168,76,0.1); border:1px solid var(--border); border-radius:30px; padding:5px 14px; font-size:10px; color:var(--gold2); letter-spacing:0.1em; }
 
     /* ANNOUNCEMENT */
-    .announcement-banner { display: none; background: linear-gradient(90deg, #ee9b00, #ca6702); color: white; padding: 10px 16px; font-size: 13px; font-weight: 500; text-align: center; line-height: 1.5; position: relative; z-index: 5; }
-    .ann-dismiss { background: rgba(255,255,255,0.25); border: none; color: white; border-radius: 20px; padding: 2px 10px; font-size: 11px; cursor: pointer; margin-left: 10px; }
+    .announcement { position:relative; z-index:5; display:none; background:linear-gradient(90deg,rgba(201,168,76,0.12),rgba(201,168,76,0.06)); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:10px 48px 10px 16px; font-size:12px; color:var(--gold2); letter-spacing:0.04em; line-height:1.6; }
+    .ann-close { position:absolute; right:14px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--gold); font-size:16px; cursor:pointer; }
 
     /* BOTTOM NAV */
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; background: rgba(10,10,20,0.95); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.1); display: flex; }
-    .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 4px 8px; cursor: pointer; transition: all 0.2s; border: none; background: none; color: rgba(255,255,255,0.4); }
-    .nav-btn.active { color: white; }
-    .nav-btn .nav-icon { font-size: 20px; margin-bottom: 3px; }
-    .nav-btn .nav-label { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
-    .nav-btn.active .nav-label { color: var(--brand-light, #7fdbda); }
+    .bottom-nav { position:fixed; bottom:0; left:0; right:0; z-index:100; background:rgba(10,15,30,0.94); backdrop-filter:blur(24px); border-top:1px solid var(--border); display:flex; padding-bottom:env(safe-area-inset-bottom,0px); }
+    .nav-btn { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:12px 4px 10px; background:none; border:none; cursor:pointer; color:rgba(255,255,255,0.28); transition:color 0.2s; position:relative; }
+    .nav-btn.active { color:var(--gold); }
+    .nav-btn .nav-icon { font-size:20px; margin-bottom:3px; }
+    .nav-btn .nav-label { font-size:8px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; }
+    .nav-btn.active::after { content:''; position:absolute; top:0; left:22%; right:22%; height:1.5px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
 
-    /* TAB PANELS */
-    .tab-panel { display: none; position: relative; z-index: 5; }
-    .tab-panel.active { display: block; }
+    /* PANELS */
+    .tab-panel { display:none; position:relative; z-index:5; }
+    .tab-panel.active { display:block; }
 
-    /* CARDS */
-    .container { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 16px; }
-    .card { background: rgba(255,255,255,0.96); backdrop-filter: blur(12px); border-radius: 20px; padding: 24px; width: 100%; max-width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); margin-bottom: 16px; }
-    .card h2 { font-size: 17px; margin-bottom: 16px; color: #222; text-align: center; }
-    .section-label { font-size: 11px; color: #005f73; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; margin-top: 4px; }
+    /* CONTAINER & CARD */
+    .container { padding:16px; display:flex; flex-direction:column; align-items:center; gap:14px; }
+    .luxury-card { background:linear-gradient(150deg,rgba(26,34,53,0.96),rgba(17,24,39,0.98)); border:1px solid var(--border); border-radius:var(--radius); padding:24px; width:100%; max-width:440px; box-shadow:var(--shadow); backdrop-filter:blur(20px); }
+    .card-eyebrow { font-size:9px; font-weight:600; letter-spacing:0.22em; text-transform:uppercase; color:var(--gold); margin-bottom:6px; }
+    .card-title { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:300; color:var(--white); letter-spacing:0.04em; margin-bottom:20px; }
+    .gold-divider { height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); margin:18px 0; opacity:0.35; }
 
-    /* FORM INPUTS */
-    .form-group { margin-bottom: 12px; }
-    .form-group label { font-size: 11px; color: #888; font-weight: 600; display: block; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.06em; }
-    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px 14px; border: 1.5px solid #e0ddd8; border-radius: 10px; font-size: 14px; outline: none; font-family: sans-serif; background: white; }
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--brand); }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    /* FORM */
+    .form-group { margin-bottom:14px; }
+    .form-label { display:block; font-size:9px; font-weight:600; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); margin-bottom:7px; }
+    .form-input { width:100%; padding:13px 16px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:10px; font-size:14px; font-family:'Inter',sans-serif; color:var(--white); outline:none; transition:border-color 0.2s, background 0.2s; }
+    .form-input::placeholder { color:rgba(255,255,255,0.22); }
+    .form-input:focus { border-color:var(--border2); background:rgba(201,168,76,0.04); }
+    .form-input option { background:var(--navy2); color:var(--white); }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .luxury-textarea { width:100%; padding:13px 16px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:10px; font-size:14px; font-family:'Inter',sans-serif; color:var(--white); resize:none; height:80px; outline:none; transition:border-color 0.2s; }
+    .luxury-textarea::placeholder { color:rgba(255,255,255,0.22); }
+    .luxury-textarea:focus { border-color:var(--border2); }
 
-    /* CATEGORIES (During Stay) */
-    .categories { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-    .cat-btn { padding: 14px 10px; border: 2px solid #eee; border-radius: 12px; background: white; cursor: pointer; font-size: 14px; text-align: center; transition: all 0.2s; color: #333; }
-    .cat-btn.selected { border-color: var(--brand); background: var(--brand); color: white; }
-    .services-section { margin-bottom: 14px; display: none; }
-    .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .service-item { padding: 10px 12px; background: #f0f9f9; border: 1.5px solid #e0f0f0; border-radius: 12px; font-size: 13px; cursor: pointer; color: #005f73; transition: all 0.2s; text-align: center; }
-    .service-item.selected { background: var(--brand); color: white; border-color: var(--brand); }
-    .dept-closed-box { display: none; background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 16px; padding: 28px 20px; text-align: center; margin-bottom: 14px; }
-    .dept-closed-box .closed-moon { font-size: 44px; margin-bottom: 10px; }
-    .dept-closed-box .closed-title { font-size: 17px; font-weight: 700; color: white; margin-bottom: 8px; }
-    .dept-closed-box .closed-msg { font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.6; margin-bottom: 12px; }
-    .dept-closed-box .closed-timing { background: rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 16px; font-size: 13px; font-weight: 600; color: #ffd166; }
-    .eta-badge { display: none; background: #fff8e6; border: 1px solid #ffd166; border-radius: 8px; padding: 8px 12px; margin-bottom: 12px; font-size: 13px; color: #8a6000; text-align: center; }
-    textarea { width: 100%; padding: 12px; border: 1.5px solid #ddd; border-radius: 10px; font-size: 14px; resize: none; height: 80px; font-family: sans-serif; transition: border-color 0.2s; }
-    textarea:focus { outline: none; border-color: var(--brand); }
-    .submit-btn { width: 100%; padding: 15px; background: var(--brand); color: white; border: none; border-radius: 12px; font-size: 16px; cursor: pointer; margin-top: 12px; font-weight: bold; transition: opacity 0.2s; }
-    .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .success-box { background: #e8f5e9; color: #2e7d32; padding: 14px; border-radius: 10px; margin-top: 12px; display: none; font-size: 14px; text-align: center; }
-    .msg-box { padding: 12px 14px; border-radius: 10px; font-size: 13px; margin-bottom: 12px; display: none; text-align: center; }
-    .msg-success { background: #d1fae5; color: #065f46; display: block; }
-    .msg-error { background: #fde8ea; color: #e63946; display: block; }
+    /* MSG */
+    .msg-box { padding:12px 16px; border-radius:10px; font-size:13px; margin-bottom:14px; display:none; line-height:1.5; }
+    .msg-success { background:rgba(46,204,113,0.08); border:1px solid rgba(46,204,113,0.28); color:#6ee7b7; display:block; }
+    .msg-error { background:rgba(230,57,70,0.08); border:1px solid rgba(230,57,70,0.28); color:#fca5a5; display:block; }
+
+    /* BUTTONS */
+    .btn-primary { width:100%; padding:15px; background:linear-gradient(135deg,var(--gold),#a87c2a); color:var(--navy); border:none; border-radius:12px; font-size:12px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; cursor:pointer; transition:opacity 0.2s,transform 0.1s; margin-top:8px; font-family:'Inter',sans-serif; }
+    .btn-primary:active { transform:scale(0.98); }
+    .btn-primary:disabled { opacity:0.4; cursor:not-allowed; }
+    .btn-secondary { width:100%; padding:13px; background:transparent; color:var(--gold); border:1px solid var(--border2); border-radius:12px; font-size:12px; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; cursor:pointer; margin-top:8px; font-family:'Inter',sans-serif; }
+    .ai-btn { width:100%; padding:13px; background:linear-gradient(135deg,rgba(102,126,234,0.12),rgba(118,75,162,0.12)); border:1px solid rgba(102,126,234,0.28); border-radius:12px; font-size:12px; font-weight:500; color:#a5b4fc; cursor:pointer; margin-top:10px; display:flex; align-items:center; justify-content:center; gap:8px; letter-spacing:0.08em; font-family:'Inter',sans-serif; }
+
+    /* SERVICE CATS */
+    .service-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px; }
+    .service-cat { padding:16px 12px; background:var(--glass); border:1px solid rgba(255,255,255,0.07); border-radius:12px; text-align:center; cursor:pointer; transition:all 0.2s; color:rgba(255,255,255,0.7); font-size:13px; font-family:'Inter',sans-serif; }
+    .service-cat.selected { background:rgba(201,168,76,0.1); border-color:var(--border2); color:var(--gold2); }
+    .service-cat .cat-icon { font-size:24px; display:block; margin-bottom:7px; }
+
+    /* QUICK OPTS */
+    .quick-opts { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
+    .quick-opt { padding:7px 13px; background:var(--glass); border:1px solid rgba(255,255,255,0.08); border-radius:20px; font-size:12px; color:rgba(255,255,255,0.6); cursor:pointer; transition:all 0.2s; font-family:'Inter',sans-serif; }
+    .quick-opt.selected { background:rgba(201,168,76,0.12); border-color:var(--border2); color:var(--gold2); }
+
+    /* CLOSED */
+    .dept-closed { background:rgba(230,57,70,0.06); border:1px solid rgba(230,57,70,0.18); border-radius:12px; padding:22px; text-align:center; margin-bottom:16px; display:none; }
+    .dept-closed .moon { font-size:36px; margin-bottom:10px; }
+    .dept-closed h3 { font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:300; color:var(--white); margin-bottom:6px; }
+    .dept-closed p { font-size:12px; color:var(--muted); line-height:1.7; }
+    .dept-closed .timing { margin-top:10px; font-size:12px; color:#fca5a5; }
+
+    /* ETA */
+    .eta-badge { display:none; background:rgba(201,168,76,0.07); border:1px solid var(--border); border-radius:8px; padding:8px 14px; font-size:12px; color:var(--gold2); margin-bottom:12px; text-align:center; }
 
     /* TRACKING */
-    .tracking-card { background: rgba(255,255,255,0.96); border-radius: 20px; padding: 28px; width: 100%; max-width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); display: none; text-align: center; }
-    .tracking-icon { font-size: 52px; margin-bottom: 12px; animation: pulse 2s infinite; }
-    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-    .tracking-title { font-size: 20px; font-weight: bold; color: #1a1a2e; margin-bottom: 6px; }
-    .tracking-sub { font-size: 14px; color: #666; margin-bottom: 20px; line-height: 1.5; }
-    .tracking-status { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-    .status-step { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; background: #f5f5f5; font-size: 14px; transition: all 0.4s; }
-    .status-step.active { background: #e8f4f4; color: #005f73; font-weight: bold; }
-    .status-step.done { background: #e8f5e9; color: #2e7d32; }
-    .step-icon { font-size: 20px; width: 30px; text-align: center; }
-    .step-text { flex: 1; text-align: left; }
-    .eta-bar { background: #f0f0f0; border-radius: 20px; height: 8px; margin-bottom: 8px; overflow: hidden; }
-    .eta-fill { height: 100%; border-radius: 20px; background: var(--brand); width: 10%; transition: width 30s linear; }
-    .eta-text { font-size: 12px; color: #999; margin-bottom: 20px; }
-    .new-request-btn { padding: 12px 28px; background: white; color: var(--brand); border: 2px solid var(--brand); border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; }
+    .tracking-wrap { text-align:center; display:none; }
+    .tracking-icon { font-size:50px; margin-bottom:12px; animation:float 3s ease-in-out infinite; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    .tracking-title { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:300; color:var(--white); margin-bottom:4px; }
+    .tracking-sub { font-size:13px; color:var(--muted); margin-bottom:22px; }
+    .steps { display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
+    .step { display:flex; align-items:center; gap:14px; padding:13px 16px; border-radius:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); font-size:13px; color:var(--muted); transition:all 0.4s; }
+    .step.active { background:rgba(201,168,76,0.07); border-color:var(--border); color:var(--gold2); }
+    .step.done { background:rgba(46,204,113,0.05); border-color:rgba(46,204,113,0.18); color:#6ee7b7; }
+    .step-num { width:28px; height:28px; border-radius:50%; background:rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0; }
+    .step.active .step-num { background:rgba(201,168,76,0.18); }
+    .step.done .step-num { background:rgba(46,204,113,0.14); }
+    .eta-bar { height:2px; background:rgba(255,255,255,0.07); border-radius:2px; margin-bottom:8px; overflow:hidden; }
+    .eta-fill { height:100%; background:linear-gradient(90deg,var(--gold),var(--gold2)); width:5%; transition:width 30s linear; border-radius:2px; }
+    .eta-text { font-size:11px; color:var(--muted); text-align:center; margin-bottom:18px; letter-spacing:0.06em; }
 
     /* FEEDBACK */
-    .feedback-card { background: rgba(255,255,255,0.96); border-radius: 20px; padding: 28px; width: 100%; max-width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); display: none; text-align: center; }
-    .stars span { font-size: 38px; cursor: pointer; display: inline-block; }
-    .comment-box { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 14px; resize: none; height: 80px; margin-bottom: 12px; font-family: sans-serif; }
-    .feedback-btn { width: 100%; padding: 14px; background: #2ecc71; color: white; border: none; border-radius: 12px; font-size: 15px; cursor: pointer; font-weight: bold; }
-    .thankyou { background: rgba(255,255,255,0.96); color: #2e7d32; padding: 32px; border-radius: 20px; text-align: center; display: none; font-size: 18px; width: 100%; max-width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); line-height: 1.6; }
+    .feedback-wrap { text-align:center; display:none; }
+    .stars-row { display:flex; justify-content:center; gap:10px; margin:16px 0; }
+    .stars-row span { font-size:36px; cursor:pointer; opacity:0.24; transition:all 0.15s; }
+    .stars-row span.lit { opacity:1; transform:scale(1.1); }
+    .rating-label { font-size:14px; color:var(--gold2); min-height:22px; margin-bottom:16px; }
+    .thankyou-wrap { text-align:center; padding:32px; display:none; font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:300; color:var(--white); line-height:1.8; }
 
-    /* ID UPLOAD */
-    .upload-area { border: 2px dashed #b2e8e8; border-radius: 10px; padding: 16px; text-align: center; cursor: pointer; background: #f0fdf9; }
-    .upload-area:hover { border-color: #0a9396; }
-    .upload-icon { font-size: 24px; margin-bottom: 6px; }
-    .upload-text { font-size: 13px; font-weight: 600; color: #005f73; }
-    .upload-hint { font-size: 11px; color: #aaa; margin-top: 4px; }
-    #id-preview-img { width: 100%; border-radius: 8px; max-height: 150px; object-fit: cover; margin-top: 8px; display: none; }
+    /* ID SLOTS */
+    .id-slot { background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:16px; margin-bottom:12px; }
+    .id-slot-label { font-size:10px; font-weight:600; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); margin-bottom:12px; }
+    .upload-pair { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .upload-box { border:1px dashed rgba(201,168,76,0.22); border-radius:10px; padding:14px 8px; text-align:center; cursor:pointer; background:rgba(255,255,255,0.02); transition:all 0.2s; min-height:90px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; }
+    .upload-box:hover { border-color:var(--border2); background:rgba(201,168,76,0.04); }
+    .upload-box.done { border-color:rgba(46,204,113,0.38); background:rgba(46,204,113,0.04); border-style:solid; }
+    .upload-side { font-size:9px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); }
+    .upload-icon-el { font-size:20px; }
+    .upload-status { font-size:10px; color:rgba(255,255,255,0.35); }
+    .upload-box.done .upload-status { color:#6ee7b7; }
+    .id-preview { width:100%; border-radius:8px; max-height:68px; object-fit:cover; margin-top:8px; display:none; }
 
-    /* AI CHAT */
-    #ai-chat-modal { display:none; position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.7); backdrop-filter:blur(8px); }
-    .ai-modal-inner { position:absolute; bottom:0; left:0; right:0; background:white; border-radius:24px 24px 0 0; padding:20px; max-height:80vh; display:flex; flex-direction:column; }
-    .ai-msg-list { flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:10px; margin-bottom:14px; max-height:40vh; min-height:100px; }
-    .ai-msg-bot { background:linear-gradient(135deg,#667eea,#764ba2); color:white; padding:12px 16px; border-radius:16px 16px 16px 4px; font-size:14px; max-width:85%; line-height:1.5; }
-    .ai-msg-user { background:#f0f0f0; color:#0d1b1e; padding:12px 16px; border-radius:16px 16px 4px 16px; font-size:14px; max-width:85%; align-self:flex-end; margin-left:auto; line-height:1.5; }
-    .ai-input-row { display:flex; gap:8px; }
-    .ai-input-row input { flex:1; padding:12px 16px; border:1.5px solid #e0e0e0; border-radius:12px; font-size:14px; outline:none; }
-    .ai-send-btn { padding:12px 18px; background:linear-gradient(135deg,#667eea,#764ba2); color:white; border:none; border-radius:12px; font-size:18px; cursor:pointer; }
+    /* UPSELL */
+    .upsell-sug-list { display:flex; flex-direction:column; gap:10px; margin-bottom:16px; }
+    .upsell-sug { display:flex; align-items:center; gap:12px; padding:13px 14px; background:var(--glass); border:1px solid rgba(255,255,255,0.07); border-radius:12px; cursor:pointer; transition:all 0.2s; }
+    .upsell-sug.selected { background:rgba(201,168,76,0.1); border-color:var(--border2); }
+    .upsell-sug-emoji { font-size:24px; flex-shrink:0; }
+    .upsell-sug-title { font-size:13px; font-weight:500; color:var(--white); }
+    .upsell-sug-desc { font-size:11px; color:var(--muted); margin-top:2px; }
+    .upsell-sug-price { font-size:12px; font-weight:600; color:var(--gold); margin-left:auto; flex-shrink:0; }
+    .upsell-loading { text-align:center; padding:20px; color:var(--muted); font-size:13px; }
+    .upsell-done { background:rgba(46,204,113,0.06); border:1px solid rgba(46,204,113,0.2); border-radius:12px; padding:20px; text-align:center; display:none; font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:300; color:var(--white); line-height:1.8; }
 
-    /* LOCKED STATE */
-    .locked-card { background: rgba(255,255,255,0.96); border-radius: 20px; padding: 36px 24px; width: 100%; max-width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); text-align: center; }
-    .locked-icon { font-size: 52px; margin-bottom: 16px; }
-    .locked-title { font-size: 18px; font-weight: 700; color: #0d1b1e; margin-bottom: 8px; }
-    .locked-msg { font-size: 13px; color: #888; line-height: 1.6; }
+    /* AI MODAL */
+    #ai-modal { display:none; position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.72); backdrop-filter:blur(14px); }
+    .ai-modal-inner { position:absolute; bottom:0; left:0; right:0; background:linear-gradient(180deg,var(--navy3),var(--navy2)); border-top:1px solid var(--border); border-radius:24px 24px 0 0; padding:24px 20px 20px; max-height:82vh; display:flex; flex-direction:column; }
+    .ai-modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+    .ai-modal-title { font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:300; color:var(--white); }
+    .ai-modal-sub { font-size:11px; color:var(--muted); margin-top:2px; letter-spacing:0.06em; }
+    .ai-close { background:rgba(255,255,255,0.07); border:none; color:var(--white); width:32px; height:32px; border-radius:50%; font-size:14px; cursor:pointer; }
+    .ai-messages { flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:12px; margin-bottom:14px; max-height:42vh; min-height:80px; }
+    .ai-msg-bot { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.07); color:var(--white); padding:12px 16px; border-radius:16px 16px 16px 4px; font-size:14px; max-width:88%; line-height:1.6; }
+    .ai-msg-user { background:rgba(201,168,76,0.1); border:1px solid var(--border); color:var(--gold2); padding:12px 16px; border-radius:16px 16px 4px 16px; font-size:14px; max-width:88%; align-self:flex-end; margin-left:auto; line-height:1.6; }
+    .ai-input-row { display:flex; gap:10px; }
+    .ai-input { flex:1; padding:13px 16px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:12px; font-size:14px; color:var(--white); outline:none; font-family:'Inter',sans-serif; }
+    .ai-input::placeholder { color:rgba(255,255,255,0.22); }
+    .ai-input:focus { border-color:var(--border); }
+    .ai-send { width:46px; height:46px; border-radius:12px; background:linear-gradient(135deg,var(--gold),#a87c2a); color:var(--navy); border:none; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 
-    /* CHECKOUT COPY BUTTONS */
-    .copy-btn { padding: 8px 16px; background: #005f73; color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
+    /* CHECKOUT */
+    .locked-state { text-align:center; padding:44px 20px; }
+    .locked-icon { font-size:48px; margin-bottom:16px; opacity:0.35; }
+    .locked-title { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:300; color:var(--white); margin-bottom:8px; }
+    .locked-msg { font-size:13px; color:var(--muted); line-height:1.8; }
+    .co-stars { display:flex; justify-content:center; gap:12px; margin:16px 0; }
+    .co-stars span { font-size:38px; cursor:pointer; opacity:0.22; transition:all 0.15s; }
+    .co-stars span.lit { opacity:1; }
+    .co-rating-label { text-align:center; font-size:13px; color:var(--gold2); min-height:22px; margin-bottom:16px; }
+    .share-card { display:none; }
+    .platform-btn { width:100%; padding:14px 18px; border:none; border-radius:12px; font-size:13px; font-weight:600; cursor:pointer; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between; letter-spacing:0.06em; font-family:'Inter',sans-serif; }
+    .copy-confirm { display:none; margin-top:10px; padding:10px 14px; background:rgba(46,204,113,0.08); border:1px solid rgba(46,204,113,0.2); border-radius:8px; text-align:center; font-size:12px; color:#6ee7b7; }
 
-    @keyframes slideDown { from { opacity:0; transform: translateY(-10px); } to { opacity:1; transform: translateY(0); } }
+    ::-webkit-scrollbar { width:3px; }
+    ::-webkit-scrollbar-track { background:transparent; }
+    ::-webkit-scrollbar-thumb { background:rgba(201,168,76,0.18); border-radius:3px; }
 
-    /* ── UPSELL CARD ── */
-    .upsell-card { background: rgba(255,255,255,0.96); border-radius: 20px; padding: 22px; width: 100%; max-width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); animation: slideDown 0.5s ease; }
-    .upsell-header { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
-    .upsell-header-icon { width: 40px; height: 40px; background: linear-gradient(135deg,#667eea,#764ba2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
-    .upsell-title { font-size: 16px; font-weight: 800; color: #0d1b1e; }
-    .upsell-sub { font-size: 12px; color: #888; margin-bottom: 16px; margin-top: 2px; line-height: 1.5; }
-    .upsell-suggestions { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
-    .upsell-suggestion { background: linear-gradient(135deg,#f8f7ff,#f0f0ff); border: 1.5px solid #ddd6fe; border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s; }
-    .upsell-suggestion.selected { border-color: #667eea; background: linear-gradient(135deg,#667eea,#764ba2); }
-    .upsell-suggestion.selected .upsell-sug-title { color: white; }
-    .upsell-suggestion.selected .upsell-sug-desc { color: rgba(255,255,255,0.75); }
-    .upsell-suggestion.selected .upsell-sug-price { color: #ffd166; }
-    .upsell-sug-emoji { font-size: 26px; flex-shrink: 0; }
-    .upsell-sug-info { flex: 1; min-width: 0; }
-    .upsell-sug-title { font-size: 14px; font-weight: 700; color: #0d1b1e; margin-bottom: 2px; }
-    .upsell-sug-desc { font-size: 12px; color: #888; line-height: 1.4; }
-    .upsell-sug-price { font-size: 13px; font-weight: 800; color: #667eea; flex-shrink: 0; white-space: nowrap; }
-    .upsell-loading { text-align: center; padding: 28px 20px; color: #888; font-size: 14px; }
-    .upsell-special-label { font-size: 11px; color: #667eea; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
-    .upsell-textarea { width: 100%; padding: 12px 14px; border: 1.5px solid #ddd6fe; border-radius: 10px; font-size: 14px; resize: none; height: 80px; font-family: sans-serif; outline: none; color: #0d1b1e; }
-    .upsell-textarea:focus { border-color: #667eea; }
-    .upsell-submit { width: 100%; padding: 14px; background: linear-gradient(135deg,#667eea,#764ba2); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 12px; }
-    .upsell-submit:disabled { opacity: 0.5; cursor: not-allowed; }
-    .upsell-done { background: #d1fae5; color: #065f46; padding: 16px; border-radius: 12px; font-size: 14px; text-align: center; display: none; font-weight: 600; line-height: 1.6; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+    .fade-up { animation:fadeUp 0.5s ease forwards; }
   </style>
 </head>
 <body>
 
-  <!-- HEADER -->
-  <div class="header">
-    <div id="slideshow-container"></div>
-    <div id="slideshow-overlay"></div>
-    <div class="header-inner">
-      <div class="hotel-logo-circle" id="hotel-logo-circle">
-        <span class="hotel-logo-emoji" id="hotel-logo-emoji">🏨</span>
-        <img id="hotel-logo-img" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover">
+<div id="slideshow-container"></div>
+<div id="slideshow-overlay"></div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="hotel-logo-wrap" id="hotel-logo-wrap">
+    <img id="hotel-logo-img" src="" alt="">
+    <span class="hotel-logo-emoji" id="hotel-logo-emoji">🏨</span>
+  </div>
+  <div class="hotel-name" id="hotel-name">Welco</div>
+  <div class="hotel-room" id="room-label">Loading...</div>
+  <div class="welcome-pill" id="welcome-pill" style="display:none">✦ Welcome to your stay</div>
+</div>
+
+<div class="announcement" id="announcement">
+  <span id="ann-text"></span>
+  <button class="ann-close" onclick="document.getElementById('announcement').style.display='none'">✕</button>
+</div>
+
+<!-- ═══ TAB 1: PRE CHECK-IN ═══ -->
+<div class="tab-panel active" id="panel-checkin">
+  <div class="container">
+    <div class="luxury-card fade-up">
+      <div class="card-eyebrow">Before Arrival</div>
+      <div class="card-title">Pre Check-in</div>
+      <div class="msg-box" id="ci-msg"></div>
+      <div class="form-group">
+        <label class="form-label">Full Name *</label>
+        <input class="form-input" type="text" id="ci-name" placeholder="Enter full name">
       </div>
-      <h1 id="hotel-name">Welco</h1>
-      <p id="room-label">Loading...</p>
-      <div class="welcome-msg" id="welcome-msg" style="display:none">👋 Welcome! We're here to help.</div>
+      <div class="form-group">
+        <label class="form-label">Mobile Number *</label>
+        <input class="form-input" type="tel" id="ci-mobile" placeholder="+91 98765 43210">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" type="email" id="ci-email" placeholder="your@email.com">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Check-in Date *</label>
+          <input class="form-input" type="date" id="ci-checkin-date">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Check-out Date *</label>
+          <input class="form-input" type="date" id="ci-checkout-date">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Adults *</label>
+          <select class="form-input" id="ci-adults" onchange="renderIdSlots()">
+            <option value="1">1</option><option value="2">2</option>
+            <option value="3">3</option><option value="4">4</option><option value="5">5</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Children</label>
+          <select class="form-input" id="ci-children">
+            <option value="0">0</option><option value="1">1</option>
+            <option value="2">2</option><option value="3">3</option><option value="4">4+</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Arriving From *</label>
+        <input class="form-input" type="text" id="ci-from" placeholder="e.g. Mumbai">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Departing To</label>
+        <input class="form-input" type="text" id="ci-to" placeholder="e.g. Jaipur">
+      </div>
+      <div class="gold-divider"></div>
+      <div class="card-eyebrow" style="margin-bottom:4px">Identity Verification</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6">Upload front & back of government ID for each adult. Required by law.</div>
+      <div id="id-slots-container"></div>
+      <button class="btn-primary" id="ci-submit-btn" onclick="submitPreCheckin(this)">Continue to Check-in ✦</button>
+      <div style="font-size:9px;color:var(--muted);text-align:center;margin-top:10px;letter-spacing:0.1em">YOUR INFORMATION IS ENCRYPTED AND SECURE</div>
+    </div>
+
+    <!-- UPSELL CARD -->
+    <div class="luxury-card fade-up" id="upsell-card" style="display:none">
+      <div class="card-eyebrow">Curated For You</div>
+      <div class="card-title">Elevate Your Stay</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.6">Our team can arrange these experiences. Tap to select.</div>
+      <div class="upsell-sug-list" id="upsell-suggestions">
+        <div class="upsell-loading">✦ Curating personalised suggestions...</div>
+      </div>
+      <div class="gold-divider"></div>
+      <div class="card-eyebrow" style="margin-bottom:8px">Special Requests</div>
+      <textarea class="luxury-textarea" id="upsell-special-text"
+        placeholder="e.g. Anniversary decoration, early check-in, vegetarian meals, extra pillows..."></textarea>
+      <button class="btn-primary" id="upsell-submit-btn" onclick="submitSpecialRequest(this)">Add to My Booking ✦</button>
+      <div class="upsell-done" id="upsell-done">
+        ✦ Your preferences have been noted<br>
+        <span style="font-size:13px;color:var(--muted)">Our team will be in touch to confirm arrangements</span>
+      </div>
     </div>
   </div>
+</div>
 
-  <div class="announcement-banner" id="announcement-banner">
-    <span>📢</span>
-    <span id="announcement-text"></span>
-    <button class="ann-dismiss" onclick="document.getElementById('announcement-banner').style.display='none'">✕</button>
-  </div>
-
-  <!-- ══ TAB PANELS ══ -->
-
-  <!-- TAB 1: PRE CHECK-IN -->
-  <div class="tab-panel active" id="panel-checkin">
-    <div class="container">
-      <div class="card">
-        <h2>🛎️ Pre Check-in</h2>
-        <p style="font-size:13px;color:#888;text-align:center;margin-bottom:16px">Fill your details — hotel team will be ready for your arrival</p>
-
-        <div class="msg-box" id="ci-msg"></div>
-
-        <div class="section-label">Guest Details</div>
-        <div class="form-group">
-          <label>Full Name *</label>
-          <input type="text" id="ci-name" placeholder="Enter full name">
-        </div>
-        <div class="form-group">
-          <label>Mobile Number *</label>
-          <input type="tel" id="ci-mobile" placeholder="+91 98765 43210">
-        </div>
-        <div class="form-group">
-          <label>Email Address</label>
-          <input type="email" id="ci-email" placeholder="your@email.com">
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Check-in Date *</label>
-            <input type="date" id="ci-checkin-date">
-          </div>
-          <div class="form-group">
-            <label>Check-out Date *</label>
-            <input type="date" id="ci-checkout-date">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Adults *</label>
-            <select id="ci-adults" onchange="renderIdSlots()">
-              <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Children</label>
-            <select id="ci-children">
-              <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4+</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Arriving From (City) *</label>
-          <input type="text" id="ci-from" placeholder="e.g. Mumbai">
-        </div>
-        <div class="form-group">
-          <label>Departing To (City)</label>
-          <input type="text" id="ci-to" placeholder="e.g. Jaipur">
-        </div>
-
-        <div class="section-label" style="margin-top:8px">ID Proof — One per Adult *</div>
-        <div style="font-size:12px;color:#888;margin-bottom:12px;line-height:1.5">Each adult must upload a valid government ID photo. All uploads are compulsory.</div>
-        <!-- Dynamic ID slots — rendered by renderIdSlots() -->
-        <div id="id-slots-container"></div>
-
-        <button class="submit-btn" onclick="submitPreCheckin(this)">✅ Submit Pre Check-in</button>
-        <div style="font-size:11px;color:#aaa;text-align:center;margin-top:10px">Your details are securely shared with the hotel team</div>
+<!-- ═══ TAB 2: DURING STAY ═══ -->
+<div class="tab-panel" id="panel-home">
+  <div class="container">
+    <div class="luxury-card fade-up" id="request-card">
+      <div class="card-eyebrow">At Your Service</div>
+      <div class="card-title">How may we assist?</div>
+      <div class="service-grid">
+        <div class="service-cat" onclick="selectCat(this,'Housekeeping')"><span class="cat-icon">🛏️</span>Housekeeping</div>
+        <div class="service-cat" onclick="selectCat(this,'Room Service')"><span class="cat-icon">🍽️</span>Room Service</div>
+        <div class="service-cat" onclick="selectCat(this,'Maintenance')"><span class="cat-icon">🔧</span>Maintenance</div>
+        <div class="service-cat" onclick="selectCat(this,'Front Desk')"><span class="cat-icon">🛎️</span>Front Desk</div>
       </div>
-
-      <!-- UPSELL CARD — shown after pre check-in submit -->
-      <div class="upsell-card" id="upsell-card" style="display:none">
-        <div class="upsell-header">
-          <div class="upsell-header-icon">✨</div>
-          <div>
-            <div class="upsell-title">Make your stay special</div>
-          </div>
-        </div>
-        <div class="upsell-sub">Our team can arrange these experiences for you. Tap to add, or write your own request below.</div>
-
-        <!-- AI-generated suggestions load here -->
-        <div class="upsell-suggestions" id="upsell-suggestions">
-          <div class="upsell-loading">✨ Getting personalised suggestions<span class="upsell-loading-dots"></span></div>
-        </div>
-
-        <!-- Free text special request -->
-        <div class="upsell-special-label">✍️ Your Special Request</div>
-        <textarea class="upsell-textarea" id="upsell-special-text" placeholder="e.g. Birthday decoration with blue theme, vegetarian meals, early check-in if possible..."></textarea>
-
-        <button class="upsell-submit" id="upsell-submit-btn" onclick="submitSpecialRequest(this)">
-          ✨ Add to My Booking
-        </button>
-
-        <!-- Success state -->
-        <div class="upsell-done" id="upsell-done">
-          🎉 Your preferences have been sent to the hotel team!<br>
-          <span style="font-size:13px;font-weight:400;color:#555;display:block;margin-top:6px">We will be in touch to confirm the arrangements.</span>
-        </div>
+      <div class="dept-closed" id="dept-closed-box">
+        <div class="moon">🌙</div>
+        <h3 id="closed-title">Department Closed</h3>
+        <p id="closed-msg"></p>
+        <div class="timing" id="closed-timing" style="display:none"></div>
       </div>
+      <div id="services-section" style="display:none;margin-bottom:14px">
+        <div style="font-size:9px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px">Quick Requests</div>
+        <div class="quick-opts" id="services-grid"></div>
+      </div>
+      <div class="eta-badge" id="eta-badge">⏱ Estimated: <strong id="eta-time">10 mins</strong></div>
+      <textarea class="luxury-textarea" id="message" placeholder="Describe your request in detail..."></textarea>
+      <button class="ai-btn" onclick="openAIModal()">✨ AI Concierge — Ask anything</button>
+      <button class="btn-primary" id="submit-btn" onclick="submitRequest()" style="margin-top:10px">Send Request ✦</button>
+      <div class="msg-box" id="success" style="display:none;margin-top:12px"></div>
+    </div>
 
-    </div><!-- end .container -->
-  </div><!-- end #panel-checkin -->
+    <div class="luxury-card fade-up tracking-wrap" id="tracking-card">
+      <div class="tracking-icon" id="tracking-icon">📋</div>
+      <div class="tracking-title" id="tracking-title">Request Received</div>
+      <div class="tracking-sub" id="tracking-sub"></div>
+      <div class="steps">
+        <div class="step active" id="step-1"><div class="step-num">1</div><div style="flex:1">Request received</div><div>✓</div></div>
+        <div class="step" id="step-2"><div class="step-num">2</div><div style="flex:1">Staff assigned</div><div id="check-2">⏳</div></div>
+        <div class="step" id="step-3"><div class="step-num">3</div><div style="flex:1">Completed</div><div id="check-3">⏳</div></div>
+      </div>
+      <div class="eta-bar"><div class="eta-fill" id="eta-fill"></div></div>
+      <div class="eta-text" id="eta-track-text"></div>
+      <button class="btn-secondary" onclick="newRequest()">+ New Request</button>
+    </div>
 
-  <!-- TAB 2: DURING STAY -->
-  <div class="tab-panel" id="panel-home">
-    <div class="container">
-      <div class="card" id="request-card">
-        <h2 id="txt-howhelp">How can we help you?</h2>
-        <div class="categories">
-          <button class="cat-btn" onclick="selectCat(this,'Housekeeping')">🛏️ Housekeeping</button>
-          <button class="cat-btn" onclick="selectCat(this,'Room Service')">🍽️ Room Service</button>
-          <button class="cat-btn" onclick="selectCat(this,'Maintenance')">🔧 Maintenance</button>
-          <button class="cat-btn" onclick="selectCat(this,'Front Desk')">🛎️ Front Desk</button>
-        </div>
-        <div class="dept-closed-box" id="dept-closed-box">
-          <div class="closed-moon">🌙</div>
-          <div class="closed-title" id="closed-title">Department is Closed</div>
-          <div class="closed-msg" id="closed-msg"></div>
-          <div class="closed-timing" id="closed-timing" style="display:none"></div>
-        </div>
-        <div class="services-section" id="services-section">
-          <div style="font-size:11px;color:#999;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Quick Requests — Tap to add</div>
-          <div class="services-grid" id="services-grid"></div>
-        </div>
-        <div class="eta-badge" id="eta-badge">⏱ Usually ready in <strong id="eta-time">10 mins</strong></div>
-        <textarea id="message" placeholder="Describe your request... (optional)"></textarea>
-        <button onclick="openAIChat()" style="width:100%;padding:11px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px">✨ Chat with AI Concierge</button>
-        <button class="submit-btn" id="submit-btn" onclick="submitRequest()">Send Request 🚀</button>
-        <div class="success-box" id="success">✅ Request sent! Tracking below...</div>
+    <div class="luxury-card fade-up feedback-wrap" id="feedback-card">
+      <div class="card-eyebrow">Your Experience</div>
+      <div class="card-title">How did we do?</div>
+      <div class="stars-row" id="stars">
+        <span onclick="setRating(1)">⭐</span><span onclick="setRating(2)">⭐</span>
+        <span onclick="setRating(3)">⭐</span><span onclick="setRating(4)">⭐</span>
+        <span onclick="setRating(5)">⭐</span>
       </div>
-      <div class="tracking-card" id="tracking-card">
-        <div class="tracking-icon" id="tracking-icon">📋</div>
-        <div class="tracking-title" id="tracking-title"></div>
-        <div class="tracking-sub" id="tracking-sub"></div>
-        <div class="tracking-status">
-          <div class="status-step active" id="step-1"><div class="step-icon">📋</div><div class="step-text">Request received</div><div>✓</div></div>
-          <div class="status-step" id="step-2"><div class="step-icon">👷</div><div class="step-text">Staff assigned</div><div id="check-2">⏳</div></div>
-          <div class="status-step" id="step-3"><div class="step-icon">✅</div><div class="step-text">Completed</div><div id="check-3">⏳</div></div>
-        </div>
-        <div class="eta-bar"><div class="eta-fill" id="eta-fill"></div></div>
-        <div class="eta-text" id="eta-track-text"></div>
-        <button class="new-request-btn" onclick="newRequest()">+ New Request</button>
-      </div>
-      <div class="feedback-card" id="feedback-card">
-        <h2>How did we do? ⭐</h2>
-        <p style="color:#666;font-size:14px;margin-bottom:16px">Your request has been completed!</p>
-        <div class="stars" id="stars">
-          <span onclick="setRating(1)">⭐</span><span onclick="setRating(2)">⭐</span>
-          <span onclick="setRating(3)">⭐</span><span onclick="setRating(4)">⭐</span>
-          <span onclick="setRating(5)">⭐</span>
-        </div>
-        <p id="rating-label" style="margin-bottom:12px;color:#1a1a2e;font-weight:bold;font-size:16px"></p>
-        <textarea class="comment-box" id="comment" placeholder="Any suggestions? (optional)"></textarea>
-        <button class="feedback-btn" onclick="submitFeedback()">Submit Feedback</button>
-      </div>
-      <div class="thankyou" id="thankyou">🙏 Thank you for your feedback!<br><br><span style="font-size:14px;color:#555">Enjoy your stay at </span><span id="hotel-name-ty"></span></div>
+      <div class="rating-label" id="rating-label"></div>
+      <textarea class="luxury-textarea" id="comment" placeholder="Share your thoughts... (optional)"></textarea>
+      <button class="btn-primary" onclick="submitFeedback()" style="margin-top:12px">Submit Feedback ✦</button>
+    </div>
+
+    <div class="luxury-card thankyou-wrap" id="thankyou">
+      ✦ Thank you for your feedback<br>
+      <span style="font-size:14px;color:var(--muted)">Enjoy your stay at </span>
+      <span id="hotel-name-ty" style="color:var(--gold2)"></span>
     </div>
   </div>
+</div>
 
-  <!-- TAB 3: CHECK OUT -->
-  <div class="tab-panel" id="panel-checkout">
-    <div class="container">
-      <!-- LOCKED STATE — shown when not checkout day -->
-      <div class="locked-card" id="checkout-locked" style="display:none">
+<!-- ═══ TAB 3: CHECK OUT ═══ -->
+<div class="tab-panel" id="panel-checkout">
+  <div class="container">
+    <div class="luxury-card fade-up" id="checkout-locked" style="display:none">
+      <div class="locked-state">
         <div class="locked-icon">🔒</div>
         <div class="locked-title">Available on Checkout Day</div>
-        <div class="locked-msg">This section will unlock on your checkout date.<br>Enjoy your stay until then!</div>
-      </div>
-
-      <!-- CHECKOUT FORM -->
-      <div class="card" id="checkout-form">
-        <h2>⭐ Rate Your Stay</h2>
-        <p style="font-size:13px;color:#888;text-align:center;margin-bottom:16px">Your review helps future guests and our team</p>
-
-        <div class="msg-box" id="co-msg"></div>
-
-        <div class="form-group">
-          <label>Your Name *</label>
-          <input type="text" id="co-name" placeholder="Full name">
-        </div>
-        <div class="form-group">
-          <label>Email Address *</label>
-          <input type="email" id="co-email" placeholder="your@email.com">
-        </div>
-
-        <div style="text-align:center;margin-bottom:8px">
-          <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;font-weight:600">Rate Your Stay</div>
-          <div id="co-stars" style="font-size:40px">
-            <span onclick="setCoRating(1)" style="cursor:pointer;opacity:0.3" data-star="1">⭐</span>
-            <span onclick="setCoRating(2)" style="cursor:pointer;opacity:0.3" data-star="2">⭐</span>
-            <span onclick="setCoRating(3)" style="cursor:pointer;opacity:0.3" data-star="3">⭐</span>
-            <span onclick="setCoRating(4)" style="cursor:pointer;opacity:0.3" data-star="4">⭐</span>
-            <span onclick="setCoRating(5)" style="cursor:pointer;opacity:0.3" data-star="5">⭐</span>
-          </div>
-          <div id="co-rating-label" style="font-size:13px;color:#888;margin-top:6px;margin-bottom:16px">Tap to rate</div>
-        </div>
-
-        <div class="form-group">
-          <label>Your Review *</label>
-          <textarea id="co-review" style="height:100px" placeholder="Tell us about your experience — food, cleanliness, staff, overall..."></textarea>
-        </div>
-
-        <button onclick="submitCheckout(this)" style="width:100%;padding:14px;background:linear-gradient(135deg,#ee9b00,#ca6702);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer">⭐ Submit Review & Check Out</button>
-        <div style="font-size:11px;color:#888;text-align:center;margin-top:10px">Your review helps future guests</div>
-      </div>
-
-      <!-- POST-SUBMIT SHARE CARD -->
-      <div class="card" id="co-share-card" style="display:none">
-        <div style="text-align:center;padding:10px 0 20px">
-          <div style="font-size:52px;margin-bottom:12px">🎉</div>
-          <div style="font-size:20px;font-weight:700;color:#0d1b1e;margin-bottom:6px">Thank you!</div>
-          <div style="font-size:14px;color:#888;line-height:1.6;margin-bottom:20px">Have a safe journey. We hope to see you again!</div>
-        </div>
-        <div style="font-size:12px;font-weight:700;color:#005f73;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px">Share your review online</div>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <button onclick="copyReviewText('google')" class="copy-btn" style="background:#4285f4;display:flex;align-items:center;justify-content:space-between;width:100%;padding:13px 16px;border-radius:10px;font-size:14px">
-            <span>🔍 Copy for Google Maps</span><span>📋</span>
-          </button>
-          <button onclick="copyReviewText('tripadvisor')" class="copy-btn" style="background:#34e0a1;color:#0d1b1e;display:flex;align-items:center;justify-content:space-between;width:100%;padding:13px 16px;border-radius:10px;font-size:14px">
-            <span>🦉 Copy for TripAdvisor</span><span>📋</span>
-          </button>
-          <button onclick="copyReviewText('mmt')" class="copy-btn" style="background:#e63946;display:flex;align-items:center;justify-content:space-between;width:100%;padding:13px 16px;border-radius:10px;font-size:14px">
-            <span>✈️ Copy for MakeMyTrip</span><span>📋</span>
-          </button>
-        </div>
-        <div id="copy-confirm" style="display:none;margin-top:10px;padding:8px;background:#d1fae5;color:#065f46;border-radius:8px;text-align:center;font-size:13px;font-weight:600">✅ Copied! Paste it on the review site.</div>
+        <div class="locked-msg">This section unlocks on your departure date.<br>Until then, enjoy your stay with us.</div>
       </div>
     </div>
-  </div>
-
-  <!-- BOTTOM NAV -->
-  <nav class="bottom-nav">
-    <button class="nav-btn active" id="nav-checkin" onclick="switchTab('checkin')">
-      <span class="nav-icon">🛎️</span>
-      <span class="nav-label">Pre Check-in</span>
-    </button>
-    <button class="nav-btn" id="nav-home" onclick="switchTab('home')">
-      <span class="nav-icon">✨</span>
-      <span class="nav-label">During Stay</span>
-    </button>
-    <button class="nav-btn" id="nav-checkout" onclick="switchTab('checkout')">
-      <span class="nav-icon">⭐</span>
-      <span class="nav-label">Check Out</span>
-    </button>
-  </nav>
-
-  <!-- AI CHAT MODAL -->
-  <div id="ai-chat-modal">
-    <div class="ai-modal-inner">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-        <div>
-          <div style="font-size:16px;font-weight:800;color:#0d1b1e">✨ AI Concierge</div>
-          <div style="font-size:11px;color:#aaa">Ask anything in any language</div>
-        </div>
-        <button onclick="closeAIChat()" style="background:#f0f0f0;border:none;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer">✕</button>
+    <div class="luxury-card fade-up" id="checkout-form">
+      <div class="card-eyebrow">Departure</div>
+      <div class="card-title">Share Your Experience</div>
+      <div class="msg-box" id="co-msg"></div>
+      <div class="form-group">
+        <label class="form-label">Your Name *</label>
+        <input class="form-input" type="text" id="co-name" placeholder="Full name">
       </div>
-      <div class="ai-msg-list" id="ai-chat-messages">
-        <div class="ai-msg-bot">👋 Hello! I'm your AI concierge. Ask me about WiFi, breakfast, checkout time, local places, or anything about the hotel!</div>
+      <div class="form-group">
+        <label class="form-label">Email Address *</label>
+        <input class="form-input" type="email" id="co-email" placeholder="your@email.com">
       </div>
-      <div class="ai-input-row">
-        <input id="ai-chat-input" type="text" placeholder="Type your question..." onkeydown="if(event.key==='Enter')sendAIMessage()">
-        <button class="ai-send-btn" onclick="sendAIMessage()">→</button>
+      <div class="gold-divider"></div>
+      <div style="font-size:9px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;text-align:center">Rate Your Stay</div>
+      <div class="co-stars" id="co-stars">
+        <span onclick="setCoRating(1)">⭐</span><span onclick="setCoRating(2)">⭐</span>
+        <span onclick="setCoRating(3)">⭐</span><span onclick="setCoRating(4)">⭐</span>
+        <span onclick="setCoRating(5)">⭐</span>
       </div>
+      <div class="co-rating-label" id="co-rating-label">Tap to rate</div>
+      <div class="form-group">
+        <label class="form-label">Your Review *</label>
+        <textarea class="luxury-textarea" id="co-review" style="height:100px"
+          placeholder="Tell us about your experience — what you loved, what we can improve..."></textarea>
+      </div>
+      <button onclick="submitCheckout(this)" class="btn-primary">Submit Review ✦</button>
+    </div>
+    <div class="luxury-card fade-up share-card" id="co-share-card">
+      <div style="text-align:center;padding:10px 0 20px">
+        <div style="font-size:42px;margin-bottom:12px;color:var(--gold)">✦</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--white);margin-bottom:6px">Thank You</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:20px">Have a safe journey. We hope to welcome you again.</div>
+      </div>
+      <div class="card-eyebrow" style="margin-bottom:12px">Share Your Review</div>
+      <button onclick="copyReview('google',this)" class="platform-btn" style="background:#4285f4;color:white"><span>🔍 Copy for Google Maps</span><span>📋</span></button>
+      <button onclick="copyReview('mmt',this)" class="platform-btn" style="background:#e63946;color:white"><span>✈️ Copy for MakeMyTrip</span><span>📋</span></button>
+      <button onclick="copyReview('tripadvisor',this)" class="platform-btn" style="background:#34e0a1;color:#0a0f1e"><span>🦉 Copy for TripAdvisor</span><span>📋</span></button>
+      <div class="copy-confirm" id="copy-confirm">✓ Copied — paste on the review site</div>
     </div>
   </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" id="nav-checkin" onclick="switchTab('checkin')">
+    <span class="nav-icon">🛎️</span><span class="nav-label">Pre Check-in</span>
+  </button>
+  <button class="nav-btn" id="nav-home" onclick="switchTab('home')">
+    <span class="nav-icon">✨</span><span class="nav-label">During Stay</span>
+  </button>
+  <button class="nav-btn" id="nav-checkout" onclick="switchTab('checkout')">
+    <span class="nav-icon">⭐</span><span class="nav-label">Check Out</span>
+  </button>
+</nav>
+
+<!-- AI MODAL -->
+<div id="ai-modal">
+  <div class="ai-modal-inner">
+    <div class="ai-modal-header">
+      <div>
+        <div class="ai-modal-title">✨ AI Concierge</div>
+        <div class="ai-modal-sub">Ask anything — hotel, city, services</div>
+      </div>
+      <button class="ai-close" onclick="closeAIModal()">✕</button>
+    </div>
+    <div class="ai-messages" id="ai-messages">
+      <div class="ai-msg-bot">Good day! I'm your personal concierge. Ask me about WiFi, breakfast, local places, or request any service. I'm here for you. 🙏</div>
+    </div>
+    <div class="ai-input-row">
+      <input class="ai-input" id="ai-input" type="text" placeholder="Type your question..." onkeydown="if(event.key==='Enter')sendAIMessage()">
+      <button class="ai-send" onclick="sendAIMessage()">→</button>
+    </div>
+  </div>
+</div>
 
 <script>
-// ── CORE VARS ──
-var hotelId = null, roomId = null, roomNumber = '101';
-var hotelData = null, deptGuestOptions = {};
-var selectedCategory = '', selectedQuicks = [], selectedRating = 0;
-var currentRequestId = null, pollInterval = null;
-var deptIsClosed = false, currentCatSlaMap = {};
-var coRating = 0, coReviewText = '', coHotelName = '';
-var ciIdBase64 = null; // kept for compat
-var adultIdData = {}; // { 0:{type,base64}, 1:{type,base64}, ... }
+var hotelId=null, roomId=null, roomNumber='101';
+var hotelData=null, deptGuestOptions={};
+var selectedCategory='', selectedQuicks=[], selectedRating=0;
+var currentRequestId=null, pollInterval=null;
+var deptIsClosed=false, currentCatSlaMap={};
+var coRating=0, coReviewText='', coHotelName='';
+var adultIdData={};
+var upsellSelectedItems=[];
 
-// ── DYNAMIC ID SLOTS — one per adult ──
-function renderIdSlots() {
-  var count = parseInt(document.getElementById('ci-adults').value) || 1;
-  var container = document.getElementById('id-slots-container');
-  if (!container) return;
-  container.innerHTML = '';
-  for (var i = 0; i < count; i++) {
-    var existing = adultIdData[i] || {};
-    var slot = document.createElement('div');
-    slot.id = 'id-slot-' + i;
-    slot.style.cssText = 'background:#f8f8f8;border:1.5px solid #e0e0e0;border-radius:12px;padding:14px;margin-bottom:12px';
+var params=new URLSearchParams(window.location.search);
+hotelId=params.get('hotel_id')||params.get('hotel')||'hotel_001';
+roomId=params.get('room_id')||null;
+roomNumber=params.get('room')||'101';
 
-    var frontDone = existing.front;
-    var backDone = existing.back;
+var DEPT_DEFAULTS={'Housekeeping':['Extra Towels','Extra Pillow','Water Bottles','Clean Room','Extra Blanket','Toiletries'],'Room Service':['Breakfast','Coffee','Tea','Water','Snacks','Ice Bucket'],'Maintenance':['AC Issue','Hot Water','Light Bulb','TV Issue','WiFi Help','Door Lock'],'Front Desk':['Wake Up Call','Luggage Help','Late Checkout Info','Airport Transfer & Local Cab','Room Upgrade Info','Room Decoration','Private Dinner','Spa Booking']};
+var etaMap={'Housekeeping':'10–15 mins','Room Service':'15–20 mins','Maintenance':'10–20 mins','Front Desk':'5–10 mins'};
+var OPTION_SLA={'Extra Towels':5,'Extra Pillow':5,'Water Bottles':5,'Clean Room':30,'Extra Blanket':5,'Toiletries':10,'Breakfast':20,'Coffee':10,'Tea':10,'Water':5,'Snacks':10,'Ice Bucket':5,'AC Issue':20,'Hot Water':15,'Light Bulb':10,'TV Issue':15,'WiFi Help':10,'Door Lock':10,'Wake Up Call':2,'Luggage Help':5,'Late Checkout Info':5,'Airport Transfer & Local Cab':10,'Room Upgrade Info':5,'Room Decoration':30,'Private Dinner':10,'Spa Booking':10};
 
-    slot.innerHTML =
-      '<div style="font-size:12px;font-weight:700;color:#005f73;margin-bottom:10px">👤 Adult ' + (i+1) + ' ID</div>' +
-
-      // ID Type
-      '<div style="margin-bottom:12px">' +
-        '<label style="font-size:11px;color:#888;font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.06em">ID Type *</label>' +
-        '<select id="ci-id-type-' + i + '" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none;background:white">' +
-          '<option value="">Select ID Type</option>' +
-          '<option value="Aadhar Card"' + (existing.type==='Aadhar Card'?' selected':'') + '>Aadhar Card</option>' +
-          '<option value="Passport"' + (existing.type==='Passport'?' selected':'') + '>Passport</option>' +
-          '<option value="Driving License"' + (existing.type==='Driving License'?' selected':'') + '>Driving License</option>' +
-          '<option value="Voter ID"' + (existing.type==='Voter ID'?' selected':'') + '>Voter ID</option>' +
-          '<option value="PAN Card"' + (existing.type==='PAN Card'?' selected':'') + '>PAN Card</option>' +
-        '</select>' +
-      '</div>' +
-
-      // Two upload boxes side by side
-      '<label style="font-size:11px;color:#888;font-weight:600;display:block;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em">ID Photos — Front & Back *</label>' +
-      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
-
-        // FRONT
-        '<div>' +
-          '<div style="font-size:11px;font-weight:700;color:#333;margin-bottom:6px;text-align:center">📸 Front Side</div>' +
-          '<div onclick="document.getElementById(\'ci-id-front-' + i + '\').click()" style="border:2px dashed ' + (frontDone?'#2ecc71':'#b2e8e8') + ';border-radius:10px;padding:14px 8px;text-align:center;cursor:pointer;background:' + (frontDone?'#f0fdf9':'white') + ';min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center" id="front-area-' + i + '">' +
-            '<div style="font-size:22px;margin-bottom:4px">' + (frontDone?'✅':'📷') + '</div>' +
-            '<div style="font-size:11px;color:' + (frontDone?'#065f46':'#888') + ';font-weight:600">' + (frontDone?'Uploaded':'Tap to upload') + '</div>' +
-          '</div>' +
-          '<input type="file" id="ci-id-front-' + i + '" accept="image/*" style="display:none" onchange="handleIdPhoto(event,' + i + ',\'front\')">' +
-          (frontDone ? '<img src="' + frontDone + '" style="width:100%;border-radius:8px;max-height:80px;object-fit:cover;margin-top:6px">' : '<img id="front-img-' + i + '" src="" style="display:none;width:100%;border-radius:8px;max-height:80px;object-fit:cover;margin-top:6px">') +
-        '</div>' +
-
-        // BACK
-        '<div>' +
-          '<div style="font-size:11px;font-weight:700;color:#333;margin-bottom:6px;text-align:center">📸 Back Side</div>' +
-          '<div onclick="document.getElementById(\'ci-id-back-' + i + '\').click()" style="border:2px dashed ' + (backDone?'#2ecc71':'#b2e8e8') + ';border-radius:10px;padding:14px 8px;text-align:center;cursor:pointer;background:' + (backDone?'#f0fdf9':'white') + ';min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center" id="back-area-' + i + '">' +
-            '<div style="font-size:22px;margin-bottom:4px">' + (backDone?'✅':'📷') + '</div>' +
-            '<div style="font-size:11px;color:' + (backDone?'#065f46':'#888') + ';font-weight:600">' + (backDone?'Uploaded':'Tap to upload') + '</div>' +
-          '</div>' +
-          '<input type="file" id="ci-id-back-' + i + '" accept="image/*" style="display:none" onchange="handleIdPhoto(event,' + i + ',\'back\')">' +
-          (backDone ? '<img src="' + backDone + '" style="width:100%;border-radius:8px;max-height:80px;object-fit:cover;margin-top:6px">' : '<img id="back-img-' + i + '" src="" style="display:none;width:100%;border-radius:8px;max-height:80px;object-fit:cover;margin-top:6px">') +
-        '</div>' +
-
-      '</div>';
-
-    container.appendChild(slot);
-  }
-  // Remove stale data for slots beyond count
-  Object.keys(adultIdData).forEach(function(k) {
-    if (parseInt(k) >= count) delete adultIdData[k];
-  });
-}
-
-function handleIdPhoto(event, idx, side) {
-  var file = event.target.files[0]; if (!file) return;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    if (!adultIdData[idx]) adultIdData[idx] = {};
-    adultIdData[idx][side] = e.target.result;
-    // Save type too
-    var typeEl = document.getElementById('ci-id-type-' + idx);
-    if (typeEl) adultIdData[idx].type = typeEl.value;
-
-    // Update upload box
-    var areaId = (side === 'front' ? 'front-area-' : 'back-area-') + idx;
-    var area = document.getElementById(areaId);
-    if (area) {
-      area.style.borderColor = '#2ecc71';
-      area.style.background = '#f0fdf9';
-      area.querySelector('div:first-child').textContent = '✅';
-      area.querySelector('div:last-child').textContent = 'Uploaded';
-      area.querySelector('div:last-child').style.color = '#065f46';
-    }
-    // Show preview
-    var imgId = (side === 'front' ? 'front-img-' : 'back-img-') + idx;
-    var img = document.getElementById(imgId);
-    if (img) { img.src = e.target.result; img.style.display = 'block'; }
-  };
-  reader.readAsDataURL(file);
-}
-
-function handleIdUploadSlot(event, idx) {} // legacy stub
-function handleIdUpload(event) {} // legacy stub
-
-var params = new URLSearchParams(window.location.search);
-hotelId = params.get('hotel_id') || params.get('hotel') || 'hotel_001';
-roomId = params.get('room_id') || null;
-roomNumber = params.get('room') || '101';
-
-var DEPT_DEFAULTS = {
-  'Housekeeping': ['Extra Towels','Extra Pillow','Water Bottles','Clean Room','Extra Blanket','Toiletries'],
-  'Room Service': ['Breakfast','Coffee','Tea','Water','Snacks','Ice Bucket'],
-  'Maintenance': ['AC Issue','Hot Water','Light Bulb','TV Issue','WiFi Help','Door Lock'],
-  'Front Desk': ['Wake Up Call','Luggage Help','Late Checkout Info','Airport Transfer & Local Cab','Room Upgradation Info','Room Decoration Info','Private Dinner Info','Extend Stay Info','Bike Rent Info','Adventure Activities Info','SPA Booking Info']
-};
-var etaMap = { 'Housekeeping':'10–15 mins','Room Service':'15–20 mins','Maintenance':'10–20 mins','Front Desk':'5–10 mins' };
-var OPTION_SLA_DEFAULTS = { 'Extra Towels':5,'Extra Pillow':5,'Water Bottles':5,'Clean Room':30,'Extra Blanket':5,'Toiletries':10,'Breakfast':20,'Coffee':10,'Tea':10,'Water':5,'Snacks':10,'Ice Bucket':5,'AC Issue':20,'Hot Water':15,'Light Bulb':10,'TV Issue':15,'WiFi Help':10,'Door Lock':10,'Wake Up Call':2,'Luggage Help':5,'Late Checkout Info':5,'Airport Transfer & Local Cab':10,'Room Upgradation Info':5,'Room Decoration Info':30,'Private Dinner Info':10,'Extend Stay Info':5,'Bike Rent Info':5,'Adventure Activities Info':5,'SPA Booking Info':5 };
-
-// ── TAB SWITCHING ──
-function switchTab(tab) {
-  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
-  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
+function switchTab(tab){
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
   document.getElementById('panel-'+tab).classList.add('active');
   document.getElementById('nav-'+tab).classList.add('active');
-  if (tab === 'checkout') { initCheckout(); }
+  if(tab==='checkout')initCheckout();
 }
 
-// ── BRANDING ──
-async function loadBranding() {
-  try {
-    if (roomId) {
-      try {
-        var roomRes = await fetch('/qr/' + roomId);
-        var roomData = await roomRes.json();
-        if (roomData && roomData.room_number) roomNumber = roomData.room_number;
-      } catch(e) {}
+async function loadBranding(){
+  try{
+    if(roomId){try{var rr=await fetch('/qr/'+roomId);var rd=await rr.json();if(rd&&rd.room_number)roomNumber=rd.room_number;}catch(e){}}
+    var res=await fetch('/hotels');var hotels=await res.json();
+    var hotel=Array.isArray(hotels)?hotels.find(function(h){return h.hotel_id===hotelId;}):null;
+    if(!hotel){document.getElementById('hotel-name').textContent='Welco';document.getElementById('room-label').textContent='Room '+roomNumber;document.getElementById('welcome-pill').style.display='inline-flex';return;}
+    hotelData=hotel; coHotelName=hotel.name;
+    var photos=[];
+    if(hotel.hotel_photos&&hotel.hotel_photos.length>0)photos=hotel.hotel_photos;
+    else if(hotel.logo_url&&!hotel.logo_url.startsWith('data:'))photos=[hotel.logo_url];
+    var sc=document.getElementById('slideshow-container');
+    if(sc&&photos.length>0){
+      sc.innerHTML='';
+      photos.forEach(function(url,i){var d=document.createElement('div');d.className='slideshow-slide'+(i===0?' active':'');d.style.backgroundImage='url('+url+')';sc.appendChild(d);});
+      if(photos.length>1){var cur=0;var dw=document.createElement('div');dw.className='slideshow-dots';photos.forEach(function(_,i){var dot=document.createElement('div');dot.className='slideshow-dot'+(i===0?' active':'');dot.onclick=(function(idx){return function(){gs(idx);};})(i);dw.appendChild(dot);});sc.appendChild(dw);function gs(n){var sl=sc.querySelectorAll('.slideshow-slide'),ds=sc.querySelectorAll('.slideshow-dot');sl[cur].classList.remove('active');ds[cur].classList.remove('active');cur=(n+photos.length)%photos.length;sl[cur].classList.add('active');ds[cur].classList.add('active');}setInterval(function(){gs(cur+1);},6000);}
     }
-    var hotelRes = await fetch('/hotels');
-    var allHotels = await hotelRes.json();
-    var hotel = Array.isArray(allHotels) ? allHotels.find(function(h){ return h.hotel_id === hotelId; }) : null;
-    if (!hotel) {
-      document.getElementById('hotel-name').textContent = 'Welco Hotel';
-      document.getElementById('room-label').textContent = 'Room ' + roomNumber;
-      document.getElementById('welcome-msg').style.display = 'inline-block';
-      return;
-    }
-    hotelData = hotel;
-    document.documentElement.style.setProperty('--brand', hotel.colour || '#1a1a2e');
-    var photos = [];
-    if (hotel.hotel_photos && hotel.hotel_photos.length > 0) photos = hotel.hotel_photos;
-    else if (hotel.logo_url && !hotel.logo_url.startsWith('data:')) photos = [hotel.logo_url];
-    var container = document.getElementById('slideshow-container');
-    if (container && photos.length > 0) {
-      container.innerHTML = '';
-      photos.forEach(function(url, i) {
-        var img = document.createElement('img');
-        img.src = url; img.className = 'slideshow-slide'+(i===0?' active':''); img.alt = '';
-        container.appendChild(img);
-      });
-      if (photos.length > 1) {
-        var curSlide = 0;
-        var dotsWrap = document.createElement('div'); dotsWrap.className = 'slideshow-dots';
-        photos.forEach(function(_, i) {
-          var dot = document.createElement('div');
-          dot.className = 'slideshow-dot'+(i===0?' active':'');
-          dot.onclick = (function(idx){ return function(){ goSlide(idx); }; })(i);
-          dotsWrap.appendChild(dot);
-        });
-        container.appendChild(dotsWrap);
-        function goSlide(n) {
-          var slides = container.querySelectorAll('.slideshow-slide');
-          var dots = container.querySelectorAll('.slideshow-dot');
-          slides[curSlide].classList.remove('active'); dots[curSlide].classList.remove('active');
-          curSlide = (n + photos.length) % photos.length;
-          slides[curSlide].classList.add('active'); dots[curSlide].classList.add('active');
-        }
-        setInterval(function(){ goSlide(curSlide+1); }, 5000);
-      }
-    }
-    document.getElementById('hotel-name').textContent = hotel.name;
-    coHotelName = hotel.name;
-    var logoImg = document.getElementById('hotel-logo-img');
-    var logoEmoji = document.getElementById('hotel-logo-emoji');
-    var hasLogo = hotel.logo_url && !hotel.logo_url.startsWith('data:');
-    if (hasLogo && logoImg) { logoImg.src = hotel.logo_url; logoImg.style.display = 'block'; if (logoEmoji) logoEmoji.style.display = 'none'; }
-    else if (logoEmoji) { logoEmoji.textContent = hotel.emoji || '🏨'; }
-    document.getElementById('room-label').textContent = 'Room ' + roomNumber + (hotel.city ? ' — ' + hotel.city : '');
-    document.getElementById('hotel-name-ty').textContent = hotel.name;
-    document.title = 'Welco — ' + hotel.name;
-    document.getElementById('welcome-msg').style.display = 'inline-block';
-    if (hotel.dept_guest_options) deptGuestOptions = hotel.dept_guest_options;
+    document.getElementById('hotel-name').textContent=hotel.name;
+    document.getElementById('hotel-name-ty').textContent=hotel.name;
+    document.title=hotel.name+' — Guest Portal';
+    document.getElementById('room-label').textContent='Room '+roomNumber+(hotel.city?' · '+hotel.city:'');
+    document.getElementById('welcome-pill').style.display='inline-flex';
+    var li=document.getElementById('hotel-logo-img'),le=document.getElementById('hotel-logo-emoji');
+    if(hotel.logo_url&&!hotel.logo_url.startsWith('data:')){li.src=hotel.logo_url;li.style.display='block';le.style.display='none';}
+    else{le.textContent=hotel.emoji||'🏨';}
+    if(hotel.dept_guest_options)deptGuestOptions=hotel.dept_guest_options;
     loadAnnouncement();
-  } catch(e) {
-    document.getElementById('hotel-name').textContent = '🏨 Welco';
-    document.getElementById('room-label').textContent = 'Room ' + roomNumber;
+  }catch(e){document.getElementById('hotel-name').textContent='Welco';document.getElementById('room-label').textContent='Room '+roomNumber;}
+}
+
+async function loadAnnouncement(){
+  try{var res=await fetch('/announcements?hotel_id='+hotelId);var data=await res.json();if(Array.isArray(data)){var a=data.find(function(x){return x.is_active;});if(a){document.getElementById('ann-text').textContent=a.message;document.getElementById('announcement').style.display='block';}}}catch(e){}
+}
+
+// ── ID SLOTS ──
+function renderIdSlots(){
+  var count=parseInt(document.getElementById('ci-adults').value)||1;
+  var container=document.getElementById('id-slots-container');
+  if(!container)return;
+  container.innerHTML='';
+  for(var i=0;i<count;i++){
+    var ex=adultIdData[i]||{};
+    var slot=document.createElement('div');
+    slot.className='id-slot';slot.id='id-slot-'+i;
+    slot.innerHTML=
+      '<div class="id-slot-label">✦ Adult '+(i+1)+' Identity</div>'+
+      '<div style="margin-bottom:12px">'+
+        '<label class="form-label">ID Type *</label>'+
+        '<select class="form-input" id="ci-id-type-'+i+'">'+
+          '<option value="">Select document type</option>'+
+          '<option value="Aadhar Card"'+(ex.type==='Aadhar Card'?' selected':'')+'>Aadhar Card</option>'+
+          '<option value="Passport"'+(ex.type==='Passport'?' selected':'')+'>Passport</option>'+
+          '<option value="Driving License"'+(ex.type==='Driving License'?' selected':'')+'>Driving License</option>'+
+          '<option value="Voter ID"'+(ex.type==='Voter ID'?' selected':'')+'>Voter ID</option>'+
+          '<option value="PAN Card"'+(ex.type==='PAN Card'?' selected':'')+'>PAN Card</option>'+
+        '</select>'+
+      '</div>'+
+      '<div class="upload-pair">'+
+        '<div>'+
+          '<div style="font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;text-align:center">Front Side *</div>'+
+          '<div class="upload-box'+(ex.front?' done':'')+'" id="front-box-'+i+'" onclick="document.getElementById(\'ci-front-'+i+'\').click()">'+
+            '<div class="upload-icon-el">'+(ex.front?'✅':'📷')+'</div>'+
+            '<div class="upload-side">Tap to upload</div>'+
+            '<div class="upload-status">'+(ex.front?'Uploaded':'JPG or PNG')+'</div>'+
+          '</div>'+
+          '<input type="file" id="ci-front-'+i+'" accept="image/*" style="display:none" onchange="handleIdPhoto(event,'+i+',\'front\')">'+
+          '<img class="id-preview" id="front-img-'+i+'" src="">'+
+        '</div>'+
+        '<div>'+
+          '<div style="font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;text-align:center">Back Side *</div>'+
+          '<div class="upload-box'+(ex.back?' done':'')+'" id="back-box-'+i+'" onclick="document.getElementById(\'ci-back-'+i+'\').click()">'+
+            '<div class="upload-icon-el">'+(ex.back?'✅':'📷')+'</div>'+
+            '<div class="upload-side">Tap to upload</div>'+
+            '<div class="upload-status">'+(ex.back?'Uploaded':'JPG or PNG')+'</div>'+
+          '</div>'+
+          '<input type="file" id="ci-back-'+i+'" accept="image/*" style="display:none" onchange="handleIdPhoto(event,'+i+',\'back\')">'+
+          '<img class="id-preview" id="back-img-'+i+'" src="">'+
+        '</div>'+
+      '</div>';
+    container.appendChild(slot);
+    if(ex.front){var fi=document.getElementById('front-img-'+i);if(fi){fi.src=ex.front;fi.style.display='block';}}
+    if(ex.back){var bi=document.getElementById('back-img-'+i);if(bi){bi.src=ex.back;bi.style.display='block';}}
   }
+  Object.keys(adultIdData).forEach(function(k){if(parseInt(k)>=count)delete adultIdData[k];});
 }
 
-async function loadAnnouncement() {
-  try {
-    var res = await fetch('/announcements?hotel_id=' + hotelId);
-    var data = await res.json();
-    if (Array.isArray(data)) {
-      var active = data.find(function(a){ return a.is_active; });
-      if (active) {
-        document.getElementById('announcement-text').textContent = active.message;
-        document.getElementById('announcement-banner').style.display = 'block';
-      }
-    }
-  } catch(e) {}
-}
-
-// ── PRE CHECK-IN ──
-function handleIdUpload(event) {
-  var file = event.target.files[0]; if (!file) return;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    ciIdBase64 = e.target.result;
-    var img = document.getElementById('id-preview-img');
-    img.src = ciIdBase64; img.style.display = 'block';
+function handleIdPhoto(event,idx,side){
+  var file=event.target.files[0];if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    if(!adultIdData[idx])adultIdData[idx]={};
+    adultIdData[idx][side]=e.target.result;
+    var te=document.getElementById('ci-id-type-'+idx);if(te)adultIdData[idx].type=te.value;
+    var boxId=(side==='front'?'front-box-':'back-box-')+idx;
+    var imgId=(side==='front'?'front-img-':'back-img-')+idx;
+    var box=document.getElementById(boxId);
+    if(box){box.classList.add('done');box.querySelector('.upload-icon-el').textContent='✅';box.querySelector('.upload-status').textContent='Uploaded';}
+    var img=document.getElementById(imgId);
+    if(img){img.src=e.target.result;img.style.display='block';}
   };
   reader.readAsDataURL(file);
 }
 
-async function submitPreCheckin(btn) {
-  var name = document.getElementById('ci-name').value.trim();
-  var mobile = document.getElementById('ci-mobile').value.trim();
-  var email = document.getElementById('ci-email').value.trim();
-  var checkinDate = document.getElementById('ci-checkin-date').value;
-  var checkoutDate = document.getElementById('ci-checkout-date').value;
-  var adults = parseInt(document.getElementById('ci-adults').value) || 1;
-  var children = document.getElementById('ci-children').value;
-  var from = document.getElementById('ci-from').value.trim();
-  var to = document.getElementById('ci-to').value.trim();
-  var msg = document.getElementById('ci-msg');
+// ── UPLOAD TO SUPABASE STORAGE ──
+async function uploadToStorage(base64,filename){
+  try{
+    var res=await fetch('/upload',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({base64:base64,filename:filename,folder:'guest-ids'})});
+    var data=await res.json();
+    if(data.success&&data.url)return data.url;
+    return null;
+  }catch(e){return null;}
+}
 
-  // Validate basic fields
-  if (!name || !mobile || !checkinDate || !from) {
-    msg.textContent = '⚠️ Please fill all required fields marked with *';
-    msg.className = 'msg-box msg-error';
-    return;
+// ── PRE CHECK-IN SUBMIT ──
+async function submitPreCheckin(btn){
+  var name=document.getElementById('ci-name').value.trim();
+  var mobile=document.getElementById('ci-mobile').value.trim();
+  var email=document.getElementById('ci-email').value.trim();
+  var checkinDate=document.getElementById('ci-checkin-date').value;
+  var checkoutDate=document.getElementById('ci-checkout-date').value;
+  var adults=parseInt(document.getElementById('ci-adults').value)||1;
+  var children=document.getElementById('ci-children').value;
+  var from=document.getElementById('ci-from').value.trim();
+  var to=document.getElementById('ci-to').value.trim();
+  var msg=document.getElementById('ci-msg');
+
+  if(!name||!mobile||!checkinDate||!from){msg.textContent='⚠️ Please fill all required fields marked with *';msg.className='msg-box msg-error';return;}
+  for(var i=0;i<adults;i++){
+    var te=document.getElementById('ci-id-type-'+i);
+    if(!te||!te.value){msg.textContent='⚠️ Please select ID type for Adult '+(i+1);msg.className='msg-box msg-error';document.getElementById('id-slot-'+i).scrollIntoView({behavior:'smooth',block:'center'});return;}
+    if(!adultIdData[i]||!adultIdData[i].front){msg.textContent='⚠️ Please upload front side of ID for Adult '+(i+1);msg.className='msg-box msg-error';document.getElementById('id-slot-'+i).scrollIntoView({behavior:'smooth',block:'center'});return;}
+    if(!adultIdData[i].back){msg.textContent='⚠️ Please upload back side of ID for Adult '+(i+1);msg.className='msg-box msg-error';document.getElementById('id-slot-'+i).scrollIntoView({behavior:'smooth',block:'center'});return;}
+    adultIdData[i].type=te.value;
   }
 
-  // Validate per-adult ID slots
-  for (var i = 0; i < adults; i++) {
-    var typeEl = document.getElementById('ci-id-type-' + i);
-    var idType = typeEl ? typeEl.value : '';
-    var hasFront = adultIdData[i] && adultIdData[i].front;
-    var hasBack = adultIdData[i] && adultIdData[i].back;
-    if (!idType) {
-      msg.textContent = '⚠️ Please select ID type for Adult ' + (i+1);
-      msg.className = 'msg-box msg-error';
-      document.getElementById('id-slot-' + i).scrollIntoView({ behavior:'smooth', block:'center' });
-      return;
-    }
-    if (!hasFront) {
-      msg.textContent = '⚠️ Please upload front side of ID for Adult ' + (i+1);
-      msg.className = 'msg-box msg-error';
-      document.getElementById('id-slot-' + i).scrollIntoView({ behavior:'smooth', block:'center' });
-      return;
-    }
-    if (!hasBack) {
-      msg.textContent = '⚠️ Please upload back side of ID for Adult ' + (i+1);
-      msg.className = 'msg-box msg-error';
-      document.getElementById('id-slot-' + i).scrollIntoView({ behavior:'smooth', block:'center' });
-      return;
-    }
-    // Save type into adultIdData
-    if (!adultIdData[i]) adultIdData[i] = {};
-    adultIdData[i].type = idType;
+  btn.textContent='⏳ Uploading documents...';btn.disabled=true;
+
+  var idLines=[];
+  for(var j=0;j<adults;j++){
+    var d=adultIdData[j]||{};
+    var slug=name.replace(/\s/g,'_').toLowerCase();
+    var ts=Date.now();
+    btn.textContent='⏳ Uploading Adult '+(j+1)+' front ID...';
+    var frontUrl=await uploadToStorage(d.front,slug+'_a'+(j+1)+'_front_'+ts);
+    btn.textContent='⏳ Uploading Adult '+(j+1)+' back ID...';
+    var backUrl=await uploadToStorage(d.back,slug+'_a'+(j+1)+'_back_'+ts);
+    idLines.push(' Adult '+(j+1)+': '+(d.type||'Not specified')+'\n Front: '+(frontUrl||'[uploaded]')+'\n Back: '+(backUrl||'[uploaded]'));
   }
 
-  btn.textContent = '⏳ Submitting...'; btn.disabled = true;
+  btn.textContent='⏳ Submitting...';
+  var message=['🛎️ PRE CHECK-IN REQUEST','─────────────────────','👤 Name: '+name,'📱 Mobile: '+mobile,'📧 Email: '+(email||'Not provided'),'📅 Check-in: '+checkinDate,'📅 Check-out: '+checkoutDate,'👥 Guests: '+adults+' Adult(s), '+children+' Child(ren)','🚌 Arriving from: '+from,'🚌 Departing to: '+(to||'Not specified'),'🪪 ID Proofs:'].concat(idLines).join('\n');
 
-  // Build ID summary lines for HOD message
-  var idLines = [];
-  for (var j = 0; j < adults; j++) {
-    var d = adultIdData[j] || {};
-    idLines.push(' Adult ' + (j+1) + ': ' + (d.type || 'Not specified') + ' (front & back uploaded)');
-  }
-
-  var message = [
-    '🛎️ PRE CHECK-IN REQUEST',
-    '─────────────────────',
-    '👤 Name: ' + name,
-    '📱 Mobile: ' + mobile,
-    '📧 Email: ' + (email || 'Not provided'),
-    '📅 Check-in: ' + checkinDate,
-    '📅 Check-out: ' + checkoutDate,
-    '👥 Guests: ' + adults + ' Adult(s), ' + children + ' Child(ren)',
-    '🚌 Arriving from: ' + from,
-    '🚌 Departing to: ' + (to || 'Not specified'),
-    '🪪 ID Proofs submitted:',
-  ].concat(idLines).join('\n');
-
-  try {
-    var res = await fetch('/requests', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        hotel_id: hotelId,
-        room_number: roomNumber || 'Pre-Arrival',
-        category: 'Front Desk',
-        message: message,
-        status: 'pending',
-        sla_minutes: 5
-      })
-    });
-    var data = await res.json();
-    if (data.error) throw new Error(data.error);
-
-    msg.textContent = '✅ Pre Check-in submitted! The hotel team will be ready when you arrive.';
-    msg.className = 'msg-box msg-success';
-    btn.textContent = '✅ Submitted!';
-    btn.style.background = '#065f46';
-    btn.disabled = true;
-
-    // Save guest name for upsell card
-    window._ciGuestName = name;
-
-    // Show upsell card and load AI suggestions
-    var upsellCard = document.getElementById('upsell-card');
-    upsellCard.style.display = 'block';
-    setTimeout(function() {
-      upsellCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 400);
+  try{
+    var res=await fetch('/requests',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hotelId,room_number:roomNumber||'Pre-Arrival',category:'Front Desk',message:message,status:'pending',sla_minutes:5})});
+    var data=await res.json();if(data.error)throw new Error(data.error);
+    msg.textContent='✦ Pre check-in submitted. The hotel team will be ready for your arrival.';msg.className='msg-box msg-success';
+    btn.textContent='✦ Submitted';btn.style.background='linear-gradient(135deg,#2ecc71,#27ae60)';btn.style.color='white';btn.disabled=true;
+    window._ciGuestName=name;
+    var uc=document.getElementById('upsell-card');uc.style.display='block';
+    setTimeout(function(){uc.scrollIntoView({behavior:'smooth',block:'start'});},500);
     loadUpsellSuggestions();
-
-  } catch(e) {
-    msg.textContent = '❌ Could not submit. Please try again.';
-    msg.className = 'msg-box msg-error';
-    btn.textContent = '✅ Submit Pre Check-in'; btn.disabled = false;
-  }
+  }catch(e){msg.textContent='❌ Could not submit. Please try again.';msg.className='msg-box msg-error';btn.textContent='Continue to Check-in ✦';btn.disabled=false;}
 }
 
-// ── CHECKOUT ──
-function initCheckout() {
-  var checkinDate = document.getElementById('ci-checkin-date') ? document.getElementById('ci-checkin-date').value : '';
-  var checkoutDate = document.getElementById('ci-checkout-date') ? document.getElementById('ci-checkout-date').value : '';
-  var locked = document.getElementById('checkout-locked');
-  var form = document.getElementById('checkout-form');
-  var share = document.getElementById('co-share-card');
-
-  // If guest has filled a checkout date, check if today is that day or later
-  if (checkoutDate) {
-    var today = new Date().toISOString().split('T')[0];
-    if (today < checkoutDate) {
-      // Not checkout day yet — show locked
-      locked.style.display = 'block';
-      form.style.display = 'none';
-      share.style.display = 'none';
-      return;
-    }
-  }
-  // Otherwise show the form
-  locked.style.display = 'none';
-  form.style.display = 'block';
-}
-
-function setCoRating(n) {
-  coRating = n;
-  var labels = ['', 'Poor 😞', 'Fair 😐', 'Good 🙂', 'Very Good 😊', 'Excellent 🤩'];
-  document.getElementById('co-rating-label').textContent = labels[n];
-  document.querySelectorAll('#co-stars span').forEach(function(s, i) {
-    s.style.opacity = i < n ? '1' : '0.3';
-  });
-}
-
-async function submitCheckout(btn) {
-  var name = document.getElementById('co-name').value.trim();
-  var email = document.getElementById('co-email').value.trim();
-  var review = document.getElementById('co-review').value.trim();
-  var msg = document.getElementById('co-msg');
-
-  if (!name || !email || !review || coRating === 0) {
-    msg.textContent = '⚠️ Please fill all fields and select a rating.';
-    msg.className = 'msg-box msg-error';
-    return;
-  }
-
-  btn.textContent = '⏳ Submitting...'; btn.disabled = true;
-  coReviewText = review; // save for copy buttons
-
-  try {
-    var res = await fetch('/checkout-feedback', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        hotel_id: hotelId,
-        room_number: roomNumber,
-        guest_name: name,
-        guest_email: email,
-        rating: coRating,
-        review: review
-      })
-    });
-    // Even if endpoint doesn't exist yet, we treat it as success
-    // Also save as a request so admin can see it
-    await fetch('/requests', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        hotel_id: hotelId,
-        room_number: roomNumber,
-        category: 'Front Desk',
-        message: '⭐ CHECKOUT REVIEW (' + coRating + '/5)\n' + '👤 ' + name + ' | ' + email + '\n"' + review + '"',
-        status: 'done',
-        sla_minutes: 1
-      })
-    });
-  } catch(e) {}
-
-  // Show share card regardless
-  document.getElementById('checkout-form').style.display = 'none';
-  document.getElementById('co-share-card').style.display = 'block';
-}
-
-function copyReviewText(platform) {
-  var stars = '';
-  for (var i = 0; i < coRating; i++) stars += '⭐';
-  var text = stars + ' — ' + coHotelName + '\n\n' + coReviewText + '\n\n— Reviewed via Welco';
-  navigator.clipboard.writeText(text).then(function() {
-    var confirm = document.getElementById('copy-confirm');
-    confirm.style.display = 'block';
-    setTimeout(function() { confirm.style.display = 'none'; }, 3000);
-  }).catch(function() {
-    prompt('Copy this review:', text);
-  });
-}
-
-// ── DURING STAY: SERVICE REQUEST ──
-async function selectCat(btn, cat) {
-  document.querySelectorAll('.cat-btn').forEach(function(b){ b.classList.remove('selected'); });
-  btn.classList.add('selected');
-  selectedCategory = cat; selectedQuicks = []; deptIsClosed = false;
-  document.getElementById('dept-closed-box').style.display = 'none';
-  document.getElementById('services-section').style.display = 'none';
-  document.getElementById('eta-badge').style.display = 'none';
-  document.getElementById('submit-btn').disabled = false;
-  try {
-    var hotelRes = await fetch('/hotels');
-    var hotels = await hotelRes.json();
-    var latestHotel = hotels.find(function(h){ return h.hotel_id === hotelId; });
-    if (latestHotel && latestHotel.dept_guest_options) deptGuestOptions = latestHotel.dept_guest_options;
-  } catch(e) {}
-  var savedDeptFull = deptGuestOptions[cat];
-  if (savedDeptFull && savedDeptFull.hours) {
-    var h = savedDeptFull.hours;
-    var closed = false;
-    if (h.isOpen === true) { closed = false; }
-    else if (h.isOpen === false) {
-      if (h.openTime && h.closeTime) {
-        var now = new Date(); var curMins = now.getHours()*60+now.getMinutes();
-        var op = h.openTime.split(':'); var cl = h.closeTime.split(':');
-        var openMins = parseInt(op[0])*60+parseInt(op[1]); var closeMins = parseInt(cl[0])*60+parseInt(cl[1]);
-        closed = (closeMins > openMins) ? (curMins < openMins || curMins >= closeMins) : true;
-      } else { closed = true; }
-    } else if (h.openTime && h.closeTime) {
-      var now2 = new Date(); var curMins2 = now2.getHours()*60+now2.getMinutes();
-      var op2 = h.openTime.split(':'); var cl2 = h.closeTime.split(':');
-      var openMins2 = parseInt(op2[0])*60+parseInt(op2[1]); var closeMins2 = parseInt(cl2[0])*60+parseInt(cl2[1]);
-      if (closeMins2 > openMins2) closed = curMins2 < openMins2 || curMins2 >= closeMins2;
-    }
-    if (closed) { deptIsClosed = true; showClosedBox(cat, h); document.getElementById('submit-btn').disabled = true; return; }
-  }
-  currentCatSlaMap = (savedDeptFull && savedDeptFull.slaMap) ? savedDeptFull.slaMap : {};
-  renderDeptServices(cat);
-  document.getElementById('services-section').style.display = 'block';
-  document.getElementById('eta-time').textContent = etaMap[cat] || '10 mins';
-  document.getElementById('eta-badge').style.display = 'block';
-}
-
-function showClosedBox(cat, h) {
-  function fmt(t) { if(!t)return''; var p=t.split(':'); var hr=parseInt(p[0]),mn=parseInt(p[1]); var ampm=hr>=12?'PM':'AM'; hr=hr%12||12; return hr+(mn>0?':'+String(mn).padStart(2,'0'):'')+' '+ampm; }
-  var deptEmojis={'Housekeeping':'🛏️','Room Service':'🍽️','Maintenance':'🔧','Front Desk':'🛎️'};
-  document.getElementById('closed-title').textContent = (deptEmojis[cat]||'') + ' ' + cat + ' is Closed Right Now';
-  document.getElementById('closed-msg').textContent = h.closedMsg || "We're currently closed. Please try again during service hours.";
-  var timingEl = document.getElementById('closed-timing');
-  if (h.openTime && h.closeTime) { timingEl.textContent = '⏰ Service hours: ' + fmt(h.openTime) + ' – ' + fmt(h.closeTime); timingEl.style.display = 'block'; }
-  else { timingEl.style.display = 'none'; }
-  document.getElementById('dept-closed-box').style.display = 'block';
-}
-
-function renderDeptServices(cat) {
-  var grid = document.getElementById('services-grid'); grid.innerHTML = '';
-  var savedDept = deptGuestOptions[cat];
-  var enabledKeys, customItems;
-  if (savedDept && savedDept.enabled !== undefined) {
-    enabledKeys = savedDept.enabled.filter(function(k){ return k.indexOf('CUSTOM::') !== 0; });
-    customItems = (savedDept.custom || []).filter(function(c){ return savedDept.enabled.indexOf(c.key) !== -1; });
-  } else { enabledKeys = DEPT_DEFAULTS[cat] || []; customItems = []; }
-  enabledKeys.forEach(function(key){ addServiceBtn(grid, key, key); });
-  customItems.forEach(function(c){ addServiceBtn(grid, c.key, c.label); });
-}
-
-function addServiceBtn(grid, key, label) {
-  var el = document.createElement('button');
-  el.className = 'service-item'; el.textContent = label; el.setAttribute('data-key', key);
-  el.onclick = function() {
-    var idx = selectedQuicks.indexOf(key);
-    if (idx === -1) { selectedQuicks.push(key); el.classList.add('selected'); }
-    else { selectedQuicks.splice(idx, 1); el.classList.remove('selected'); }
-    document.getElementById('message').value = selectedQuicks.join(', ');
-    if (selectedQuicks.length > 0) {
-      var maxSla = 0; selectedQuicks.forEach(function(k){ var s = currentCatSlaMap[k] || OPTION_SLA_DEFAULTS[k] || 15; if(s>maxSla)maxSla=s; });
-      document.getElementById('eta-time').textContent = maxSla + ' mins';
-    } else { document.getElementById('eta-time').textContent = etaMap[selectedCategory] || '10 mins'; }
-  };
-  grid.appendChild(el);
-}
-
-function getMaxSla() {
-  if (selectedQuicks.length === 0) return 15;
-  var maxSla = 0; selectedQuicks.forEach(function(k){ var s = currentCatSlaMap[k] || OPTION_SLA_DEFAULTS[k] || 15; if(s>maxSla)maxSla=s; });
-  return maxSla || 15;
-}
-
-async function submitRequest() {
-  if (!selectedCategory) { alert('Please select a category first!'); return; }
-  if (deptIsClosed) { alert('This department is currently closed.'); return; }
-  var message = document.getElementById('message').value.trim() || selectedQuicks.join(', ');
-  if (!message) { alert('Please select a service or describe your request.'); return; }
-  try {
-    var res = await fetch('/requests', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ hotel_id:hotelId, room_id:roomId, room_number:roomNumber, category:selectedCategory, message:message, sla_minutes:getMaxSla() }) });
-    var data = await res.json();
-    if (data && data.id) {
-      currentRequestId = data.id;
-      document.getElementById('success').style.display = 'block';
-      setTimeout(function(){
-        document.getElementById('request-card').style.display = 'none';
-        showTracking(selectedCategory, message);
-      }, 1500);
-      document.getElementById('message').value = '';
-      document.querySelectorAll('.cat-btn').forEach(function(b){ b.classList.remove('selected'); });
-      document.querySelectorAll('.service-item').forEach(function(q){ q.classList.remove('selected'); });
-      selectedCategory = ''; selectedQuicks = []; deptIsClosed = false;
-      pollInterval = setInterval(checkIfDone, 5000);
-    } else { alert('Something went wrong. Please try again.'); }
-  } catch(e) { alert('Could not send request. Please check your connection.'); }
-}
-
-function showTracking(category, message) {
-  var icons = {'Housekeeping':'🛏️','Room Service':'🍽️','Maintenance':'🔧','Front Desk':'🛎️'};
-  document.getElementById('tracking-icon').textContent = icons[category] || '📋';
-  document.getElementById('tracking-title').textContent = category + ' — Request Received!';
-  document.getElementById('tracking-sub').textContent = message ? '"' + message + '"' : 'Your request has been sent.';
-  document.getElementById('eta-track-text').textContent = 'Estimated: ' + (etaMap[category] || '10–15 mins');
-  document.getElementById('tracking-card').style.display = 'block';
-  setTimeout(function(){ document.getElementById('eta-fill').style.width = '60%'; }, 500);
-}
-
-function updateTrackingStatus(status) {
-  if (status === 'in_progress') {
-    document.getElementById('step-2').classList.add('active'); document.getElementById('check-2').textContent = '✓';
-    document.getElementById('tracking-title').textContent = 'Staff On The Way! 👷';
-    document.getElementById('eta-fill').style.width = '80%';
-  } else if (status === 'done') {
-    document.getElementById('step-3').classList.add('active','done'); document.getElementById('check-3').textContent = '✓';
-    document.getElementById('tracking-title').textContent = 'Completed! ✅';
-    document.getElementById('eta-fill').style.width = '100%';
-  }
-}
-
-async function checkIfDone() {
-  try {
-    var res = await fetch('/requests?hotel_id=' + hotelId);
-    var requests = await res.json();
-    var req = requests.find(function(r){ return r.id === currentRequestId; });
-    if (req) {
-      updateTrackingStatus(req.status);
-      if (req.status === 'done' && !req.feedback_rating) {
-        clearInterval(pollInterval);
-        setTimeout(function(){ document.getElementById('tracking-card').style.display = 'none'; document.getElementById('feedback-card').style.display = 'block'; }, 2000);
-      }
-    }
-  } catch(e) {}
-}
-
-function newRequest() {
-  clearInterval(pollInterval);
-  document.getElementById('tracking-card').style.display = 'none';
-  document.getElementById('request-card').style.display = 'block';
-  document.getElementById('success').style.display = 'none';
-  document.getElementById('dept-closed-box').style.display = 'none';
-  document.getElementById('services-section').style.display = 'none';
-  document.getElementById('eta-badge').style.display = 'none';
-  document.getElementById('submit-btn').disabled = false;
-  document.getElementById('eta-fill').style.width = '10%';
-  document.getElementById('step-2').classList.remove('active'); document.getElementById('step-3').classList.remove('active','done');
-  document.getElementById('check-2').textContent = '⏳'; document.getElementById('check-3').textContent = '⏳';
-  currentRequestId = null; deptIsClosed = false;
-}
-
-function setRating(r) {
-  selectedRating = r;
-  var labels = ['','😞 Poor','😐 Fair','🙂 Good','😊 Great','🤩 Excellent!'];
-  document.getElementById('rating-label').textContent = labels[r] || '';
-  document.querySelectorAll('#stars span').forEach(function(s,i){ s.style.opacity = i < r ? '1' : '0.3'; });
-}
-
-async function submitFeedback() {
-  if (!selectedRating) { alert('Please select a rating!'); return; }
-  var comment = document.getElementById('comment').value;
-  try {
-    await fetch('/requests/'+currentRequestId+'/feedback', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ rating:selectedRating, feedback_comments:comment }) });
-  } catch(e) {}
-  document.getElementById('feedback-card').style.display = 'none';
-  document.getElementById('thankyou').style.display = 'block';
-}
-
-// ── AI CONCIERGE ──
-function openAIChat() { document.getElementById('ai-chat-modal').style.display = 'block'; document.getElementById('ai-chat-input').focus(); }
-function closeAIChat() { document.getElementById('ai-chat-modal').style.display = 'none'; }
-
-function addChatMessage(text, isUser) {
-  var msgs = document.getElementById('ai-chat-messages');
-  var div = document.createElement('div');
-  div.className = isUser ? 'ai-msg-user' : 'ai-msg-bot';
-  div.textContent = text;
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
-async function sendAIMessage() {
-  var input = document.getElementById('ai-chat-input');
-  var text = input.value.trim(); if (!text) return;
-  input.value = '';
-  addChatMessage(text, true);
-  var msgs = document.getElementById('ai-chat-messages');
-  var typing = document.createElement('div');
-  typing.className = 'ai-msg-bot'; typing.id = 'ai-typing';
-  typing.textContent = '⏳ Thinking...';
-  msgs.appendChild(typing); msgs.scrollTop = msgs.scrollHeight;
-
-  try {
-    var hotelName = document.getElementById('hotel-name').textContent;
-    var res = await fetch('/ai/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: text, hotel_name: hotelName, room_number: roomNumber, hotel_id: hotelId })
-    });
-    var data = await res.json();
-    var t = document.getElementById('ai-typing'); if(t) t.remove();
-
-    if (data.reply) {
-      addChatMessage(data.reply, false);
-    } else {
-      addChatMessage('Our team will assist you shortly! Please use the request form below.', false);
-    }
-
-    // If AI says staff is needed, auto-submit a request
-    if (data.needs_staff && data.department && data.task) {
-      try {
-        await fetch('/requests', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            hotel_id: hotelId,
-            room_id: roomId,
-            room_number: roomNumber,
-            category: data.department || 'Front Desk',
-            message: data.english_message || data.task || text,
-            sla_minutes: data.priority === 'urgent' ? 5 : 15
-          })
-        });
-        setTimeout(function(){ addChatMessage('✅ I\'ve sent your request to the ' + data.department + ' team!', false); }, 400);
-      } catch(e) {}
-    }
-  } catch(e) {
-    var t2 = document.getElementById('ai-typing'); if(t2) t2.remove();
-    addChatMessage('Sorry, AI is temporarily unavailable. Please use the request form or call the front desk.', false);
-  }
-}
-
-// ── PRE CHECK-IN UPSELL ──
-var upsellSelectedItems = [];
-
-async function loadUpsellSuggestions() {
-  var sugBox = document.getElementById('upsell-suggestions');
-
-  // Fallback suggestions shown instantly while AI loads
-  var fallback = [
-    { emoji:'🌸', title:'Room Decoration', desc:'Flowers, candles & personalised setup for a special occasion', price:'On request' },
-    { emoji:'🍽️', title:'Private Dinner', desc:'Candlelit dinner arranged just for you', price:'On request' },
-    { emoji:'💆', title:'Spa & Wellness', desc:'Relaxing massage or spa session at the hotel', price:'On request' },
-    { emoji:'🚗', title:'Airport Transfer', desc:'Comfortable pick-up or drop-off arranged by hotel', price:'On request' }
-  ];
-
-  // Show fallback immediately
+// ── UPSELL ──
+async function loadUpsellSuggestions(){
+  var box=document.getElementById('upsell-suggestions');
+  var fallback=[{emoji:'🌸',title:'Room Decoration',desc:'Flowers, candles & personalised setup',price:'On request'},{emoji:'🍽️',title:'Private Dining',desc:'Candlelit dinner exclusively for you',price:'On request'},{emoji:'💆',title:'Spa & Wellness',desc:'Rejuvenating massage or spa session',price:'On request'},{emoji:'🚗',title:'Airport Transfer',desc:'Comfortable pick-up arranged by hotel',price:'On request'}];
   renderUpsellSuggestions(fallback);
-
-  // Try to get AI-personalised suggestions from hotel KB
-  try {
-    var hotelName = document.getElementById('hotel-name').textContent || 'Hotel';
-    var res = await fetch('/ai/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        hotel_id: hotelId,
-        hotel_name: hotelName,
-        room_number: roomNumber,
-        message: 'I am about to check in. Based on this hotel\'s activities, facilities, and restaurant offerings, suggest 4 special experiences or add-ons I can pre-book to make my stay memorable. Reply in JSON only: {"suggestions":[{"emoji":"...","title":"short title","desc":"one line description","price":"price or On request"}]}'
-      })
-    });
-    var data = await res.json();
-
-    // Try to parse suggestions from AI reply
-    if (data.reply) {
-      try {
-        var clean = data.reply.replace(/```json|```/g, '').trim();
-        // Find JSON array in reply
-        var match = clean.match(/\{[\s\S]*"suggestions"[\s\S]*\}/);
-        if (match) {
-          var parsed = JSON.parse(match[0]);
-          if (parsed.suggestions && parsed.suggestions.length > 0) {
-            renderUpsellSuggestions(parsed.suggestions.slice(0, 5));
-            return;
-          }
-        }
-      } catch(e) {}
-    }
-    // If parsing fails, fallback stays shown
-  } catch(e) {
-    // Network error — fallback stays shown
-  }
+  try{
+    var hn=document.getElementById('hotel-name').textContent;
+    var res=await fetch('/ai/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hotelId,hotel_name:hn,room_number:roomNumber,message:'Based on this hotel\'s activities and facilities, suggest 4 special pre-arrival experiences. Reply JSON only: {"suggestions":[{"emoji":"...","title":"...","desc":"one line","price":"..."}]}'})});
+    var data=await res.json();
+    if(data.reply){var m=data.reply.replace(/```json|```/g,'').trim().match(/\{[\s\S]*"suggestions"[\s\S]*\}/);if(m){var p=JSON.parse(m[0]);if(p.suggestions&&p.suggestions.length>0){renderUpsellSuggestions(p.suggestions.slice(0,5));return;}}}
+  }catch(e){}
 }
 
-function renderUpsellSuggestions(suggestions) {
-  var sugBox = document.getElementById('upsell-suggestions');
-  upsellSelectedItems = []; // reset selections
-  sugBox.innerHTML = suggestions.map(function(s, i) {
-    return '<div class="upsell-suggestion" id="upsell-sug-' + i + '" onclick="toggleUpsellItem(' + i + ',' + JSON.stringify(s.title).replace(/"/g, '&quot;') + ')">' +
-      '<div class="upsell-sug-emoji">' + (s.emoji || '✨') + '</div>' +
-      '<div class="upsell-sug-info">' +
-        '<div class="upsell-sug-title">' + s.title + '</div>' +
-        '<div class="upsell-sug-desc">' + s.desc + '</div>' +
-      '</div>' +
-      '<div class="upsell-sug-price">' + (s.price || 'On request') + '</div>' +
+function renderUpsellSuggestions(list){
+  upsellSelectedItems=[];
+  document.getElementById('upsell-suggestions').innerHTML=list.map(function(s,i){
+    return '<div class="upsell-sug" id="us-'+i+'" onclick="toggleUpsell('+i+',\''+encodeURIComponent(s.title)+'\')">' +
+      '<div class="upsell-sug-emoji">'+(s.emoji||'✦')+'</div>'+
+      '<div style="flex:1"><div class="upsell-sug-title">'+s.title+'</div><div class="upsell-sug-desc">'+s.desc+'</div></div>'+
+      '<div class="upsell-sug-price">'+(s.price||'On request')+'</div>'+
     '</div>';
   }).join('');
 }
 
-function toggleUpsellItem(idx, title) {
-  var el = document.getElementById('upsell-sug-' + idx);
-  var pos = upsellSelectedItems.indexOf(title);
-  if (pos === -1) {
-    upsellSelectedItems.push(title);
-    el.classList.add('selected');
-  } else {
-    upsellSelectedItems.splice(pos, 1);
-    el.classList.remove('selected');
-  }
+function toggleUpsell(idx,enc){
+  var title=decodeURIComponent(enc);var el=document.getElementById('us-'+idx);
+  var pos=upsellSelectedItems.indexOf(title);
+  if(pos===-1){upsellSelectedItems.push(title);el.classList.add('selected');}
+  else{upsellSelectedItems.splice(pos,1);el.classList.remove('selected');}
 }
 
-async function submitSpecialRequest(btn) {
-  var freeText = document.getElementById('upsell-special-text').value.trim();
-  var guestName = window._ciGuestName || 'Guest';
+async function submitSpecialRequest(btn){
+  var text=document.getElementById('upsell-special-text').value.trim();
+  var name=window._ciGuestName||'Guest';
+  if(upsellSelectedItems.length===0&&!text){alert('Please select an experience or write your special request.');return;}
+  btn.textContent='⏳ Sending...';btn.disabled=true;
+  var parts=['✨ SPECIAL REQUEST / PRE-ARRIVAL PREFERENCES','─────────────────────','👤 Guest: '+name,'📍 Room: '+(roomNumber||'Pre-Arrival'),''];
+  if(upsellSelectedItems.length>0){parts.push('🎯 Requested Experiences:');upsellSelectedItems.forEach(function(item){parts.push(' • '+item);});parts.push('');}
+  if(text){parts.push('✍️ Special Request:');parts.push(text);}
+  try{
+    await fetch('/requests',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hotelId,room_number:roomNumber||'Pre-Arrival',category:'Front Desk',message:parts.join('\n'),status:'pending',sla_minutes:30})});
+    btn.style.display='none';document.getElementById('upsell-special-text').style.display='none';document.getElementById('upsell-done').style.display='block';
+    document.querySelectorAll('.upsell-sug').forEach(function(el){el.style.pointerEvents='none';});
+  }catch(e){btn.textContent='Add to My Booking ✦';btn.disabled=false;alert('Could not send. Please try again.');}
+}
 
-  if (upsellSelectedItems.length === 0 && !freeText) {
-    alert('Please select at least one experience or write your special request.');
-    return;
-  }
+// ── DURING STAY ──
+async function selectCat(btn,cat){
+  document.querySelectorAll('.service-cat').forEach(function(b){b.classList.remove('selected');});
+  btn.classList.add('selected');selectedCategory=cat;selectedQuicks=[];deptIsClosed=false;
+  document.getElementById('dept-closed-box').style.display='none';document.getElementById('services-section').style.display='none';document.getElementById('eta-badge').style.display='none';document.getElementById('submit-btn').disabled=false;
+  try{var hr=await fetch('/hotels');var hs=await hr.json();var lh=hs.find(function(h){return h.hotel_id===hotelId;});if(lh&&lh.dept_guest_options)deptGuestOptions=lh.dept_guest_options;}catch(e){}
+  var saved=deptGuestOptions[cat];
+  if(saved&&saved.hours){var h=saved.hours;var closed=false;if(h.isOpen===true){closed=false;}else if(h.isOpen===false){if(h.openTime&&h.closeTime){var now=new Date();var cur=now.getHours()*60+now.getMinutes();var op=h.openTime.split(':');var cl=h.closeTime.split(':');var om=parseInt(op[0])*60+parseInt(op[1]);var cm=parseInt(cl[0])*60+parseInt(cl[1]);closed=(cm>om)?(cur<om||cur>=cm):true;}else{closed=true;}}if(closed){deptIsClosed=true;showClosedBox(cat,h);document.getElementById('submit-btn').disabled=true;return;}}
+  currentCatSlaMap=(saved&&saved.slaMap)?saved.slaMap:{};
+  renderQuickOpts(cat);
+  document.getElementById('services-section').style.display='block';
+  document.getElementById('eta-time').textContent=etaMap[cat]||'10 mins';
+  document.getElementById('eta-badge').style.display='block';
+}
 
-  btn.textContent = '⏳ Sending...'; btn.disabled = true;
+function showClosedBox(cat,h){
+  function fmt(t){if(!t)return'';var p=t.split(':');var hr=parseInt(p[0]),mn=parseInt(p[1]);var ap=hr>=12?'PM':'AM';hr=hr%12||12;return hr+(mn>0?':'+String(mn).padStart(2,'0'):'')+' '+ap;}
+  document.getElementById('closed-title').textContent=cat+' is Closed';
+  document.getElementById('closed-msg').textContent=h.closedMsg||"We're currently closed. Please try again during service hours.";
+  var t=document.getElementById('closed-timing');if(h.openTime&&h.closeTime){t.textContent='Service hours: '+fmt(h.openTime)+' – '+fmt(h.closeTime);t.style.display='block';}else{t.style.display='none';}
+  document.getElementById('dept-closed-box').style.display='block';
+}
 
-  var parts = ['✨ SPECIAL REQUEST / PRE-ARRIVAL PREFERENCES', '─────────────────────', '👤 Guest: ' + guestName, '📍 Room: ' + (roomNumber || 'Pre-Arrival'), ''];
-  if (upsellSelectedItems.length > 0) {
-    parts.push('🎯 Selected Experiences:');
-    upsellSelectedItems.forEach(function(item) { parts.push(' • ' + item); });
-    parts.push('');
-  }
-  if (freeText) {
-    parts.push('✍️ Special Request:');
-    parts.push(freeText);
-  }
+function renderQuickOpts(cat){
+  var grid=document.getElementById('services-grid');grid.innerHTML='';
+  var saved=deptGuestOptions[cat];var keys,customs;
+  if(saved&&saved.enabled!==undefined){keys=saved.enabled.filter(function(k){return k.indexOf('CUSTOM::')<0;});customs=(saved.custom||[]).filter(function(c){return saved.enabled.indexOf(c.key)>=0;});}
+  else{keys=DEPT_DEFAULTS[cat]||[];customs=[];}
+  keys.forEach(function(key){addQuickOpt(grid,key,key);});
+  customs.forEach(function(c){addQuickOpt(grid,c.key,c.label);});
+}
 
-  var message = parts.join('\n');
+function addQuickOpt(grid,key,label){
+  var el=document.createElement('div');el.className='quick-opt';el.textContent=label;el.setAttribute('data-key',key);
+  el.onclick=function(){var idx=selectedQuicks.indexOf(key);if(idx===-1){selectedQuicks.push(key);el.classList.add('selected');}else{selectedQuicks.splice(idx,1);el.classList.remove('selected');}document.getElementById('message').value=selectedQuicks.join(', ');if(selectedQuicks.length>0){var m=0;selectedQuicks.forEach(function(k){var s=currentCatSlaMap[k]||OPTION_SLA[k]||15;if(s>m)m=s;});document.getElementById('eta-time').textContent=m+' mins';}else{document.getElementById('eta-time').textContent=etaMap[selectedCategory]||'10 mins';}};
+  grid.appendChild(el);
+}
 
-  try {
-    await fetch('/requests', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        hotel_id: hotelId,
-        room_number: roomNumber || 'Pre-Arrival',
-        category: 'Front Desk',
-        message: message,
-        status: 'pending',
-        sla_minutes: 30
-      })
-    });
+function getMaxSla(){if(selectedQuicks.length===0)return 15;var m=0;selectedQuicks.forEach(function(k){var s=currentCatSlaMap[k]||OPTION_SLA[k]||15;if(s>m)m=s;});return m||15;}
 
-    // Show done state
-    btn.style.display = 'none';
-    document.getElementById('upsell-special-text').style.display = 'none';
-    document.getElementById('upsell-done').style.display = 'block';
+async function submitRequest(){
+  if(!selectedCategory){alert('Please select a service category.');return;}
+  if(deptIsClosed){alert('This department is currently closed.');return;}
+  var message=document.getElementById('message').value.trim()||selectedQuicks.join(', ');
+  if(!message){alert('Please select a service or describe your request.');return;}
+  try{
+    var res=await fetch('/requests',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hotelId,room_id:roomId,room_number:roomNumber,category:selectedCategory,message:message,sla_minutes:getMaxSla()})});
+    var data=await res.json();
+    if(data&&data.id){
+      currentRequestId=data.id;
+      var s=document.getElementById('success');s.textContent='✦ Request received — tracking below';s.className='msg-box msg-success';s.style.display='block';
+      setTimeout(function(){document.getElementById('request-card').style.display='none';showTracking(selectedCategory,message);},1500);
+      document.getElementById('message').value='';document.querySelectorAll('.service-cat').forEach(function(b){b.classList.remove('selected');});document.querySelectorAll('.quick-opt').forEach(function(b){b.classList.remove('selected');});
+      selectedCategory='';selectedQuicks=[];deptIsClosed=false;pollInterval=setInterval(checkIfDone,5000);
+    }
+  }catch(e){alert('Could not send request. Please try again.');}
+}
 
-    // Disable all suggestion taps
-    document.querySelectorAll('.upsell-suggestion').forEach(function(el) {
-      el.style.pointerEvents = 'none';
-    });
+function showTracking(cat,msg){
+  var icons={'Housekeeping':'🛏️','Room Service':'🍽️','Maintenance':'🔧','Front Desk':'🛎️'};
+  document.getElementById('tracking-icon').textContent=icons[cat]||'📋';
+  document.getElementById('tracking-title').textContent=cat+' — Request Sent';
+  document.getElementById('tracking-sub').textContent=msg?'"'+msg+'"':'Your request is on its way.';
+  document.getElementById('eta-track-text').textContent='Estimated: '+(etaMap[cat]||'10–15 mins');
+  document.getElementById('tracking-card').style.display='block';
+  setTimeout(function(){document.getElementById('eta-fill').style.width='55%';},500);
+}
 
-  } catch(e) {
-    btn.textContent = '✨ Add to My Booking'; btn.disabled = false;
-    alert('Could not send. Please try again.');
-  }
+function updateTrackingStatus(status){
+  if(status==='in_progress'){document.getElementById('step-2').classList.add('active');document.getElementById('check-2').textContent='✓';document.getElementById('tracking-title').textContent='Staff on the way ✦';document.getElementById('eta-fill').style.width='80%';}
+  else if(status==='done'){document.getElementById('step-3').classList.add('active','done');document.getElementById('check-3').textContent='✓';document.getElementById('tracking-title').textContent='Completed ✦';document.getElementById('eta-fill').style.width='100%';}
+}
+
+async function checkIfDone(){
+  try{var res=await fetch('/requests?hotel_id='+hotelId);var reqs=await res.json();var req=reqs.find(function(r){return r.id===currentRequestId;});if(req){updateTrackingStatus(req.status);if(req.status==='done'&&!req.feedback_rating){clearInterval(pollInterval);setTimeout(function(){document.getElementById('tracking-card').style.display='none';document.getElementById('feedback-card').style.display='block';},2000);}}}catch(e){}
+}
+
+function newRequest(){
+  clearInterval(pollInterval);document.getElementById('tracking-card').style.display='none';document.getElementById('request-card').style.display='block';document.getElementById('success').style.display='none';
+  document.getElementById('dept-closed-box').style.display='none';document.getElementById('services-section').style.display='none';document.getElementById('eta-badge').style.display='none';document.getElementById('submit-btn').disabled=false;
+  document.getElementById('eta-fill').style.width='5%';document.getElementById('step-2').classList.remove('active');document.getElementById('step-3').classList.remove('active','done');document.getElementById('check-2').textContent='⏳';document.getElementById('check-3').textContent='⏳';
+  currentRequestId=null;deptIsClosed=false;
+}
+
+function setRating(r){selectedRating=r;var labels=['','😞 Poor','😐 Fair','🙂 Good','😊 Great','🤩 Excellent'];document.getElementById('rating-label').textContent=labels[r]||'';document.querySelectorAll('#stars span').forEach(function(s,i){s.classList.toggle('lit',i<r);});}
+
+async function submitFeedback(){
+  if(!selectedRating){alert('Please select a rating.');return;}
+  var comment=document.getElementById('comment').value;
+  try{await fetch('/requests/'+currentRequestId+'/feedback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({rating:selectedRating,feedback_comments:comment})});}catch(e){}
+  document.getElementById('feedback-card').style.display='none';document.getElementById('thankyou').style.display='block';
+}
+
+// ── AI ──
+function openAIModal(){document.getElementById('ai-modal').style.display='block';document.getElementById('ai-input').focus();}
+function closeAIModal(){document.getElementById('ai-modal').style.display='none';}
+
+function addAIMsg(text,isUser){var msgs=document.getElementById('ai-messages');var div=document.createElement('div');div.className=isUser?'ai-msg-user':'ai-msg-bot';div.textContent=text;msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;}
+
+async function sendAIMessage(){
+  var input=document.getElementById('ai-input');var text=input.value.trim();if(!text)return;input.value='';
+  addAIMsg(text,true);
+  var msgs=document.getElementById('ai-messages');var typing=document.createElement('div');typing.className='ai-msg-bot';typing.id='ai-typing';typing.textContent='...';msgs.appendChild(typing);msgs.scrollTop=msgs.scrollHeight;
+  try{
+    var res=await fetch('/ai/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text,hotel_name:document.getElementById('hotel-name').textContent,room_number:roomNumber,hotel_id:hotelId})});
+    var data=await res.json();var t=document.getElementById('ai-typing');if(t)t.remove();
+    addAIMsg(data.reply||'Our team will assist you shortly.',false);
+    if(data.needs_staff&&data.department&&data.task){
+      try{await fetch('/requests',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hotelId,room_id:roomId,room_number:roomNumber,category:data.department||'Front Desk',message:data.english_message||data.task||text,sla_minutes:data.priority==='urgent'?5:15})});}catch(e){}
+      setTimeout(function(){addAIMsg('✦ Your request has been sent to the '+data.department+' team.',false);},400);
+    }
+  }catch(e){var t2=document.getElementById('ai-typing');if(t2)t2.remove();addAIMsg('I\'m having trouble connecting. Please use the request form.',false);}
+}
+
+// ── CHECKOUT ──
+function initCheckout(){
+  var cd=document.getElementById('ci-checkout-date')?document.getElementById('ci-checkout-date').value:'';
+  var locked=document.getElementById('checkout-locked'),form=document.getElementById('checkout-form'),share=document.getElementById('co-share-card');
+  if(cd){var today=new Date().toISOString().split('T')[0];if(today<cd){locked.style.display='block';form.style.display='none';share.style.display='none';return;}}
+  locked.style.display='none';form.style.display='block';
+}
+
+function setCoRating(n){coRating=n;var labels=['','Poor 😞','Fair 😐','Good 🙂','Very Good 😊','Excellent 🤩'];document.getElementById('co-rating-label').textContent=labels[n];document.querySelectorAll('#co-stars span').forEach(function(s,i){s.classList.toggle('lit',i<n);});}
+
+async function submitCheckout(btn){
+  var name=document.getElementById('co-name').value.trim(),email=document.getElementById('co-email').value.trim(),review=document.getElementById('co-review').value.trim();
+  var msg=document.getElementById('co-msg');
+  if(!name||!email||!review||coRating===0){msg.textContent='⚠️ Please fill all fields and select a rating.';msg.className='msg-box msg-error';return;}
+  btn.textContent='⏳ Submitting...';btn.disabled=true;coReviewText=review;
+  try{await fetch('/checkout-feedback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hotelId,room_number:roomNumber,guest_name:name,guest_email:email,rating:coRating,review:review})});
+  await fetch('/requests',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hotelId,room_number:roomNumber,category:'Front Desk',message:'⭐ CHECKOUT REVIEW ('+coRating+'/5)\n👤 '+name+' | '+email+'\n"'+review+'"',status:'done',sla_minutes:1})});}catch(e){}
+  document.getElementById('checkout-form').style.display='none';document.getElementById('co-share-card').style.display='block';
+}
+
+function copyReview(platform,btn){
+  var stars='';for(var i=0;i<coRating;i++)stars+='⭐';
+  var text=stars+' — '+coHotelName+'\n\n"'+coReviewText+'"\n\n— Reviewed via Welco Guest Portal';
+  navigator.clipboard.writeText(text).then(function(){var c=document.getElementById('copy-confirm');c.style.display='block';setTimeout(function(){c.style.display='none';},3000);}).catch(function(){prompt('Copy this review:',text);});
 }
 
 // ── INIT ──
 loadBranding();
-// Render 1 ID slot by default on page load
+
 renderIdSlots();
 </script>
 
-  <div style="text-align:center;padding:16px;font-size:10px;color:rgba(255,255,255,0.3);position:relative;z-index:1">
-    © 2026 <strong>Welco™</strong> · All Rights Reserved · Built in India 🇮🇳
+  <div style="text-align:center;padding:20px;font-size:9px;color:rgba(255,255,255,0.15);letter-spacing:0.14em;text-transform:uppercase;position:relative;z-index:1">
+    © 2026 Welco™ · All Rights Reserved
   </div>
 
 </body>

@@ -223,8 +223,8 @@
         <div class="form-row">
           <div class="form-group">
             <label>Adults *</label>
-            <select id="ci-adults">
-              <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5+</option>
+            <select id="ci-adults" onchange="renderIdSlots()">
+              <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
             </select>
           </div>
           <div class="form-group">
@@ -243,32 +243,10 @@
           <input type="text" id="ci-to" placeholder="e.g. Jaipur">
         </div>
 
-        <div class="section-label" style="margin-top:8px">ID Proof</div>
-        <div class="form-group">
-          <label>ID Type *</label>
-          <select id="ci-id-type">
-            <option value="">Select ID Type</option>
-            <option value="Aadhar Card">Aadhar Card</option>
-            <option value="Passport">Passport</option>
-            <option value="Driving License">Driving License</option>
-            <option value="Voter ID">Voter ID</option>
-            <option value="PAN Card">PAN Card</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>ID Number *</label>
-          <input type="text" id="ci-id-number" placeholder="Enter ID number">
-        </div>
-        <div class="form-group">
-          <label>Upload ID Photo</label>
-          <div class="upload-area" onclick="document.getElementById('ci-id-file').click()">
-            <div class="upload-icon">📷</div>
-            <div class="upload-text">Tap to upload ID photo</div>
-            <div class="upload-hint">JPG or PNG</div>
-          </div>
-          <input type="file" id="ci-id-file" accept="image/*" style="display:none" onchange="handleIdUpload(event)">
-          <img id="id-preview-img" src="" alt="">
-        </div>
+        <div class="section-label" style="margin-top:8px">ID Proof — One per Adult *</div>
+        <div style="font-size:12px;color:#888;margin-bottom:12px;line-height:1.5">Each adult must upload a valid government ID photo. All uploads are compulsory.</div>
+        <!-- Dynamic ID slots — rendered by renderIdSlots() -->
+        <div id="id-slots-container"></div>
 
         <button class="submit-btn" onclick="submitPreCheckin(this)">✅ Submit Pre Check-in</button>
         <div style="font-size:11px;color:#aaa;text-align:center;margin-top:10px">Your details are securely shared with the hotel team</div>
@@ -478,7 +456,76 @@ var selectedCategory = '', selectedQuicks = [], selectedRating = 0;
 var currentRequestId = null, pollInterval = null;
 var deptIsClosed = false, currentCatSlaMap = {};
 var coRating = 0, coReviewText = '', coHotelName = '';
-var ciIdBase64 = null;
+var ciIdBase64 = null; // kept for compat
+var adultIdData = {}; // { 0:{type,base64}, 1:{type,base64}, ... }
+
+// ── DYNAMIC ID SLOTS — one per adult ──
+function renderIdSlots() {
+  var count = parseInt(document.getElementById('ci-adults').value) || 1;
+  var container = document.getElementById('id-slots-container');
+  if (!container) return;
+  container.innerHTML = '';
+  for (var i = 0; i < count; i++) {
+    var existing = adultIdData[i] || {};
+    var slot = document.createElement('div');
+    slot.id = 'id-slot-' + i;
+    slot.style.cssText = 'background:#f8f8f8;border:1.5px solid #e0e0e0;border-radius:12px;padding:14px;margin-bottom:12px';
+    slot.innerHTML =
+      '<div style="font-size:12px;font-weight:700;color:#005f73;margin-bottom:10px">👤 Adult ' + (i+1) + ' ID</div>' +
+      '<div style="margin-bottom:10px">' +
+        '<label style="font-size:11px;color:#888;font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.06em">ID Type *</label>' +
+        '<select id="ci-id-type-' + i + '" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none;background:white">' +
+          '<option value="">Select ID Type</option>' +
+          '<option value="Aadhar Card"' + (existing.type==='Aadhar Card'?' selected':'') + '>Aadhar Card</option>' +
+          '<option value="Passport"' + (existing.type==='Passport'?' selected':'') + '>Passport</option>' +
+          '<option value="Driving License"' + (existing.type==='Driving License'?' selected':'') + '>Driving License</option>' +
+          '<option value="Voter ID"' + (existing.type==='Voter ID'?' selected':'') + '>Voter ID</option>' +
+          '<option value="PAN Card"' + (existing.type==='PAN Card'?' selected':'') + '>PAN Card</option>' +
+        '</select>' +
+      '</div>' +
+      '<div>' +
+        '<label style="font-size:11px;color:#888;font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.06em">ID Photo *</label>' +
+        '<div class="upload-area" id="upload-area-' + i + '" onclick="document.getElementById(\'ci-id-file-' + i + '\').click()" style="' + (existing.base64 ? 'border-color:#2ecc71;background:#f0fdf4' : '') + '">' +
+          '<div class="upload-icon">' + (existing.base64 ? '✅' : '📷') + '</div>' +
+          '<div class="upload-text">' + (existing.base64 ? 'Photo uploaded — tap to change' : 'Tap to upload ID photo') + '</div>' +
+          '<div class="upload-hint">JPG or PNG</div>' +
+        '</div>' +
+        '<input type="file" id="ci-id-file-' + i + '" accept="image/*" style="display:none" data-idx="' + i + '" onchange="handleIdUploadSlot(event,' + i + ')">' +
+        (existing.base64 ? '<img src="' + existing.base64 + '" style="width:100%;border-radius:8px;max-height:120px;object-fit:cover;margin-top:8px">' : '<img id="id-preview-img-' + i + '" src="" style="display:none;width:100%;border-radius:8px;max-height:120px;object-fit:cover;margin-top:8px">') +
+      '</div>';
+    container.appendChild(slot);
+  }
+  // Remove stale data for slots beyond count
+  Object.keys(adultIdData).forEach(function(k) {
+    if (parseInt(k) >= count) delete adultIdData[k];
+  });
+}
+
+function handleIdUploadSlot(event, idx) {
+  var file = event.target.files[0]; if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    if (!adultIdData[idx]) adultIdData[idx] = {};
+    adultIdData[idx].base64 = e.target.result;
+    var typeEl = document.getElementById('ci-id-type-' + idx);
+    if (typeEl) adultIdData[idx].type = typeEl.value;
+    // Update upload area to show success
+    var area = document.getElementById('upload-area-' + idx);
+    if (area) {
+      area.style.borderColor = '#2ecc71';
+      area.style.background = '#f0fdf4';
+      area.querySelector('.upload-icon').textContent = '✅';
+      area.querySelector('.upload-text').textContent = 'Photo uploaded — tap to change';
+    }
+    // Show preview
+    var previewId = 'id-preview-img-' + idx;
+    var img = document.getElementById(previewId);
+    if (img) { img.src = e.target.result; img.style.display = 'block'; }
+  };
+  reader.readAsDataURL(file);
+}
+
+function handleIdUpload(event) {} // legacy stub — no longer used
 
 var params = new URLSearchParams(window.location.search);
 hotelId = params.get('hotel_id') || params.get('hotel') || 'hotel_001';
@@ -606,21 +653,49 @@ async function submitPreCheckin(btn) {
   var email = document.getElementById('ci-email').value.trim();
   var checkinDate = document.getElementById('ci-checkin-date').value;
   var checkoutDate = document.getElementById('ci-checkout-date').value;
-  var adults = document.getElementById('ci-adults').value;
+  var adults = parseInt(document.getElementById('ci-adults').value) || 1;
   var children = document.getElementById('ci-children').value;
   var from = document.getElementById('ci-from').value.trim();
   var to = document.getElementById('ci-to').value.trim();
-  var idType = document.getElementById('ci-id-type').value;
-  var idNumber = document.getElementById('ci-id-number').value.trim();
   var msg = document.getElementById('ci-msg');
 
-  if (!name || !mobile || !checkinDate || !from || !idType || !idNumber) {
+  // Validate basic fields
+  if (!name || !mobile || !checkinDate || !from) {
     msg.textContent = '⚠️ Please fill all required fields marked with *';
     msg.className = 'msg-box msg-error';
     return;
   }
 
+  // Validate per-adult ID slots
+  for (var i = 0; i < adults; i++) {
+    var typeEl = document.getElementById('ci-id-type-' + i);
+    var idType = typeEl ? typeEl.value : '';
+    var hasPhoto = adultIdData[i] && adultIdData[i].base64;
+    if (!idType) {
+      msg.textContent = '⚠️ Please select ID type for Adult ' + (i+1);
+      msg.className = 'msg-box msg-error';
+      document.getElementById('id-slot-' + i).scrollIntoView({ behavior:'smooth', block:'center' });
+      return;
+    }
+    if (!hasPhoto) {
+      msg.textContent = '⚠️ Please upload ID photo for Adult ' + (i+1);
+      msg.className = 'msg-box msg-error';
+      document.getElementById('id-slot-' + i).scrollIntoView({ behavior:'smooth', block:'center' });
+      return;
+    }
+    // Save type into adultIdData
+    if (!adultIdData[i]) adultIdData[i] = {};
+    adultIdData[i].type = idType;
+  }
+
   btn.textContent = '⏳ Submitting...'; btn.disabled = true;
+
+  // Build ID summary lines for HOD message
+  var idLines = [];
+  for (var j = 0; j < adults; j++) {
+    var d = adultIdData[j] || {};
+    idLines.push(' Adult ' + (j+1) + ': ' + (d.type || 'Not specified') + ' (photo attached)');
+  }
 
   var message = [
     '🛎️ PRE CHECK-IN REQUEST',
@@ -633,9 +708,8 @@ async function submitPreCheckin(btn) {
     '👥 Guests: ' + adults + ' Adult(s), ' + children + ' Child(ren)',
     '🚌 Arriving from: ' + from,
     '🚌 Departing to: ' + (to || 'Not specified'),
-    '🪪 ID Type: ' + idType,
-    '🔢 ID Number: ' + idNumber
-  ].join('\n');
+    '🪪 ID Proofs submitted:',
+  ].concat(idLines).join('\n');
 
   try {
     var res = await fetch('/requests', {
@@ -1152,6 +1226,8 @@ async function submitSpecialRequest(btn) {
 
 // ── INIT ──
 loadBranding();
+// Render 1 ID slot by default on page load
+renderIdSlots();
 </script>
 
   <div style="text-align:center;padding:16px;font-size:10px;color:rgba(255,255,255,0.3);position:relative;z-index:1">

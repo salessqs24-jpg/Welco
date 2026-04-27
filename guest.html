@@ -470,9 +470,15 @@ function renderIdSlots() {
     var slot = document.createElement('div');
     slot.id = 'id-slot-' + i;
     slot.style.cssText = 'background:#f8f8f8;border:1.5px solid #e0e0e0;border-radius:12px;padding:14px;margin-bottom:12px';
+
+    var frontDone = existing.front;
+    var backDone = existing.back;
+
     slot.innerHTML =
       '<div style="font-size:12px;font-weight:700;color:#005f73;margin-bottom:10px">👤 Adult ' + (i+1) + ' ID</div>' +
-      '<div style="margin-bottom:10px">' +
+
+      // ID Type
+      '<div style="margin-bottom:12px">' +
         '<label style="font-size:11px;color:#888;font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.06em">ID Type *</label>' +
         '<select id="ci-id-type-' + i + '" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none;background:white">' +
           '<option value="">Select ID Type</option>' +
@@ -483,16 +489,35 @@ function renderIdSlots() {
           '<option value="PAN Card"' + (existing.type==='PAN Card'?' selected':'') + '>PAN Card</option>' +
         '</select>' +
       '</div>' +
-      '<div>' +
-        '<label style="font-size:11px;color:#888;font-weight:600;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.06em">ID Photo *</label>' +
-        '<div class="upload-area" id="upload-area-' + i + '" onclick="document.getElementById(\'ci-id-file-' + i + '\').click()" style="' + (existing.base64 ? 'border-color:#2ecc71;background:#f0fdf4' : '') + '">' +
-          '<div class="upload-icon">' + (existing.base64 ? '✅' : '📷') + '</div>' +
-          '<div class="upload-text">' + (existing.base64 ? 'Photo uploaded — tap to change' : 'Tap to upload ID photo') + '</div>' +
-          '<div class="upload-hint">JPG or PNG</div>' +
+
+      // Two upload boxes side by side
+      '<label style="font-size:11px;color:#888;font-weight:600;display:block;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em">ID Photos — Front & Back *</label>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
+
+        // FRONT
+        '<div>' +
+          '<div style="font-size:11px;font-weight:700;color:#333;margin-bottom:6px;text-align:center">📸 Front Side</div>' +
+          '<div onclick="document.getElementById(\'ci-id-front-' + i + '\').click()" style="border:2px dashed ' + (frontDone?'#2ecc71':'#b2e8e8') + ';border-radius:10px;padding:14px 8px;text-align:center;cursor:pointer;background:' + (frontDone?'#f0fdf9':'white') + ';min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center" id="front-area-' + i + '">' +
+            '<div style="font-size:22px;margin-bottom:4px">' + (frontDone?'✅':'📷') + '</div>' +
+            '<div style="font-size:11px;color:' + (frontDone?'#065f46':'#888') + ';font-weight:600">' + (frontDone?'Uploaded':'Tap to upload') + '</div>' +
+          '</div>' +
+          '<input type="file" id="ci-id-front-' + i + '" accept="image/*" style="display:none" onchange="handleIdPhoto(event,' + i + ',\'front\')">' +
+          (frontDone ? '<img src="' + frontDone + '" style="width:100%;border-radius:8px;max-height:80px;object-fit:cover;margin-top:6px">' : '<img id="front-img-' + i + '" src="" style="display:none;width:100%;border-radius:8px;max-height:80px;object-fit:cover;margin-top:6px">') +
         '</div>' +
-        '<input type="file" id="ci-id-file-' + i + '" accept="image/*" style="display:none" data-idx="' + i + '" onchange="handleIdUploadSlot(event,' + i + ')">' +
-        (existing.base64 ? '<img src="' + existing.base64 + '" style="width:100%;border-radius:8px;max-height:120px;object-fit:cover;margin-top:8px">' : '<img id="id-preview-img-' + i + '" src="" style="display:none;width:100%;border-radius:8px;max-height:120px;object-fit:cover;margin-top:8px">') +
+
+        // BACK
+        '<div>' +
+          '<div style="font-size:11px;font-weight:700;color:#333;margin-bottom:6px;text-align:center">📸 Back Side</div>' +
+          '<div onclick="document.getElementById(\'ci-id-back-' + i + '\').click()" style="border:2px dashed ' + (backDone?'#2ecc71':'#b2e8e8') + ';border-radius:10px;padding:14px 8px;text-align:center;cursor:pointer;background:' + (backDone?'#f0fdf9':'white') + ';min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center" id="back-area-' + i + '">' +
+            '<div style="font-size:22px;margin-bottom:4px">' + (backDone?'✅':'📷') + '</div>' +
+            '<div style="font-size:11px;color:' + (backDone?'#065f46':'#888') + ';font-weight:600">' + (backDone?'Uploaded':'Tap to upload') + '</div>' +
+          '</div>' +
+          '<input type="file" id="ci-id-back-' + i + '" accept="image/*" style="display:none" onchange="handleIdPhoto(event,' + i + ',\'back\')">' +
+          (backDone ? '<img src="' + backDone + '" style="width:100%;border-radius:8px;max-height:80px;object-fit:cover;margin-top:6px">' : '<img id="back-img-' + i + '" src="" style="display:none;width:100%;border-radius:8px;max-height:80px;object-fit:cover;margin-top:6px">') +
+        '</div>' +
+
       '</div>';
+
     container.appendChild(slot);
   }
   // Remove stale data for slots beyond count
@@ -501,31 +526,36 @@ function renderIdSlots() {
   });
 }
 
-function handleIdUploadSlot(event, idx) {
+function handleIdPhoto(event, idx, side) {
   var file = event.target.files[0]; if (!file) return;
   var reader = new FileReader();
   reader.onload = function(e) {
     if (!adultIdData[idx]) adultIdData[idx] = {};
-    adultIdData[idx].base64 = e.target.result;
+    adultIdData[idx][side] = e.target.result;
+    // Save type too
     var typeEl = document.getElementById('ci-id-type-' + idx);
     if (typeEl) adultIdData[idx].type = typeEl.value;
-    // Update upload area to show success
-    var area = document.getElementById('upload-area-' + idx);
+
+    // Update upload box
+    var areaId = (side === 'front' ? 'front-area-' : 'back-area-') + idx;
+    var area = document.getElementById(areaId);
     if (area) {
       area.style.borderColor = '#2ecc71';
-      area.style.background = '#f0fdf4';
-      area.querySelector('.upload-icon').textContent = '✅';
-      area.querySelector('.upload-text').textContent = 'Photo uploaded — tap to change';
+      area.style.background = '#f0fdf9';
+      area.querySelector('div:first-child').textContent = '✅';
+      area.querySelector('div:last-child').textContent = 'Uploaded';
+      area.querySelector('div:last-child').style.color = '#065f46';
     }
     // Show preview
-    var previewId = 'id-preview-img-' + idx;
-    var img = document.getElementById(previewId);
+    var imgId = (side === 'front' ? 'front-img-' : 'back-img-') + idx;
+    var img = document.getElementById(imgId);
     if (img) { img.src = e.target.result; img.style.display = 'block'; }
   };
   reader.readAsDataURL(file);
 }
 
-function handleIdUpload(event) {} // legacy stub — no longer used
+function handleIdUploadSlot(event, idx) {} // legacy stub
+function handleIdUpload(event) {} // legacy stub
 
 var params = new URLSearchParams(window.location.search);
 hotelId = params.get('hotel_id') || params.get('hotel') || 'hotel_001';
@@ -670,15 +700,22 @@ async function submitPreCheckin(btn) {
   for (var i = 0; i < adults; i++) {
     var typeEl = document.getElementById('ci-id-type-' + i);
     var idType = typeEl ? typeEl.value : '';
-    var hasPhoto = adultIdData[i] && adultIdData[i].base64;
+    var hasFront = adultIdData[i] && adultIdData[i].front;
+    var hasBack = adultIdData[i] && adultIdData[i].back;
     if (!idType) {
       msg.textContent = '⚠️ Please select ID type for Adult ' + (i+1);
       msg.className = 'msg-box msg-error';
       document.getElementById('id-slot-' + i).scrollIntoView({ behavior:'smooth', block:'center' });
       return;
     }
-    if (!hasPhoto) {
-      msg.textContent = '⚠️ Please upload ID photo for Adult ' + (i+1);
+    if (!hasFront) {
+      msg.textContent = '⚠️ Please upload front side of ID for Adult ' + (i+1);
+      msg.className = 'msg-box msg-error';
+      document.getElementById('id-slot-' + i).scrollIntoView({ behavior:'smooth', block:'center' });
+      return;
+    }
+    if (!hasBack) {
+      msg.textContent = '⚠️ Please upload back side of ID for Adult ' + (i+1);
       msg.className = 'msg-box msg-error';
       document.getElementById('id-slot-' + i).scrollIntoView({ behavior:'smooth', block:'center' });
       return;
@@ -694,7 +731,7 @@ async function submitPreCheckin(btn) {
   var idLines = [];
   for (var j = 0; j < adults; j++) {
     var d = adultIdData[j] || {};
-    idLines.push(' Adult ' + (j+1) + ': ' + (d.type || 'Not specified') + ' (photo attached)');
+    idLines.push(' Adult ' + (j+1) + ': ' + (d.type || 'Not specified') + ' (front & back uploaded)');
   }
 
   var message = [

@@ -707,11 +707,11 @@ function loadAll() {
 
 // ── CHECK-IN PARSING ──
 function parseCheckinMessage(msg) {
-  // Parses the structured message written by guest.html
   var lines = msg.split('\n');
-  var data = {};
+  var data = { idProofs: [] };
+  var inIdSection = false;
   lines.forEach(function(line) {
-    var clean = line.replace(/[📱👤📧📅👥🚌🪪🔢─]/g, '').trim();
+    var clean = line.replace(/[📱👤📧📅👥🚌🪪🔢─✅]/g, '').trim();
     if (clean.startsWith('Name:')) data.name = clean.replace('Name:', '').trim();
     else if (clean.startsWith('Mobile:')) data.mobile = clean.replace('Mobile:', '').trim();
     else if (clean.startsWith('Email:')) data.email = clean.replace('Email:', '').trim();
@@ -720,13 +720,92 @@ function parseCheckinMessage(msg) {
     else if (clean.startsWith('Guests:')) data.guests = clean.replace('Guests:', '').trim();
     else if (clean.startsWith('Arriving from:')) data.from = clean.replace('Arriving from:', '').trim();
     else if (clean.startsWith('Departing to:')) data.to = clean.replace('Departing to:', '').trim();
-    else if (clean.startsWith('ID Type:')) data.idType = clean.replace('ID Type:', '').trim();
+    // Old format (single ID)
+    else if (clean.startsWith('ID Type:')) { data.idType = clean.replace('ID Type:', '').trim(); data.idProofs = [data.idType]; }
     else if (clean.startsWith('ID Number:')) data.idNumber = clean.replace('ID Number:', '').trim();
+    // New format (multiple IDs)
+    else if (clean.startsWith('ID Proofs submitted:')) inIdSection = true;
+    else if (inIdSection && clean.startsWith('Adult')) {
+      // e.g. "Adult 1: Aadhar Card (front & back uploaded)"
+      var match = clean.match(/Adult\s*\d+\s*:\s*([^(]+)/);
+      if (match) data.idProofs.push(match[1].trim());
+    }
   });
+  // Set idType from first proof for backward compat
+  if (!data.idType && data.idProofs.length > 0) data.idType = data.idProofs[0];
   return data;
 }
 
-function renderCheckinStats() {
+function renderCheckins() {
+  var el = document.getElementById('ci-list');
+  if (!el) return;
+  var search = (document.getElementById('ci-search').value || '').toLowerCase();
+  var list = allCheckins;
+  if (search) {
+    list = list.filter(function(r) {
+      return r.message.toLowerCase().indexOf(search) !== -1 ||
+             (r.room_number && r.room_number.toLowerCase().indexOf(search) !== -1);
+    });
+  }
+  if (list.length === 0) {
+    el.innerHTML = '<div class="empty">No pre check-in submissions yet.<br>Guests submit this from the guest portal before arrival.</div>';
+    return;
+  }
+  var today = new Date().toDateString();
+  el.innerHTML = list.map(function(r) {
+    var g = parseCheckinMessage(r.message);
+    var isNew = r.status === 'pending';
+    var isToday = new Date(r.created_at).toDateString() === today;
+    var time = new Date(r.created_at).toLocaleString('en-IN', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
+    var isDone = r.status === 'done';
+
+    // Build ID proofs display
+    var idProofHtml = '';
+    if (g.idProofs && g.idProofs.length > 0) {
+      idProofHtml = field('🪪 ID Proofs', g.idProofs.map(function(p,i){ return 'Adult '+(i+1)+': '+p; }).join(' · '));
+    } else {
+      idProofHtml = field('🪪 ID Type', g.idType || '—');
+    }
+
+    // Safe JSON for onclick — avoid quotes breaking HTML
+    var safeId = r.id;
+    var safeRoom = r.room_number || '?';
+    var safeCreated = r.created_at;
+
+    return '<div class="checkin-card' + (isNew ? ' new' : '') + '">' +
+      '<div class="checkin-header">' +
+        '<div>' +
+          '<div class="checkin-name">' + (g.name || 'Guest') + '</div>' +
+          '<div class="checkin-room">Room ' + (r.room_number || '?') + ' · ' + (g.mobile || '') + '</div>' +
+          (isNew && !isDone ? '<span class="checkin-new-badge">🆕 New</span>' : '') +
+          (isDone ? '<span style="background:#d1fae5;color:#065f46;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;margin-top:4px">✅ Checked In</span>' : '') +
+        '</div>' +
+        '<div class="checkin-time">' + time + (isToday ? '<br><span style="color:#0a9396;font-weight:700">Today</span>' : '') + '</div>' +
+      '</div>' +
+      '<div class="checkin-grid">' +
+        field('📅 Check-in', g.checkin || '—') +
+        field('📅 Check-out', g.checkout || '—') +
+        field('👥 Guests', g.guests || '—') +
+        field('🚌 From', g.from || '—') +
+        idProofHtml +
+        (g.email ? field('📧 Email', g.email) : '') +
+        (g.to && g.to !== 'Not specified' ? field('🚌 To', g.to) : '') +
+      '</div>' +
+      '<div class="checkin-actions">' +
+        '<button class="btn-print" onclick="doPrintCard(\'' + safeId + '\',\'' + safeRoom + '\',\'' + safeCreated + '\')">🖨️ Print ID Card</button>' +
+        (!isDone ? '<button class="btn-mark-arrived" onclick="markArrived(\'' + r.id + '\')">✅ Mark as Arrived</button>' : '') +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+// Wrapper — looks up the request fresh and prints
+function doPrintCard(requestId, roomNumber, createdAt) {
+  var r = allCheckins.find(function(x){ return x.id === requestId; });
+  if (!r) { alert('Could not find guest data.'); return; }
+  var g = parseCheckinMessage(r.message);
+  printGuestCard(requestId, g, roomNumber, createdAt);
+}
   var today = new Date().toDateString();
   var todayCount = allCheckins.filter(function(r) {
     return new Date(r.created_at).toDateString() === today;
@@ -862,9 +941,14 @@ function printGuestCard(requestId, guest, roomNumber, createdAt) {
         (guest.email ? '<div class="field" style="grid-column:1/-1"><div class="field-label">📧 Email</div><div class="field-val">' + guest.email + '</div></div>' : '') +
       '</div>' +
       '<div class="id-section">' +
-        '<div class="id-label">🪪 Identity Proof</div>' +
-        '<div class="id-type">' + (guest.idType || '—') + '</div>' +
-        '<div class="id-number">' + (guest.idNumber || '—') + '</div>' +
+        '<div class="id-label">🪪 Identity Proofs Submitted</div>' +
+        (guest.idProofs && guest.idProofs.length > 0
+          ? guest.idProofs.map(function(p, i) {
+              return '<div class="id-type" style="margin-bottom:4px">Adult ' + (i+1) + ': ' + p + '</div>';
+            }).join('')
+          : '<div class="id-type">' + (guest.idType || '—') + '</div>'
+        ) +
+        '<div style="font-size:11px;color:#aaa;margin-top:6px">Front & back photos submitted by guest</div>' +
       '</div>' +
       '<hr class="divider">' +
       '<div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px">' +

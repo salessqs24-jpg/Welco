@@ -144,57 +144,120 @@ app.post('/ai/chat', async (req, res) => {
   if (!message) return res.status(400).json({ error: 'Message required' });
   try {
     let kb = {};
+    let hotelCity = '';
     if (hotel_id) {
-      const { data: hotelData } = await supabase.from('hotels').select('ai_kb,name').eq('hotel_id', hotel_id).single();
-      if (hotelData) { kb = hotelData.ai_kb || {}; }
+      const { data: hotelData } = await supabase
+        .from('hotels')
+        .select('ai_kb, name, city')
+        .eq('hotel_id', hotel_id)
+        .single();
+      if (hotelData) {
+        kb = hotelData.ai_kb || {};
+        hotelCity = hotelData.city || '';
+      }
     }
 
     const faqContext = (kb.faqs && kb.faqs.length > 0)
-      ? '\nFREQUENTLY ASKED QUESTIONS:\n' + kb.faqs.map(function(f) { return 'Q: ' + f.q + '\nA: ' + f.a; }).join('\n\n')
+      ? '\n\nFAQs:\n' + kb.faqs.map(f => `Q: ${f.q}\nA: ${f.a}`).join('\n\n')
       : '';
 
     const kbContext = [
-      kb.wifi_name  ? `WiFi Network: ${kb.wifi_name}` : '',
+      kb.wifi_name  ? `WiFi Network Name: ${kb.wifi_name}` : '',
       kb.wifi       ? `WiFi Password: ${kb.wifi}` : '',
       kb.checkin    ? `Check-in time: ${kb.checkin}` : '',
       kb.checkout   ? `Check-out time: ${kb.checkout}` : '',
-      kb.facilities ? `Facilities: ${kb.facilities}` : '',
-      kb.activities ? `Activities & Experiences: ${kb.activities}` : '',
-      kb.restaurant ? `Restaurant/Food: ${kb.restaurant}` : '',
-      kb.transport  ? `Transport/Location: ${kb.transport}` : '',
-      kb.contact    ? `Reception: ${kb.contact}` : '',
-      kb.emergency  ? `Emergency: ${kb.emergency}` : '',
-      kb.extra      ? `Other info: ${kb.extra}` : '',
+      kb.facilities ? `Facilities & Timings: ${kb.facilities}` : '',
+      kb.activities ? `Activities & Experiences (with prices): ${kb.activities}` : '',
+      kb.restaurant ? `Restaurant & Food (timings & prices): ${kb.restaurant}` : '',
+      kb.transport  ? `Transport & Location: ${kb.transport}` : '',
+      kb.contact    ? `Reception contact: ${kb.contact}` : '',
+      kb.emergency  ? `Emergency contact: ${kb.emergency}` : '',
+      kb.extra      ? `Other hotel info: ${kb.extra}` : '',
     ].filter(Boolean).join('\n') + faqContext;
 
-    const prompt = `You are a warm, helpful hotel concierge AI for "${hotel_name || 'our hotel'}", Room ${room_number || '?'}.
+    const prompt = `You are a smart hotel concierge AI for "${hotel_name || 'our hotel'}" in ${hotelCity || 'India'}, Room ${room_number || '?'}.
 
-HOTEL INFORMATION (use this to answer questions directly):
-${kbContext || 'No specific information provided yet.'}
+=== HOTEL KNOWLEDGE BASE ===
+${kbContext || 'No specific hotel info provided yet — give general helpful answers.'}
 
-Guest message (may be in any language): "${message}"
+=== CITY GUIDE ===
+Hotel is located in ${hotelCity || 'India'}. You know popular places to visit, local food, shopping markets, transport options, weather, culture and festivals in this city. Share this knowledge freely when guests ask about the city, places to visit, local food, shopping, etc.
 
-Instructions:
-- If the guest is asking about WiFi, facilities, activities, food, checkout, transport, or anything in the hotel info above — answer directly and completely from the hotel info. DO NOT create a staff task for these.
-- If the guest needs a physical service (towels, food delivery, maintenance, room cleaning etc.) — route it to staff.
-- Always reply in the SAME language the guest used.
-- Be warm, friendly, concise.
+=== GUEST MESSAGE ===
+"${message}"
+(May be in any language — detect and reply in the SAME language)
 
-Respond in JSON only (no markdown):
+=== DECISION RULES — FOLLOW STRICTLY ===
+
+SET needs_staff = TRUE and route to correct department ONLY for these physical service requests:
+- Water bottles, towels, pillow, blanket, toiletries, bedsheet → Housekeeping
+- Room cleaning, housekeeping service → Housekeeping  
+- Food order, breakfast, chai, coffee, tea, snacks, room service, ice → Room Service
+- AC not working, TV issue, light/electricity problem, WiFi not connecting, plumbing, door lock → Maintenance
+- Wake up call, luggage help, taxi/cab booking, late checkout, room upgrade, billing → Front Desk
+
+SET needs_staff = FALSE for ALL information requests:
+- WiFi password or network name → answer from KB
+- Checkout/checkin time → answer from KB
+- Restaurant timings or menu → answer from KB
+- Pool, spa, gym timings → answer from KB
+- Activities and prices → answer from KB
+- Places to visit in the city → answer from city knowledge
+- Local food recommendations → answer from city knowledge
+- Shopping markets → answer from city knowledge
+- How to reach somewhere → answer from city knowledge
+- Any general question about hotel or city → answer directly
+
+=== IMPORTANT ===
+- When needs_staff is TRUE: reply should be a SHORT confirmation like "Your [item] is on the way! 🙏" 
+- When needs_staff is FALSE: reply should be a DETAILED, helpful answer
+- Never give WiFi info when guest asks for water/towels/food
+- Never ignore a service request — always route it to staff
+- task field = short English description for staff (e.g. "2 water bottles to Room 101")
+
+Respond in JSON only — no markdown, no extra text:
 {
-  "reply": "Your warm response to guest in their language",
+  "reply": "Response to guest in their language",
   "needs_staff": true or false,
-  "department": "Housekeeping|Room Service|Maintenance|Front Desk or null",
-  "task": "Short English task for staff if needs_staff is true, else null",
+  "department": "Housekeeping or Room Service or Maintenance or Front Desk or null",
+  "task": "Short English task for staff e.g. '2 water bottles Room 101' or null",
   "priority": "normal or urgent",
   "english_message": "English translation of guest message"
 }`;
 
     const raw = await askGemini(prompt);
     const clean = raw.replace(/```json|```/g, '').trim();
-    res.json(JSON.parse(clean));
+
+    // Extract JSON even if AI adds extra text
+    const jsonMatch = clean.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('No JSON in response');
+
+    res.json(JSON.parse(jsonMatch[0]));
   } catch(e) {
-    res.json({ reply: "Thank you! Our team will assist you shortly.", needs_staff: true, department: "Front Desk", task: message.substring(0,60), priority: "normal", english_message: message });
+    console.error('AI chat error:', e.message);
+    // Smart fallback — detect if it's a service request
+    const lower = message.toLowerCase();
+    const serviceKeywords = ['water','towel','pillow','clean','food','chai','coffee','tea','breakfast','ac ','wifi not','tv ','light ','door','luggage','taxi','checkout','wake'];
+    const isService = serviceKeywords.some(k => lower.includes(k));
+    if (isService) {
+      res.json({
+        reply: "Your request has been sent to our team! We will attend to you shortly. 🙏",
+        needs_staff: true,
+        department: lower.includes('food')||lower.includes('chai')||lower.includes('coffee')||lower.includes('tea')||lower.includes('breakfast')||lower.includes('water') ? 'Room Service' : 'Front Desk',
+        task: message.substring(0, 80) + ' — Room ' + (room_number || '?'),
+        priority: 'normal',
+        english_message: message
+      });
+    } else {
+      res.json({
+        reply: "I'm here to help! You can ask me about the hotel, facilities, local places to visit, or request any service. 😊",
+        needs_staff: false,
+        department: null,
+        task: null,
+        priority: 'normal',
+        english_message: message
+      });
+    }
   }
 });
 

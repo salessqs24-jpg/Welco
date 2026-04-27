@@ -136,6 +136,31 @@
     .copy-btn { padding: 8px 16px; background: #005f73; color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
 
     @keyframes slideDown { from { opacity:0; transform: translateY(-10px); } to { opacity:1; transform: translateY(0); } }
+
+    /* ── UPSELL CARD ── */
+    .upsell-card { background: rgba(255,255,255,0.96); border-radius: 20px; padding: 22px; width: 100%; max-width: 420px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); animation: slideDown 0.5s ease; }
+    .upsell-header { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+    .upsell-header-icon { width: 40px; height: 40px; background: linear-gradient(135deg,#667eea,#764ba2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .upsell-title { font-size: 16px; font-weight: 800; color: #0d1b1e; }
+    .upsell-sub { font-size: 12px; color: #888; margin-bottom: 16px; margin-top: 2px; line-height: 1.5; }
+    .upsell-suggestions { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+    .upsell-suggestion { background: linear-gradient(135deg,#f8f7ff,#f0f0ff); border: 1.5px solid #ddd6fe; border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s; }
+    .upsell-suggestion.selected { border-color: #667eea; background: linear-gradient(135deg,#667eea,#764ba2); }
+    .upsell-suggestion.selected .upsell-sug-title { color: white; }
+    .upsell-suggestion.selected .upsell-sug-desc { color: rgba(255,255,255,0.75); }
+    .upsell-suggestion.selected .upsell-sug-price { color: #ffd166; }
+    .upsell-sug-emoji { font-size: 26px; flex-shrink: 0; }
+    .upsell-sug-info { flex: 1; min-width: 0; }
+    .upsell-sug-title { font-size: 14px; font-weight: 700; color: #0d1b1e; margin-bottom: 2px; }
+    .upsell-sug-desc { font-size: 12px; color: #888; line-height: 1.4; }
+    .upsell-sug-price { font-size: 13px; font-weight: 800; color: #667eea; flex-shrink: 0; white-space: nowrap; }
+    .upsell-loading { text-align: center; padding: 28px 20px; color: #888; font-size: 14px; }
+    .upsell-special-label { font-size: 11px; color: #667eea; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+    .upsell-textarea { width: 100%; padding: 12px 14px; border: 1.5px solid #ddd6fe; border-radius: 10px; font-size: 14px; resize: none; height: 80px; font-family: sans-serif; outline: none; color: #0d1b1e; }
+    .upsell-textarea:focus { border-color: #667eea; }
+    .upsell-submit { width: 100%; padding: 14px; background: linear-gradient(135deg,#667eea,#764ba2); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 12px; }
+    .upsell-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    .upsell-done { background: #d1fae5; color: #065f46; padding: 16px; border-radius: 12px; font-size: 14px; text-align: center; display: none; font-weight: 600; line-height: 1.6; }
   </style>
 </head>
 <body>
@@ -248,8 +273,39 @@
         <button class="submit-btn" onclick="submitPreCheckin(this)">✅ Submit Pre Check-in</button>
         <div style="font-size:11px;color:#aaa;text-align:center;margin-top:10px">Your details are securely shared with the hotel team</div>
       </div>
-    </div>
-  </div>
+
+      <!-- UPSELL CARD — shown after pre check-in submit -->
+      <div class="upsell-card" id="upsell-card" style="display:none">
+        <div class="upsell-header">
+          <div class="upsell-header-icon">✨</div>
+          <div>
+            <div class="upsell-title">Make your stay special</div>
+          </div>
+        </div>
+        <div class="upsell-sub">Our team can arrange these experiences for you. Tap to add, or write your own request below.</div>
+
+        <!-- AI-generated suggestions load here -->
+        <div class="upsell-suggestions" id="upsell-suggestions">
+          <div class="upsell-loading">✨ Getting personalised suggestions<span class="upsell-loading-dots"></span></div>
+        </div>
+
+        <!-- Free text special request -->
+        <div class="upsell-special-label">✍️ Your Special Request</div>
+        <textarea class="upsell-textarea" id="upsell-special-text" placeholder="e.g. Birthday decoration with blue theme, vegetarian meals, early check-in if possible..."></textarea>
+
+        <button class="upsell-submit" id="upsell-submit-btn" onclick="submitSpecialRequest(this)">
+          ✨ Add to My Booking
+        </button>
+
+        <!-- Success state -->
+        <div class="upsell-done" id="upsell-done">
+          🎉 Your preferences have been sent to the hotel team!<br>
+          <span style="font-size:13px;font-weight:400;color:#555;display:block;margin-top:6px">We will be in touch to confirm the arrangements.</span>
+        </div>
+      </div>
+
+    </div><!-- end .container -->
+  </div><!-- end #panel-checkin -->
 
   <!-- TAB 2: DURING STAY -->
   <div class="tab-panel" id="panel-home">
@@ -566,7 +622,6 @@ async function submitPreCheckin(btn) {
 
   btn.textContent = '⏳ Submitting...'; btn.disabled = true;
 
-  // Build a detailed message that HOD/staff will see clearly
   var message = [
     '🛎️ PRE CHECK-IN REQUEST',
     '─────────────────────',
@@ -603,6 +658,18 @@ async function submitPreCheckin(btn) {
     btn.textContent = '✅ Submitted!';
     btn.style.background = '#065f46';
     btn.disabled = true;
+
+    // Save guest name for upsell card
+    window._ciGuestName = name;
+
+    // Show upsell card and load AI suggestions
+    var upsellCard = document.getElementById('upsell-card');
+    upsellCard.style.display = 'block';
+    setTimeout(function() {
+      upsellCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 400);
+    loadUpsellSuggestions();
+
   } catch(e) {
     msg.textContent = '❌ Could not submit. Please try again.';
     msg.className = 'msg-box msg-error';
@@ -949,12 +1016,142 @@ async function sendAIMessage() {
   }
 }
 
+// ── PRE CHECK-IN UPSELL ──
+var upsellSelectedItems = [];
 
+async function loadUpsellSuggestions() {
+  var sugBox = document.getElementById('upsell-suggestions');
+
+  // Fallback suggestions shown instantly while AI loads
+  var fallback = [
+    { emoji:'🌸', title:'Room Decoration', desc:'Flowers, candles & personalised setup for a special occasion', price:'On request' },
+    { emoji:'🍽️', title:'Private Dinner', desc:'Candlelit dinner arranged just for you', price:'On request' },
+    { emoji:'💆', title:'Spa & Wellness', desc:'Relaxing massage or spa session at the hotel', price:'On request' },
+    { emoji:'🚗', title:'Airport Transfer', desc:'Comfortable pick-up or drop-off arranged by hotel', price:'On request' }
+  ];
+
+  // Show fallback immediately
+  renderUpsellSuggestions(fallback);
+
+  // Try to get AI-personalised suggestions from hotel KB
+  try {
+    var hotelName = document.getElementById('hotel-name').textContent || 'Hotel';
+    var res = await fetch('/ai/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        hotel_id: hotelId,
+        hotel_name: hotelName,
+        room_number: roomNumber,
+        message: 'I am about to check in. Based on this hotel\'s activities, facilities, and restaurant offerings, suggest 4 special experiences or add-ons I can pre-book to make my stay memorable. Reply in JSON only: {"suggestions":[{"emoji":"...","title":"short title","desc":"one line description","price":"price or On request"}]}'
+      })
+    });
+    var data = await res.json();
+
+    // Try to parse suggestions from AI reply
+    if (data.reply) {
+      try {
+        var clean = data.reply.replace(/```json|```/g, '').trim();
+        // Find JSON array in reply
+        var match = clean.match(/\{[\s\S]*"suggestions"[\s\S]*\}/);
+        if (match) {
+          var parsed = JSON.parse(match[0]);
+          if (parsed.suggestions && parsed.suggestions.length > 0) {
+            renderUpsellSuggestions(parsed.suggestions.slice(0, 5));
+            return;
+          }
+        }
+      } catch(e) {}
+    }
+    // If parsing fails, fallback stays shown
+  } catch(e) {
+    // Network error — fallback stays shown
+  }
+}
+
+function renderUpsellSuggestions(suggestions) {
+  var sugBox = document.getElementById('upsell-suggestions');
+  upsellSelectedItems = []; // reset selections
+  sugBox.innerHTML = suggestions.map(function(s, i) {
+    return '<div class="upsell-suggestion" id="upsell-sug-' + i + '" onclick="toggleUpsellItem(' + i + ',' + JSON.stringify(s.title).replace(/"/g, '&quot;') + ')">' +
+      '<div class="upsell-sug-emoji">' + (s.emoji || '✨') + '</div>' +
+      '<div class="upsell-sug-info">' +
+        '<div class="upsell-sug-title">' + s.title + '</div>' +
+        '<div class="upsell-sug-desc">' + s.desc + '</div>' +
+      '</div>' +
+      '<div class="upsell-sug-price">' + (s.price || 'On request') + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function toggleUpsellItem(idx, title) {
+  var el = document.getElementById('upsell-sug-' + idx);
+  var pos = upsellSelectedItems.indexOf(title);
+  if (pos === -1) {
+    upsellSelectedItems.push(title);
+    el.classList.add('selected');
+  } else {
+    upsellSelectedItems.splice(pos, 1);
+    el.classList.remove('selected');
+  }
+}
+
+async function submitSpecialRequest(btn) {
+  var freeText = document.getElementById('upsell-special-text').value.trim();
+  var guestName = window._ciGuestName || 'Guest';
+
+  if (upsellSelectedItems.length === 0 && !freeText) {
+    alert('Please select at least one experience or write your special request.');
+    return;
+  }
+
+  btn.textContent = '⏳ Sending...'; btn.disabled = true;
+
+  var parts = ['✨ SPECIAL REQUEST / PRE-ARRIVAL PREFERENCES', '─────────────────────', '👤 Guest: ' + guestName, '📍 Room: ' + (roomNumber || 'Pre-Arrival'), ''];
+  if (upsellSelectedItems.length > 0) {
+    parts.push('🎯 Selected Experiences:');
+    upsellSelectedItems.forEach(function(item) { parts.push(' • ' + item); });
+    parts.push('');
+  }
+  if (freeText) {
+    parts.push('✍️ Special Request:');
+    parts.push(freeText);
+  }
+
+  var message = parts.join('\n');
+
+  try {
+    await fetch('/requests', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        hotel_id: hotelId,
+        room_number: roomNumber || 'Pre-Arrival',
+        category: 'Front Desk',
+        message: message,
+        status: 'pending',
+        sla_minutes: 30
+      })
+    });
+
+    // Show done state
+    btn.style.display = 'none';
+    document.getElementById('upsell-special-text').style.display = 'none';
+    document.getElementById('upsell-done').style.display = 'block';
+
+    // Disable all suggestion taps
+    document.querySelectorAll('.upsell-suggestion').forEach(function(el) {
+      el.style.pointerEvents = 'none';
+    });
+
+  } catch(e) {
+    btn.textContent = '✨ Add to My Booking'; btn.disabled = false;
+    alert('Could not send. Please try again.');
+  }
+}
 
 // ── INIT ──
-
 loadBranding();
-
 </script>
 
   <div style="text-align:center;padding:16px;font-size:10px;color:rgba(255,255,255,0.3);position:relative;z-index:1">

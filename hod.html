@@ -736,6 +736,20 @@ function parseCheckinMessage(msg) {
   return data;
 }
 
+function renderCheckinStats() {
+  var today = new Date().toDateString();
+  var todayCount = allCheckins.filter(function(r) {
+    return new Date(r.created_at).toDateString() === today;
+  }).length;
+  var pendingCount = allCheckins.filter(function(r) { return r.status === 'pending'; }).length;
+  var el1 = document.getElementById('ci-total');
+  var el2 = document.getElementById('ci-today');
+  var el3 = document.getElementById('ci-pending');
+  if (el1) el1.textContent = allCheckins.length;
+  if (el2) el2.textContent = todayCount;
+  if (el3) el3.textContent = pendingCount;
+}
+
 function renderCheckins() {
   var el = document.getElementById('ci-list');
   if (!el) return;
@@ -805,69 +819,6 @@ function doPrintCard(requestId, roomNumber, createdAt) {
   if (!r) { alert('Could not find guest data.'); return; }
   var g = parseCheckinMessage(r.message);
   printGuestCard(requestId, g, roomNumber, createdAt);
-}
-  var today = new Date().toDateString();
-  var todayCount = allCheckins.filter(function(r) {
-    return new Date(r.created_at).toDateString() === today;
-  }).length;
-  var pendingCount = allCheckins.filter(function(r) { return r.status === 'pending'; }).length;
-  var el1 = document.getElementById('ci-total');
-  var el2 = document.getElementById('ci-today');
-  var el3 = document.getElementById('ci-pending');
-  if (el1) el1.textContent = allCheckins.length;
-  if (el2) el2.textContent = todayCount;
-  if (el3) el3.textContent = pendingCount;
-}
-
-function renderCheckins() {
-  var el = document.getElementById('ci-list');
-  if (!el) return;
-  var search = (document.getElementById('ci-search').value || '').toLowerCase();
-  var list = allCheckins;
-  if (search) {
-    list = list.filter(function(r) {
-      return r.message.toLowerCase().indexOf(search) !== -1 ||
-             (r.room_number && r.room_number.toLowerCase().indexOf(search) !== -1);
-    });
-  }
-  if (list.length === 0) {
-    el.innerHTML = '<div class="empty">No pre check-in submissions yet.<br>Guests submit this from the guest portal before arrival.</div>';
-    return;
-  }
-  var today = new Date().toDateString();
-  el.innerHTML = list.map(function(r) {
-    var g = parseCheckinMessage(r.message);
-    var isNew = r.status === 'pending';
-    var isToday = new Date(r.created_at).toDateString() === today;
-    var time = new Date(r.created_at).toLocaleString('en-IN', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
-    var isDone = r.status === 'done';
-
-    return '<div class="checkin-card' + (isNew ? ' new' : '') + '">' +
-      '<div class="checkin-header">' +
-        '<div>' +
-          '<div class="checkin-name">' + (g.name || 'Guest') + '</div>' +
-          '<div class="checkin-room">Room ' + (r.room_number || '?') + ' · ' + (g.mobile || '') + '</div>' +
-          (isNew && !isDone ? '<span class="checkin-new-badge">🆕 New</span>' : '') +
-          (isDone ? '<span style="background:#d1fae5;color:#065f46;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;margin-top:4px">✅ Checked In</span>' : '') +
-        '</div>' +
-        '<div class="checkin-time">' + time + (isToday ? '<br><span style="color:#0a9396;font-weight:700">Today</span>' : '') + '</div>' +
-      '</div>' +
-      '<div class="checkin-grid">' +
-        field('📅 Check-in', g.checkin || '—') +
-        field('📅 Check-out', g.checkout || '—') +
-        field('👥 Guests', g.guests || '—') +
-        field('🚌 From', g.from || '—') +
-        field('🪪 ID Type', g.idType || '—') +
-        field('🔢 ID Number', g.idNumber || '—') +
-        (g.email ? field('📧 Email', g.email) : '') +
-        (g.to && g.to !== 'Not specified' ? field('🚌 To', g.to) : '') +
-      '</div>' +
-      '<div class="checkin-actions">' +
-        '<button class="btn-print" onclick=\'printGuestCard(' + JSON.stringify(r.id) + ',' + JSON.stringify(g) + ',' + JSON.stringify(r.room_number) + ',' + JSON.stringify(r.created_at) + ')\'>🖨️ Print ID Card</button>' +
-        (!isDone ? '<button class="btn-mark-arrived" onclick="markArrived(\'' + r.id + '\')">✅ Mark as Arrived</button>' : '') +
-      '</div>' +
-    '</div>';
-  }).join('');
 }
 
 function field(label, val) {

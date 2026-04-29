@@ -750,6 +750,9 @@ function renderCheckinStats() {
   if (el3) el3.textContent = pendingCount;
 }
 
+// Global map: requestId -> raw request object (set fresh on every render)
+window._checkinMap = {};
+
 function renderCheckins() {
   var el = document.getElementById('ci-list');
   if (!el) return;
@@ -765,6 +768,11 @@ function renderCheckins() {
     el.innerHTML = '<div class="empty">No pre check-in submissions yet.<br>Guests submit this from the guest portal before arrival.</div>';
     return;
   }
+
+  // Rebuild map fresh every render
+  window._checkinMap = {};
+  allCheckins.forEach(function(r) { window._checkinMap[r.id] = r; });
+
   var today = new Date().toDateString();
   el.innerHTML = list.map(function(r) {
     var g = parseCheckinMessage(r.message);
@@ -781,10 +789,8 @@ function renderCheckins() {
       idProofHtml = field('🪪 ID Type', g.idType || '—');
     }
 
-    // Safe JSON for onclick — avoid quotes breaking HTML
-    var safeId = r.id;
-    var safeRoom = r.room_number || '?';
-    var safeCreated = r.created_at;
+    // Pass only the ID — everything else looked up from _checkinMap
+    var safeId = r.id.replace(/'/g, '');
 
     return '<div class="checkin-card' + (isNew ? ' new' : '') + '">' +
       '<div class="checkin-header">' +
@@ -806,19 +812,23 @@ function renderCheckins() {
         (g.to && g.to !== 'Not specified' ? field('🚌 To', g.to) : '') +
       '</div>' +
       '<div class="checkin-actions">' +
-        '<button class="btn-print" onclick="doPrintCard(\'' + safeId + '\',\'' + safeRoom + '\',\'' + safeCreated + '\')">🖨️ Print ID Card</button>' +
-        (!isDone ? '<button class="btn-mark-arrived" onclick="markArrived(\'' + r.id + '\')">✅ Mark as Arrived</button>' : '') +
+        '<button class="btn-print" onclick="doPrintCard(\'' + safeId + '\')">🖨️ Print ID Card</button>' +
+        (!isDone ? '<button class="btn-mark-arrived" onclick="markArrived(\'' + safeId + '\')">✅ Mark as Arrived</button>' : '') +
       '</div>' +
     '</div>';
   }).join('');
 }
 
-// Wrapper — looks up the request fresh and prints
-function doPrintCard(requestId, roomNumber, createdAt) {
-  var r = allCheckins.find(function(x){ return x.id === requestId; });
-  if (!r) { alert('Could not find guest data.'); return; }
+// Wrapper — looks up from _checkinMap (never fails due to string escaping)
+function doPrintCard(requestId) {
+  var r = window._checkinMap[requestId];
+  if (!r) {
+    // fallback: search allCheckins
+    r = allCheckins.find(function(x){ return x.id === requestId; });
+  }
+  if (!r) { alert('Could not find guest data. Please refresh and try again.'); return; }
   var g = parseCheckinMessage(r.message);
-  printGuestCard(requestId, g, roomNumber, createdAt);
+  printGuestCard(r.id, g, r.room_number || '?', r.created_at);
 }
 
 function field(label, val) {

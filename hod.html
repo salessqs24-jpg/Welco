@@ -701,7 +701,7 @@ function loadAll() {
     renderOverview(deptRequests);
     renderRequests();
     renderAnalytics(deptRequests);
-    if (hodData.dept === 'Front Desk') renderCheckinStats();
+    if (hodData.dept === 'Front Desk') { renderCheckinStats(); renderCheckins(); }
   }).catch(function() {});
 }
 

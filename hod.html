@@ -702,7 +702,11 @@ function loadAll() {
     renderRequests();
     renderAnalytics(deptRequests);
     if (hodData.dept === 'Front Desk') { renderCheckinStats(); renderCheckins(); }
-  }).catch(function() {});
+  }).catch(function(e) {
+    console.error('loadAll failed:', e);
+    var el = document.getElementById('ci-list');
+    if (el) el.innerHTML = '<div class="empty">Could not load check-ins. Please refresh.</div>';
+  });
 }
 
 // ── CHECK-IN PARSING ──
@@ -1030,7 +1034,7 @@ function addStaff(){
     msg.className='msg-box msg-success'; setTimeout(function(){msg.className='msg-box';},8000); loadStaff();
   });
 }
-function removeStaff(id){if(!confirm('Remove this staff member?'))return;fetch('/staff/'+id,{method:'DELETE'}).then(function(){loadStaff();});}
+function removeStaff(id){if(!confirm('Remove this staff member?'))return;authFetch('/staff/'+id,{method:'DELETE'}).then(function(r){return r.json();}).then(function(data){if(data.error){alert('Error: '+data.error);return;}loadStaff();}).catch(function(){alert('Could not remove. Try again.');});}
 
 // ── ANALYTICS ──
 function renderAnalytics(reqs) {

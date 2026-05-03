@@ -842,11 +842,51 @@ function applyHodPermissions() {
     var perms = hod.permissions;
     hodData.permissions = perms;
     localStorage.setItem('welco_hod', JSON.stringify(hodData));
+
+    // Tab visibility based on permissions
+    // Check-ins — Front Desk only + permission
+    if (hodData.dept === 'Front Desk') {
+      var ciTab = document.getElementById('tab-checkins');
+      if (ciTab) ciTab.style.display = (perms.checkins !== false) ? 'flex' : 'none';
+    }
+    // Room Status — permission based
+    var rsTab = document.getElementById('tab-roomstatus');
+    if (rsTab) rsTab.style.display = (perms.room_status !== false) ? 'flex' : 'none';
+    // Housekeeping — Housekeeping dept only + permission
+    if (hodData.dept === 'Housekeeping') {
+      var hkTab = document.getElementById('tab-housekeeping');
+      if (hkTab) hkTab.style.display = (perms.housekeeping_checklist !== false) ? 'flex' : 'none';
+    }
+    // Other tabs
+    var tabMap = {
+      'analytics': 'panel-analytics',
+      'announcements':'panel-announce',
+      'schedule': 'panel-maintenance',
+      'guest_options':'panel-guestoptions',
+      'staff': 'panel-staff',
+      'ai_kb': 'ai-kb-tab'
+    };
+    // Hide tabs where permission is explicitly false
+    if (perms.analytics === false) hideTabByPanel('analytics');
+    if (perms.announcements === false) hideTabByPanel('announce');
+    if (perms.schedule === false) hideTabByPanel('maintenance');
+    if (perms.guest_options === false) hideTabByPanel('guestoptions');
+    if (perms.staff === false) hideTabByPanel('staff');
     if (perms.ai_kb) {
       var kbTab = document.getElementById('ai-kb-tab');
       if (kbTab) kbTab.style.display = 'flex';
     }
   }).catch(function(){});
+}
+
+function hideTabByPanel(panelName) {
+  // Find the tab that opens this panel and hide it
+  var tabs = document.querySelectorAll('.tab');
+  tabs.forEach(function(t) {
+    if (t.getAttribute('onclick') && t.getAttribute('onclick').indexOf("'" + panelName + "'") !== -1) {
+      t.style.display = 'none';
+    }
+  });
 }
 
 function loadAll() {

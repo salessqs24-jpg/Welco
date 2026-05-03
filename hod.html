@@ -988,7 +988,7 @@ function renderCheckins() {
       return;
     }
     window._checkinMap = {};
-    allCheckins.forEach(function(r) { if(r && r.id) window._checkinMap[r.id] = r; });
+    allCheckins.forEach(function(r) { if(r && r.id) window._checkinMap[String(r.id)] = r; });
     var today = new Date().toDateString();
     var html = '';
     for (var i = 0; i < list.length; i++) {
@@ -999,7 +999,7 @@ function renderCheckins() {
       var isDone = r.status === 'done';
       var isToday = r.created_at ? new Date(r.created_at).toDateString() === today : false;
       var time = r.created_at ? new Date(r.created_at).toLocaleString('en-IN', {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '';
-      var safeId = (r.id || '').replace(/['"]/g, '');
+      var safeId = String(r.id || '').replace(/['"]/g, '');
       var idProofHtml = '';
       if (g.idProofs && g.idProofs.length > 0) {
         idProofHtml = '<div class="checkin-field"><div class="checkin-field-label">🪪 ID Proofs</div><div class="checkin-field-val">' + g.idProofs.map(function(p,idx){ return 'Adult '+(idx+1)+': '+p; }).join(' · ') + '</div></div>';
@@ -1039,10 +1039,10 @@ function renderCheckins() {
 
 // Wrapper — looks up from _checkinMap (never fails due to string escaping)
 function doPrintCard(requestId) {
-  var r = window._checkinMap[requestId];
+  var r = window._checkinMap[String(requestId)];
   if (!r) {
     // fallback: search allCheckins
-    r = allCheckins.find(function(x){ return x.id === requestId; });
+    r = allCheckins.find(function(x){ return String(x.id) === String(requestId); });
   }
   if (!r) { alert('Could not find guest data. Please refresh and try again.'); return; }
   var g = parseCheckinMessage(r.message);
@@ -1707,4 +1707,4 @@ window.onload = function(){
   </div>
 
 </body>
-</html>
+</html

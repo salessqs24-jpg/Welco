@@ -1053,23 +1053,20 @@ function loadHOD(){
     var deptColors={'Housekeeping':'#4361EE','Room Service':'#F77F00','Maintenance':'#E63946','Front Desk':'#9B5DE5'};
     var deptEmojis={'Housekeeping':'🛏️','Room Service':'🍽️','Maintenance':'🔧','Front Desk':'🛎️'};
     var ALL_PERMS = [
-  {key:'checkins', label:'🛎️ Pre Check-ins', dept:'Front Desk'},
-  {key:'room_status', label:'🏨 Room Status Board', dept:'any'},
-  {key:'housekeeping_checklist',label:'🧹 Housekeeping Checklist', dept:'Housekeeping'},
-  {key:'staff', label:'👷 Staff Management', dept:'any'},
-  {key:'analytics', label:'📊 Analytics', dept:'any'},
-  {key:'announcements', label:'📢 Announcements', dept:'any'},
-  {key:'schedule', label:'🔧 Scheduling', dept:'any'},
-  {key:'guest_options', label:'🎯 Guest Options', dept:'any'},
-  {key:'service_hours', label:'🕐 Service Hours', dept:'any'},
-  {key:'ai_kb', label:'✨ AI Knowledge Base', dept:'any'}
-];
-// Filter permissions relevant to this HOD's department
-var PERMS = ALL_PERMS.filter(function(p) {
-  return p.dept === 'any' || p.dept === h.department;
-});
+      {key:'checkins', label:'🛎️ Pre Check-ins', dept:'Front Desk'},
+      {key:'room_status', label:'🏨 Room Status Board', dept:'any'},
+      {key:'housekeeping_checklist',label:'🧹 Housekeeping Checklist', dept:'Housekeeping'},
+      {key:'staff', label:'👷 Staff Management', dept:'any'},
+      {key:'analytics', label:'📊 Analytics', dept:'any'},
+      {key:'announcements', label:'📢 Announcements', dept:'any'},
+      {key:'schedule', label:'🔧 Scheduling', dept:'any'},
+      {key:'guest_options', label:'🎯 Guest Options', dept:'any'},
+      {key:'service_hours', label:'🕐 Service Hours', dept:'any'},
+      {key:'ai_kb', label:'✨ AI Knowledge Base', dept:'any'}
+    ];
     el.innerHTML=list.map(function(h){
       var color=deptColors[h.department]||'#005f73';var perms=h.permissions||{};
+      var PERMS = ALL_PERMS.filter(function(p){ return p.dept === 'any' || p.dept === h.department; });
       var permToggles=PERMS.map(function(p){var isOn=perms[p.key]!==false;return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:'+(isOn?'#f0fdf4':'#fafafa')+';border-radius:8px;border:1px solid '+(isOn?'#86efac':'#eee')+';margin-bottom:6px"><div style="font-size:13px;font-weight:600;color:'+(isOn?'#065f46':'#888')+'">'+p.label+'</div><label style="position:relative;display:inline-block;width:42px;height:24px;cursor:pointer;flex-shrink:0"><input type="checkbox" '+(isOn?'checked':'')+' data-hod-id="'+h.id+'" data-perm="'+p.key+'" onchange="toggleHodPerm(this)" style="opacity:0;width:0;height:0"><span style="position:absolute;inset:0;background:'+(isOn?'#0a9396':'#ddd')+';border-radius:24px;transition:0.3s"></span><span style="position:absolute;top:3px;left:'+(isOn?'21px':'3px')+';width:18px;height:18px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></span></label></div>';}).join('');
       return '<div style="background:white;border-radius:14px;padding:16px;margin-bottom:14px;border:1px solid #eee;box-shadow:0 2px 8px rgba(0,0,0,0.06)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div style="display:flex;align-items:center;gap:10px"><div style="width:40px;height:40px;border-radius:10px;background:'+color+'20;display:flex;align-items:center;justify-content:center;font-size:20px">'+(deptEmojis[h.department]||'👤')+'</div><div><div style="font-size:15px;font-weight:700;color:#0d1b1e">'+h.name+'</div><div style="font-size:11px;color:#888;margin-top:2px">'+h.department+' · PIN: '+h.pin+'</div></div></div><button class="btn-del" onclick="removeHOD('+h.id+')">Remove</button></div><div style="font-size:11px;color:#aaa;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Permissions</div>'+permToggles+'</div>';
     }).join('');
@@ -1132,7 +1129,7 @@ window.onload=function(){try{var stored=localStorage.getItem('welco_admin_hotel'
   <div style="text-align:center;padding:12px;font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:0.05em;background:rgba(0,0,0,0.2)">
     © 2026 Welco Technologies. All rights reserved.
   </div>
-
+  
   <div style="text-align:center;padding:16px;font-size:11px;color:rgba(255,255,255,0.4);position:relative;z-index:1;margin-top:auto">
     © 2026 <strong>Welco™</strong> · All Rights Reserved · Built in India 🇮🇳
   </div>

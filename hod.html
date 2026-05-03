@@ -192,6 +192,88 @@
       #print-area { display: block !important; }
     }
     #print-area { display: none; }
+
+    /* ── ROOM STATUS BOARD ── */
+    .rs-legend { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+    .rs-leg-item { display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:#555; padding:6px 12px; border-radius:20px; background:white; box-shadow:0 1px 4px rgba(0,0,0,0.08); }
+    .rs-leg-dot { width:10px; height:10px; border-radius:50%; }
+    .rs-board { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+    .rs-room-card { border-radius:14px; padding:16px 12px; text-align:center; cursor:pointer; transition:all 0.2s; border:2px solid transparent; position:relative; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+    .rs-room-card:hover { transform:translateY(-3px); box-shadow:0 8px 24px rgba(0,0,0,0.15); }
+    .rs-room-card.occupied { background:#e8f4f4; border-color:#0a9396; }
+    .rs-room-card.vacant { background:#f0fdf4; border-color:#22c55e; }
+    .rs-room-card.dirty { background:#fff8e6; border-color:#f59e0b; }
+    .rs-room-card.clean { background:#f0f9ff; border-color:#3b82f6; }
+    .rs-room-card.oor { background:#fde8ea; border-color:#e63946; }
+    .rs-room-num { font-size:22px; font-weight:800; color:#0d1b1e; margin-bottom:4px; }
+    .rs-room-status { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px; }
+    .rs-room-card.occupied .rs-room-status { color:#005f73; }
+    .rs-room-card.vacant .rs-room-status { color:#16a34a; }
+    .rs-room-card.dirty .rs-room-status { color:#b45309; }
+    .rs-room-card.clean .rs-room-status { color:#1d4ed8; }
+    .rs-room-card.oor .rs-room-status { color:#c1121f; }
+    .rs-room-icon { font-size:24px; margin-bottom:6px; display:block; }
+    .rs-guest-name { font-size:10px; color:#666; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:4px; }
+    .rs-stats-row { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:16px; }
+    .rs-stat { background:rgba(255,255,255,0.92); border-radius:12px; padding:12px 8px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
+    .rs-stat-num { font-size:24px; font-weight:700; }
+    .rs-stat-lbl { font-size:10px; color:#999; text-transform:uppercase; letter-spacing:0.06em; margin-top:2px; }
+
+    /* Status dropdown popup */
+    .rs-popup { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:white; border-radius:20px; padding:24px; width:300px; box-shadow:0 20px 60px rgba(0,0,0,0.3); z-index:999; display:none; }
+    .rs-popup h3 { font-size:16px; font-weight:700; margin-bottom:4px; }
+    .rs-popup-sub { font-size:12px; color:#aaa; margin-bottom:16px; }
+    .rs-popup-btns { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .rs-popup-btn { padding:12px; border:none; border-radius:10px; font-size:12px; font-weight:700; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:all 0.2s; }
+    .rs-popup-btn:hover { transform:scale(1.04); }
+    .rs-popup-btn .rs-btn-icon { font-size:20px; }
+    .rs-btn-occupied { background:#e8f4f4; color:#005f73; }
+    .rs-btn-vacant { background:#f0fdf4; color:#16a34a; }
+    .rs-btn-dirty { background:#fff8e6; color:#b45309; }
+    .rs-btn-clean { background:#f0f9ff; color:#1d4ed8; }
+    .rs-btn-oor { background:#fde8ea; color:#c1121f; grid-column:1/-1; }
+    .rs-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:998; display:none; }
+    .rs-close-btn { position:absolute; top:12px; right:14px; background:none; border:none; font-size:18px; cursor:pointer; color:#aaa; }
+
+    /* ── HOUSEKEEPING CHECKLIST ── */
+    .hk-filter-row { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
+    .hk-filter-btn { padding:8px 16px; border:1.5px solid #e0e0e0; border-radius:20px; font-size:12px; font-weight:600; cursor:pointer; background:white; color:#666; transition:all 0.2s; }
+    .hk-filter-btn.active { background:var(--brand); color:white; border-color:var(--brand); }
+    .hk-progress-bar { height:8px; background:#f0f0f0; border-radius:4px; margin-bottom:20px; overflow:hidden; }
+    .hk-progress-fill { height:100%; background:linear-gradient(90deg,#0a9396,#22c55e); border-radius:4px; transition:width 0.5s; }
+    .hk-progress-txt { font-size:12px; color:#888; margin-bottom:6px; }
+    .hk-room-block { background:rgba(255,255,255,0.92); border-radius:14px; padding:16px; margin-bottom:12px; box-shadow:0 2px 10px rgba(0,0,0,0.06); border-left:4px solid #e0e0e0; }
+    .hk-room-block.all-done { border-left-color:#22c55e; }
+    .hk-room-block.in-progress { border-left-color:#f59e0b; }
+    .hk-room-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; cursor:pointer; }
+    .hk-room-title { font-size:16px; font-weight:700; color:#0d1b1e; }
+    .hk-room-meta { font-size:11px; color:#aaa; margin-top:2px; }
+    .hk-room-progress { font-size:12px; font-weight:700; }
+    .hk-room-progress.done { color:#16a34a; }
+    .hk-room-progress.partial { color:#b45309; }
+    .hk-tasks { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .hk-task { display:flex; align-items:center; gap:10px; padding:10px 12px; background:#f9f9f9; border-radius:10px; cursor:pointer; transition:all 0.2s; border:1.5px solid transparent; }
+    .hk-task:hover { background:#f0f0f0; }
+    .hk-task.checked { background:#f0fdf4; border-color:#22c55e; }
+    .hk-task-check { width:20px; height:20px; border-radius:50%; border:2px solid #ddd; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all 0.2s; }
+    .hk-task.checked .hk-task-check { background:#22c55e; border-color:#22c55e; color:white; font-size:11px; }
+    .hk-task-label { font-size:12px; font-weight:500; color:#444; }
+    .hk-task.checked .hk-task-label { color:#16a34a; text-decoration:line-through; }
+    .hk-assign { margin-top:10px; padding-top:10px; border-top:1px solid #f0f0f0; display:flex; gap:8px; align-items:center; }
+    .hk-assign select { flex:1; padding:7px 10px; border:1.5px solid #e0ddd8; border-radius:8px; font-size:12px; outline:none; background:white; }
+    .hk-assign-btn { padding:7px 14px; background:var(--brand); color:white; border:none; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; }
+    .hk-stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px; }
+    .hk-stat { background:rgba(255,255,255,0.92); border-radius:12px; padding:14px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
+    .hk-stat-num { font-size:28px; font-weight:700; }
+    .hk-stat-lbl { font-size:10px; color:#999; text-transform:uppercase; letter-spacing:0.08em; margin-top:4px; }
+    @media(max-width:600px){
+      .rs-board { grid-template-columns:repeat(3,1fr); }
+      .rs-stats-row { grid-template-columns:repeat(3,1fr); }
+      .hk-tasks { grid-template-columns:1fr; }
+      .rs-popup-btns { grid-template-columns:1fr; }
+      .rs-btn-oor { grid-column:1; }
+    }
+
   </style>
 
   <script>(function(){
@@ -257,6 +339,8 @@
     <div class="tab" onclick="showTab('requests')">📋 Requests</div>
     <div class="tab" id="tab-checkins" style="display:none" onclick="showTab('checkins')">🛎️ Check-ins</div>
     <div class="tab" onclick="showTab('rooms')">🚪 Rooms</div>
+    <div class="tab" onclick="showTab('roomstatus')">🏨 Room Status</div>
+    <div class="tab" onclick="showTab('housekeeping')">🧹 Housekeeping</div>
     <div class="tab" onclick="showTab('staff')">👷 Staff</div>
     <div class="tab" onclick="showTab('analytics')">📈 Analytics</div>
     <div class="tab" onclick="showTab('announce')">📢 Announce</div>
@@ -339,6 +423,79 @@
         <div class="card-title">All Rooms</div>
         <div class="card-sub" id="rooms-count">Loading...</div>
         <div class="rooms-grid" id="rooms-grid"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+
+    <!-- ROOM STATUS BOARD -->
+    <div class="tab-panel" id="panel-roomstatus">
+      <!-- Status legend -->
+      <div class="rs-legend">
+        <div class="rs-leg-item"><span class="rs-leg-dot" style="background:#0a9396"></span>Occupied</div>
+        <div class="rs-leg-item"><span class="rs-leg-dot" style="background:#22c55e"></span>Vacant</div>
+        <div class="rs-leg-item"><span class="rs-leg-dot" style="background:#f59e0b"></span>Dirty</div>
+        <div class="rs-leg-item"><span class="rs-leg-dot" style="background:#3b82f6"></span>Clean</div>
+        <div class="rs-leg-item"><span class="rs-leg-dot" style="background:#e63946"></span>Out of Order</div>
+        <div style="margin-left:auto"><button onclick="loadRoomStatus()" style="padding:7px 14px;background:var(--brand);color:white;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer">🔄 Refresh</button></div>
+      </div>
+      <!-- Stats -->
+      <div class="rs-stats-row">
+        <div class="rs-stat"><div class="rs-stat-num" id="rs-count-occupied" style="color:#0a9396">-</div><div class="rs-stat-lbl">Occupied</div></div>
+        <div class="rs-stat"><div class="rs-stat-num" id="rs-count-vacant" style="color:#22c55e">-</div><div class="rs-stat-lbl">Vacant</div></div>
+        <div class="rs-stat"><div class="rs-stat-num" id="rs-count-dirty" style="color:#f59e0b">-</div><div class="rs-stat-lbl">Dirty</div></div>
+        <div class="rs-stat"><div class="rs-stat-num" id="rs-count-clean" style="color:#3b82f6">-</div><div class="rs-stat-lbl">Clean</div></div>
+        <div class="rs-stat"><div class="rs-stat-num" id="rs-count-oor" style="color:#e63946">-</div><div class="rs-stat-lbl">Out of Order</div></div>
+      </div>
+      <!-- Board -->
+      <div class="card">
+        <div class="card-title">🏨 Room Status Board</div>
+        <div class="card-sub">Tap any room to change its status. Updates instantly for all staff.</div>
+        <div class="rs-board" id="rs-board"><div class="loading">Loading rooms...</div></div>
+      </div>
+    </div>
+
+    <!-- Status change popup -->
+    <div class="rs-overlay" id="rs-overlay" onclick="closeRsPopup()"></div>
+    <div class="rs-popup" id="rs-popup">
+      <button class="rs-close-btn" onclick="closeRsPopup()">✕</button>
+      <h3 id="rs-popup-title">Room 101</h3>
+      <div class="rs-popup-sub">Select new status</div>
+      <div class="rs-popup-btns">
+        <button class="rs-popup-btn rs-btn-occupied" onclick="setRoomStatus('occupied')"><span class="rs-btn-icon">🛌</span>Occupied</button>
+        <button class="rs-popup-btn rs-btn-vacant" onclick="setRoomStatus('vacant')"><span class="rs-btn-icon">✅</span>Vacant</button>
+        <button class="rs-popup-btn rs-btn-dirty" onclick="setRoomStatus('dirty')"><span class="rs-btn-icon">🧹</span>Dirty</button>
+        <button class="rs-popup-btn rs-btn-clean" onclick="setRoomStatus('clean')"><span class="rs-btn-icon">✨</span>Clean</button>
+        <button class="rs-popup-btn rs-btn-oor" onclick="setRoomStatus('out_of_order')"><span class="rs-btn-icon">🚫</span>Out of Order</button>
+      </div>
+    </div>
+
+    <!-- HOUSEKEEPING CHECKLIST -->
+    <div class="tab-panel" id="panel-housekeeping">
+      <!-- Stats -->
+      <div class="hk-stats-row">
+        <div class="hk-stat"><div class="hk-stat-num" id="hk-rooms-done" style="color:#22c55e">-</div><div class="hk-stat-lbl">Rooms Done</div></div>
+        <div class="hk-stat"><div class="hk-stat-num" id="hk-rooms-pending" style="color:#f59e0b">-</div><div class="hk-stat-lbl">Pending</div></div>
+        <div class="hk-stat"><div class="hk-stat-num" id="hk-tasks-done" style="color:#0a9396">-</div><div class="hk-stat-lbl">Tasks Done</div></div>
+      </div>
+      <!-- Progress -->
+      <div class="card">
+        <div class="card-title">🧹 Housekeeping Checklist</div>
+        <div class="card-sub">Track cleaning tasks room by room. Assign staff and mark tasks complete.</div>
+        <!-- Filter -->
+        <div class="hk-filter-row">
+          <button class="hk-filter-btn active" onclick="filterHK(this,'all')">All Rooms</button>
+          <button class="hk-filter-btn" onclick="filterHK(this,'pending')">⏳ Pending</button>
+          <button class="hk-filter-btn" onclick="filterHK(this,'done')">✅ Done</button>
+        </div>
+        <!-- Overall progress -->
+        <div class="hk-progress-txt" id="hk-progress-txt">Loading...</div>
+        <div class="hk-progress-bar"><div class="hk-progress-fill" id="hk-progress-fill" style="width:0%"></div></div>
+        <!-- Room blocks -->
+        <div id="hk-list"><div class="loading">Loading...</div></div>
+        <!-- Reset button -->
+        <div style="text-align:center;margin-top:16px">
+          <button onclick="resetAllHK()" style="padding:10px 24px;background:#fde8ea;color:#e63946;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer">🔄 Reset All for New Day</button>
+        </div>
       </div>
     </div>
 
@@ -701,7 +858,14 @@ function loadAll() {
     renderOverview(deptRequests);
     renderRequests();
     renderAnalytics(deptRequests);
-    if (hodData.dept === 'Front Desk') { renderCheckinStats(); renderCheckins(); }
+    if (hodData.dept === 'Front Desk') {
+      renderCheckinStats();
+      try { renderCheckins(); } catch(e) {
+        console.error('renderCheckins error:', e);
+        var el = document.getElementById('ci-list');
+        if (el) el.innerHTML = '<div class="empty">Could not display check-ins. Please tap Refresh.</div>';
+      }
+    }
   }).catch(function(e) {
     console.error('loadAll failed:', e);
     var el = document.getElementById('ci-list');
@@ -760,7 +924,8 @@ window._checkinMap = {};
 function renderCheckins() {
   var el = document.getElementById('ci-list');
   if (!el) return;
-  var search = (document.getElementById('ci-search').value || '').toLowerCase();
+  var searchEl = document.getElementById('ci-search');
+  var search = searchEl ? (searchEl.value || '').toLowerCase() : '';
   var list = allCheckins;
   if (search) {
     list = list.filter(function(r) {
@@ -1103,7 +1268,7 @@ function showTab(name) {
   document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
 
   // Activate correct tab button
-  var tabIds = { overview:0, requests:1, checkins:'tab-checkins', rooms:3, staff:4, analytics:5, announce:6, maintenance:7, guestoptions:8, aikb:'ai-kb-tab' };
+  var tabIds = { overview:0, requests:1, checkins:'tab-checkins', rooms:3, roomstatus:4, housekeeping:5, staff:6, analytics:7, announce:8, maintenance:9, guestoptions:10, aikb:'ai-kb-tab' };
   var allTabs = document.querySelectorAll('.tab');
   if (typeof tabIds[name] === 'number') {
     allTabs[tabIds[name]].classList.add('active');
@@ -1115,12 +1280,293 @@ function showTab(name) {
   document.getElementById('panel-' + name).classList.add('active');
 
   if (name === 'rooms') loadRooms();
+  if (name === 'roomstatus') loadRoomStatus();
+  if (name === 'housekeeping') loadHousekeeping();
   if (name === 'staff') loadStaff();
   if (name === 'maintenance') loadMaintenance();
   if (name === 'announce') loadAnnouncements();
   if (name === 'guestoptions') { loadServiceHours(); loadGuestOptions(); }
-  if (name === 'checkins') renderCheckins();
+  if (name === 'checkins') { try { renderCheckins(); } catch(e) { console.error(e); } }
 }
+
+
+// ════════════════════════════════════════
+// ROOM STATUS BOARD
+// ════════════════════════════════════════
+var rsRooms = [];
+var rsSelectedRoom = null;
+
+var RS_STATUS_MAP = {
+  occupied: { label:'Occupied', icon:'🛌', cls:'occupied' },
+  vacant: { label:'Vacant', icon:'✅', cls:'vacant' },
+  dirty: { label:'Dirty', icon:'🧹', cls:'dirty' },
+  clean: { label:'Clean', icon:'✨', cls:'clean' },
+  out_of_order: { label:'Out of Order', icon:'🚫', cls:'oor' }
+};
+
+function loadRoomStatus() {
+  var board = document.getElementById('rs-board');
+  board.innerHTML = '<div class="loading">Loading rooms...</div>';
+  authFetch('/rooms?hotel_id=' + hodData.hotel_id).then(function(r){ return r.json(); }).then(function(data) {
+    if (!Array.isArray(data)) { board.innerHTML = '<div class="empty">Could not load rooms.</div>'; return; }
+    rsRooms = data;
+    renderRoomStatusBoard();
+  }).catch(function() {
+    board.innerHTML = '<div class="empty">Could not load rooms. Please refresh.</div>';
+  });
+}
+
+function renderRoomStatusBoard() {
+  var counts = { occupied:0, vacant:0, dirty:0, clean:0, out_of_order:0 };
+  rsRooms.forEach(function(r) {
+    var s = r.room_status || 'vacant';
+    if (counts[s] !== undefined) counts[s]++;
+    else counts.vacant++;
+  });
+
+  // Update stat counters
+  document.getElementById('rs-count-occupied').textContent = counts.occupied;
+  document.getElementById('rs-count-vacant').textContent = counts.vacant;
+  document.getElementById('rs-count-dirty').textContent = counts.dirty;
+  document.getElementById('rs-count-clean').textContent = counts.clean;
+  document.getElementById('rs-count-oor').textContent = counts.out_of_order;
+
+  // Render board
+  var board = document.getElementById('rs-board');
+  if (rsRooms.length === 0) { board.innerHTML = '<div class="empty">No rooms found. Add rooms first.</div>'; return; }
+
+  board.innerHTML = rsRooms.map(function(r) {
+    var status = r.room_status || 'vacant';
+    var info = RS_STATUS_MAP[status] || RS_STATUS_MAP.vacant;
+    var guestName = r.current_guest ? ('<div class="rs-guest-name">' + r.current_guest + '</div>') : '';
+    return '<div class="rs-room-card ' + info.cls + '" onclick="openRsPopup('' + r.id + '',' + JSON.stringify(r.room_number) + ')">' +
+      '<span class="rs-room-icon">' + info.icon + '</span>' +
+      '<div class="rs-room-num">' + r.room_number + '</div>' +
+      (r.floor ? '<div style="font-size:10px;color:#aaa;margin-bottom:4px">Floor ' + r.floor + '</div>' : '') +
+      '<div class="rs-room-status">' + info.label + '</div>' +
+      guestName +
+    '</div>';
+  }).join('');
+}
+
+function openRsPopup(roomId, roomNum) {
+  rsSelectedRoom = rsRooms.find(function(r){ return r.id === roomId; });
+  if (!rsSelectedRoom) return;
+  document.getElementById('rs-popup-title').textContent = 'Room ' + roomNum;
+  document.getElementById('rs-popup').style.display = 'block';
+  document.getElementById('rs-overlay').style.display = 'block';
+}
+
+function closeRsPopup() {
+  document.getElementById('rs-popup').style.display = 'none';
+  document.getElementById('rs-overlay').style.display = 'none';
+  rsSelectedRoom = null;
+}
+
+function setRoomStatus(newStatus) {
+  if (!rsSelectedRoom) return;
+  var roomId = rsSelectedRoom.id;
+  closeRsPopup();
+
+  authFetch('/rooms/' + roomId + '/status', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status: newStatus })
+  }).then(function(r){ return r.json(); }).then(function(data) {
+    if (data.error) { alert('Error: ' + data.error); return; }
+    // Update locally
+    var room = rsRooms.find(function(r){ return r.id === roomId; });
+    if (room) room.room_status = newStatus;
+    renderRoomStatusBoard();
+    // Also refresh housekeeping if loaded
+    if (hkRooms.length > 0) {
+      var hkRoom = hkRooms.find(function(r){ return r.id === roomId; });
+      if (hkRoom) hkRoom.room_status = newStatus;
+    }
+  }).catch(function() { alert('Could not update status. Try again.'); });
+}
+
+// ════════════════════════════════════════
+// HOUSEKEEPING CHECKLIST
+// ════════════════════════════════════════
+var hkRooms = [];
+var hkData = {}; // { roomId: { tasks: {taskKey: bool}, assignee: '' } }
+var hkFilter = 'all';
+var hkStaffList = [];
+
+var HK_TASKS = [
+  { key:'bed', label:'🛏️ Make Bed' },
+  { key:'floor', label:'🧹 Sweep/Mop Floor' },
+  { key:'bathroom', label:'🚿 Clean Bathroom' },
+  { key:'towels', label:'🪄 Replace Towels' },
+  { key:'amenities', label:'🧴 Refill Amenities' },
+  { key:'dustbin', label:'🗑️ Empty Dustbin' },
+  { key:'ac', label:'❄️ Check AC/Fan' },
+  { key:'inspect', label:'✅ Final Inspection' }
+];
+
+function loadHousekeeping() {
+  document.getElementById('hk-list').innerHTML = '<div class="loading">Loading...</div>';
+
+  // Load rooms and staff in parallel
+  Promise.all([
+    authFetch('/rooms?hotel_id=' + hodData.hotel_id).then(function(r){ return r.json(); }),
+    authFetch('/staff?hotel_id=' + hodData.hotel_id).then(function(r){ return r.json(); }).catch(function(){ return []; })
+  ]).then(function(results) {
+    var rooms = results[0];
+    var staff = results[1];
+    if (!Array.isArray(rooms)) { document.getElementById('hk-list').innerHTML = '<div class="empty">Could not load rooms.</div>'; return; }
+
+    hkRooms = rooms;
+    hkStaffList = Array.isArray(staff) ? staff : [];
+
+    // Init hkData for rooms not already tracked
+    hkRooms.forEach(function(r) {
+      if (!hkData[r.id]) {
+        hkData[r.id] = { tasks: {}, assignee: '' };
+        HK_TASKS.forEach(function(t){ hkData[r.id].tasks[t.key] = false; });
+      }
+    });
+
+    renderHousekeeping();
+  }).catch(function() {
+    document.getElementById('hk-list').innerHTML = '<div class="empty">Could not load. Please refresh.</div>';
+  });
+}
+
+function filterHK(btn, filter) {
+  hkFilter = filter;
+  document.querySelectorAll('.hk-filter-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  renderHousekeeping();
+}
+
+function getRoomProgress(roomId) {
+  var d = hkData[roomId];
+  if (!d) return { done: 0, total: HK_TASKS.length };
+  var done = HK_TASKS.filter(function(t){ return d.tasks[t.key]; }).length;
+  return { done: done, total: HK_TASKS.length };
+}
+
+function renderHousekeeping() {
+  // Calc overall stats
+  var totalRooms = hkRooms.length;
+  var roomsDone = 0, tasksDone = 0, totalTasks = 0;
+  hkRooms.forEach(function(r) {
+    var p = getRoomProgress(r.id);
+    tasksDone += p.done;
+    totalTasks += p.total;
+    if (p.done === p.total) roomsDone++;
+  });
+  var roomsPending = totalRooms - roomsDone;
+  var pct = totalTasks > 0 ? Math.round((tasksDone / totalTasks) * 100) : 0;
+
+  document.getElementById('hk-rooms-done').textContent = roomsDone;
+  document.getElementById('hk-rooms-pending').textContent = roomsPending;
+  document.getElementById('hk-tasks-done').textContent = tasksDone + '/' + totalTasks;
+  document.getElementById('hk-progress-txt').textContent = pct + '% overall complete (' + tasksDone + ' of ' + totalTasks + ' tasks done)';
+  document.getElementById('hk-progress-fill').style.width = pct + '%';
+
+  // Filter rooms
+  var filtered = hkRooms.filter(function(r) {
+    var p = getRoomProgress(r.id);
+    if (hkFilter === 'done') return p.done === p.total;
+    if (hkFilter === 'pending') return p.done < p.total;
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    document.getElementById('hk-list').innerHTML = '<div class="empty">No rooms in this filter.</div>';
+    return;
+  }
+
+  // Staff options
+  var staffOpts = '<option value="">Unassigned</option>' +
+    hkStaffList.map(function(s){ return '<option value="' + s.name + '">' + s.name + '</option>'; }).join('');
+
+  document.getElementById('hk-list').innerHTML = filtered.map(function(r) {
+    var p = getRoomProgress(r.id);
+    var allDone = p.done === p.total;
+    var d = hkData[r.id];
+    var progressCls = allDone ? 'done' : (p.done > 0 ? 'partial' : '');
+    var progressTxt = allDone ? '✅ Done' : (p.done + '/' + p.total);
+
+    var tasks = HK_TASKS.map(function(t) {
+      var checked = d.tasks[t.key];
+      return '<div class="hk-task' + (checked ? ' checked' : '') + '" onclick="toggleHKTask('' + r.id + '','' + t.key + '')">' +
+        '<div class="hk-task-check">' + (checked ? '✓' : '') + '</div>' +
+        '<span class="hk-task-label">' + t.label + '</span>' +
+      '</div>';
+    }).join('');
+
+    var assignee = d.assignee || '';
+    var selectedStaff = hkStaffList.map(function(s){
+      return '<option value="' + s.name + '"' + (s.name === assignee ? ' selected' : '') + '>' + s.name + '</option>';
+    }).join('');
+
+    return '<div class="hk-room-block' + (allDone ? ' all-done' : (p.done > 0 ? ' in-progress' : '')) + '" id="hk-block-' + r.id + '">' +
+      '<div class="hk-room-header" onclick="toggleHKBlock('' + r.id + '')">' +
+        '<div>' +
+          '<div class="hk-room-title">Room ' + r.room_number + '</div>' +
+          '<div class="hk-room-meta">' + (r.floor ? 'Floor ' + r.floor : '') + (r.room_status ? ' · ' + r.room_status.charAt(0).toUpperCase() + r.room_status.slice(1) : '') + '</div>' +
+        '</div>' +
+        '<div class="hk-room-progress ' + progressCls + '">' + progressTxt + '</div>' +
+      '</div>' +
+      '<div id="hk-tasks-' + r.id + '">' +
+        '<div class="hk-tasks">' + tasks + '</div>' +
+        '<div class="hk-assign">' +
+          '<select onchange="assignHKStaff('' + r.id + '',this.value)" style="flex:1;padding:7px 10px;border:1.5px solid #e0ddd8;border-radius:8px;font-size:12px;outline:none">' +
+          '<option value="">👤 Assign Staff</option>' + selectedStaff +
+          '</select>' +
+          (allDone ? '<button onclick="markRoomClean('' + r.id + '')" style="padding:7px 14px;background:#0a9396;color:white;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer">✨ Mark Clean</button>' : '') +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function toggleHKBlock(roomId) {
+  var el = document.getElementById('hk-tasks-' + roomId);
+  if (el) el.style.display = el.style.display === 'none' ? '' : 'none';
+}
+
+function toggleHKTask(roomId, taskKey) {
+  if (!hkData[roomId]) return;
+  hkData[roomId].tasks[taskKey] = !hkData[roomId].tasks[taskKey];
+  renderHousekeeping();
+}
+
+function assignHKStaff(roomId, staffName) {
+  if (!hkData[roomId]) return;
+  hkData[roomId].assignee = staffName;
+}
+
+function markRoomClean(roomId) {
+  var room = hkRooms.find(function(r){ return r.id === roomId; });
+  if (!room) return;
+  authFetch('/rooms/' + roomId + '/status', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status: 'clean' })
+  }).then(function(r){ return r.json(); }).then(function(data) {
+    if (data.error) { alert('Error: ' + data.error); return; }
+    room.room_status = 'clean';
+    renderHousekeeping();
+    // also refresh room status board if loaded
+    var rsRoom = rsRooms.find(function(r){ return r.id === roomId; });
+    if (rsRoom) { rsRoom.room_status = 'clean'; renderRoomStatusBoard(); }
+  }).catch(function() { alert('Could not update. Try again.'); });
+}
+
+function resetAllHK() {
+  if (!confirm('Reset all housekeeping tasks for today? This clears all checkmarks.')) return;
+  hkRooms.forEach(function(r) {
+    hkData[r.id] = { tasks: {}, assignee: hkData[r.id] ? hkData[r.id].assignee : '' };
+    HK_TASKS.forEach(function(t){ hkData[r.id].tasks[t.key] = false; });
+  });
+  renderHousekeeping();
+}
+
 
 // ── MAINTENANCE ──
 function loadMaintenance(){fetch('/maintenance?hotel_id='+hodData.hotel_id+'&department='+encodeURIComponent(hodData.dept)).then(function(r){return r.json();}).then(function(data){if(!Array.isArray(data))return;renderMaintenance(data);}).catch(function(){document.getElementById('maint-urgent').innerHTML='<div class="empty">Could not load tasks</div>';});}

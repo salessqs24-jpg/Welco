@@ -200,18 +200,18 @@
     .rs-board { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
     .rs-room-card { border-radius:14px; padding:16px 12px; text-align:center; cursor:pointer; transition:all 0.2s; border:2px solid transparent; position:relative; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
     .rs-room-card:hover { transform:translateY(-3px); box-shadow:0 8px 24px rgba(0,0,0,0.15); }
-    .rs-room-card.occupied { background:#e8f4f4; border-color:#0a9396; }
+    .rs-room-card.occupied { background:#fde8ea; border-color:#e63946; }
     .rs-room-card.vacant { background:#f0fdf4; border-color:#22c55e; }
-    .rs-room-card.dirty { background:#fff8e6; border-color:#f59e0b; }
-    .rs-room-card.clean { background:#f0f9ff; border-color:#3b82f6; }
-    .rs-room-card.oor { background:#fde8ea; border-color:#e63946; }
+    .rs-room-card.dirty { background:#fffbeb; border-color:#f59e0b; }
+    .rs-room-card.clean { background:#fdf2f8; border-color:#ec4899; }
+    .rs-room-card.oor { background:#fdf6f0; border-color:#92400e; }
     .rs-room-num { font-size:22px; font-weight:800; color:#0d1b1e; margin-bottom:4px; }
     .rs-room-status { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px; }
-    .rs-room-card.occupied .rs-room-status { color:#005f73; }
+    .rs-room-card.occupied .rs-room-status { color:#c1121f; }
     .rs-room-card.vacant .rs-room-status { color:#16a34a; }
     .rs-room-card.dirty .rs-room-status { color:#b45309; }
-    .rs-room-card.clean .rs-room-status { color:#1d4ed8; }
-    .rs-room-card.oor .rs-room-status { color:#c1121f; }
+    .rs-room-card.clean .rs-room-status { color:#db2777; }
+    .rs-room-card.oor .rs-room-status { color:#92400e; }
     .rs-room-icon { font-size:24px; margin-bottom:6px; display:block; }
     .rs-guest-name { font-size:10px; color:#666; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:4px; }
     .rs-stats-row { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:16px; }
@@ -227,11 +227,11 @@
     .rs-popup-btn { padding:12px; border:none; border-radius:10px; font-size:12px; font-weight:700; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:all 0.2s; }
     .rs-popup-btn:hover { transform:scale(1.04); }
     .rs-popup-btn .rs-btn-icon { font-size:20px; }
-    .rs-btn-occupied { background:#e8f4f4; color:#005f73; }
+    .rs-btn-occupied { background:#fde8ea; color:#c1121f; }
     .rs-btn-vacant { background:#f0fdf4; color:#16a34a; }
     .rs-btn-dirty { background:#fff8e6; color:#b45309; }
-    .rs-btn-clean { background:#f0f9ff; color:#1d4ed8; }
-    .rs-btn-oor { background:#fde8ea; color:#c1121f; grid-column:1/-1; }
+    .rs-btn-clean { background:#fdf2f8; color:#db2777; }
+    .rs-btn-oor { background:#fdf6f0; color:#92400e; grid-column:1/-1; }
     .rs-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:998; display:none; }
     .rs-close-btn { position:absolute; top:12px; right:14px; background:none; border:none; font-size:18px; cursor:pointer; color:#aaa; }
 
@@ -431,20 +431,20 @@
     <div class="tab-panel" id="panel-roomstatus">
       <!-- Status legend -->
       <div class="rs-legend">
-        <div class="rs-leg-item"><span class="rs-leg-dot" style="background:#0a9396"></span>Occupied</div>
+        <div class="rs-leg-item"><span class="rs-leg-dot" style="background:#e63946"></span>Occupied</div>
         <div class="rs-leg-item"><span class="rs-leg-dot" style="background:#22c55e"></span>Vacant</div>
         <div class="rs-leg-item"><span class="rs-leg-dot" style="background:#f59e0b"></span>Dirty</div>
-        <div class="rs-leg-item"><span class="rs-leg-dot" style="background:#3b82f6"></span>Clean</div>
-        <div class="rs-leg-item"><span class="rs-leg-dot" style="background:#e63946"></span>Out of Order</div>
+        <div class="rs-leg-item"><span class="rs-leg-dot" style="background:#ec4899"></span>Clean</div>
+        <div class="rs-leg-item"><span class="rs-leg-dot" style="background:#92400e"></span>Out of Order</div>
         <div style="margin-left:auto"><button onclick="loadRoomStatus()" style="padding:7px 14px;background:var(--brand);color:white;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer">🔄 Refresh</button></div>
       </div>
       <!-- Stats -->
       <div class="rs-stats-row">
-        <div class="rs-stat"><div class="rs-stat-num" id="rs-count-occupied" style="color:#0a9396">-</div><div class="rs-stat-lbl">Occupied</div></div>
+        <div class="rs-stat"><div class="rs-stat-num" id="rs-count-occupied" style="color:#e63946">-</div><div class="rs-stat-lbl">Occupied</div></div>
         <div class="rs-stat"><div class="rs-stat-num" id="rs-count-vacant" style="color:#22c55e">-</div><div class="rs-stat-lbl">Vacant</div></div>
         <div class="rs-stat"><div class="rs-stat-num" id="rs-count-dirty" style="color:#f59e0b">-</div><div class="rs-stat-lbl">Dirty</div></div>
-        <div class="rs-stat"><div class="rs-stat-num" id="rs-count-clean" style="color:#3b82f6">-</div><div class="rs-stat-lbl">Clean</div></div>
-        <div class="rs-stat"><div class="rs-stat-num" id="rs-count-oor" style="color:#e63946">-</div><div class="rs-stat-lbl">Out of Order</div></div>
+        <div class="rs-stat"><div class="rs-stat-num" id="rs-count-clean" style="color:#ec4899">-</div><div class="rs-stat-lbl">Clean</div></div>
+        <div class="rs-stat"><div class="rs-stat-num" id="rs-count-oor" style="color:#92400e">-</div><div class="rs-stat-lbl">Out of Order</div></div>
       </div>
       <!-- Board -->
       <div class="card">
@@ -930,69 +930,71 @@ window._checkinMap = {};
 function renderCheckins() {
   var el = document.getElementById('ci-list');
   if (!el) return;
-  var searchEl = document.getElementById('ci-search');
-  var search = searchEl ? (searchEl.value || '').toLowerCase() : '';
-  var list = allCheckins;
-  if (!Array.isArray(list)) { el.innerHTML = '<div class="empty">No check-ins loaded yet. Please wait.</div>'; return; }
-  if (search) {
-    list = list.filter(function(r) {
-      return (r.message || '').toLowerCase().indexOf(search) !== -1 ||
-             (r.room_number && r.room_number.toLowerCase().indexOf(search) !== -1);
-    });
-  }
-  if (list.length === 0) {
-    el.innerHTML = '<div class="empty">No pre check-in submissions yet.<br>Guests submit this from the guest portal before arrival.</div>';
-    return;
-  }
-
-  // Rebuild map fresh every render
-  window._checkinMap = {};
-  allCheckins.forEach(function(r) { window._checkinMap[r.id] = r; });
-
-  var today = new Date().toDateString();
-  el.innerHTML = list.map(function(r) {
-    var g = parseCheckinMessage(r.message);
-    var isNew = r.status === 'pending';
-    var isToday = new Date(r.created_at).toDateString() === today;
-    var time = new Date(r.created_at).toLocaleString('en-IN', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
-    var isDone = r.status === 'done';
-
-    // Build ID proofs display
-    var idProofHtml = '';
-    if (g.idProofs && g.idProofs.length > 0) {
-      idProofHtml = field('🪪 ID Proofs', g.idProofs.map(function(p,i){ return 'Adult '+(i+1)+': '+p; }).join(' · '));
-    } else {
-      idProofHtml = field('🪪 ID Type', g.idType || '—');
+  try {
+    var searchEl = document.getElementById('ci-search');
+    var search = searchEl ? (searchEl.value || '').toLowerCase() : '';
+    if (!Array.isArray(allCheckins)) {
+      el.innerHTML = '<div class="empty">Check-ins not loaded yet. Please wait.</div>';
+      return;
     }
-
-    // Pass only the ID — everything else looked up from _checkinMap
-    var safeId = r.id.replace(/'/g, '');
-
-    return '<div class="checkin-card' + (isNew ? ' new' : '') + '">' +
-      '<div class="checkin-header">' +
-        '<div>' +
-          '<div class="checkin-name">' + (g.name || 'Guest') + '</div>' +
-          '<div class="checkin-room">Room ' + (r.room_number || '?') + ' · ' + (g.mobile || '') + '</div>' +
-          (isNew && !isDone ? '<span class="checkin-new-badge">🆕 New</span>' : '') +
-          (isDone ? '<span style="background:#d1fae5;color:#065f46;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;margin-top:4px">✅ Checked In</span>' : '') +
+    var list = allCheckins;
+    if (search) {
+      list = list.filter(function(r) {
+        return ((r.message || '') + ' ' + (r.room_number || '')).toLowerCase().indexOf(search) !== -1;
+      });
+    }
+    if (list.length === 0) {
+      el.innerHTML = '<div class="empty">No pre check-in submissions yet.<br>Guests submit this from the guest portal before arrival.</div>';
+      return;
+    }
+    window._checkinMap = {};
+    allCheckins.forEach(function(r) { if(r && r.id) window._checkinMap[r.id] = r; });
+    var today = new Date().toDateString();
+    var html = '';
+    for (var i = 0; i < list.length; i++) {
+      var r = list[i];
+      if (!r) continue;
+      var g = parseCheckinMessage(r.message || '');
+      var isNew = r.status === 'pending';
+      var isDone = r.status === 'done';
+      var isToday = r.created_at ? new Date(r.created_at).toDateString() === today : false;
+      var time = r.created_at ? new Date(r.created_at).toLocaleString('en-IN', {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '';
+      var safeId = (r.id || '').replace(/['"]/g, '');
+      var idProofHtml = '';
+      if (g.idProofs && g.idProofs.length > 0) {
+        idProofHtml = '<div class="checkin-field"><div class="checkin-field-label">🪪 ID Proofs</div><div class="checkin-field-val">' + g.idProofs.map(function(p,idx){ return 'Adult '+(idx+1)+': '+p; }).join(' · ') + '</div></div>';
+      } else {
+        idProofHtml = '<div class="checkin-field"><div class="checkin-field-label">🪪 ID Type</div><div class="checkin-field-val">' + (g.idType || '—') + '</div></div>';
+      }
+      html += '<div class="checkin-card' + (isNew ? ' new' : '') + '">' +
+        '<div class="checkin-header">' +
+          '<div>' +
+            '<div class="checkin-name">' + (g.name || 'Guest') + '</div>' +
+            '<div class="checkin-room">Room ' + (r.room_number || '?') + ' · ' + (g.mobile || '') + '</div>' +
+            (isNew && !isDone ? '<span class="checkin-new-badge">🆕 New</span>' : '') +
+            (isDone ? '<span style="background:#d1fae5;color:#065f46;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;margin-top:4px">✅ Checked In</span>' : '') +
+          '</div>' +
+          '<div class="checkin-time">' + time + (isToday ? '<br><span style="color:#0a9396;font-weight:700">Today</span>' : '') + '</div>' +
         '</div>' +
-        '<div class="checkin-time">' + time + (isToday ? '<br><span style="color:#0a9396;font-weight:700">Today</span>' : '') + '</div>' +
-      '</div>' +
-      '<div class="checkin-grid">' +
-        field('📅 Check-in', g.checkin || '—') +
-        field('📅 Check-out', g.checkout || '—') +
-        field('👥 Guests', g.guests || '—') +
-        field('🚌 From', g.from || '—') +
-        idProofHtml +
-        (g.email ? field('📧 Email', g.email) : '') +
-        (g.to && g.to !== 'Not specified' ? field('🚌 To', g.to) : '') +
-      '</div>' +
-      '<div class="checkin-actions">' +
-        '<button class="btn-print" onclick="doPrintCard(\'' + safeId + '\')">🖨️ Print ID Card</button>' +
-        (!isDone ? '<button class="btn-mark-arrived" onclick="markArrived(\'' + safeId + '\')">✅ Mark as Arrived</button>' : '') +
-      '</div>' +
-    '</div>';
-  }).join('');
+        '<div class="checkin-grid">' +
+          '<div class="checkin-field"><div class="checkin-field-label">📅 Check-in</div><div class="checkin-field-val">' + (g.checkin || '—') + '</div></div>' +
+          '<div class="checkin-field"><div class="checkin-field-label">📅 Check-out</div><div class="checkin-field-val">' + (g.checkout || '—') + '</div></div>' +
+          '<div class="checkin-field"><div class="checkin-field-label">👥 Guests</div><div class="checkin-field-val">' + (g.guests || '—') + '</div></div>' +
+          '<div class="checkin-field"><div class="checkin-field-label">🚌 From</div><div class="checkin-field-val">' + (g.from || '—') + '</div></div>' +
+          idProofHtml +
+          (g.email ? '<div class="checkin-field"><div class="checkin-field-label">📧 Email</div><div class="checkin-field-val">' + g.email + '</div></div>' : '') +
+        '</div>' +
+        '<div class="checkin-actions">' +
+          '<button class="btn-print" onclick="doPrintCard(\'' + safeId + '\')">🖨️ Print ID Card</button>' +
+          (!isDone ? '<button class="btn-mark-arrived" onclick="markArrived(\'' + safeId + '\')">✅ Mark as Arrived</button>' : '') +
+        '</div>' +
+      '</div>';
+    }
+    el.innerHTML = html;
+  } catch(err) {
+    console.error('renderCheckins crash:', err.message, err.stack);
+    el.innerHTML = '<div class="empty">Display error: ' + err.message + '<br><button onclick="renderCheckins()" style="margin-top:8px;padding:6px 14px;background:#0a9396;color:white;border:none;border-radius:6px;cursor:pointer">Retry</button></div>';
+  }
 }
 
 // Wrapper — looks up from _checkinMap (never fails due to string escaping)

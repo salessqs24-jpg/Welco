@@ -566,6 +566,17 @@ app.post('/rooms', verifyToken, async (req,res) => {
   if (error) return res.status(500).json({ error:error.message });
   res.json(data);
 });
+
+// Room Status Update
+app.post('/rooms/:id/status', verifyToken, async (req,res) => {
+  const validStatuses = ['occupied','vacant','dirty','clean','out_of_order'];
+  const { status } = req.body;
+  if (!status || !validStatuses.includes(status)) return res.status(400).json({ error:'Invalid status' });
+  const { error } = await supabase.from('rooms').update({ room_status: status }).eq('id', req.params.id);
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ success: true, status });
+});
+
 app.delete('/rooms/:id', verifyToken, async (req,res) => {
   const { error } = await supabase.from('rooms').delete().eq('id',req.params.id);
   if (error) return res.status(500).json({ error:error.message });
@@ -721,7 +732,7 @@ app.post('/requests/:id/feedback', async (req,res) => {
 // ── CHECKOUT FEEDBACK ────────────────────────────────────────────────────────
 app.post('/checkout-feedback', async (req,res) => {
   const { hotel_id, room_number, guest_name, guest_email, rating, review } = req.body;
-  if (!hotel_id || !rating || !review) return res.status(400).json({ error: 'hotel_id, rating and review required.' });
+  if (!hotel_id || !rating) return res.status(400).json({ error: 'hotel_id and rating required.' });
   try {
     const { data, error } = await supabase.from('checkout_reviews').insert([{
       hotel_id,

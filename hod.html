@@ -339,8 +339,8 @@
     <div class="tab" onclick="showTab('requests')">📋 Requests</div>
     <div class="tab" id="tab-checkins" style="display:none" onclick="showTab('checkins')">🛎️ Check-ins</div>
     <div class="tab" onclick="showTab('rooms')">🚪 Rooms</div>
-    <div class="tab" onclick="showTab('roomstatus')">🏨 Room Status</div>
-    <div class="tab" onclick="showTab('housekeeping')">🧹 Housekeeping</div>
+    <div class="tab" id="tab-roomstatus" style="display:none" onclick="showTab('roomstatus')">🏨 Room Status</div>
+    <div class="tab" id="tab-housekeeping" style="display:none" onclick="showTab('housekeeping')">🧹 Housekeeping</div>
     <div class="tab" onclick="showTab('staff')">👷 Staff</div>
     <div class="tab" onclick="showTab('analytics')">📈 Analytics</div>
     <div class="tab" onclick="showTab('announce')">📢 Announce</div>
@@ -814,9 +814,14 @@ function startApp() {
   document.getElementById('staff-dept-label').textContent = hodData.dept;
   document.querySelector('.topbar').style.background = 'linear-gradient(90deg, ' + color + 'dd, ' + color + '88)';
 
-  // Show Check-ins tab only for Front Desk HOD
+  // Show tabs based on department
   if (hodData.dept === 'Front Desk') {
     document.getElementById('tab-checkins').style.display = 'flex';
+    document.getElementById('tab-roomstatus').style.display = 'flex';
+  }
+  if (hodData.dept === 'Housekeeping') {
+    document.getElementById('tab-housekeeping').style.display = 'flex';
+    document.getElementById('tab-roomstatus').style.display = 'flex';
   }
 
   if (h.logo_url) {
@@ -875,6 +880,7 @@ function loadAll() {
 
 // ── CHECK-IN PARSING ──
 function parseCheckinMessage(msg) {
+  if (!msg) return { idProofs: [], name:'', mobile:'', email:'', checkin:'', checkout:'', guests:'', from:'', to:'' };
   var lines = msg.split('\n');
   var data = { idProofs: [] };
   var inIdSection = false;
@@ -927,9 +933,10 @@ function renderCheckins() {
   var searchEl = document.getElementById('ci-search');
   var search = searchEl ? (searchEl.value || '').toLowerCase() : '';
   var list = allCheckins;
+  if (!Array.isArray(list)) { el.innerHTML = '<div class="empty">No check-ins loaded yet. Please wait.</div>'; return; }
   if (search) {
     list = list.filter(function(r) {
-      return r.message.toLowerCase().indexOf(search) !== -1 ||
+      return (r.message || '').toLowerCase().indexOf(search) !== -1 ||
              (r.room_number && r.room_number.toLowerCase().indexOf(search) !== -1);
     });
   }

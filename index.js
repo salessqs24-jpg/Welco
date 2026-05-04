@@ -422,6 +422,242 @@ app.get('/demo/reset', async (req,res) => {
 });
 
 // OWNER SIGNUP
+
+// ════════════════════════════════════════════
+// AUTH — OTP + FINGERPRINT + TRIAL ABUSE PREVENTION
+// ════════════════════════════════════════════
+
+// In-memory OTP store (phone -> {otp, expires, attempts})
+const otpStore = new Map();
+// Verified OTP tokens (token -> {phone, fingerprint, expires})
+const otpTokens = new Map();
+
+// Fast2SMS API for OTP (free Indian SMS)
+async function sendSMSOTP(phone, otp) {
+  const FAST2SMS_KEY = process.env.FAST2SMS_KEY || '';
+  if (!FAST2SMS_KEY) {
+    // DEV MODE: just log OTP
+    console.log('DEV OTP for', phone, ':', otp);
+    return true;
+  }
+  try {
+    const res = await fetch('https://www.fast2sms.com/dev/bulkV2', {
+      method: 'POST',
+      headers: { 'authorization': FAST2SMS_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        route: 'otp',
+        variables_values: otp,
+        numbers: phone
+      })
+    });
+    const data = await res.json();
+    return data.return === true;
+  } catch(e) {
+    console.error('SMS error:', e.message);
+    return false;
+  }
+}
+
+function generateOTP() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+function generateToken(length) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let token = '';
+  for (let i = 0; i < length; i++) token += chars.charAt(Math.floor(Math.random() * chars.length));
+  return token;
+}
+
+// Rate limit for OTP
+const otpLimiter = rateLimit({ windowMs: 10*60*1000, max: 5, message: { error: 'Too many OTP requests. Try again in 10 minutes.' } });
+
+// STEP 1: SEND OTP
+app.post('/auth/send-otp', otpLimiter, async (req, res) => {
+  try {
+    const phone = (req.body.phone || '').replace(/\D/g, '').slice(-10);
+    const fingerprint = (req.body.fingerprint || '').substring(0, 100);
+
+    if (!phone || phone.length !== 10) return res.status(400).json({ error: 'Please enter a valid 10-digit mobile number.' });
+
+    // Check if phone already used a trial
+    const { data: existingOwner } = await supabase
+      .from('owners')
+      .select('id, trial_used')
+      .eq('phone', phone)
+      .maybeSingle();
+
+    if (existingOwner) {
+      return res.status(400).json({ error: 'This mobile number is already registered. Please login instead.' });
+    }
+
+    // Check device fingerprint abuse
+    if (fingerprint) {
+      const { data: fpOwner } = await supabase
+        .from('owners')
+        .select('id')
+        .eq('device_fingerprint', fingerprint)
+        .maybeSingle();
+      if (fpOwner) {
+        return res.status(400).json({ error: 'A trial account was already created from this device. Please login or contact support.' });
+      }
+    }
+
+    // Generate and store OTP
+    const otp = generateOTP();
+    otpStore.set(phone, {
+      otp,
+      expires: Date.now() + 10 * 60 * 1000, // 10 minutes
+      attempts: 0,
+      fingerprint
+    });
+
+    const sent = await sendSMSOTP(phone, otp);
+    if (!sent && process.env.FAST2SMS_KEY) {
+      return res.status(500).json({ error: 'Could not send OTP. Please try again.' });
+    }
+
+    res.json({ success: true, message: 'OTP sent successfully.' });
+  } catch(e) {
+    console.error('send-otp error:', e.message);
+    res.status(500).json({ error: 'Server error. Please try again.' });
+  }
+});
+
+// STEP 2: VERIFY OTP
+app.post('/auth/verify-otp', otpLimiter, async (req, res) => {
+  try {
+    const phone = (req.body.phone || '').replace(/\D/g, '').slice(-10);
+    const otp = (req.body.otp || '').trim();
+    const fingerprint = (req.body.fingerprint || '').substring(0, 100);
+
+    if (!phone || !otp) return res.status(400).json({ error: 'Phone and OTP required.' });
+
+    const stored = otpStore.get(phone);
+    if (!stored) return res.status(400).json({ error: 'OTP expired or not found. Please request a new one.' });
+    if (Date.now() > stored.expires) {
+      otpStore.delete(phone);
+      return res.status(400).json({ error: 'OTP has expired. Please request a new one.' });
+    }
+
+    stored.attempts = (stored.attempts || 0) + 1;
+    if (stored.attempts > 5) {
+      otpStore.delete(phone);
+      return res.status(400).json({ error: 'Too many wrong attempts. Please request a new OTP.' });
+    }
+
+    if (stored.otp !== otp) {
+      return res.status(400).json({ error: 'Incorrect OTP. ' + (5 - stored.attempts) + ' attempts remaining.' });
+    }
+
+    // OTP correct — generate verified token
+    otpStore.delete(phone);
+    const token = generateToken(48);
+    otpTokens.set(token, {
+      phone,
+      fingerprint,
+      expires: Date.now() + 30 * 60 * 1000 // 30 min to complete signup
+    });
+
+    res.json({ success: true, token });
+  } catch(e) {
+    console.error('verify-otp error:', e.message);
+    res.status(500).json({ error: 'Server error. Please try again.' });
+  }
+});
+
+// STEP 3: COMPLETE SIGNUP
+app.post('/auth/signup-complete', async (req, res) => {
+  try {
+    const { name, email, hotel_name, password, phone, otp_token, fingerprint } = req.body;
+
+    if (!name || !email || !hotel_name || !password || !phone || !otp_token) {
+      return res.status(400).json({ error: 'All fields required.' });
+    }
+    if (password.length < 6) return res.status(400).json({ error: 'Password too short.' });
+
+    // Verify OTP token
+    const tokenData = otpTokens.get(otp_token);
+    if (!tokenData) return res.status(400).json({ error: 'Session expired. Please start over.' });
+    if (Date.now() > tokenData.expires) {
+      otpTokens.delete(otp_token);
+      return res.status(400).json({ error: 'Session expired. Please start over.' });
+    }
+    if (tokenData.phone !== phone.replace(/\D/g,'').slice(-10)) {
+      return res.status(400).json({ error: 'Phone mismatch. Please start over.' });
+    }
+    otpTokens.delete(otp_token);
+
+    const cleanPhone = phone.replace(/\D/g,'').slice(-10);
+
+    // Final checks
+    const { data: existingPhone } = await supabase.from('owners').select('id').eq('phone', cleanPhone).maybeSingle();
+    if (existingPhone) return res.status(400).json({ error: 'This phone number is already registered.' });
+
+    const { data: existingEmail } = await supabase.from('owners').select('id').eq('email', email.toLowerCase()).maybeSingle();
+    if (existingEmail) return res.status(400).json({ error: 'This email is already registered.' });
+
+    if (fingerprint) {
+      const { data: existingFP } = await supabase.from('owners').select('id').eq('device_fingerprint', fingerprint).maybeSingle();
+      if (existingFP) return res.status(400).json({ error: 'A trial already exists from this device. Please contact support.' });
+    }
+
+    // Create owner
+    const hashed = await hashPassword(password);
+    const trialEnd = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(); // 30 days
+
+    const { data: owner, error: ownerErr } = await supabase
+      .from('owners')
+      .insert([{
+        name: name.trim(),
+        email: email.toLowerCase().trim(),
+        password: hashed,
+        phone: cleanPhone,
+        device_fingerprint: fingerprint || null,
+        trial_used: true,
+        trial_end: trialEnd,
+        plan: 'trial',
+        group_name: hotel_name.trim()
+      }])
+      .select()
+      .single();
+
+    if (ownerErr) return res.status(500).json({ error: ownerErr.message });
+
+    // Create hotel
+    const hotelCode = hotel_name.replace(/[^a-zA-Z]/g,'').substring(0,3).toUpperCase() + Math.floor(100+Math.random()*900);
+    const { data: hotel, error: hotelErr } = await supabase
+      .from('hotels')
+      .insert([{
+        name: hotel_name.trim(),
+        owner_id: owner.id,
+        hotel_code: hotelCode,
+        colour: '#005f73',
+        emoji: '🏨',
+        owner_email: email.toLowerCase().trim()
+      }])
+      .select()
+      .single();
+
+    if (hotelErr) return res.status(500).json({ error: hotelErr.message });
+
+    // Auto-create rooms 1-10
+    const rooms = Array.from({length:10}, (_,i) => ({
+      hotel_id: hotel.id,
+      room_number: String(i+1),
+      floor: 'Floor 1',
+      room_status: 'vacant'
+    }));
+    await supabase.from('rooms').insert(rooms);
+
+    const token = signToken({ owner_id: owner.id, email: owner.email });
+    res.json({ success: true, owner, hotel, token });
+  } catch(e) {
+    console.error('signup-complete error:', e.message);
+    res.status(500).json({ error: 'Server error. Please try again.' });
+  }
+});
+
 app.post('/owner/signup', async (req,res) => {
   const name=sanitize(req.body.name), email=sanitize(req.body.email).toLowerCase(), password=req.body.password;
   const group_name=sanitize(req.body.group_name||''), phone=sanitize(req.body.phone||''), secret_answer=sanitize(req.body.secret_answer||'').toLowerCase();

@@ -133,9 +133,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div id="alert1" class="alert"></div>
     <div class="field">
       <label>Mobile Number</label>
-      <div class="phone-row">
-        <input class="phone-code" value="+91" readonly style="color:rgba(255,255,255,0.5);">
-        <input type="tel" id="phone" placeholder="98765 43210" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'')">
+      <div style="position:relative;">
+        <span style="position:absolute;left:16px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.5);font-size:14px;pointer-events:none;">+91</span>
+        <input type="tel" id="phone" placeholder="98765 43210" maxlength="10" 
+          style="width:100%;padding:13px 16px 13px 52px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#fff;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;"
+          oninput="this.value=this.value.replace(/\D/g,'')" onfocus="this.style.borderColor='rgba(201,168,76,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
       </div>
     </div>
     <div class="trial-info">
@@ -279,14 +281,9 @@ function sendOTP() {
     document.getElementById('otp-phone-display').textContent = phone.substring(0,5) + '*****';
     goStep(2);
     startResendTimer();
-    // DEV MODE: auto-fill OTP if returned in response
+    // DEV MODE: show OTP in alert only — do NOT auto fill
     if (data.dev_otp) {
-      showAlert(2, '🔧 Dev Mode: Your OTP is ' + data.dev_otp + ' (SMS not configured yet)', 'success');
-      var digits = data.dev_otp.toString().split('');
-      digits.forEach(function(d, i) {
-        var box = document.getElementById('o' + (i+1));
-        if (box) box.value = d;
-      });
+      showAlert(2, '📱 Your OTP is: ' + data.dev_otp + '  —  SMS will be live once Fast2SMS is configured.', 'success');
     }
     document.getElementById('o1').focus();
   }).catch(function() {

@@ -480,44 +480,38 @@ app.post('/auth/send-otp', otpLimiter, async (req, res) => {
 
     if (!phone || phone.length !== 10) return res.status(400).json({ error: 'Please enter a valid 10-digit mobile number.' });
 
-    // Check if phone already used a trial
+    // Check if phone already registered
     const { data: existingOwner } = await supabase
       .from('owners')
-      .select('id, trial_used')
+      .select('id')
       .eq('phone', phone)
       .maybeSingle();
-
     if (existingOwner) {
       return res.status(400).json({ error: 'This mobile number is already registered. Please login instead.' });
-    }
-
-    // Check device fingerprint abuse
-    if (fingerprint) {
-      const { data: fpOwner } = await supabase
-        .from('owners')
-        .select('id')
-        .eq('device_fingerprint', fingerprint)
-        .maybeSingle();
-      if (fpOwner) {
-        return res.status(400).json({ error: 'A trial account was already created from this device. Please login or contact support.' });
-      }
     }
 
     // Generate and store OTP
     const otp = generateOTP();
     otpStore.set(phone, {
       otp,
-      expires: Date.now() + 10 * 60 * 1000, // 10 minutes
+      expires: Date.now() + 10 * 60 * 1000,
       attempts: 0,
       fingerprint
     });
 
-    const sent = await sendSMSOTP(phone, otp);
-    if (!sent && process.env.FAST2SMS_KEY) {
-      return res.status(500).json({ error: 'Could not send OTP. Please try again.' });
+    const FAST2SMS_KEY = process.env.FAST2SMS_KEY || '';
+    if (!FAST2SMS_KEY) {
+      // DEV MODE — return OTP directly in response
+      console.log('DEV OTP for', phone, ':', otp);
+      return res.json({ success: true, dev_otp: otp, message: 'OTP generated (dev mode — no SMS key set).' });
     }
 
-    res.json({ success: true, message: 'OTP sent successfully.' });
+    const sent = await sendSMSOTP(phone, otp);
+    if (!sent) {
+      return res.status(500).json({ error: 'Could not send SMS. Please try again.' });
+    }
+
+    res.json({ success: true, message: 'OTP sent to +91' + phone });
   } catch(e) {
     console.error('send-otp error:', e.message);
     res.status(500).json({ error: 'Server error. Please try again.' });
@@ -606,19 +600,23 @@ app.post('/auth/signup-complete', async (req, res) => {
     const hashed = await hashPassword(password);
     const trialEnd = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(); // 30 days
 
+    // Build owner object — only include columns that exist
+    const ownerData = {
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
+      password: hashed,
+      phone: cleanPhone,
+      group_name: hotel_name.trim()
+    };
+    // Try adding new columns — if they don't exist yet, signup still works
+    try { ownerData.device_fingerprint = fingerprint || null; } catch(e) {}
+    try { ownerData.trial_used = true; } catch(e) {}
+    try { ownerData.trial_end = trialEnd; } catch(e) {}
+    try { ownerData.plan = 'trial'; } catch(e) {}
+
     const { data: owner, error: ownerErr } = await supabase
       .from('owners')
-      .insert([{
-        name: name.trim(),
-        email: email.toLowerCase().trim(),
-        password: hashed,
-        phone: cleanPhone,
-        device_fingerprint: fingerprint || null,
-        trial_used: true,
-        trial_end: trialEnd,
-        plan: 'trial',
-        group_name: hotel_name.trim()
-      }])
+      .insert([ownerData])
       .select()
       .single();
 

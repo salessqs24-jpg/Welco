@@ -279,6 +279,15 @@ function sendOTP() {
     document.getElementById('otp-phone-display').textContent = phone.substring(0,5) + '*****';
     goStep(2);
     startResendTimer();
+    // DEV MODE: auto-fill OTP if returned in response
+    if (data.dev_otp) {
+      showAlert(2, '🔧 Dev Mode: Your OTP is ' + data.dev_otp + ' (SMS not configured yet)', 'success');
+      var digits = data.dev_otp.toString().split('');
+      digits.forEach(function(d, i) {
+        var box = document.getElementById('o' + (i+1));
+        if (box) box.value = d;
+      });
+    }
     document.getElementById('o1').focus();
   }).catch(function() {
     btn.disabled = false; btn.textContent = 'Send OTP →';

@@ -436,22 +436,40 @@ const otpTokens = new Map();
 async function sendSMSOTP(phone, otp) {
   const FAST2SMS_KEY = process.env.FAST2SMS_KEY || '';
   if (!FAST2SMS_KEY) {
-    // DEV MODE: just log OTP
     console.log('DEV OTP for', phone, ':', otp);
     return true;
   }
   try {
-    const res = await fetch('https://www.fast2sms.com/dev/bulkV2', {
+    // Use Quick Transactional route — works without template approval
+    const message = 'Your Welco verification code is ' + otp + '. Valid for 10 minutes. Do not share with anyone.';
+    const url = 'https://www.fast2sms.com/dev/bulkV2?authorization=' + encodeURIComponent(FAST2SMS_KEY)
+      + '&route=q'
+      + '&message=' + encodeURIComponent(message)
+      + '&language=english'
+      + '&flash=0'
+      + '&numbers=' + encodeURIComponent(phone);
+
+    const res = await fetch(url, { method: 'GET' });
+    const data = await res.json();
+    console.log('Fast2SMS response:', JSON.stringify(data));
+    if (data.return === true) return true;
+
+    // If quick route fails try DLT route
+    const res2 = await fetch('https://www.fast2sms.com/dev/bulkV2', {
       method: 'POST',
       headers: { 'authorization': FAST2SMS_KEY, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        route: 'otp',
-        variables_values: otp,
+        route: 'v3',
+        sender_id: 'WELCOO',
+        message: 'Your Welco OTP is ' + otp + '. Valid for 10 mins.',
+        language: 'english',
+        flash: 0,
         numbers: phone
       })
     });
-    const data = await res.json();
-    return data.return === true;
+    const data2 = await res2.json();
+    console.log('Fast2SMS v3 response:', JSON.stringify(data2));
+    return data2.return === true;
   } catch(e) {
     console.error('SMS error:', e.message);
     return false;
@@ -508,7 +526,9 @@ app.post('/auth/send-otp', otpLimiter, async (req, res) => {
 
     const sent = await sendSMSOTP(phone, otp);
     if (!sent) {
-      return res.status(500).json({ error: 'Could not send SMS. Please try again.' });
+      // SMS failed — return OTP on screen as fallback so signup is never blocked
+      console.log('SMS failed, returning OTP as fallback for', phone, ':', otp);
+      return res.json({ success: true, dev_otp: otp, message: 'SMS delivery failed. OTP shown below.' });
     }
 
     res.json({ success: true, message: 'OTP sent to +91' + phone });

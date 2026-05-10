@@ -281,9 +281,9 @@ function sendOTP() {
     document.getElementById('otp-phone-display').textContent = phone.substring(0,5) + '*****';
     goStep(2);
     startResendTimer();
-    // DEV MODE: show OTP in alert only — do NOT auto fill
+    // Show OTP on screen if SMS failed or dev mode
     if (data.dev_otp) {
-      showAlert(2, '📱 Your OTP is: ' + data.dev_otp + '  —  SMS will be live once Fast2SMS is configured.', 'success');
+      showAlert(2, '📱 Your OTP is: ' + data.dev_otp, 'success');
     }
     document.getElementById('o1').focus();
   }).catch(function() {

@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Legal — Terms, Privacy & Disclaimer | Welco™</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a1a;line-height:1.7;}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(8,16,30,0.97);backdrop-filter:blur(20px);padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(201,168,76,0.15);}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:#fff;text-decoration:none;letter-spacing:0.06em;}
+.nav-logo span{color:#c9a84c;}
+.nav-back{font-size:13px;color:rgba(255,255,255,0.5);text-decoration:none;transition:color .2s;}
+.nav-back:hover{color:#c9a84c;}
+
+/* HERO */
+.legal-hero{background:linear-gradient(135deg,#08101e,#0d1a2d);padding:64px 48px 48px;text-align:center;border-bottom:1px solid rgba(201,168,76,0.12);}
+.legal-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);color:#c9a84c;font-size:11px;font-weight:500;padding:6px 16px;border-radius:20px;margin-bottom:20px;letter-spacing:0.12em;text-transform:uppercase;}
+.legal-title{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:#fff;margin-bottom:12px;letter-spacing:-0.5px;}
+.legal-sub{font-size:14px;color:rgba(255,255,255,0.4);font-weight:300;margin-bottom:24px;}
+.legal-updated{font-size:12px;color:rgba(255,255,255,0.25);letter-spacing:0.08em;}
+
+/* TABS */
+.tabs-wrap{background:#fff;border-bottom:2px solid #f0ede8;position:sticky;top:64px;z-index:99;}
+.tabs{max-width:900px;margin:0 auto;display:flex;padding:0 48px;}
+.tab-btn{padding:16px 24px;font-size:13px;font-weight:500;color:#888;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;font-family:'DM Sans',sans-serif;letter-spacing:0.04em;}
+.tab-btn.active{color:#08101e;border-bottom-color:#c9a84c;}
+.tab-btn:hover{color:#08101e;}
+
+/* CONTENT */
+.legal-body{max-width:900px;margin:0 auto;padding:48px;}
+.legal-section{display:none;}
+.legal-section.active{display:block;}
+
+/* INTRO BOX */
+.intro-box{background:linear-gradient(135deg,#08101e,#0d1a2d);border:1px solid rgba(201,168,76,0.2);border-radius:16px;padding:28px 32px;margin-bottom:36px;}
+.intro-box p{font-size:14px;color:rgba(255,255,255,0.6);line-height:1.8;font-weight:300;}
+.intro-box strong{color:#c9a84c;font-weight:500;}
+
+/* TRUST BADGES */
+.trust-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px;}
+.trust-card{background:#fff;border:1px solid #eee;border-radius:12px;padding:20px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+.trust-icon{font-size:28px;margin-bottom:8px;}
+.trust-label{font-size:12px;font-weight:600;color:#08101e;margin-bottom:4px;}
+.trust-desc{font-size:11px;color:#999;line-height:1.5;}
+
+/* SECTIONS */
+.section-block{margin-bottom:36px;}
+.section-heading{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:#08101e;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #f0ede8;display:flex;align-items:center;gap:10px;}
+.section-heading span{font-size:18px;}
+.section-text{font-size:14px;color:#444;line-height:1.85;font-weight:300;margin-bottom:12px;}
+.section-text strong{color:#08101e;font-weight:600;}
+.bullet-list{list-style:none;margin:12px 0;}
+.bullet-list li{font-size:14px;color:#444;padding:6px 0 6px 20px;position:relative;line-height:1.7;font-weight:300;}
+.bullet-list li::before{content:'→';position:absolute;left:0;color:#c9a84c;font-size:12px;top:8px;}
+
+/* HIGHLIGHT BOX */
+.highlight-box{background:#fffbf0;border:1px solid #f0d88a;border-radius:10px;padding:18px 20px;margin:16px 0;}
+.highlight-box p{font-size:13px;color:#7a5c00;line-height:1.7;font-weight:400;}
+.highlight-box strong{color:#5a3d00;}
+
+/* WARNING BOX */
+.warning-box{background:#fff8f0;border:1px solid #ffd0a0;border-radius:10px;padding:18px 20px;margin:16px 0;}
+.warning-box p{font-size:13px;color:#8a4400;line-height:1.7;font-weight:400;}
+
+/* CONTACT BOX */
+.contact-box{background:linear-gradient(135deg,#08101e,#0d1a2d);border:1px solid rgba(201,168,76,0.2);border-radius:16px;padding:32px;text-align:center;margin-top:48px;}
+.contact-box h3{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:#fff;margin-bottom:8px;}
+.contact-box p{font-size:13px;color:rgba(255,255,255,0.45);margin-bottom:20px;font-weight:300;}
+.contact-links{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.contact-link{padding:10px 22px;border:1px solid rgba(201,168,76,0.3);border-radius:8px;color:#c9a84c;font-size:13px;text-decoration:none;transition:all .2s;font-weight:500;}
+.contact-link:hover{background:rgba(201,168,76,0.1);}
+.contact-link.primary{background:linear-gradient(135deg,#c9a84c,#a87c2a);color:#08101e;border-color:transparent;}
+
+/* DIVIDER */
+.gold-divider{height:1px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);opacity:0.3;margin:32px 0;}
+
+/* FOOTER */
+.legal-footer{background:#08101e;padding:24px 48px;text-align:center;border-top:1px solid rgba(201,168,76,0.1);}
+.legal-footer p{font-size:12px;color:rgba(255,255,255,0.25);letter-spacing:0.06em;}
+
+@media(max-width:600px){
+  nav{padding:0 20px;}
+  .legal-hero{padding:48px 20px 32px;}
+  .legal-title{font-size:30px;}
+  .tabs{padding:0 16px;}
+  .tab-btn{padding:14px 14px;font-size:12px;}
+  .legal-body{padding:28px 20px;}
+  .trust-row{grid-template-columns:1fr;}
+  .contact-links{flex-direction:column;align-items:center;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="/">Welco<span>™</span></a>
+  <a class="nav-back" href="/">← Back to Home</a>
+</nav>
+
+<!-- HERO -->
+<div class="legal-hero">
+  <div class="legal-badge">🔒 Legal & Trust</div>
+  <h1 class="legal-title">Legal Information</h1>
+  <p class="legal-sub">Transparency, security and your rights — everything in one place.</p>
+  <p class="legal-updated">Last Updated: May 2026 &nbsp;·&nbsp; Effective from: May 2026 &nbsp;·&nbsp; Version 1.0</p>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('disclaimer')">Disclaimer</button>
+    <button class="tab-btn" onclick="showTab('terms')">Terms of Service</button>
+    <button class="tab-btn" onclick="showTab('privacy')">Privacy Policy</button>
+    <button class="tab-btn" onclick="showTab('data')">Data Security</button>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="legal-body">
+
+  <!-- ── DISCLAIMER ── -->
+  <div class="legal-section active" id="sec-disclaimer">
+
+    <div class="trust-row">
+      <div class="trust-card">
+        <div class="trust-icon">🔒</div>
+        <div class="trust-label">Secure Platform</div>
+        <div class="trust-desc">JWT authentication & encrypted data storage</div>
+      </div>
+      <div class="trust-card">
+        <div class="trust-icon">🇮🇳</div>
+        <div class="trust-label">Made in India</div>
+        <div class="trust-desc">Built and operated from Rajasthan, India</div>
+      </div>
+      <div class="trust-card">
+        <div class="trust-icon">✅</div>
+        <div class="trust-label">Real Product</div>
+        <div class="trust-desc">Live at 3+ hotels across Rajasthan</div>
+      </div>
+    </div>
+
+    <div class="intro-box">
+      <p>The information and services provided by <strong>Welco Technologies ("Welco," "we," "us," or "our")</strong> on <strong>usewelco.in</strong> are for hotel management and guest service purposes only. While we strive to ensure the highest quality of service, we make no representations or warranties regarding uninterrupted availability, as our platform depends on third-party infrastructure providers.</p>
+    </div>
+
+    <div class="section-block">
+      <div class="section-heading"><span>📋</span> General Disclaimer</div>
+      <p class="section-text">Welco is a hotel management software platform. All features, data, and outputs provided through our platform are offered in good faith. Welco does not guarantee that the software will be available 100% of the time, as availability depends on hosting infrastructure, internet connectivity, and third-party services.</p>
+      <p class="section-text">Hotels using Welco are responsible for verifying all guest information submitted through the platform. Welco provides the technology to collect and display this information but does not independently verify its accuracy.</p>
+    </div>
+
+    <div class="gold-divider"></div>
+
+    <div class="section-block">
+      <div class="section-heading"><span>⚠️</span> Service Limitations</div>
+      <div class="highlight-box">
+        <p><strong>Important:</strong> Welco is a communication and management tool. It does not replace the hotel's own judgment, staff responsibility, or legal obligations toward guests. Hotels remain fully responsible for the quality of services delivered to their guests.</p>
+      </div>
+      <ul class="bullet-list">
+        <li>Welco is not responsible for service failures caused by hotel staff not responding to requests</li>
+        <li>Guest satisfaction depends on the hotel's own service quality — Welco only facilitates communication</li>
+        <li>AI Concierge responses are generated automatically and should be verified by hotel staff for accuracy</li>
+        <li>Room status information is only as accurate as what hotel staff updates in the system</li>
+        <li>Welco does not process payments between guests and hotels — it is not a payment gateway</li>
+      </ul>
+    </div>
+
+    <div class="gold-divider"></div>
+
+    <div class="section-block">
+      <div class="section-heading"><span>⚖️</span> Liability Limitation</div>
+      <p class="section-text">To the fullest extent permitted by applicable Indian law, Welco Technologies disclaims all liability for any direct, indirect, incidental, or consequential damages arising from:</p>
+      <ul class="bullet-list">
+        <li>Use or inability to use the Welco platform</li>
+        <li>Data loss due to technical failures beyond our control</li>
+        <li>Actions taken by hotel staff or guests based on platform information</li>
+        <li>Third-party service disruptions (Supabase, Render, Fast2SMS, Groq)</li>
+        <li>Incorrect information submitted by guests during pre check-in</li>
+      </ul>
+      <div class="warning-box">
+        <p>Welco's maximum liability in any circumstance shall not exceed the amount paid by the hotel for the current billing month's subscription fee.</p>
+      </div>
+    </div>
+
+    <div class="gold-divider"></div>
+
+    <div class="section-block">
+      <div class="section-heading"><span>🤖</span> AI Features Disclaimer</div>
+      <p class="section-text">Welco includes an AI Concierge feature powered by third-party AI providers. This feature:</p>
+      <ul class="bullet-list">
+        <li>Generates responses automatically based on hotel knowledge base data</li>
+        <li>May occasionally produce inaccurate or outdated information</li>
+        <li>Should not be relied upon for emergency situations — guests should always be directed to staff</li>
+        <li>Does not store personal conversations beyond the active session</li>
+        <li>Is not a replacement for trained hotel staff or professional concierge services</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- ── TERMS OF SERVICE ── -->
+  <div class="legal-section" id="sec-terms">
+
+    <div class="intro-box">
+      <p>By signing up for and using Welco ("the Service"), you ("Hotel Owner," "User") agree to these Terms of Service. Please read them carefully. These terms constitute a binding agreement between you and <strong>Welco Technologies</strong>, operated from Rajasthan, India.</p>
+    </div>
+
+    <div class="section-block">
+      <div class="section-heading"><span>✅</span> Acceptance of Terms</div>
+      <p class="section-text">By creating an account, you confirm that you are at least 18 years old, authorized to represent the hotel or business you are registering, and agree to these terms in full. If you do not agree, please do not use the Service.</p>
+    </div>
+
+    <div class="gold-divider"></div>
+
+    <div class="section-block">
+      <div class="section-heading"><span>🎁</span> Trial Period & Subscriptions</div>
+      <ul class="bullet-list">
+        <li>New accounts receive a <strong>1-month free trial</strong> with full Basic plan access</li>
+        <li>One free trial per mobile number and per device — trial abuse is not permitted</li>
+        <li>After the trial, continued use requires a paid subscription</li>
+        <li>Subscription fees are charged monthly or annually as selected</li>
+        <li>Welco reserves the right to modify pricing with 30 days notice</li>
+        <li>No refunds are provided for partially used billing periods</li>
+      </ul>
+    </div>
+
+    <div class="gold-divider"></div>
+
+    <div class="section-block">
+      <div class="section-heading"><span>🏨</span> Hotel Owner Responsibilities</div>
+      <p class="section-text">As a hotel owner using Welco, you agree to:</p>
+      <ul class="bullet-list">
+        <li>Provide accurate hotel information during registration</li>
+        <li>Ensure staff use the platform responsibly and professionally</li>
+        <li>Inform guests that a digital management system is in use</li>
+        <li>Comply with all applicable Indian laws regarding guest data collection</li>
+        <li>Not use Welco for any illegal, fraudulent, or harmful purposes</li>
+        <li>Maintain the confidentiality of your login credentials</li>
+        <li>Notify Welco immediately of any unauthorized account access</li>
+      </ul>
+    </div>
+
+    <div class="gold-divider"></div>
+
+    <div class="section-block">
+      <div class="section-heading"><span>🚫</span> Prohibited Uses</div>
+      <p class="section-text">You must not:</p>
+      <ul class="bullet-list">
+        <li>Share your account credentials with unauthorized persons</li>
+        <li>Attempt to reverse engineer, copy, or reproduce the Welco platform</li>
+        <li>Use Welco to collect guest data beyond what is necessary for hotel operations</li>
+        <li>Misuse guest data collected through Welco for marketing or third-party purposes</li>
+        <li>Create multiple accounts to abuse the free trial system</li>
+        <li>Use automated tools to access or scrape the platform</li>
+      </ul>
+    </div>
+
+    <div class="gold-divider"></div>
+
+    <div class="section-block">
+      <div class="section-heading"><span>🔄</span> Service Availability & Changes</div>
+      <p class="section-text">Welco strives for maximum uptime but does not guarantee uninterrupted service. We reserve the right to modify, suspend, or discontinue features with reasonable notice. Major feature changes will be communicated via email or in-app notification at least 15 days in advance.</p>
+    </div>
+
+    <div class="gold-divider"></div>
+
+    <div class="section-block">
+      <div class="section-heading"><span>⚖️</span> Governing Law</div>
+      <p class="section-text">These Terms are governed by the laws of India. Any disputes arising from these Terms shall be subject to the exclusive jurisdiction of the courts in Rajasthan, India. Both parties agree to attempt resolution through good-faith negotiation before pursuing legal action.</p>
+    </div>
+
+    <div class="gold-divider"></div>
+
+    <div class="section-block">
+      <div class="section-heading"><span>🗑️</span> Termination</div>
+      <p class="section-text">Either party may terminate the service relationship with 15 days written notice. Welco reserves the right to immediately terminate accounts found violating these terms without refund. Upon termination, hotel data will be retained for 30 days before permanent deletion, during which you may request an export.</p>
+    </div>
+
+  </div>
+
+  <!-- ── PRIVACY POLICY ── -->
+  <div class="legal-section" id="sec-privacy">
+
+    <div class="intro-box">
+      <p>Welco Technologies is committed to protecting the privacy of hotel owners, staff, and guests. This Privacy Policy explains what data we collect, why we collect it, how we use it, and your rights regarding your data. We comply with applicable Indian data protection laws including the <strong>Information Technology Act, 2000</strong> and its amendments.</p>
+    </div>
+
+    <div class="section-block">
+      <div class="section-heading"><span>📦</span> Data We Collect</div>
+      <p class="section-text"><strong>From Hotel Owners:</strong></p>
+      <ul class="bullet-list">
+        <li>Name, email address, mobile number</li>
+        <li>Hotel name, location, and branding details</li>
+        <li>Device fingerprint (for trial abuse prevention only)</li>
+        <li>Payment information (processed securely via Razorpay — we do not store card details)</li>
+      </ul>
+      <p class="section-text" style="margin-top:16px"><strong>From Hotel Staff:</strong></p>
+      <ul class="bullet-list">
+        <li>Name, staff ID, department, PIN (stored encrypted)</li>
+        <li>Clock-in and clock-out times</li>
+        <li>Request handling activity and response times</li>
+      </ul>
+      <p class="section-text" style="margin-top:16px"><strong>From Guests (collected by hotel via Welco):</strong></p>
+      <ul class="bullet-list">
+        <li>Name, mobile number, email address (optional)</li>
+        <li>Check-in and check-out dates, travel details</li>
+        <li>ID document photos (uploaded for hotel compliance purposes)</li>
+        <li>Service requests made during stay</li>
+        <li>Star ratings and checkout reviews (optional)</li>
+      </ul>
+    </div>
+
+    <div class="gold-divider"></div>
+
+    <div class="section-block">
+      <div class="section-heading"><span>🎯</span> How We Use Data</div>
+      <ul class="bullet-list">
+        <li>To operate and improve the Welco platform</li>
+        <li>To facilitate communication between guests and hotel staff</li>
+        <li>To generate analytics and reports for hotel management</li>
+        <li>To send OTP verification messages for account security</li>
+        <li>To prevent fraud and trial abuse</li>
+        <li>To provide customer support</li>
+      </ul>
+      <div class="highlight-box">
+        <p><strong>We do not sell your data.</strong> Welco does not sell, rent, or trade any hotel owner, staff, or guest data to third parties for marketing or commercial purposes. Ever.</p>
+      </div>
+    </div>
+
+    <div class="gold-divider"></div>
+
+    <div class="section-block">
+      <div class="section-heading"><span>🔗</span> Third-Party Services</div>
+      <p class="section-text">Welco uses the following trusted third-party services to operate:</p>
+      <ul class="bullet-list">
+        <li><strong>Supabase</strong> — Secure database storage (servers in Singapore/US)</li>
+        <li><strong>Render</strong> — Application hosting</li>
+        <li><strong>Fast2SMS</strong> — OTP delivery via SMS</li>
+        <li><strong>Groq / Google Gemini</strong> — AI Concierge responses</li>
+        <li><strong>Razorpay</strong> — Payment processing (when applicable)</li>
+      </ul>
+      <p class="section-text">Each provider has their own privacy policy. Guest conversation data sent to AI providers is not linked to personal identity and is processed transiently.</p>
+    </div>
+
+    <div class="gold-divider"></div>
+
+    <div class="section-block">
+      <div class="section-heading"><span>🗂️</span> Data Retention</div>
+      <ul class="bullet-list">
+        <li>Active account data is retained for the duration of your subscription</li>
+        <li>Guest request data is retained for 90 days by default</li>
+        <li>ID photos uploaded by guests are retained per hotel's legal requirements (typically 1 year)</li>
+        <li>After account termination, data is deleted within 30 days upon request</li>
+        <li>Analytics aggregates may be retained in anonymized form for platform improvement</li>
+      </ul>
+    </div>
+
+    <div class="gold-divider"></div>
+
+    <div class="section-block">
+      <div class="section-heading"><span>👤</span> Your Rights</div>
+      <p class="section-text">You have the right to:</p>
+      <ul class="bullet-list">
+        <li>Access all data we hold about you — request via email</li>
+        <li>Correct inaccurate data in your account settings</li>
+        <li>Request deletion of your data (subject to legal retention requirements)</li>
+        <li>Export your hotel's data in CSV format at any time from the admin portal</li>
+        <li>Opt out of non-essential communications</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- ── DATA SECURITY ── -->
+  <div class="legal-section" id="sec-data">
+
+    <div class="intro-box">
+      <p>Security is not an afterthought at Welco — it is built into every layer of our platform. Here is a transparent overview of the security measures we have implemented to protect your hotel's data and your guests' information.</p>
+    </div>
+
+    <div class="trust-row">
+      <div class="trust-card">
+        <div class="trust-icon">🔐</div>
+        <div class="trust-label">JWT Authentication</div>
+        <div class="trust-desc">Secure 7-day tokens for all portal access</div>
+      </div>
+      <div class="trust-card">
+        <div class="trust-icon">🔑</div>
+        <div class="trust-label">Bcrypt Encryption</div>
+        <div class="trust-desc">All passwords hashed with industry standard bcrypt</div>
+      </div>
+      <div class="trust-card">
+        <div class="trust-icon">🛡️</div>
+        <div class="trust-label">Rate Limiting</div>
+        <div class="trust-desc">Protection against brute force and bot attacks</div>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="section-heading"><span>🔒</span> Technical Security Measures</div>
+      <ul class="bullet-list">
+        <li><strong>HTTPS everywhere</strong> — All data transmitted over encrypted SSL/TLS connections</li>
+        <li><strong>JWT tokens</strong> — Secure session management with 7-day expiry for all portals</li>
+        <li><strong>Bcrypt password hashing</strong> — Passwords never stored in plain text</li>
+        <li><strong>PIN encryption</strong> — Staff PINs are encrypted before storage</li>
+        <li><strong>Rate limiting</strong> — Login endpoints limited to 10 attempts per 15 minutes</li>
+        <li><strong>Helmet.js</strong> — HTTP security headers to prevent common web attacks</li>
+        <li><strong>CORS protection</strong> — API access restricted to authorized domains only</li>
+        <li><strong>Row Level Security (RLS)</strong> — Database-level access control via Supabase</li>
+        <li><strong>OTP verification</strong> — Phone verification required for new account creation</li>
+        <li><strong>Device fingerprinting</strong> — Trial abuse prevention without invasive tracking</li>
+      </ul>
+    </div>
+
+    <div class="gold-divider"></div>
+
+    <div class="section-block">
+      <div class="section-heading"><span>🖼️</span> Guest ID Photo Security</div>
+      <p class="section-text">Guest ID photos uploaded during pre check-in are treated with the highest level of care:</p>
+      <ul class="bullet-list">
+        <li>Photos are uploaded directly to Supabase Storage over encrypted connections</li>
+        <li>Storage bucket access is controlled — only authenticated HOD portal can view photos</li>
+        <li>Photos are accessible via time-limited secure URLs, not permanent public links</li>
+        <li>Hotel owners can configure photo retention period in settings</li>
+        <li>Welco staff do not access guest ID photos under any circumstances</li>
+      </ul>
+      <div class="highlight-box">
+        <p><strong>Legal Note for Hotels:</strong> Under Indian law (Foreigners Act, 1946 and Hotels and Lodging Houses Act), hotels are required to maintain guest identity records. Welco provides the digital infrastructure for this — hotels remain legally responsible for compliance with local registration requirements.</p>
+      </div>
+    </div>
+
+    <div class="gold-divider"></div>
+
+    <div class="section-block">
+      <div class="section-heading"><span>🏗️</span> Infrastructure Security</div>
+      <ul class="bullet-list">
+        <li><strong>Supabase</strong> — SOC 2 Type II compliant database infrastructure</li>
+        <li><strong>Render</strong> — Automated TLS certificates, DDoS protection</li>
+        <li><strong>Environment Variables</strong> — All API keys stored as server-side secrets, never in code</li>
+        <li><strong>Separation of concerns</strong> — Frontend and backend fully separated</li>
+      </ul>
+    </div>
+
+    <div class="gold-divider"></div>
+
+    <div class="section-block">
+      <div class="section-heading"><span>🚨</span> Incident Response</div>
+      <p class="section-text">In the event of a security incident:</p>
+      <ul class="bullet-list">
+        <li>Affected hotels will be notified within 72 hours of discovery</li>
+        <li>We will provide details of what data was affected and steps taken</li>
+        <li>Welco will cooperate fully with any investigation</li>
+        <li>To report a security vulnerability, email: <strong>security@usewelco.in</strong></li>
+      </ul>
+      <div class="warning-box">
+        <p>If you discover a security vulnerability in Welco, please report it responsibly to security@usewelco.in before public disclosure. We take all reports seriously and respond within 48 hours.</p>
+      </div>
+    </div>
+
+    <div class="gold-divider"></div>
+
+    <div class="section-block">
+      <div class="section-heading"><span>📋</span> What We Do NOT Do</div>
+      <ul class="bullet-list">
+        <li>We do NOT sell any data to advertisers or third parties</li>
+        <li>We do NOT access your hotel's guest data without authorization</li>
+        <li>We do NOT store credit card or payment details on our servers</li>
+        <li>We do NOT share individual guest data across hotels</li>
+        <li>We do NOT use guest data for AI training without explicit consent</li>
+        <li>We do NOT send marketing emails to your guests</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- CONTACT BOX -->
+  <div class="contact-box">
+    <h3>Questions about our policies?</h3>
+    <p>We're a real team based in Rajasthan, India. We respond to every query personally.</p>
+    <div class="contact-links">
+      <a href="mailto:hello@usewelco.in" class="contact-link primary">📧 hello@usewelco.in</a>
+      <a href="https://wa.me/918824546343" class="contact-link">💬 WhatsApp Us</a>
+      <a href="/" class="contact-link">← Back to Welco</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="legal-footer">
+  <p>© 2026 Welco Technologies · usewelco.in · Rajasthan, India · All Rights Reserved</p>
+</div>
+
+<script>
+function showTab(name) {
+  // Hide all sections
+  document.querySelectorAll('.legal-section').forEach(function(s){ s.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  // Show selected
+  document.getElementById('sec-' + name).classList.add('active');
+  event.target.classList.add('active');
+  // Scroll to top of content
+  window.scrollTo({ top: 200, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

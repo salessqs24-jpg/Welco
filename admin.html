@@ -888,7 +888,22 @@ function loadRooms() {
     document.getElementById('rooms-grid').innerHTML=rooms.length===0?'<div class="empty" style="grid-column:1/-1">No rooms yet</div>':rooms.map(function(r){return '<div class="room-card"><div class="room-num">Room '+r.room_number+'</div><div class="room-floor">Floor '+(r.floor||1)+'</div><div class="room-actions"><button class="btn-qr" onclick="showQR(\''+hotel.hotel_id+'\',\''+r.id+'\',\''+r.room_number+'\')">QR</button><button class="btn-del" onclick="deleteRoom('+r.id+')">✕</button></div></div>';}).join('');
   }).catch(function(){});
 }
-function addRoom(){var num=document.getElementById('new-room-num').value.trim();var floor=document.getElementById('new-room-floor').value||1;if(!num){alert('Enter a room number!');return;}authFetch('/rooms',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hotel.hotel_id,room_number:num,floor:parseInt(floor),is_active:true})}).then(function(){document.getElementById('new-room-num').value='';document.getElementById('new-room-floor').value='';loadRooms();loadOverview();});}
+function addRoom(){
+  var num=document.getElementById('new-room-num').value.trim();
+  var floor=document.getElementById('new-room-floor').value||1;
+  var msg=document.getElementById('bulk-msg');
+  if(!num){alert('Enter a room number!');return;}
+  authFetch('/rooms',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({hotel_id:hotel.hotel_id,room_number:num,floor:parseInt(floor),is_active:true})
+  }).then(function(r){return r.json();}).then(function(data){
+    if(data.error){msg.textContent='❌ '+data.error;msg.className='msg-box msg-error';return;}
+    document.getElementById('new-room-num').value='';
+    document.getElementById('new-room-floor').value='';
+    msg.textContent='✅ Room '+num+' added!';msg.className='msg-box msg-success';
+    setTimeout(function(){msg.className='msg-box';},3000);
+    loadRooms();loadOverview();
+  }).catch(function(e){msg.textContent='❌ Failed: '+e.message;msg.className='msg-box msg-error';});
+}
 function addBulkRooms(){var startVal=document.getElementById('bulk-room-start').value.trim();var endVal=document.getElementById('bulk-room-end').value.trim();var floor=parseInt(document.getElementById('bulk-room-floor').value)||1;var msg=document.getElementById('bulk-msg');if(!startVal||!endVal){msg.textContent='Please enter both start and end room numbers.';msg.className='msg-box msg-error';return;}var start=parseInt(startVal);var end=parseInt(endVal);if(isNaN(start)||isNaN(end)){msg.textContent='Please enter numeric room numbers.';msg.className='msg-box msg-error';return;}if(start>end){msg.textContent='Start must be less than end.';msg.className='msg-box msg-error';return;}if(end-start>99){msg.textContent='Maximum 100 rooms at a time.';msg.className='msg-box msg-error';return;}var total=end-start+1;msg.textContent='⏳ Adding '+total+' rooms...';msg.className='msg-box msg-success';var rooms=[];for(var i=start;i<=end;i++)rooms.push({hotel_id:hotel.hotel_id,room_number:String(i),floor:floor,is_active:true});var added=0,errors=0;function addNext(index){if(index>=rooms.length){msg.textContent='✅ '+added+' rooms added'+(errors>0?' ('+errors+' skipped)':'')+' !';loadRooms();loadOverview();return;}authFetch('/rooms',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(rooms[index])}).then(function(r){return r.json();}).then(function(d){if(d.error)errors++;else added++;addNext(index+1);}).catch(function(){errors++;addNext(index+1);});}addNext(0);}
 function deleteRoom(id){if(!confirm('Delete this room?'))return;authFetch('/rooms/'+id,{method:'DELETE'}).then(function(){loadRooms();loadOverview();});}
 
@@ -1041,7 +1056,28 @@ function saveSettings(){
 }
 
 // ── QR ──
-function showQR(hotelId,roomId,roomNum){currentQRRoom='Room-'+roomNum;document.getElementById('qr-title').textContent='Room '+roomNum;document.getElementById('qr-sub').textContent=hotel.name;var output=document.getElementById('qr-output');output.innerHTML='';new QRCode(output,{text:LIVE_URL+'/guest.html?hotel_id='+hotelId+'&room_id='+roomId,width:180,height:180,colorDark:hotel.colour||'#005f73',colorLight:'#ffffff'});document.getElementById('qr-modal').classList.add('open');}
+function showQR(hotelId,roomId,roomNum){
+  currentQRRoom='Room-'+roomNum;
+  var titleEl=document.getElementById('qr-title');
+  var subEl=document.getElementById('qr-sub');
+  var output=document.getElementById('qr-output');
+  var modal=document.getElementById('qr-modal');
+  if(!titleEl||!output||!modal){alert('QR modal not found. Please refresh page.');return;}
+  titleEl.textContent='Room '+roomNum;
+  if(subEl) subEl.textContent=hotel?hotel.name:'';
+  output.innerHTML='';
+  try {
+    new QRCode(output,{
+      text:LIVE_URL+'/guest.html?hotel_id='+hotelId+'&room_id='+roomId+'&room='+encodeURIComponent(roomNum),
+      width:180,height:180,
+      colorDark:hotel&&hotel.colour?hotel.colour:'#005f73',
+      colorLight:'#ffffff'
+    });
+    modal.classList.add('open');
+  } catch(e) {
+    alert('QR generation failed: '+e.message+'. Try refreshing the page.');
+  }
+}
 function downloadQR(){var canvas=document.querySelector('#qr-output canvas');if(!canvas)return;var link=document.createElement('a');link.download='welco-'+currentQRRoom+'.png';link.href=canvas.toDataURL();link.click();}
 
 // ── HOD ──
@@ -1053,16 +1089,16 @@ function loadHOD(){
     var deptColors={'Housekeeping':'#4361EE','Room Service':'#F77F00','Maintenance':'#E63946','Front Desk':'#9B5DE5'};
     var deptEmojis={'Housekeeping':'🛏️','Room Service':'🍽️','Maintenance':'🔧','Front Desk':'🛎️'};
     var ALL_PERMS = [
-      {key:'checkins', label:'🛎️ Pre Check-ins', dept:'Front Desk'},
-      {key:'room_status', label:'🏨 Room Status Board', dept:'any'},
+      {key:'checkins',              label:'🛎️ Pre Check-ins',         dept:'Front Desk'},
+      {key:'room_status',           label:'🏨 Room Status Board',      dept:'any'},
       {key:'housekeeping_checklist',label:'🧹 Housekeeping Checklist', dept:'Housekeeping'},
-      {key:'staff', label:'👷 Staff Management', dept:'any'},
-      {key:'analytics', label:'📊 Analytics', dept:'any'},
-      {key:'announcements', label:'📢 Announcements', dept:'any'},
-      {key:'schedule', label:'🔧 Scheduling', dept:'any'},
-      {key:'guest_options', label:'🎯 Guest Options', dept:'any'},
-      {key:'service_hours', label:'🕐 Service Hours', dept:'any'},
-      {key:'ai_kb', label:'✨ AI Knowledge Base', dept:'any'}
+      {key:'staff',                 label:'👷 Staff Management',       dept:'any'},
+      {key:'analytics',             label:'📊 Analytics',              dept:'any'},
+      {key:'announcements',         label:'📢 Announcements',          dept:'any'},
+      {key:'schedule',              label:'🔧 Scheduling',             dept:'any'},
+      {key:'guest_options',         label:'🎯 Guest Options',          dept:'any'},
+      {key:'service_hours',         label:'🕐 Service Hours',          dept:'any'},
+      {key:'ai_kb',                 label:'✨ AI Knowledge Base',      dept:'any'}
     ];
     el.innerHTML=list.map(function(h){
       var color=deptColors[h.department]||'#005f73';var perms=h.permissions||{};
@@ -1073,7 +1109,29 @@ function loadHOD(){
   }).catch(function(){});
 }
 function toggleHodPerm(checkbox){var hodId=checkbox.getAttribute('data-hod-id');var permKey=checkbox.getAttribute('data-perm');var isOn=checkbox.checked;fetch('/hod?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(list){var hod=list.find(function(h){return String(h.id)===String(hodId);});if(!hod)return;var perms=hod.permissions||{};perms[permKey]=isOn;return authFetch('/hod/'+hodId+'/permissions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({permissions:perms})});}).then(function(r){if(r&&r.ok)loadHOD();}).catch(function(){alert('Failed to update permission.');loadHOD();});}
-function addHOD(){var name=document.getElementById('new-hod-name').value.trim();var dept=document.getElementById('new-hod-dept').value;var pin=document.getElementById('new-hod-pin').value.trim();if(!name||pin.length!==4){alert('Enter full name and exactly 4-digit PIN');return;}authFetch('/hod',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hotel.hotel_id,name:name,department:dept,pin:pin})}).then(function(r){return r.json();}).then(function(data){if(data.error){alert(data.error);return;}document.getElementById('new-hod-name').value='';document.getElementById('new-hod-pin').value='';var msg=document.getElementById('hod-msg');msg.textContent='✅ '+name+' added as HOD for '+dept+'!';msg.className='msg-box msg-success';setTimeout(function(){msg.className='msg-box';},5000);loadHOD();});}
+function addHOD(){
+  var name=document.getElementById('new-hod-name').value.trim();
+  var dept=document.getElementById('new-hod-dept').value;
+  var pin=document.getElementById('new-hod-pin').value.trim();
+  var msg=document.getElementById('hod-msg');
+  if(!name){msg.textContent='❌ Please enter HOD full name.';msg.className='msg-box msg-error';return;}
+  if(!/^\d{4}$/.test(pin)){msg.textContent='❌ PIN must be exactly 4 digits (numbers only).';msg.className='msg-box msg-error';return;}
+  msg.textContent='⏳ Adding HOD...';msg.className='msg-box msg-success';
+  authFetch('/hod',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({hotel_id:hotel.hotel_id,name:name,department:dept,pin:pin})
+  }).then(function(r){return r.json();}).then(function(data){
+    if(data.error){msg.textContent='❌ '+data.error;msg.className='msg-box msg-error';return;}
+    document.getElementById('new-hod-name').value='';
+    document.getElementById('new-hod-pin').value='';
+    msg.textContent='✅ '+name+' added as HOD for '+dept+'!';
+    msg.className='msg-box msg-success';
+    setTimeout(function(){msg.className='msg-box';},5000);
+    loadHOD();
+  }).catch(function(e){
+    msg.textContent='❌ Network error: '+e.message+'. Please try again.';
+    msg.className='msg-box msg-error';
+  });
+}
 function removeHOD(id){if(!confirm('Remove this HOD?'))return;authFetch('/hod/'+id,{method:'DELETE'}).then(function(){loadHOD();});}
 
 var adminDeptOptions={};

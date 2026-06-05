@@ -669,7 +669,20 @@ app.post('/auth/signup-complete', async (req, res) => {
     await supabase.from('rooms').insert(rooms);
 
     const token = signToken({ owner_id: owner.id, email: owner.email });
-    res.json({ success: true, owner, hotel, token });
+
+    // Format hotel to match what admin.html expects
+    const hotelForAdmin = {
+      hotel_id: hotel.id,
+      name: hotel.name,
+      city: hotel.city || '',
+      colour: hotel.colour || '#005f73',
+      emoji: hotel.emoji || '🏨',
+      hotel_code: hotel.hotel_code,
+      owner_id: owner.id,
+      owner_email: owner.email
+    };
+
+    res.json({ success: true, owner, hotel: hotelForAdmin, token });
   } catch(e) {
     console.error('signup-complete error:', e.message);
     res.status(500).json({ error: 'Server error. Please try again.' });

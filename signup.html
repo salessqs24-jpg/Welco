@@ -203,7 +203,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="success-icon">🎉</div>
     <h2 class="success-title">Welcome to Welco!</h2>
     <p class="success-sub">Your 1-month free trial has started.<br>Setup your hotel in the next screen.</p>
-    <a href="/admin.html" class="btn-go" id="go-admin">Open Admin Portal →</a>
+    <a href="/admin.html" class="btn-go" id="go-admin">Open My Admin Portal →</a>
   </div>
 
 </div>
@@ -388,13 +388,17 @@ function doSignup() {
   }).then(function(r){ return r.json(); }).then(function(data) {
     btn.disabled = false; btn.textContent = 'Create Account & Start Trial →';
     if (data.error) { showAlert(3, data.error, 'error'); return; }
-    // Save token
-    localStorage.setItem('welco_owner_token', data.token);
-    localStorage.setItem('welco_owner', JSON.stringify(data.owner));
-    // Show success
+    // Save with correct keys that admin.html expects
+    localStorage.setItem('welco_token', data.token);
+    localStorage.setItem('welco_admin_hotel', JSON.stringify(data.hotel));
+    localStorage.setItem('welco_admin_hotels', JSON.stringify([data.hotel]));
+    // Show success — redirect to admin after 2 seconds
     document.querySelector('.steps-row').style.display = 'none';
     document.querySelector('#panel3').style.display = 'none';
     document.getElementById('success-screen').style.display = 'block';
+    setTimeout(function() {
+      window.location.href = '/admin.html';
+    }, 2500);
   }).catch(function() {
     btn.disabled = false; btn.textContent = 'Create Account & Start Trial →';
     showAlert(3, 'Something went wrong. Please try again.', 'error');

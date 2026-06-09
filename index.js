@@ -920,10 +920,29 @@ app.delete('/hod/:id', verifyToken, async (req,res) => {
 app.post('/hod/verify', async (req,res) => {
   const hotel_code=sanitize(req.body.hotel_code||''), name=sanitize(req.body.name||''), pin=sanitize(req.body.pin||'');
   if (!hotel_code) return res.status(400).json({ error:'Hotel code required.' });
-  const { data:hotel } = await supabase.from('hotels').select('*').eq('hotel_code',hotel_code.toUpperCase()).maybeSingle();
-  if (!hotel) return res.status(401).json({ error:'Invalid hotel code.' });
-  const { data:hod } = await supabase.from('hod').select('*').eq('hotel_id',hotel.hotel_id).eq('name',name).eq('pin',pin).eq('is_active',true).maybeSingle();
-  if (!hod) return res.status(401).json({ error:'Invalid name or PIN.' });
+  if (!name) return res.status(400).json({ error:'Name required.' });
+  if (!pin) return res.status(400).json({ error:'PIN required.' });
+
+  // Find hotel by code (case insensitive)
+  const { data:hotel } = await supabase.from('hotels').select('*').ilike('hotel_code', hotel_code.trim()).maybeSingle();
+  if (!hotel) return res.status(401).json({ error:'Invalid hotel code. Check with your admin.' });
+
+  // Find HOD - case insensitive name match
+  const { data:hods } = await supabase.from('hod').select('*').eq('hotel_id', hotel.hotel_id).eq('is_active', true);
+  if (!hods || hods.length === 0) return res.status(401).json({ error:'No HODs found for this hotel.' });
+
+  // Match name case-insensitively and pin exactly
+  const hod = hods.find(function(h) {
+    return h.name.toLowerCase().trim() === name.toLowerCase().trim() && String(h.pin) === String(pin.trim());
+  });
+
+  if (!hod) {
+    // Give helpful error
+    const nameExists = hods.find(h => h.name.toLowerCase().trim() === name.toLowerCase().trim());
+    if (nameExists) return res.status(401).json({ error:'Incorrect PIN. Please check with your admin.' });
+    return res.status(401).json({ error:'Name not found. Enter your name exactly as set by admin.' });
+  }
+
   var token = signToken({ hod_id: hod.id, hotel_id: hotel.hotel_id, dept: hod.department });
   res.json({ success:true, hod:{ ...hod, hotel }, token });
 });

@@ -918,33 +918,51 @@ app.delete('/hod/:id', verifyToken, async (req,res) => {
   res.json({ success:true });
 });
 app.post('/hod/verify', async (req,res) => {
-  const hotel_code=sanitize(req.body.hotel_code||''), name=sanitize(req.body.name||''), pin=sanitize(req.body.pin||'');
-  if (!hotel_code) return res.status(400).json({ error:'Hotel code required.' });
-  if (!name) return res.status(400).json({ error:'Name required.' });
-  if (!pin) return res.status(400).json({ error:'PIN required.' });
+  try {
+    const hotel_code = (req.body.hotel_code||'').trim().toUpperCase();
+    const name = (req.body.name||'').trim();
+    const pin = (req.body.pin||'').trim();
 
-  // Find hotel by code (case insensitive)
-  const { data:hotel } = await supabase.from('hotels').select('*').ilike('hotel_code', hotel_code.trim()).maybeSingle();
-  if (!hotel) return res.status(401).json({ error:'Invalid hotel code. Check with your admin.' });
+    if (!hotel_code) return res.status(400).json({ error:'Hotel code required.' });
+    if (!name) return res.status(400).json({ error:'Name required.' });
+    if (!pin) return res.status(400).json({ error:'PIN required.' });
 
-  // Find HOD - case insensitive name match
-  const { data:hods } = await supabase.from('hod').select('*').eq('hotel_id', hotel.hotel_id).eq('is_active', true);
-  if (!hods || hods.length === 0) return res.status(401).json({ error:'No HODs found for this hotel.' });
+    // Find hotel - try exact match first, then case-insensitive
+    let hotel = null;
+    const { data:h1 } = await supabase.from('hotels').select('*').eq('hotel_code', hotel_code).maybeSingle();
+    if (h1) {
+      hotel = h1;
+    } else {
+      // Try all hotels and match in JS
+      const { data:allHotels } = await supabase.from('hotels').select('*');
+      if (allHotels) {
+        hotel = allHotels.find(h => (h.hotel_code||'').toUpperCase() === hotel_code);
+      }
+    }
+    if (!hotel) return res.status(401).json({ error:'Hotel code not found. Check the code from your admin.' });
 
-  // Match name case-insensitively and pin exactly
-  const hod = hods.find(function(h) {
-    return h.name.toLowerCase().trim() === name.toLowerCase().trim() && String(h.pin) === String(pin.trim());
-  });
+    // Get all HODs for this hotel
+    const { data:hods } = await supabase.from('hod').select('*').eq('hotel_id', hotel.hotel_id);
+    if (!hods || hods.length === 0) return res.status(401).json({ error:'No HODs set up for this hotel yet.' });
 
-  if (!hod) {
-    // Give helpful error
-    const nameExists = hods.find(h => h.name.toLowerCase().trim() === name.toLowerCase().trim());
-    if (nameExists) return res.status(401).json({ error:'Incorrect PIN. Please check with your admin.' });
-    return res.status(401).json({ error:'Name not found. Enter your name exactly as set by admin.' });
+    // Case-insensitive name + pin match
+    const hod = hods.find(h =>
+      (h.name||'').toLowerCase().trim() === name.toLowerCase() &&
+      String(h.pin).trim() === String(pin)
+    );
+
+    if (!hod) {
+      const nameMatch = hods.find(h => (h.name||'').toLowerCase().trim() === name.toLowerCase());
+      if (nameMatch) return res.status(401).json({ error:'Wrong PIN. Please check with your admin.' });
+      return res.status(401).json({ error:'Name not found. Enter name exactly as set by admin (e.g. deepak rathore).' });
+    }
+
+    const token = signToken({ hod_id: hod.id, hotel_id: hotel.hotel_id, dept: hod.department });
+    res.json({ success:true, hod:{ ...hod, hotel }, token });
+  } catch(e) {
+    console.error('HOD verify error:', e.message);
+    res.status(500).json({ error:'Server error. Please try again.' });
   }
-
-  var token = signToken({ hod_id: hod.id, hotel_id: hotel.hotel_id, dept: hod.department });
-  res.json({ success:true, hod:{ ...hod, hotel }, token });
 });
 
 // REQUESTS

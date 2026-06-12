@@ -917,6 +917,51 @@ app.delete('/hod/:id', verifyToken, async (req,res) => {
   if (error) return res.status(500).json({ error:error.message });
   res.json({ success:true });
 });
+// TEMPORARY DEBUG ROUTE - visit in browser: /hod/debug?code=CIT420
+app.get('/hod/debug', async (req,res) => {
+  try {
+    const hotel_code = (req.query.code||'').trim().toUpperCase();
+    const { data:allHotels } = await supabase.from('hotels').select('*');
+    const { data:allHods } = await supabase.from('hod').select('*');
+
+    const matchingHotels = (allHotels||[]).filter(h => (h.hotel_code||'').toUpperCase() === hotel_code);
+    const matchingHotelIds = matchingHotels.map(h => h.hotel_id || h.id);
+    const matchingHods = (allHods||[]).filter(h => matchingHotelIds.includes(h.hotel_id));
+
+    let html = '<html><body style="font-family:monospace;padding:20px;background:#0d1b1e;color:#0a9396">';
+    html += '<h2 style="color:white">Debug: Hotel Code = ' + hotel_code + '</h2>';
+    html += '<h3 style="color:white">Matching Hotels (' + matchingHotels.length + '):</h3>';
+    matchingHotels.forEach(h => {
+      html += '<div style="background:#1a2332;padding:12px;margin:8px 0;border-radius:8px;color:#eee">';
+      html += 'name: ' + h.name + '<br>';
+      html += 'hotel_id: <b style="color:#22c55e">' + h.hotel_id + '</b><br>';
+      html += 'id: ' + h.id + '<br>';
+      html += 'hotel_code: ' + h.hotel_code;
+      html += '</div>';
+    });
+    html += '<h3 style="color:white">HODs matching this hotel_id (' + matchingHods.length + '):</h3>';
+    matchingHods.forEach(h => {
+      html += '<div style="background:#1a2332;padding:12px;margin:8px 0;border-radius:8px;color:#eee">';
+      html += 'name: <b style="color:#22c55e">' + h.name + '</b><br>';
+      html += 'pin: <b style="color:#22c55e">' + h.pin + '</b><br>';
+      html += 'department: ' + h.department + '<br>';
+      html += 'hotel_id: ' + h.hotel_id + '<br>';
+      html += 'is_active: ' + h.is_active;
+      html += '</div>';
+    });
+    html += '<h3 style="color:white">ALL HODs in database (' + (allHods||[]).length + '):</h3>';
+    (allHods||[]).forEach(h => {
+      html += '<div style="background:#1a2332;padding:8px;margin:4px 0;border-radius:6px;font-size:12px;color:#aaa">';
+      html += h.name + ' | pin:' + h.pin + ' | dept:' + h.department + ' | hotel_id:' + h.hotel_id + ' | active:' + h.is_active;
+      html += '</div>';
+    });
+    html += '</body></html>';
+    res.send(html);
+  } catch(e) {
+    res.send('Error: ' + e.message);
+  }
+});
+
 app.post('/hod/verify', async (req,res) => {
   try {
     const hotel_code = (req.body.hotel_code||'').trim().toUpperCase();

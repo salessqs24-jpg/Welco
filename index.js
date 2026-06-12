@@ -925,8 +925,8 @@ app.get('/hod/debug', async (req,res) => {
     const { data:allHods } = await supabase.from('hod').select('*');
 
     const matchingHotels = (allHotels||[]).filter(h => (h.hotel_code||'').toUpperCase() === hotel_code);
-    const matchingHotelIds = matchingHotels.map(h => h.hotel_id || h.id);
-    const matchingHods = (allHods||[]).filter(h => matchingHotelIds.includes(h.hotel_id));
+    const matchingHotelIds = matchingHotels.map(h => String(h.hotel_id || h.id));
+    const matchingHods = (allHods||[]).filter(h => matchingHotelIds.includes(String(h.hotel_id)));
 
     let html = '<html><body style="font-family:monospace;padding:20px;background:#0d1b1e;color:#0a9396">';
     html += '<h2 style="color:white">Debug: Hotel Code = ' + hotel_code + '</h2>';
@@ -1002,10 +1002,11 @@ app.post('/hod/verify', async (req,res) => {
     if (matchingHotels.length === 0) return res.status(401).json({ error:'Hotel code not found. Check the code from your admin.' });
 
     // Search across ALL hotels with this code for a matching HOD
+    // Use STRING comparison since hotel_id may be stored as number (28) or text ("28") or text ("hotel_xxx_1234")
     let foundHod = null, foundHotel = null, nameFoundAnywhere = false;
     for (const h of matchingHotels) {
-      const hidCandidates = [h.hotel_id, h.id].filter(Boolean);
-      const hodsForHotel = allHods.filter(x => hidCandidates.includes(x.hotel_id));
+      const hidCandidates = [h.hotel_id, h.id].filter(v => v !== null && v !== undefined).map(String);
+      const hodsForHotel = allHods.filter(x => hidCandidates.includes(String(x.hotel_id)));
       const nameMatch = hodsForHotel.find(x => (x.name||'').toLowerCase().trim() === name.toLowerCase());
       if (nameMatch) {
         nameFoundAnywhere = true;

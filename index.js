@@ -922,27 +922,45 @@ app.post('/hod/verify', async (req,res) => {
     const hotel_code = (req.body.hotel_code||'').trim().toUpperCase();
     const name = (req.body.name||'').trim();
     const pin = (req.body.pin||'').trim();
+    const debug = req.body.debug === true;
 
     if (!hotel_code) return res.status(400).json({ error:'Hotel code required.' });
     if (!name) return res.status(400).json({ error:'Name required.' });
     if (!pin) return res.status(400).json({ error:'PIN required.' });
 
-    // Get ALL hotels matching this code (handles duplicate hotel_codes from old signups)
-    const { data:allHotels } = await supabase.from('hotels').select('*');
-    if (!allHotels) return res.status(500).json({ error:'Could not load hotels.' });
+    // Get ALL hotels and ALL hods
+    const { data:allHotels, error:hErr } = await supabase.from('hotels').select('*');
+    const { data:allHods, error:hodErr } = await supabase.from('hod').select('*');
+
+    if (hErr || !allHotels) return res.status(500).json({ error:'Could not load hotels.', detail: hErr ? hErr.message : 'no data' });
+    if (hodErr || !allHods) return res.status(500).json({ error:'Could not load HODs.', detail: hodErr ? hodErr.message : 'no data' });
 
     const matchingHotels = allHotels.filter(h => (h.hotel_code||'').toUpperCase() === hotel_code);
-    if (matchingHotels.length === 0) return res.status(401).json({ error:'Hotel code not found. Check the code from your admin.' });
 
-    // Get ALL HODs once
-    const { data:allHods } = await supabase.from('hod').select('*');
-    if (!allHods) return res.status(500).json({ error:'Could not load HODs.' });
+    if (debug) {
+      // Return full diagnostic info — no login attempt
+      return res.json({
+        debug: true,
+        searched_code: hotel_code,
+        total_hotels: allHotels.length,
+        matching_hotels: matchingHotels.map(h => ({
+          id: h.id, hotel_id: h.hotel_id, hotel_code: h.hotel_code, name: h.name
+        })),
+        total_hods: allHods.length,
+        all_hods: allHods.map(h => ({
+          id: h.id, name: h.name, pin: h.pin, department: h.department,
+          hotel_id: h.hotel_id, is_active: h.is_active
+        }))
+      });
+    }
+
+    if (matchingHotels.length === 0) return res.status(401).json({ error:'Hotel code not found. Check the code from your admin.' });
 
     // Search across ALL hotels with this code for a matching HOD
     let foundHod = null, foundHotel = null, nameFoundAnywhere = false;
     for (const h of matchingHotels) {
-      const hid = h.hotel_id || h.id;
-      const hodsForHotel = allHods.filter(x => (x.hotel_id || x.id) === hid || x.hotel_id === hid);
+      const hidCandidates = [h.hotel_id, h.id].filter(Boolean);
+      const hodsForHotel = allHods.filter(x => hidCandidates.includes(x.hotel_id));
       const nameMatch = hodsForHotel.find(x => (x.name||'').toLowerCase().trim() === name.toLowerCase());
       if (nameMatch) {
         nameFoundAnywhere = true;
@@ -964,7 +982,7 @@ app.post('/hod/verify', async (req,res) => {
     res.json({ success:true, hod:{ ...foundHod, hotel: foundHotel }, token });
   } catch(e) {
     console.error('HOD verify error:', e.message);
-    res.status(500).json({ error:'Server error. Please try again.' });
+    res.status(500).json({ error:'Server error.', detail: e.message });
   }
 });
 

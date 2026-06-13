@@ -1024,6 +1024,7 @@ app.post('/hod/verify', async (req,res) => {
     }
 
     const hotelId = foundHotel.hotel_id || foundHotel.id;
+    foundHotel.hotel_id = hotelId; // normalize so client never receives null hotel_id
     const token = signToken({ hod_id: foundHod.id, hotel_id: hotelId, dept: foundHod.department });
     res.json({ success:true, hod:{ ...foundHod, hotel: foundHotel }, token });
   } catch(e) {

@@ -761,7 +761,9 @@ function attemptHodLogin(hotelCode, name, pin, btn, attempt) {
     btn.textContent = 'Login as HOD'; btn.disabled = false;
     if (!res.ok) { showErr(res.d.error || 'Invalid credentials.'); return; }
     var hotel = res.d.hod.hotel || {};
-    hodData = { hotel_id: hotel.hotel_id, hotel: hotel, name: name, dept: res.d.hod.department, permissions: res.d.hod.permissions || {} };
+    var hid = hotel.hotel_id || hotel.id; // CRITICAL: fallback to id if hotel_id is null
+    hotel.hotel_id = hid; // normalize so rest of app always sees a valid id
+    hodData = { hotel_id: hid, hotel: hotel, name: name, dept: res.d.hod.department, permissions: res.d.hod.permissions || {} };
     hodHotelData = hotel;
     localStorage.setItem('welco_hod', JSON.stringify(hodData));
     if (res.d.token) localStorage.setItem('welco_token', res.d.token);

@@ -860,6 +860,15 @@ function doLogout() { localStorage.removeItem('welco_admin_hotel'); localStorage
 // ── START APP ──
 function startApp() {
   try { var s=localStorage.getItem('welco_admin_hotels'); if(s) allHotels=JSON.parse(s); } catch(e){}
+  // CRITICAL: normalize hotel_id everywhere — some hotel rows have null hotel_id, only numeric id
+  if (hotel && !hotel.hotel_id && hotel.id) {
+    hotel.hotel_id = String(hotel.id);
+    localStorage.setItem('welco_admin_hotel', JSON.stringify(hotel));
+  }
+  if (Array.isArray(allHotels)) {
+    allHotels.forEach(function(h){ if (h && !h.hotel_id && h.id) h.hotel_id = String(h.id); });
+    localStorage.setItem('welco_admin_hotels', JSON.stringify(allHotels));
+  }
   // Reset body to clean bg (no demo image)
   document.body.style.backgroundImage='none';
   document.body.style.background='#f0f2f5';

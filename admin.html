@@ -623,21 +623,17 @@
         </div>
       </div>
 
-      <!-- SUBSCRIPTION -->
+      <!-- FREE PLAN -->
       <div class="card" style="border:2px solid #0a9396">
-        <div class="card-title">💳 Subscription & Billing</div>
-        <div class="card-sub">Manage your Welco plan</div>
-        <div style="background:#e8f4f4;border-radius:12px;padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <div class="card-title">🎁 Your Welco Plan</div>
+        <div class="card-sub">Welco is free for hotels</div>
+        <div style="background:#e8f4f4;border-radius:12px;padding:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
           <div style="font-size:32px">🏆</div>
           <div style="flex:1">
-            <div style="font-size:14px;font-weight:700;color:#005f73">Pro Plan — Active</div>
-            <div style="font-size:12px;color:#555;margin-top:3px">₹2,999/month · Renews on <span id="sub-renew-date">—</span></div>
+            <div style="font-size:14px;font-weight:700;color:#005f73">Free — All features included</div>
+            <div style="font-size:12px;color:#555;margin-top:3px">No subscription · No billing · No credit card</div>
           </div>
           <div style="background:#d1fae5;color:#065f46;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700">✅ Active</div>
-        </div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button onclick="openPaymentModal()" style="flex:1;padding:11px;background:#005f73;color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer">💳 Update Payment</button>
-          <button onclick="openCancelModal()" style="flex:1;padding:11px;background:#fff3cd;color:#8a6000;border:1px solid #ffd166;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer">⏸️ Cancel</button>
         </div>
       </div>
 
@@ -699,52 +695,6 @@
           </div>
         </div>
         <button onclick="submitAddHotel(this)" style="width:100%;padding:14px;background:#005f73;color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer">➕ Add Hotel to My Account</button>
-      </div>
-    </div>
-
-    <!-- PAYMENT MODAL -->
-    <div class="modal" id="payment-modal">
-      <div class="modal-box" style="max-width:400px;text-align:left;padding:28px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-          <div><div style="font-size:18px;font-weight:700;color:#0d1b1e">💳 Payment Details</div></div>
-          <span onclick="document.getElementById('payment-modal').classList.remove('open')" style="cursor:pointer;font-size:22px;color:#aaa">✕</span>
-        </div>
-        <div style="margin-bottom:12px">
-          <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px;font-weight:600">Cardholder Name</label>
-          <input type="text" id="pay-name" placeholder="Name on card" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none">
-        </div>
-        <div style="margin-bottom:12px">
-          <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px;font-weight:600">UPI ID or Card</label>
-          <input type="text" id="pay-upi" placeholder="yourname@upi or card number" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none">
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px">
-          <div>
-            <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px;font-weight:600">Plan</label>
-            <select id="pay-plan" style="width:100%;padding:11px 12px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:13px;outline:none;background:white">
-              <option value="pro_monthly" selected>🏆 Pro — ₹2,999/mo</option>
-              <option value="pro_annual">🏆 Pro — ₹2,399/mo (Annual)</option>
-            </select>
-          </div>
-          <div>
-            <label style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px;font-weight:600">Phone</label>
-            <input type="tel" id="pay-phone" placeholder="+91 9999999999" style="width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:10px;font-size:14px;outline:none">
-          </div>
-        </div>
-        <div id="pay-msg" style="display:none;margin-bottom:12px;padding:10px 14px;border-radius:8px;font-size:13px"></div>
-        <button onclick="submitPayment(this)" style="width:100%;padding:14px;background:linear-gradient(135deg,#005f73,#0a9396);color:white;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer">💳 Activate Subscription →</button>
-      </div>
-    </div>
-
-    <!-- CANCEL MODAL -->
-    <div class="modal" id="cancel-modal">
-      <div class="modal-box" style="max-width:340px;padding:28px">
-        <div style="font-size:48px;margin-bottom:16px">⏸️</div>
-        <div style="font-size:18px;font-weight:700;color:#0d1b1e;margin-bottom:8px">Cancel Subscription?</div>
-        <div style="font-size:14px;color:#666;margin-bottom:20px;line-height:1.6">Your hotel will remain active until the end of your billing period.</div>
-        <div style="display:flex;gap:10px">
-          <button onclick="document.getElementById('cancel-modal').classList.remove('open')" style="flex:1;padding:12px;background:#f0f0f0;color:#555;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer">Keep Plan</button>
-          <button onclick="confirmCancelSub(this)" style="flex:1;padding:12px;background:#ee9b00;color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer">Yes, Cancel</button>
-        </div>
       </div>
     </div>
 
@@ -1263,12 +1213,6 @@ function loadPhotos(){hotelPhotos=(hotel&&hotel.hotel_photos)?hotel.hotel_photos
 
 // ── BULK QR ──
 function downloadAllQRs(btn){if(!hotel)return;var msg=document.getElementById('bulk-qr-msg');btn.textContent='⏳ Generating...';btn.disabled=true;fetch('/rooms?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(rooms){if(!rooms||rooms.length===0){msg.textContent='⚠️ No rooms found.';msg.style.display='block';msg.style.background='#fff3cd';msg.style.color='#8a6000';btn.textContent='📥 Download All QRs';btn.disabled=false;return;}var container=document.createElement('div');container.style.cssText='position:fixed;left:-9999px;top:0;display:flex;flex-wrap:wrap;gap:0;background:white;padding:20px;width:794px;';document.body.appendChild(container);rooms.forEach(function(room){var cell=document.createElement('div');cell.style.cssText='width:180px;padding:12px;text-align:center;border:1px solid #eee;margin:4px;border-radius:8px;font-family:sans-serif;';cell.innerHTML='<div style="font-size:13px;font-weight:700;color:#005f73;margin-bottom:6px">Room '+room.room_number+'</div><div id="qr_room_'+room.id+'"></div><div style="font-size:10px;color:#aaa;margin-top:6px">'+(hotel.name||'Hotel')+'</div>';container.appendChild(cell);new QRCode(cell.querySelector('#qr_room_'+room.id),{text:LIVE_URL+'/guest.html?hotel_id='+hotel.hotel_id+'&room_id='+room.id+'&room='+room.room_number,width:150,height:150,colorDark:hotel.colour||'#005f73',colorLight:'#ffffff'});});setTimeout(function(){var printWindow=window.open('','_blank','width=900,height=700');printWindow.document.write('<html><head><title>Welco QR Codes — '+hotel.name+'</title><style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:sans-serif;background:white;padding:20px;}.grid{display:flex;flex-wrap:wrap;gap:8px;}.cell{width:170px;padding:12px;text-align:center;border:1px solid #ddd;border-radius:10px;}.room-label{font-size:14px;font-weight:700;color:#005f73;margin-bottom:6px;}.hotel-label{font-size:10px;color:#aaa;margin-top:6px;}@media print{.no-print{display:none;}}</style></head><body>');printWindow.document.write('<div style="margin-bottom:16px" class="no-print"><button onclick="window.print()" style="padding:10px 24px;background:#005f73;color:white;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer">🖨️ Print All QR Codes</button><button onclick="window.close()" style="margin-left:10px;padding:10px 20px;background:#eee;color:#555;border:none;border-radius:8px;font-size:14px;cursor:pointer">Close</button></div>');printWindow.document.write('<div class="grid">');rooms.forEach(function(room){var canvas=container.querySelectorAll('#qr_room_'+room.id+' canvas')[0];var imgData=canvas?canvas.toDataURL('image/png'):'';printWindow.document.write('<div class="cell"><div class="room-label">Room '+room.room_number+'</div><img src="'+imgData+'" width="140" height="140"><div class="hotel-label">'+(hotel.name||'')+'</div></div>');});printWindow.document.write('</div></body></html>');printWindow.document.close();document.body.removeChild(container);msg.textContent='✅ '+rooms.length+' QR codes ready!';msg.style.display='block';msg.style.background='#d1fae5';msg.style.color='#065f46';btn.textContent='📥 Download All QRs';btn.disabled=false;},1200);}).catch(function(){msg.textContent='❌ Failed. Try again.';msg.style.display='block';msg.style.background='#fde8ea';msg.style.color='#e63946';btn.textContent='📥 Download All QRs';btn.disabled=false;});}
-
-// ── SUBSCRIPTION ──
-function openPaymentModal(){var d=new Date();d.setMonth(d.getMonth()+1);var el=document.getElementById('sub-renew-date');if(el)el.textContent=d.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});document.getElementById('payment-modal').classList.add('open');}
-function openCancelModal(){document.getElementById('cancel-modal').classList.add('open');}
-function submitPayment(btn){var name=document.getElementById('pay-name').value.trim();var upi=document.getElementById('pay-upi').value.trim();var phone=document.getElementById('pay-phone').value.trim();var msg=document.getElementById('pay-msg');if(!name||!upi||!phone){msg.textContent='⚠️ Please fill all fields.';msg.style.display='block';msg.style.background='#fff3cd';msg.style.color='#8a6000';return;}btn.textContent='Processing…';btn.disabled=true;setTimeout(function(){msg.textContent='✅ Subscription activated!';msg.style.display='block';msg.style.background='#d1fae5';msg.style.color='#065f46';btn.textContent='💳 Activate Subscription →';btn.disabled=false;setTimeout(function(){document.getElementById('payment-modal').classList.remove('open');},2000);},1500);}
-function confirmCancelSub(btn){btn.textContent='Cancelling…';btn.disabled=true;setTimeout(function(){document.getElementById('cancel-modal').classList.remove('open');alert('✅ Subscription cancelled.');btn.textContent='Yes, Cancel';btn.disabled=false;},1000);}
 
 // ── DELETE HOTEL ──
 function openDeleteHotelModal(){document.getElementById('del-hotel-name').textContent=(hotel&&hotel.name)?hotel.name:'this hotel';document.getElementById('del-hotel-confirm').value='';document.getElementById('del-hotel-msg').style.display='none';document.getElementById('delete-hotel-modal').classList.add('open');}

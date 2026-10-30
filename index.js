@@ -424,7 +424,7 @@ app.get('/demo/reset', async (req,res) => {
 // OWNER SIGNUP
 
 // ════════════════════════════════════════════
-// AUTH — OTP + FINGERPRINT + TRIAL ABUSE PREVENTION
+// AUTH — OTP + FINGERPRINT
 // ════════════════════════════════════════════
 
 // In-memory OTP store (phone -> {otp, expires, attempts})
@@ -611,14 +611,8 @@ app.post('/auth/signup-complete', async (req, res) => {
     const { data: existingEmail } = await supabase.from('owners').select('id').eq('email', email.toLowerCase()).maybeSingle();
     if (existingEmail) return res.status(400).json({ error: 'This email is already registered.' });
 
-    if (fingerprint) {
-      const { data: existingFP } = await supabase.from('owners').select('id').eq('device_fingerprint', fingerprint).maybeSingle();
-      if (existingFP) return res.status(400).json({ error: 'A trial already exists from this device. Please contact support.' });
-    }
-
     // Create owner
     const hashed = await hashPassword(password);
-    const trialEnd = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(); // 30 days
 
     // Build owner object — only include columns that exist
     const ownerData = {
@@ -630,9 +624,7 @@ app.post('/auth/signup-complete', async (req, res) => {
     };
     // Try adding new columns — if they don't exist yet, signup still works
     try { ownerData.device_fingerprint = fingerprint || null; } catch(e) {}
-    try { ownerData.trial_used = true; } catch(e) {}
-    try { ownerData.trial_end = trialEnd; } catch(e) {}
-    try { ownerData.plan = 'trial'; } catch(e) {}
+    try { ownerData.plan = 'free'; } catch(e) {}
 
     const { data: owner, error: ownerErr } = await supabase
       .from('owners')
@@ -797,7 +789,9 @@ app.post('/signup', async (req,res) => {
 app.get('/hotels', async (req,res) => {
   const { data,error } = await supabase.from('hotels').select('*');
   if (error) return res.status(500).json({ error:error.message });
-  res.json(data);
+  // Normalize: never return a null hotel_id — fall back to numeric id
+  const normalized = (data || []).map(h => ({ ...h, hotel_id: h.hotel_id || String(h.id) }));
+  res.json(normalized);
 });
 app.post('/hotels/:hotel_id/dept-guest-options', verifyToken, async (req,res) => {
   const { dept_guest_options } = req.body;

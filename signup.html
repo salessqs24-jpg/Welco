@@ -127,9 +127,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
   <!-- STEP 1: PHONE -->
   <div class="step-panel active" id="panel1">
-    <div class="plan-badge">🌟 Starting 1-Month Free Trial</div>
+    <div class="plan-badge">🌟 100% Free for Hotels</div>
     <h2 class="panel-title">Enter your mobile number</h2>
-    <p class="panel-sub">We'll send a 6-digit OTP to verify your number. One trial per phone number.</p>
+    <p class="panel-sub">We'll send a 6-digit OTP to verify your number. </p>
     <div id="alert1" class="alert"></div>
     <div class="field">
       <label>Mobile Number</label>
@@ -141,8 +141,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       </div>
     </div>
     <div class="trial-info">
-      <div class="trial-info-title">✦ 1 Month Free — No Card Required</div>
-      <div class="trial-info-text">Full access to Basic plan for 30 days. No credit card needed. Cancel anytime.</div>
+      <div class="trial-info-title">✦ Free — No Card Required</div>
+      <div class="trial-info-text">Full access to every Welco feature. No credit card, no subscription, no hidden charges.</div>
     </div>
     <button class="btn-primary" onclick="sendOTP()">Send OTP →</button>
   </div>
@@ -175,7 +175,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <!-- Device fingerprint badge -->
     <div class="fp-badge">
       <span class="fp-icon">🔒</span>
-      <span class="fp-text">Phone verified ✓ &nbsp;·&nbsp; Device fingerprint recorded for security &nbsp;·&nbsp; Trial: 1 month</span>
+      <span class="fp-text">Phone verified ✓ &nbsp;·&nbsp; Device fingerprint recorded for security</span>
     </div>
 
     <div class="field">
@@ -194,7 +194,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <label>Password</label>
       <input type="password" id="password" placeholder="Min. 6 characters">
     </div>
-    <button class="btn-primary" onclick="doSignup()">Create Account & Start Trial →</button>
+    <button class="btn-primary" onclick="doSignup()">Create Free Account →</button>
     <p style="text-align:center;font-size:11px;color:rgba(255,255,255,0.25);margin-top:14px;line-height:1.6;">By signing up you agree to our Terms of Service.<br>Your data is secure and never shared.</p>
   </div>
 
@@ -202,7 +202,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div class="success-screen" id="success-screen">
     <div class="success-icon">🎉</div>
     <h2 class="success-title">Welcome to Welco!</h2>
-    <p class="success-sub">Your 1-month free trial has started.<br>Setup your hotel in the next screen.</p>
+    <p class="success-sub">Your free account is ready.<br>Setup your hotel in the next screen.</p>
     <a href="/admin.html" class="btn-go" id="go-admin">Open My Admin Portal →</a>
   </div>
 
@@ -386,7 +386,7 @@ function doSignup() {
       fingerprint: deviceFP
     })
   }).then(function(r){ return r.json(); }).then(function(data) {
-    btn.disabled = false; btn.textContent = 'Create Account & Start Trial →';
+    btn.disabled = false; btn.textContent = 'Create Free Account →';
     if (data.error) { showAlert(3, data.error, 'error'); return; }
     // Save with correct keys that admin.html expects
     localStorage.setItem('welco_token', data.token);
@@ -400,7 +400,7 @@ function doSignup() {
       window.location.href = '/admin.html';
     }, 2500);
   }).catch(function() {
-    btn.disabled = false; btn.textContent = 'Create Account & Start Trial →';
+    btn.disabled = false; btn.textContent = 'Create Free Account →';
     showAlert(3, 'Something went wrong. Please try again.', 'error');
   });
 }

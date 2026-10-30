@@ -1,4 +1,7 @@
-const CACHE_NAME = 'welco-v4';
+// OneSignal push handling lives inside this worker so it never conflicts with page caching
+importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js');
+
+const CACHE_NAME = 'welco-v5';
 
 const OFFLINE_ASSETS = [
   '/staff.html',
@@ -52,8 +55,9 @@ self.addEventListener('fetch', function(e) {
   if (!url.startsWith(self.location.origin) && !url.includes('cdn.jsdelivr') && !url.includes('fonts.googleapis')) return;
 
   // API calls — network only, return empty array if offline
-  var apiPaths = ['/requests', '/staff', '/hotels', '/rooms', '/announcements', '/hod', '/maintenance'];
-  var isApi = apiPaths.some(function(p) { return url.includes(p); });
+  var apiPaths = ['/requests', '/staff', '/hotels', '/rooms', '/announcements', '/hod', '/maintenance', '/push'];
+  var isHtml = url.includes('.html') || url.endsWith('/');
+  var isApi = !isHtml && apiPaths.some(function(p) { return url.includes(p); });
   if (isApi) {
     e.respondWith(
       fetch(e.request).catch(function() {
@@ -102,32 +106,6 @@ self.addEventListener('fetch', function(e) {
   );
 });
 
-// Push notification
-self.addEventListener('push', function(e) {
-  var data = { title: '🔔 New Request', body: 'A guest needs help!' };
-  try { data = e.data.json(); } catch(err) {}
-  e.waitUntil(
-    self.registration.showNotification(data.title, {
-      body: data.body,
-      icon: '/favicon.ico',
-      vibrate: [200, 100, 200],
-      tag: 'welco-request',
-      renotify: true
-    })
-  );
-});
-
-// Notification click
-self.addEventListener('notificationclick', function(e) {
-  e.notification.close();
-  e.waitUntil(
-    clients.matchAll({ type: 'window' }).then(function(list) {
-      for (var i = 0; i < list.length; i++) {
-        if (list[i].url.includes('staff.html') && 'focus' in list[i]) return list[i].focus();
-      }
-      if (clients.openWindow) return clients.openWindow('/staff.html');
-    })
-  );
-});
+// Push notifications and notification clicks are handled by the OneSignal script imported above.
 
 var OFFLINE_HTML = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Welco \u2014 Offline</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:sans-serif;min-height:100vh;background:linear-gradient(160deg,#005f73,#0a9396);display:flex;align-items:center;justify-content:center;color:white;text-align:center;padding:24px}.wrap{max-width:320px}.icon{font-size:64px;margin-bottom:20px}.title{font-size:26px;font-weight:700;margin-bottom:10px}.sub{font-size:14px;opacity:.75;line-height:1.7;margin-bottom:28px}.btn{padding:14px 32px;background:white;color:#005f73;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s}.btn:hover{opacity:.9}.note{font-size:12px;opacity:.55;margin-top:20px}</style></head><body><div class="wrap"><div class="icon">📶</div><h1 class="title">You\'re offline</h1><p class="sub">No internet connection. Please check your WiFi or mobile data and try again.</p><button class="btn" onclick="window.location.reload()">Try Again</button><p class="note">Welco \u00b7 Hotel Guest Services</p></div></body></html>';

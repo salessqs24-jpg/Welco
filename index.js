@@ -1070,11 +1070,74 @@ app.get('/requests', async (req,res) => {
   res.json(merged);
 });
 
+// ── PUSH NOTIFICATIONS (OneSignal) ──
+// Needs ONESIGNAL_REST_API_KEY in Render environment variables.
+const ONESIGNAL_APP_ID  = process.env.ONESIGNAL_APP_ID || '20e9e447-6ecd-488d-bdf2-c9c2e81bdee9';
+const ONESIGNAL_API_KEY = process.env.ONESIGNAL_REST_API_KEY || '';
+const PUBLIC_URL        = process.env.PUBLIC_URL || 'https://usewelco.in';
+
+async function oneSignalSend(externalIds, title, body) {
+  if (!ONESIGNAL_API_KEY) return { ok:false, error:'ONESIGNAL_REST_API_KEY is not set on the server.' };
+  if (!externalIds || !externalIds.length) return { ok:false, error:'No staff to notify.' };
+  try {
+    const r = await fetch('https://api.onesignal.com/notifications', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': (ONESIGNAL_API_KEY.startsWith('os_v2') ? 'Key ' : 'Basic ') + ONESIGNAL_API_KEY
+      },
+      body: JSON.stringify({
+        app_id: ONESIGNAL_APP_ID,
+        target_channel: 'push',
+        include_aliases: { external_id: externalIds.map(String) },
+        headings: { en: title },
+        contents: { en: body },
+        url: PUBLIC_URL + '/staff.html',
+        priority: 10,
+        ttl: 3600
+      })
+    });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok || (data.errors && data.errors.length)) {
+      console.error('OneSignal error:', r.status, JSON.stringify(data));
+      return { ok:false, status:r.status, data };
+    }
+    return { ok:true, status:r.status, data };
+  } catch (e) {
+    console.error('OneSignal request failed:', e.message);
+    return { ok:false, error:e.message };
+  }
+}
+
+// Alert on-duty staff of the matching department (or everyone on duty if that department has nobody on duty)
+async function notifyStaffOfRequest(hotel_id, category, room_number, message) {
+  try {
+    const { data: onDuty, error } = await supabase.from('staff').select('id, department')
+      .eq('hotel_id', String(hotel_id)).eq('is_on_duty', true).eq('is_active', true);
+    if (error || !onDuty || !onDuty.length) return;
+    const cat = String(category || '').toLowerCase();
+    let targets = onDuty.filter(s => String(s.department || '').toLowerCase() === cat);
+    if (!targets.length) targets = onDuty;
+    await oneSignalSend(
+      targets.map(s => s.id),
+      '🔔 New Request — Room ' + (room_number || '?'),
+      (category || 'General') + ': ' + (message || 'No details')
+    );
+  } catch (e) { console.error('notifyStaffOfRequest failed:', e.message); }
+}
+
+// Staff can send themselves a test notification to check their phone is set up
+app.post('/push/test', verifyToken, async (req,res) => {
+  const result = await oneSignalSend([req.user.staff_id], '🔔 Welco test', 'Notifications are working on this device!');
+  res.json(result);
+});
+
 app.post('/requests', async (req,res) => {
   const { hotel_id } = req.body, room_number=sanitize(req.body.room_number||''), category=sanitize(req.body.category||''), message=sanitize(req.body.message||''), sla_minutes=parseInt(req.body.sla_minutes)||15;
   const { data,error } = await supabase.from('requests').insert([{ hotel_id,room_number,category,message,status:'pending',sla_minutes }]).select().single();
   if (error) return res.status(500).json({ error:error.message });
   res.json(data);
+  notifyStaffOfRequest(hotel_id, category, room_number, message); // fire-and-forget, never blocks the guest
 });
 app.post('/requests/:id/claim', verifyToken, async (req,res) => {
   const claimed_by=sanitize(req.body.claimed_by||'');

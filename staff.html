@@ -24,7 +24,7 @@
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script>window.OneSignalDeferred = window.OneSignalDeferred || [];
     OneSignalDeferred.push(async function(OneSignal) {
-      await OneSignal.init({ appId: "20e9e447-6ecd-488d-bdf2-c9c2e81bdee9", notifyButton: { enable: false }, allowLocalhostAsSecureOrigin: true });
+      await OneSignal.init({ appId: "20e9e447-6ecd-488d-bdf2-c9c2e81bdee9", notifyButton: { enable: false }, allowLocalhostAsSecureOrigin: true, serviceWorkerPath: "sw.js", serviceWorkerParam: { scope: "/" } });
     });</script>
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
@@ -225,6 +225,7 @@
     </div>
     <div class="header-right">
       <span class="notif-badge" id="pending-count">0 pending</span>
+      <button class="logout-btn" onclick="sendTestPush()">🔔 Test</button>
       <button class="logout-btn" onclick="doLogout()">Logout</button>
     </div>
   </div>
@@ -328,6 +329,8 @@ window.addEventListener('load', function(){
           applyBranding(h);
         }).catch(function(){applyBranding({});});
         if (staffDepartment === 'Front Desk') document.getElementById('ft-chat').style.display = '';
+        linkPushUser();
+        OneSignalDeferred.push(async function(OS){ if(!OS.Notifications.permission) showNotifBar(false); });
         loadTasks();
         refreshInterval = setInterval(function(){ loadTasks(); checkUnreadChats(); }, 5000);
         return;
@@ -337,11 +340,24 @@ window.addEventListener('load', function(){
   if ('Notification' in window && Notification.permission==='default') document.getElementById('notif-prompt').style.display='block';
 });
 
-function enablePush(){ document.getElementById('notif-prompt').style.display='none'; OneSignalDeferred.push(async function(OS){ try{ await OS.Notifications.requestPermission(); showNotifBar(OS.Notifications.permission); }catch(e){} }); }
+function enablePush(){ document.getElementById('notif-prompt').style.display='none'; OneSignalDeferred.push(async function(OS){ try{ await OS.Notifications.requestPermission(); if(OS.Notifications.permission){ try{ await OS.User.PushSubscription.optIn(); }catch(e){} } linkPushUser(); showNotifBar(OS.Notifications.permission); }catch(e){} }); }
+// Tie this phone to the logged-in staff member so the server can alert them directly
+function linkPushUser(){ OneSignalDeferred.push(async function(OS){ try{ if(loggedInStaffDbId){ await OS.login(String(loggedInStaffDbId)); OS.User.addTags({ hotel_id:String(currentHotelId), department:staffDepartment||'General' }); } }catch(e){} }); }
+function sendTestPush(){
+  OneSignalDeferred.push(async function(OS){
+    if(!OS.Notifications.permission){ showNotifBar(false); alert('Notifications are not allowed yet. Tap the yellow bar to enable them.'); return; }
+    try{ await OS.User.PushSubscription.optIn(); }catch(e){}
+    linkPushUser();
+    authFetch('/push/test',{method:'POST'}).then(function(r){return r.json();}).then(function(d){
+      if(d.ok) alert('✅ Test sent. You should get a notification in a few seconds.');
+      else alert('⚠️ Could not send: '+(d.error||JSON.stringify(d.data||d)));
+    }).catch(function(){ alert('Connection error. Try again.'); });
+  });
+}
 function skipPush(){ document.getElementById('notif-prompt').style.display='none'; }
 function showNotifBar(granted){ var b=document.getElementById('notif-status-bar'); if(granted){ b.textContent='🔔 Push notifications ON!'; b.className='notif-status-bar granted'; b.style.display='block'; setTimeout(function(){b.style.display='none';},4000); } else{ b.textContent='🔕 Tap here to enable push notifications'; b.className='notif-status-bar'; b.style.display='block'; } }
 function playChime(){ try{ if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); [523,659,784].forEach(function(f,i){ var o=audioCtx.createOscillator(),g=audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination); o.type='sine'; o.frequency.value=f; var t=audioCtx.currentTime+i*0.15; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.35,t+0.05); g.gain.exponentialRampToValueAtTime(0.001,t+0.7); o.start(t); o.stop(t+0.7); }); }catch(e){} }
-function sendPush(title,body){ OneSignalDeferred.push(async function(OS){ try{ if(!OS.Notifications.permission)return; var r=await navigator.serviceWorker.ready; r.showNotification(title,{body:body,icon:'/favicon.ico',vibrate:[200,100,200],tag:'welco-req',renotify:true}); }catch(e){} }); }
+function sendPush(title,body){ OneSignalDeferred.push(async function(OS){ try{ if(!OS.Notifications.permission)return; if(OS.User.PushSubscription.optedIn)return; var r=await navigator.serviceWorker.ready; r.showNotification(title,{body:body,icon:'/favicon.ico',vibrate:[200,100,200],tag:'welco-req',renotify:true}); }catch(e){} }); }
 function addPin(n){ if(pin.length<4){pin+=n;updateDots();} }
 function deletePin(){ pin=pin.slice(0,-1);updateDots(); }
 function clearPin(){ pin='';updateDots(); }
@@ -379,6 +395,7 @@ function attemptLogin(sid,pinVal,btn,attempt){
     if (staffDepartment === 'Front Desk') document.getElementById('ft-chat').style.display = '';
     updateDutyUI();
     try{audioCtx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}
+    linkPushUser();
     OneSignalDeferred.push(async function(OS){if(!OS.Notifications.permission)showNotifBar(false);});
     loadTasks();
     refreshInterval = setInterval(function(){ loadTasks(); checkUnreadChats(); }, 5000);
@@ -415,7 +432,7 @@ function toggleDuty(){
   authFetch('/staff/'+loggedInStaffDbId+'/duty',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({is_on_duty:newStatus})})
   .then(function(r){return r.json();}).then(function(d){
     if(d.error){alert(d.error);return;}
-    isOnDuty=newStatus; updateDutyUI(); if(isOnDuty) showNotifBar(true);
+    isOnDuty=newStatus; updateDutyUI(); if(isOnDuty) OneSignalDeferred.push(function(OS){ showNotifBar(OS.Notifications.permission); });
     try { var saved=JSON.parse(localStorage.getItem('welco_staff_session')||'{}'); saved.is_on_duty=newStatus; saved.savedAt=Date.now(); localStorage.setItem('welco_staff_session',JSON.stringify(saved)); } catch(e) {}
   }).catch(function(){alert('Connection error. Try again.');});
 }
@@ -429,6 +446,7 @@ function authFetch(url, options) {
 
 function doLogout(){
   clearInterval(refreshInterval); clearInterval(chatWindowInterval);
+  OneSignalDeferred.push(async function(OS){ try{ await OS.logout(); }catch(e){} });
   localStorage.removeItem('welco_staff_session'); localStorage.removeItem('welco_token');
   document.getElementById('login-screen').style.display='flex';
   document.getElementById('dashboard-screen').style.display='none';

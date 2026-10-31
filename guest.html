@@ -11,19 +11,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --navy: #0a0f1e;
-      --navy2: #111827;
-      --navy3: #1a2235;
-      --gold: #c9a84c;
-      --gold2: #e8c97a;
-      --gold3: #f5e4b0;
-      --white: #ffffff;
-      --muted: rgba(255,255,255,0.45);
-      --glass: rgba(255,255,255,0.05);
+      --navy:   #0a0f1e;
+      --navy2:  #111827;
+      --navy3:  #1a2235;
+      --gold:   #c9a84c;
+      --gold2:  #e8c97a;
+      --gold3:  #f5e4b0;
+      --white:  #ffffff;
+      --muted:  rgba(255,255,255,0.45);
+      --glass:  rgba(255,255,255,0.05);
       --glass2: rgba(255,255,255,0.08);
       --border: rgba(201,168,76,0.2);
       --border2:rgba(201,168,76,0.4);
-      --brand: #0a0f1e;
+      --brand:  #0a0f1e;
       --radius: 16px;
       --shadow: 0 24px 60px rgba(0,0,0,0.5);
     }
@@ -87,7 +87,7 @@
     /* MSG */
     .msg-box { padding:12px 16px; border-radius:10px; font-size:13px; margin-bottom:14px; display:none; line-height:1.5; }
     .msg-success { background:rgba(46,204,113,0.08); border:1px solid rgba(46,204,113,0.28); color:#6ee7b7; display:block; }
-    .msg-error { background:rgba(230,57,70,0.08); border:1px solid rgba(230,57,70,0.28); color:#fca5a5; display:block; }
+    .msg-error   { background:rgba(230,57,70,0.08); border:1px solid rgba(230,57,70,0.28); color:#fca5a5; display:block; }
 
     /* BUTTONS */
     .btn-primary { width:100%; padding:15px; background:linear-gradient(135deg,var(--gold),#a87c2a); color:var(--navy); border:none; border-radius:12px; font-size:12px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; cursor:pointer; transition:opacity 0.2s,transform 0.1s; margin-top:8px; font-family:'Inter',sans-serif; }
@@ -570,28 +570,43 @@ function renderIdSlots(){
 function handleIdPhoto(event,idx,side){
   var file=event.target.files[0];if(!file)return;
   var reader=new FileReader();
-  reader.onload=function(e){
+  reader.onload=function(e){ compressImage(e.target.result,function(data){
     if(!adultIdData[idx])adultIdData[idx]={};
-    adultIdData[idx][side]=e.target.result;
+    adultIdData[idx][side]=data;
     var te=document.getElementById('ci-id-type-'+idx);if(te)adultIdData[idx].type=te.value;
     var boxId=(side==='front'?'front-box-':'back-box-')+idx;
     var imgId=(side==='front'?'front-img-':'back-img-')+idx;
     var box=document.getElementById(boxId);
     if(box){box.classList.add('done');box.querySelector('.upload-icon-el').textContent='✅';box.querySelector('.upload-status').textContent='Uploaded';}
     var img=document.getElementById(imgId);
-    if(img){img.src=e.target.result;img.style.display='block';}
-  };
+    if(img){img.src=data;img.style.display='block';}
+  }); };
   reader.readAsDataURL(file);
+}
+
+// Shrink phone photos (max 1600px, JPEG) so uploads are fast and never hit size limits
+function compressImage(dataUrl,cb){
+  var im=new Image();
+  im.onload=function(){
+    var max=1600,w=im.width,h=im.height;
+    if(w>max||h>max){var k=max/Math.max(w,h);w=Math.round(w*k);h=Math.round(h*k);}
+    var c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(im,0,0,w,h);
+    try{cb(c.toDataURL('image/jpeg',0.82));}catch(e){cb(dataUrl);}
+  };
+  im.onerror=function(){cb(dataUrl);};
+  im.src=dataUrl;
 }
 
 // ── UPLOAD TO SUPABASE STORAGE ──
 async function uploadToStorage(base64,filename){
-  try{
-    var res=await fetch('/upload',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({base64:base64,filename:filename,folder:'guest-ids'})});
-    var data=await res.json();
-    if(data.success&&data.url)return data.url;
-    return null;
-  }catch(e){return null;}
+  for(var attempt=0;attempt<2;attempt++){
+    try{
+      var res=await fetch('/upload',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({base64:base64,filename:filename,folder:'guest-ids'})});
+      var data=await res.json();
+      if(data.success&&data.url)return data.url;
+    }catch(e){}
+  }
+  return null;
 }
 
 // ── PRE CHECK-IN SUBMIT ──
@@ -627,7 +642,8 @@ async function submitPreCheckin(btn){
     var frontUrl=await uploadToStorage(d.front,slug+'_a'+(j+1)+'_front_'+ts);
     btn.textContent='⏳ Uploading Adult '+(j+1)+' back ID...';
     var backUrl=await uploadToStorage(d.back,slug+'_a'+(j+1)+'_back_'+ts);
-    idLines.push(' Adult '+(j+1)+': '+(d.type||'Not specified')+'\n Front: '+(frontUrl||'[uploaded]')+'\n Back: '+(backUrl||'[uploaded]'));
+    if(!frontUrl||!backUrl){msg.textContent='❌ Could not upload the ID photos for Adult '+(j+1)+'. Please check your connection and try again.';msg.className='msg-box msg-error';btn.textContent='Continue to Check-in ✦';btn.disabled=false;return;}
+    idLines.push('  Adult '+(j+1)+': '+(d.type||'Not specified')+'\n    Front: '+frontUrl+'\n    Back:  '+backUrl);
   }
 
   btn.textContent='⏳ Submitting...';
@@ -682,7 +698,7 @@ async function submitSpecialRequest(btn){
   if(upsellSelectedItems.length===0&&!text){alert('Please select an experience or write your special request.');return;}
   btn.textContent='⏳ Sending...';btn.disabled=true;
   var parts=['✨ SPECIAL REQUEST / PRE-ARRIVAL PREFERENCES','─────────────────────','👤 Guest: '+name,'📍 Room: '+(roomNumber||'Pre-Arrival'),''];
-  if(upsellSelectedItems.length>0){parts.push('🎯 Requested Experiences:');upsellSelectedItems.forEach(function(item){parts.push(' • '+item);});parts.push('');}
+  if(upsellSelectedItems.length>0){parts.push('🎯 Requested Experiences:');upsellSelectedItems.forEach(function(item){parts.push('  • '+item);});parts.push('');}
   if(text){parts.push('✍️ Special Request:');parts.push(text);}
   try{
     await fetch('/requests',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hotelId,room_number:roomNumber||'Pre-Arrival',category:'Front Desk',message:parts.join('\n'),status:'pending',sla_minutes:30})});

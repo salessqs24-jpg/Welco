@@ -904,11 +904,11 @@ function loadAll() {
 
 // ── CHECK-IN PARSING ──
 function parseCheckinMessage(msg) {
-  if (!msg) return { idProofs: [], name:'', mobile:'', email:'', checkin:'', checkout:'', guests:'', from:'', to:'' };
-  var lines = msg.split('\n');
-  var data = { idProofs: [] };
-  var inIdSection = false;
-  lines.forEach(function(line) {
+  var data = { idProofs: [], idDocs: [], name:'', mobile:'', email:'', checkin:'', checkout:'', guests:'', from:'', to:'' };
+  if (!msg) return data;
+  var inIdSection = false, lastDoc = null;
+  function urlOf(v) { v = (v || '').trim(); return /^https?:\/\//i.test(v) ? v : ''; }
+  msg.split('\n').forEach(function(line) {
     var clean = line.replace(/[📱👤📧📅👥🚌🪪🔢─✅]/g, '').trim();
     if (clean.startsWith('Name:')) data.name = clean.replace('Name:', '').trim();
     else if (clean.startsWith('Mobile:')) data.mobile = clean.replace('Mobile:', '').trim();
@@ -921,15 +921,16 @@ function parseCheckinMessage(msg) {
     // Old format (single ID)
     else if (clean.startsWith('ID Type:')) { data.idType = clean.replace('ID Type:', '').trim(); data.idProofs = [data.idType]; }
     else if (clean.startsWith('ID Number:')) data.idNumber = clean.replace('ID Number:', '').trim();
-    // New format (multiple IDs)
-    else if (clean.startsWith('ID Proofs submitted:')) inIdSection = true;
-    else if (inIdSection && clean.startsWith('Adult')) {
-      // e.g. "Adult 1: Aadhar Card (front & back uploaded)"
-      var match = clean.match(/Adult\s*\d+\s*:\s*([^(]+)/);
-      if (match) data.idProofs.push(match[1].trim());
+    // Current format: "ID Proofs:" then per adult "Adult 1: Type" with Front:/Back: photo links
+    else if (/^ID Proofs/i.test(clean)) inIdSection = true;
+    else if (inIdSection && /^Adult\s*\d+/i.test(clean)) {
+      var m = clean.match(/^Adult\s*\d+\s*:\s*([^(]+)/i);
+      lastDoc = { type: m ? m[1].trim() : 'ID', front: '', back: '' };
+      data.idDocs.push(lastDoc); data.idProofs.push(lastDoc.type);
     }
+    else if (inIdSection && lastDoc && /^Front\s*:/i.test(clean)) lastDoc.front = urlOf(clean.replace(/^Front\s*:/i, ''));
+    else if (inIdSection && lastDoc && /^Back\s*:/i.test(clean)) lastDoc.back = urlOf(clean.replace(/^Back\s*:/i, ''));
   });
-  // Set idType from first proof for backward compat
   if (!data.idType && data.idProofs.length > 0) data.idType = data.idProofs[0];
   return data;
 }
@@ -990,6 +991,15 @@ function renderCheckins() {
       } else {
         idProofHtml = '<div class="checkin-field"><div class="checkin-field-label">🪪 ID Type</div><div class="checkin-field-val">' + (g.idType || '—') + '</div></div>';
       }
+      var thumbs = '';
+      if (g.idDocs && g.idDocs.some(function(dc){ return dc.front || dc.back; })) {
+        thumbs = '<div style="margin-bottom:14px"><div class="checkin-field-label" style="margin-bottom:6px">🪪 ID Photos (tap to open)</div><div style="display:flex;gap:8px;flex-wrap:wrap">' +
+          g.idDocs.map(function(dc, di) {
+            return [dc.front, dc.back].map(function(u, k) {
+              return u ? '<a href="' + u + '" target="_blank" rel="noopener"><img src="' + u + '" alt="Adult ' + (di+1) + (k ? ' back' : ' front') + '" loading="lazy" style="height:72px;width:108px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb;background:#f3f4f6"></a>' : '';
+            }).join('');
+          }).join('') + '</div></div>';
+      }
       html += '<div class="checkin-card' + (isNew ? ' new' : '') + '">' +
         '<div class="checkin-header">' +
           '<div>' +
@@ -1008,6 +1018,7 @@ function renderCheckins() {
           idProofHtml +
           (g.email ? '<div class="checkin-field"><div class="checkin-field-label">📧 Email</div><div class="checkin-field-val">' + g.email + '</div></div>' : '') +
         '</div>' +
+        thumbs +
         '<div class="checkin-actions">' +
           '<button class="btn-print" onclick="doPrintCard(\'' + safeId + '\')">🖨️ Print ID Card</button>' +
           (!isDone ? '<button class="btn-mark-arrived" onclick="markArrived(\'' + safeId + '\')">✅ Mark as Arrived</button>' : '') +
@@ -1048,11 +1059,26 @@ function markArrived(requestId) {
 
 // ── PRINT GUEST ID CARD ──
 function printGuestCard(requestId, guest, roomNumber, createdAt) {
+  requestId = String(requestId == null ? '' : requestId);
   var hotelName = (hodData.hotel && hodData.hotel.name) ? hodData.hotel.name : 'Hotel';
   var hotelCity = (hodData.hotel && hodData.hotel.city) ? hodData.hotel.city : '';
   var hotelEmoji = (hodData.hotel && hodData.hotel.emoji) ? hodData.hotel.emoji : '🏨';
   var submitTime = new Date(createdAt).toLocaleString('en-IN', {day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit'});
   var printDate = new Date().toLocaleString('en-IN', {day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit'});
+
+  var idBlock = '';
+  if (guest.idDocs && guest.idDocs.length > 0) {
+    idBlock = guest.idDocs.map(function(dc, i) {
+      var imgs = (dc.front ? '<figure><img src="' + dc.front + '" alt="Front"><figcaption>Front</figcaption></figure>' : '') +
+                 (dc.back ? '<figure><img src="' + dc.back + '" alt="Back"><figcaption>Back</figcaption></figure>' : '');
+      return '<div class="id-doc"><div class="id-type">Adult ' + (i+1) + ': ' + dc.type + '</div>' +
+             (imgs ? '<div class="id-imgs">' + imgs + '</div>' : '<div class="id-missing">ID photos not available for this guest</div>') + '</div>';
+    }).join('');
+  } else if (guest.idProofs && guest.idProofs.length > 0) {
+    idBlock = guest.idProofs.map(function(p, i) { return '<div class="id-type" style="margin-bottom:4px">Adult ' + (i+1) + ': ' + p + '</div>'; }).join('');
+  } else {
+    idBlock = '<div class="id-type">' + (guest.idType || '—') + '</div>';
+  }
 
   var cardHTML = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Guest ID Card — ' + (guest.name||'Guest') + '</title>' +
   '<style>' +
@@ -1080,7 +1106,14 @@ function printGuestCard(requestId, guest, roomNumber, createdAt) {
   '.footer strong { color: #555; }' +
   '.staff-sign { border-top: 1px solid #ccc; width: 160px; padding-top: 6px; font-size: 11px; color: #aaa; text-align: center; margin-top: 20px; }' +
   '.no-print { margin-bottom: 20px; text-align: center; }' +
-  '@media print { .no-print { display: none; } body { padding: 0; } }' +
+  '.id-doc { margin-bottom:14px; page-break-inside:avoid; }' +
+  '.id-imgs { display:flex; gap:10px; margin-top:6px; }' +
+  '.id-imgs figure { flex:1; margin:0; }' +
+  '.id-imgs img { width:100%; max-height:270px; object-fit:contain; border:1px solid #ccc; border-radius:6px; background:#fafafa; }' +
+  '.id-imgs figcaption { font-size:10px; color:#888; text-align:center; margin-top:3px; }' +
+  '.id-missing { font-size:12px; color:#b45309; }' +
+  '@page { size:A4; margin:10mm; }' +
+  '@media print { .no-print { display: none; } body { padding: 0; } .card { max-width:none; } }' +
   '</style></head><body>' +
   '<div class="no-print">' +
   '<button onclick="window.print()" style="padding:12px 32px;background:#005f73;color:white;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin-right:10px">🖨️ Print Now</button>' +
@@ -1104,14 +1137,7 @@ function printGuestCard(requestId, guest, roomNumber, createdAt) {
         (guest.email ? '<div class="field" style="grid-column:1/-1"><div class="field-label">📧 Email</div><div class="field-val">' + guest.email + '</div></div>' : '') +
       '</div>' +
       '<div class="id-section">' +
-        '<div class="id-label">🪪 Identity Proofs Submitted</div>' +
-        (guest.idProofs && guest.idProofs.length > 0
-          ? guest.idProofs.map(function(p, i) {
-              return '<div class="id-type" style="margin-bottom:4px">Adult ' + (i+1) + ': ' + p + '</div>';
-            }).join('')
-          : '<div class="id-type">' + (guest.idType || '—') + '</div>'
-        ) +
-        '<div style="font-size:11px;color:#aaa;margin-top:6px">Front & back photos submitted by guest</div>' +
+        '<div class="id-label">🪪 Identity Proofs Submitted</div>' + idBlock +
       '</div>' +
       '<hr class="divider">' +
       '<div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px">' +
@@ -1131,6 +1157,7 @@ function printGuestCard(requestId, guest, roomNumber, createdAt) {
   '</body></html>';
 
   var printWindow = window.open('', '_blank', 'width=780,height=650');
+  if (!printWindow) { alert('Your browser blocked the print window. Allow pop-ups for this site (icon in the address bar) and tap Print ID Card again.'); return; }
   printWindow.document.write(cardHTML);
   printWindow.document.close();
 }

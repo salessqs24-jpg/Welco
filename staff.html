@@ -324,7 +324,7 @@ window.addEventListener('load', function(){
         document.getElementById('dashboard-screen').style.display = 'block';
         document.getElementById('dash-staff').textContent = '👋 ' + s.name + (s.department ? ' · ' + s.department : '');
         updateDutyUI();
-        fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
+        fetch('/hotels?hotel_id='+encodeURIComponent(currentHotelId)).then(function(r){return r.json();}).then(function(hotels){
           var h = hotels.find(function(x){return x.hotel_id===currentHotelId;})||{};
           applyBranding(h);
         }).catch(function(){applyBranding({});});
@@ -384,7 +384,7 @@ function attemptLogin(sid,pinVal,btn,attempt){
     currentHotelId=s.hotel_id; loggedInStaff=s.name; loggedInStaffDbId=s.id; isOnDuty=!!s.is_on_duty; staffDepartment=s.department||'';
     localStorage.setItem('welco_staff_session', JSON.stringify({ hotel_id:s.hotel_id, name:s.name, id:s.id, is_on_duty:!!s.is_on_duty, department:s.department||'', staff_id:s.staff_id||'', savedAt:Date.now() }));
     if (res.d.token) localStorage.setItem('welco_token', res.d.token);
-    fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){
+    fetch('/hotels?hotel_id='+encodeURIComponent(currentHotelId)).then(function(r){return r.json();}).then(function(hotels){
       var h=hotels.find(function(x){return x.hotel_id===currentHotelId;})||{}; applyBranding(h);
     }).catch(function(){applyBranding({});});
     document.getElementById('login-error').style.display='none';
@@ -441,7 +441,16 @@ function authFetch(url, options) {
   options = options || {}; options.headers = options.headers || {};
   var token = localStorage.getItem('welco_token');
   if (token) options.headers['Authorization'] = 'Bearer ' + token;
-  return fetch(url, options);
+  return fetch(url, options).then(function(r){ if (r.status === 401 && token) sessionExpired(); return r; });
+}
+
+var _sessionExpiredShown = false;
+function sessionExpired() {
+  if (_sessionExpiredShown) return;
+  _sessionExpiredShown = true;
+  alert('Your session has expired. Please log in again.');
+  try { doLogout(); } catch(e) { location.reload(); }
+  setTimeout(function(){ _sessionExpiredShown = false; }, 4000);
 }
 
 function doLogout(){
@@ -493,7 +502,7 @@ async function checkUnreadChats(){
 }
 
 function loadTasks(){
-  fetch('/requests?hotel_id='+currentHotelId).then(function(r){return r.json();}).then(function(data){
+  authFetch('/requests?hotel_id='+currentHotelId).then(function(r){return r.json();}).then(function(data){
     if(!Array.isArray(data))return;
     var pending=data.filter(function(r){return r.status==='pending';}).length;
     var badge=document.getElementById('pending-count');
@@ -540,13 +549,13 @@ function markDone(id, msgEncoded) {
 }
 
 function showAISuggestion(requestMsg) {
-  fetch('/ai/suggest-response', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ request_message:requestMsg, staff_name:loggedInStaff, hotel_name:currentHotelId, department:'Hotel Staff' }) })
+  authFetch('/ai/suggest-response', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ request_message:requestMsg, staff_name:loggedInStaff, hotel_name:currentHotelId, department:'Hotel Staff' }) })
   .then(function(r){ return r.json(); }).then(function(data) {
     if (!data.suggestions || !data.suggestions.length) return;
     var toast = document.createElement('div');
     toast.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#0d1b1e;color:white;border-radius:16px;padding:16px 20px;z-index:999;width:90%;max-width:360px;box-shadow:0 8px 32px rgba(0,0,0,.3)';
     toast.innerHTML = '<div style="font-size:11px;color:#0a9396;font-weight:700;margin-bottom:8px;text-transform:uppercase;letter-spacing:.1em">✨ AI Suggested Reply</div>'
-      + data.suggestions.slice(0,2).map(function(s){ return '<div onclick="copyReply(\''+s.replace(/'/g,'\\\'')+'\')" style="background:rgba(255,255,255,.08);border-radius:8px;padding:8px 12px;margin-bottom:6px;font-size:13px;cursor:pointer">'+s+'</div>'; }).join('')
+      + data.suggestions.slice(0,2).map(function(s){ var safe=String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); return '<div onclick="copyReply(decodeURIComponent(\''+encodeURIComponent(s).replace(/'/g,'%27')+'\'))" style="background:rgba(255,255,255,.08);border-radius:8px;padding:8px 12px;margin-bottom:6px;font-size:13px;cursor:pointer">'+safe+'</div>'; }).join('')
       + '<button onclick="this.parentElement.remove()" style="width:100%;padding:8px;background:rgba(255,255,255,.1);color:white;border:none;border-radius:8px;margin-top:4px;cursor:pointer;font-size:12px">Dismiss</button>';
     document.body.appendChild(toast);
     setTimeout(function(){ if(toast.parentElement) toast.remove(); }, 8000);

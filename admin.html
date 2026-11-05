@@ -764,7 +764,16 @@ function authFetch(url, options) {
   options.headers = options.headers || {};
   var token = localStorage.getItem('welco_token');
   if (token) options.headers['Authorization'] = 'Bearer ' + token;
-  return fetch(url, options);
+  return fetch(url, options).then(function(r){ if (r.status === 401 && token) sessionExpired(); return r; });
+}
+
+var _sessionExpiredShown = false;
+function sessionExpired() {
+  if (_sessionExpiredShown) return;
+  _sessionExpiredShown = true;
+  alert('Your session has expired. Please log in again.');
+  try { doLogout(); } catch(e) { location.reload(); }
+  setTimeout(function(){ _sessionExpiredShown = false; }, 4000);
 }
 
 // ── LOGIN ──
@@ -911,8 +920,8 @@ function showTab(name) {
 // ── OVERVIEW ──
 function loadOverview() {
   Promise.all([
-    fetch('/rooms?hotel_id='+(hotel.hotel_id||hotel.id)).then(function(r){return r.json();}),
-    fetch('/requests?hotel_id='+hotel.hotel_id).then(function(r){return r.json();})
+    authFetch('/rooms?hotel_id='+(hotel.hotel_id||hotel.id)).then(function(r){return r.json();}),
+    authFetch('/requests?hotel_id='+hotel.hotel_id).then(function(r){return r.json();})
   ]).then(function(res){
     var rooms=res[0],reqs=res[1];
     document.getElementById('s-rooms').textContent=Array.isArray(rooms)?rooms.length:0;
@@ -928,7 +937,7 @@ function loadOverview() {
 
 // ── ROOMS ──
 function loadRooms() {
-  fetch('/rooms?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(rooms){
+  authFetch('/rooms?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(rooms){
     if(!Array.isArray(rooms))return;
     document.getElementById('rooms-count').textContent=rooms.length+' rooms total';
     document.getElementById('rooms-grid').innerHTML=rooms.length===0?'<div class="empty" style="grid-column:1/-1">No rooms yet</div>':rooms.map(function(r){return '<div class="room-card"><div class="room-num">Room '+r.room_number+'</div><div class="room-floor">Floor '+(r.floor||1)+'</div><div class="room-actions"><button class="btn-qr" onclick="showQR(\''+hotel.hotel_id+'\',\''+r.id+'\',\''+r.room_number+'\')">QR</button><button class="btn-del" onclick="deleteRoom('+r.id+')">✕</button></div></div>';}).join('');
@@ -994,9 +1003,11 @@ function loadFeedback() {
         var stars = '';
         for (var i = 1; i <= 5; i++) stars += i <= r.rating ? '⭐' : '☆';
         var time = new Date(r.created_at).toLocaleString('en-IN', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
-        var review = (r.review || '').trim();
-        var guestName = r.guest_name || 'Guest';
-        var roomNum = r.room_number || '?';
+        function safeTxt(v){ return String(v==null?'':v).replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+        var review = safeTxt((r.review || '').trim());
+        var guestName = safeTxt(r.guest_name || 'Guest');
+        var roomNum = safeTxt(r.room_number || '?');
+        var guestEmail = safeTxt(r.guest_email || '');
         var bgColor = r.rating >= 4 ? '#f0fdf4' : r.rating === 3 ? '#fffbeb' : '#fef2f2';
         var borderColor = r.rating >= 4 ? '#86efac' : r.rating === 3 ? '#fde68a' : '#fca5a5';
 
@@ -1005,14 +1016,14 @@ function loadFeedback() {
           (review ? '"' + review + '"\n\n' : '') +
           '— ' + guestName + (roomNum !== '?' ? ' · Room ' + roomNum : '') + ' · ' + time + '\n' +
           'Reviewed via Welco Guest Portal';
-        var enc = encodeURIComponent(copyText);
+        var enc = encodeURIComponent(copyText).replace(/'/g, '%27');
 
         return '<div style="background:' + bgColor + ';border:1.5px solid ' + borderColor + ';border-radius:14px;padding:18px;margin-bottom:14px">' +
           '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;flex-wrap:wrap;gap:8px">' +
             '<div>' +
               '<div style="font-size:22px;margin-bottom:4px">' + stars + '</div>' +
               '<div style="font-size:15px;font-weight:700;color:#0d1b1e">' + guestName + '</div>' +
-              '<div style="font-size:12px;color:#888;margin-top:2px">Room ' + roomNum + (r.guest_email ? ' · ' + r.guest_email : '') + '</div>' +
+              '<div style="font-size:12px;color:#888;margin-top:2px">Room ' + roomNum + (guestEmail ? ' · ' + guestEmail : '') + '</div>' +
             '</div>' +
             '<div style="text-align:right;font-size:11px;color:#aaa">' + time + '</div>' +
           '</div>' +
@@ -1048,7 +1059,7 @@ function copyReview(encoded, btn) {
 function setRptToday(){var t=new Date().toISOString().split('T')[0];document.getElementById('rpt-from').value=t;document.getElementById('rpt-to').value=t;}
 function setRptMonth(){var now=new Date();var first=new Date(now.getFullYear(),now.getMonth(),1).toISOString().split('T')[0];var last=new Date(now.getFullYear(),now.getMonth()+1,0).toISOString().split('T')[0];document.getElementById('rpt-from').value=first;document.getElementById('rpt-to').value=last;}
 function loadReports() {
-  fetch('/requests?hotel_id='+hotel.hotel_id+'&all=true').then(function(r){return r.json();}).then(function(reqs){
+  authFetch('/requests?hotel_id='+hotel.hotel_id+'&all=true').then(function(r){return r.json();}).then(function(reqs){
     if(!Array.isArray(reqs))return;
     var from=document.getElementById('rpt-from').value;var to=document.getElementById('rpt-to').value;
     var filtered=reqs;
@@ -1131,7 +1142,7 @@ function downloadQR(){var canvas=document.querySelector('#qr-output canvas');if(
 // ── HOD ──
 function copyHotelCode(){var code=document.getElementById('hod-hotel-code').textContent;if(!code||code==='...')return;navigator.clipboard.writeText(code).then(function(){var btn=document.getElementById('copy-code-btn');btn.textContent='✅ Copied!';setTimeout(function(){btn.textContent='📋 Copy Code';},2000);}).catch(function(){prompt('Copy:',code);});}
 function loadHOD(){
-  fetch('/hod?hotel_id='+(hotel.hotel_id||hotel.id)).then(function(r){return r.json();}).then(function(list){
+  authFetch('/hod?hotel_id='+(hotel.hotel_id||hotel.id)).then(function(r){return r.json();}).then(function(list){
     var el=document.getElementById('hod-list');
     if(!Array.isArray(list)||list.length===0){el.innerHTML='<div class="empty">No HODs added yet.</div>';return;}
     var deptColors={'Housekeeping':'#4361EE','Room Service':'#F77F00','Maintenance':'#E63946','Front Desk':'#9B5DE5'};
@@ -1156,7 +1167,7 @@ function loadHOD(){
     }).join('');
   }).catch(function(){});
 }
-function toggleHodPerm(checkbox){var hodId=checkbox.getAttribute('data-hod-id');var permKey=checkbox.getAttribute('data-perm');var isOn=checkbox.checked;fetch('/hod?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(list){var hod=list.find(function(h){return String(h.id)===String(hodId);});if(!hod)return;var perms=hod.permissions||{};perms[permKey]=isOn;return authFetch('/hod/'+hodId+'/permissions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({permissions:perms})});}).then(function(r){if(r&&r.ok)loadHOD();}).catch(function(){alert('Failed to update permission.');loadHOD();});}
+function toggleHodPerm(checkbox){var hodId=checkbox.getAttribute('data-hod-id');var permKey=checkbox.getAttribute('data-perm');var isOn=checkbox.checked;authFetch('/hod?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(list){var hod=list.find(function(h){return String(h.id)===String(hodId);});if(!hod)return;var perms=hod.permissions||{};perms[permKey]=isOn;return authFetch('/hod/'+hodId+'/permissions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({permissions:perms})});}).then(function(r){if(r&&r.ok)loadHOD();}).catch(function(){alert('Failed to update permission.');loadHOD();});}
 function addHOD(){
   var name=document.getElementById('new-hod-name').value.trim();
   var dept=document.getElementById('new-hod-dept').value;
@@ -1183,13 +1194,13 @@ function addHOD(){
 function removeHOD(id){if(!confirm('Remove this HOD?'))return;authFetch('/hod/'+id,{method:'DELETE'}).then(function(){loadHOD();});}
 
 var adminDeptOptions={};
-function loadAdminServiceControls(){fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){var h=hotels.find(function(x){return x.hotel_id===hotel.hotel_id;});adminDeptOptions=(h&&h.dept_guest_options)?h.dept_guest_options:{};var depts=[{key:'Housekeeping',emoji:'🛏️'},{key:'Room Service',emoji:'🍽️'},{key:'Maintenance',emoji:'🔧'},{key:'Front Desk',emoji:'🛎️'}];var el=document.getElementById('admin-service-controls');el.innerHTML=depts.map(function(d){var saved=adminDeptOptions[d.key]||{};var hours=saved.hours||{};var isOpen=hours.isOpen!==false;var openTime=hours.openTime||'07:00';var closeTime=hours.closeTime||'23:00';function fmt(t){if(!t)return'';var p=t.split(':');var hr=parseInt(p[0]),mn=parseInt(p[1]);var ampm=hr>=12?'PM':'AM';hr=hr%12||12;return hr+(mn>0?':'+String(mn).padStart(2,'0'):'')+' '+ampm;}return '<div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:'+(isOpen?'#f0fdf4':'#fff5f5')+';border-radius:12px;border:1.5px solid '+(isOpen?'#86efac':'#fca5a5')+';margin-bottom:10px"><div style="display:flex;align-items:center;gap:10px"><div style="font-size:22px">'+d.emoji+'</div><div><div style="font-size:14px;font-weight:700;color:#0d1b1e">'+d.key+'</div><div style="font-size:11px;color:#aaa;margin-top:2px">'+(isOpen?'🟢 Open':'🔴 Closed')+' · '+fmt(openTime)+' – '+fmt(closeTime)+'</div></div></div><button onclick="adminToggleService(\''+d.key+'\','+(!isOpen)+')" style="padding:8px 16px;background:'+(isOpen?'#fde8ea':'#d1fae5')+';color:'+(isOpen?'#e63946':'#065f46')+';border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">'+(isOpen?'🔴 Close Now':'🟢 Open Now')+'</button></div>';}).join('');}).catch(function(){document.getElementById('admin-service-controls').innerHTML='<div class="empty">Could not load</div>';});}
-function adminToggleService(dept,setOpen){if(!adminDeptOptions[dept])adminDeptOptions[dept]={};if(!adminDeptOptions[dept].hours)adminDeptOptions[dept].hours={openTime:'07:00',closeTime:'23:00',closedMsg:"We're currently closed."};adminDeptOptions[dept].hours.isOpen=setOpen;fetch('/hotels/'+hotel.hotel_id+'/dept-guest-options',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({dept_guest_options:adminDeptOptions})}).then(function(r){return r.json();}).then(function(){loadAdminServiceControls();}).catch(function(){alert('Failed. Try again.');});}
+function loadAdminServiceControls(){authFetch('/hotels?hotel_id='+encodeURIComponent(hotel.hotel_id)).then(function(r){return r.json();}).then(function(hotels){var h=hotels.find(function(x){return x.hotel_id===hotel.hotel_id;});adminDeptOptions=(h&&h.dept_guest_options)?h.dept_guest_options:{};var depts=[{key:'Housekeeping',emoji:'🛏️'},{key:'Room Service',emoji:'🍽️'},{key:'Maintenance',emoji:'🔧'},{key:'Front Desk',emoji:'🛎️'}];var el=document.getElementById('admin-service-controls');el.innerHTML=depts.map(function(d){var saved=adminDeptOptions[d.key]||{};var hours=saved.hours||{};var isOpen=hours.isOpen!==false;var openTime=hours.openTime||'07:00';var closeTime=hours.closeTime||'23:00';function fmt(t){if(!t)return'';var p=t.split(':');var hr=parseInt(p[0]),mn=parseInt(p[1]);var ampm=hr>=12?'PM':'AM';hr=hr%12||12;return hr+(mn>0?':'+String(mn).padStart(2,'0'):'')+' '+ampm;}return '<div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:'+(isOpen?'#f0fdf4':'#fff5f5')+';border-radius:12px;border:1.5px solid '+(isOpen?'#86efac':'#fca5a5')+';margin-bottom:10px"><div style="display:flex;align-items:center;gap:10px"><div style="font-size:22px">'+d.emoji+'</div><div><div style="font-size:14px;font-weight:700;color:#0d1b1e">'+d.key+'</div><div style="font-size:11px;color:#aaa;margin-top:2px">'+(isOpen?'🟢 Open':'🔴 Closed')+' · '+fmt(openTime)+' – '+fmt(closeTime)+'</div></div></div><button onclick="adminToggleService(\''+d.key+'\','+(!isOpen)+')" style="padding:8px 16px;background:'+(isOpen?'#fde8ea':'#d1fae5')+';color:'+(isOpen?'#e63946':'#065f46')+';border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">'+(isOpen?'🔴 Close Now':'🟢 Open Now')+'</button></div>';}).join('');}).catch(function(){document.getElementById('admin-service-controls').innerHTML='<div class="empty">Could not load</div>';});}
+function adminToggleService(dept,setOpen){if(!adminDeptOptions[dept])adminDeptOptions[dept]={};if(!adminDeptOptions[dept].hours)adminDeptOptions[dept].hours={openTime:'07:00',closeTime:'23:00',closedMsg:"We're currently closed."};adminDeptOptions[dept].hours.isOpen=setOpen;authFetch('/hotels/'+hotel.hotel_id+'/dept-guest-options',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({dept_guest_options:adminDeptOptions})}).then(function(r){return r.json();}).then(function(){loadAdminServiceControls();}).catch(function(){alert('Failed. Try again.');});}
 
 // ── ADD HOTEL MODAL ──
 function openAddHotelModal(){document.getElementById('ah-modal-name').value='';document.getElementById('ah-modal-city').value='';document.getElementById('ah-modal-rooms').value='';document.getElementById('ah-modal-colortext').value='#005f73';document.getElementById('ah-modal-colorpicker').value='#005f73';document.getElementById('add-hotel-msg').className='msg-box';document.getElementById('add-hotel-modal').classList.add('open');}
 function closeAddHotelModal(){document.getElementById('add-hotel-modal').classList.remove('open');}
-function submitAddHotel(btn){var name=document.getElementById('ah-modal-name').value.trim();var city=document.getElementById('ah-modal-city').value.trim();var rooms=parseInt(document.getElementById('ah-modal-rooms').value)||0;var colour=document.getElementById('ah-modal-colortext').value.trim()||'#005f73';var msg=document.getElementById('add-hotel-msg');if(!name){msg.textContent='Please enter a hotel name.';msg.className='msg-box msg-error';return;}btn.textContent='Adding...';btn.disabled=true;fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){var current=hotels.find(function(h){return h.hotel_id===hotel.hotel_id;});var owner_id=current?current.owner_id:null;if(!owner_id)throw new Error('Owner ID not found.');return authFetch('/owner/add-hotel',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({owner_id:owner_id,hotelName:name,city:city,roomCount:rooms,colour:colour,emoji:'🏨'})});}).then(function(r){return r.json();}).then(function(data){btn.textContent='➕ Add Hotel to My Account';btn.disabled=false;if(data.error){msg.textContent=data.error;msg.className='msg-box msg-error';return;}allHotels.push(data.hotel);localStorage.setItem('welco_admin_hotels',JSON.stringify(allHotels));msg.textContent='✅ '+name+' added! Switching now...';msg.className='msg-box msg-success';setTimeout(function(){closeAddHotelModal();hotel=data.hotel;localStorage.setItem('welco_admin_hotel',JSON.stringify(hotel));startApp();},1500);}).catch(function(e){btn.textContent='➕ Add Hotel to My Account';btn.disabled=false;msg.textContent=e.message||'Failed. Try again.';msg.className='msg-box msg-error';});}
+function submitAddHotel(btn){var name=document.getElementById('ah-modal-name').value.trim();var city=document.getElementById('ah-modal-city').value.trim();var rooms=parseInt(document.getElementById('ah-modal-rooms').value)||0;var colour=document.getElementById('ah-modal-colortext').value.trim()||'#005f73';var msg=document.getElementById('add-hotel-msg');if(!name){msg.textContent='Please enter a hotel name.';msg.className='msg-box msg-error';return;}btn.textContent='Adding...';btn.disabled=true;authFetch('/owner/add-hotel',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotelName:name,city:city,roomCount:rooms,colour:colour,emoji:'🏨'})}).then(function(r){return r.json();}).then(function(data){btn.textContent='➕ Add Hotel to My Account';btn.disabled=false;if(data.error){msg.textContent=data.error;msg.className='msg-box msg-error';return;}allHotels.push(data.hotel);localStorage.setItem('welco_admin_hotels',JSON.stringify(allHotels));msg.textContent='✅ '+name+' added! Switching now...';msg.className='msg-box msg-success';setTimeout(function(){closeAddHotelModal();hotel=data.hotel;localStorage.setItem('welco_admin_hotel',JSON.stringify(hotel));startApp();},1500);}).catch(function(e){btn.textContent='➕ Add Hotel to My Account';btn.disabled=false;msg.textContent=e.message||'Failed. Try again.';msg.className='msg-box msg-error';});}
 
 // ── FORGOT PASSWORD ──
 function showForgot(){document.getElementById('forgot-modal').style.display='flex';}
@@ -1212,7 +1223,7 @@ function removePhoto(i){hotelPhotos.splice(i,1);renderPhotoUrls();}
 function loadPhotos(){hotelPhotos=(hotel&&hotel.hotel_photos)?hotel.hotel_photos:[];renderPhotoUrls();}
 
 // ── BULK QR ──
-function downloadAllQRs(btn){if(!hotel)return;var msg=document.getElementById('bulk-qr-msg');btn.textContent='⏳ Generating...';btn.disabled=true;fetch('/rooms?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(rooms){if(!rooms||rooms.length===0){msg.textContent='⚠️ No rooms found.';msg.style.display='block';msg.style.background='#fff3cd';msg.style.color='#8a6000';btn.textContent='📥 Download All QRs';btn.disabled=false;return;}var container=document.createElement('div');container.style.cssText='position:fixed;left:-9999px;top:0;display:flex;flex-wrap:wrap;gap:0;background:white;padding:20px;width:794px;';document.body.appendChild(container);rooms.forEach(function(room){var cell=document.createElement('div');cell.style.cssText='width:180px;padding:12px;text-align:center;border:1px solid #eee;margin:4px;border-radius:8px;font-family:sans-serif;';cell.innerHTML='<div style="font-size:13px;font-weight:700;color:#005f73;margin-bottom:6px">Room '+room.room_number+'</div><div id="qr_room_'+room.id+'"></div><div style="font-size:10px;color:#aaa;margin-top:6px">'+(hotel.name||'Hotel')+'</div>';container.appendChild(cell);new QRCode(cell.querySelector('#qr_room_'+room.id),{text:LIVE_URL+'/guest.html?hotel_id='+hotel.hotel_id+'&room_id='+room.id+'&room='+room.room_number,width:150,height:150,colorDark:hotel.colour||'#005f73',colorLight:'#ffffff'});});setTimeout(function(){var printWindow=window.open('','_blank','width=900,height=700');printWindow.document.write('<html><head><title>Welco QR Codes — '+hotel.name+'</title><style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:sans-serif;background:white;padding:20px;}.grid{display:flex;flex-wrap:wrap;gap:8px;}.cell{width:170px;padding:12px;text-align:center;border:1px solid #ddd;border-radius:10px;}.room-label{font-size:14px;font-weight:700;color:#005f73;margin-bottom:6px;}.hotel-label{font-size:10px;color:#aaa;margin-top:6px;}@media print{.no-print{display:none;}}</style></head><body>');printWindow.document.write('<div style="margin-bottom:16px" class="no-print"><button onclick="window.print()" style="padding:10px 24px;background:#005f73;color:white;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer">🖨️ Print All QR Codes</button><button onclick="window.close()" style="margin-left:10px;padding:10px 20px;background:#eee;color:#555;border:none;border-radius:8px;font-size:14px;cursor:pointer">Close</button></div>');printWindow.document.write('<div class="grid">');rooms.forEach(function(room){var canvas=container.querySelectorAll('#qr_room_'+room.id+' canvas')[0];var imgData=canvas?canvas.toDataURL('image/png'):'';printWindow.document.write('<div class="cell"><div class="room-label">Room '+room.room_number+'</div><img src="'+imgData+'" width="140" height="140"><div class="hotel-label">'+(hotel.name||'')+'</div></div>');});printWindow.document.write('</div></body></html>');printWindow.document.close();document.body.removeChild(container);msg.textContent='✅ '+rooms.length+' QR codes ready!';msg.style.display='block';msg.style.background='#d1fae5';msg.style.color='#065f46';btn.textContent='📥 Download All QRs';btn.disabled=false;},1200);}).catch(function(){msg.textContent='❌ Failed. Try again.';msg.style.display='block';msg.style.background='#fde8ea';msg.style.color='#e63946';btn.textContent='📥 Download All QRs';btn.disabled=false;});}
+function downloadAllQRs(btn){if(!hotel)return;var msg=document.getElementById('bulk-qr-msg');btn.textContent='⏳ Generating...';btn.disabled=true;authFetch('/rooms?hotel_id='+hotel.hotel_id).then(function(r){return r.json();}).then(function(rooms){if(!rooms||rooms.length===0){msg.textContent='⚠️ No rooms found.';msg.style.display='block';msg.style.background='#fff3cd';msg.style.color='#8a6000';btn.textContent='📥 Download All QRs';btn.disabled=false;return;}var container=document.createElement('div');container.style.cssText='position:fixed;left:-9999px;top:0;display:flex;flex-wrap:wrap;gap:0;background:white;padding:20px;width:794px;';document.body.appendChild(container);rooms.forEach(function(room){var cell=document.createElement('div');cell.style.cssText='width:180px;padding:12px;text-align:center;border:1px solid #eee;margin:4px;border-radius:8px;font-family:sans-serif;';cell.innerHTML='<div style="font-size:13px;font-weight:700;color:#005f73;margin-bottom:6px">Room '+room.room_number+'</div><div id="qr_room_'+room.id+'"></div><div style="font-size:10px;color:#aaa;margin-top:6px">'+(hotel.name||'Hotel')+'</div>';container.appendChild(cell);new QRCode(cell.querySelector('#qr_room_'+room.id),{text:LIVE_URL+'/guest.html?hotel_id='+hotel.hotel_id+'&room_id='+room.id+'&room='+room.room_number,width:150,height:150,colorDark:hotel.colour||'#005f73',colorLight:'#ffffff'});});setTimeout(function(){var printWindow=window.open('','_blank','width=900,height=700');printWindow.document.write('<html><head><title>Welco QR Codes — '+hotel.name+'</title><style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:sans-serif;background:white;padding:20px;}.grid{display:flex;flex-wrap:wrap;gap:8px;}.cell{width:170px;padding:12px;text-align:center;border:1px solid #ddd;border-radius:10px;}.room-label{font-size:14px;font-weight:700;color:#005f73;margin-bottom:6px;}.hotel-label{font-size:10px;color:#aaa;margin-top:6px;}@media print{.no-print{display:none;}}</style></head><body>');printWindow.document.write('<div style="margin-bottom:16px" class="no-print"><button onclick="window.print()" style="padding:10px 24px;background:#005f73;color:white;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer">🖨️ Print All QR Codes</button><button onclick="window.close()" style="margin-left:10px;padding:10px 20px;background:#eee;color:#555;border:none;border-radius:8px;font-size:14px;cursor:pointer">Close</button></div>');printWindow.document.write('<div class="grid">');rooms.forEach(function(room){var canvas=container.querySelectorAll('#qr_room_'+room.id+' canvas')[0];var imgData=canvas?canvas.toDataURL('image/png'):'';printWindow.document.write('<div class="cell"><div class="room-label">Room '+room.room_number+'</div><img src="'+imgData+'" width="140" height="140"><div class="hotel-label">'+(hotel.name||'')+'</div></div>');});printWindow.document.write('</div></body></html>');printWindow.document.close();document.body.removeChild(container);msg.textContent='✅ '+rooms.length+' QR codes ready!';msg.style.display='block';msg.style.background='#d1fae5';msg.style.color='#065f46';btn.textContent='📥 Download All QRs';btn.disabled=false;},1200);}).catch(function(){msg.textContent='❌ Failed. Try again.';msg.style.display='block';msg.style.background='#fde8ea';msg.style.color='#e63946';btn.textContent='📥 Download All QRs';btn.disabled=false;});}
 
 // ── DELETE HOTEL ──
 function openDeleteHotelModal(){document.getElementById('del-hotel-name').textContent=(hotel&&hotel.name)?hotel.name:'this hotel';document.getElementById('del-hotel-confirm').value='';document.getElementById('del-hotel-msg').style.display='none';document.getElementById('delete-hotel-modal').classList.add('open');}

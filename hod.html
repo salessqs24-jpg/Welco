@@ -730,7 +730,16 @@ function authFetch(url, options) {
   options.headers = options.headers || {};
   var token = localStorage.getItem('welco_token');
   if (token) options.headers['Authorization'] = 'Bearer ' + token;
-  return fetch(url, options);
+  return fetch(url, options).then(function(r){ if (r.status === 401 && token) sessionExpired(); return r; });
+}
+
+var _sessionExpiredShown = false;
+function sessionExpired() {
+  if (_sessionExpiredShown) return;
+  _sessionExpiredShown = true;
+  alert('Your session has expired. Please log in again.');
+  try { doLogout(); } catch(e) { location.reload(); }
+  setTimeout(function(){ _sessionExpiredShown = false; }, 4000);
 }
 
 // ── LOGIN ──
@@ -820,7 +829,7 @@ function startApp() {
 }
 
 function applyHodPermissions() {
-  fetch('/hod?hotel_id=' + hodData.hotel_id).then(function(r){return r.json();}).then(function(list){
+  authFetch('/hod?hotel_id=' + hodData.hotel_id).then(function(r){return r.json();}).then(function(list){
     var hod = list.find(function(h){ return h.name === hodData.name; });
     if (!hod || !hod.permissions) return;
     var perms = hod.permissions;
@@ -874,7 +883,7 @@ function hideTabByPanel(panelName) {
 }
 
 function loadAll() {
-  fetch('/requests?hotel_id=' + hodData.hotel_id + '&days=30').then(function(r) { return r.json(); }).then(function(data) {
+  authFetch('/requests?hotel_id=' + hodData.hotel_id + '&days=30').then(function(r) { return r.json(); }).then(function(data) {
     if (!Array.isArray(data)) return;
     // Separate pre check-ins from normal requests
     allCheckins = data.filter(function(r) {
@@ -952,6 +961,32 @@ function renderCheckinStats() {
 // Global map: requestId -> raw request object (set fresh on every render)
 window._checkinMap = {};
 
+
+// ── ID PHOTO LINKS ── guest ID photos are fetched through short-lived signed links
+var idUrlMap = {}, idSignAsked = {};
+function idUrl(u) { return idUrlMap[u] || u; }
+function signIdPhotos(list) {
+  var need = [];
+  (list || []).forEach(function(r) {
+    if (!r) return;
+    var g = parseCheckinMessage(r.message || '');
+    (g.idDocs || []).forEach(function(dc) {
+      [dc.front, dc.back].forEach(function(u) { if (u && !idUrlMap[u] && !idSignAsked[u]) { need.push(u); idSignAsked[u] = true; } });
+    });
+  });
+  if (!need.length) return;
+  authFetch('/id-photos/sign', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ hotel_id: hodData.hotel_id, urls: need.slice(0, 12) }) })
+    .then(function(r) { return r.ok ? r.json() : null; })
+    .then(function(d) {
+      if (!d || !d.urls) return;
+      var any = false;
+      Object.keys(d.urls).forEach(function(k) { idUrlMap[k] = d.urls[k]; any = true; });
+      if (any) renderCheckins();
+      // more than 12 photos? ask for the next batch
+      if (need.length > 12) signIdPhotos(list);
+    }).catch(function() {});
+}
+
 function renderCheckins() {
   var el = document.getElementById('ci-list');
   if (!el) return;
@@ -974,6 +1009,7 @@ function renderCheckins() {
     }
     window._checkinMap = {};
     allCheckins.forEach(function(r) { if(r && r.id) window._checkinMap[String(r.id)] = r; });
+    signIdPhotos(list);
     var today = new Date().toDateString();
     var html = '';
     for (var i = 0; i < list.length; i++) {
@@ -996,7 +1032,7 @@ function renderCheckins() {
         thumbs = '<div style="margin-bottom:14px"><div class="checkin-field-label" style="margin-bottom:6px">🪪 ID Photos (tap to open)</div><div style="display:flex;gap:8px;flex-wrap:wrap">' +
           g.idDocs.map(function(dc, di) {
             return [dc.front, dc.back].map(function(u, k) {
-              return u ? '<a href="' + u + '" target="_blank" rel="noopener"><img src="' + u + '" alt="Adult ' + (di+1) + (k ? ' back' : ' front') + '" loading="lazy" style="height:72px;width:108px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb;background:#f3f4f6"></a>' : '';
+              return u ? '<a href="' + idUrl(u) + '" target="_blank" rel="noopener"><img src="' + idUrl(u) + '" alt="Adult ' + (di+1) + (k ? ' back' : ' front') + '" loading="lazy" style="height:72px;width:108px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb;background:#f3f4f6"></a>' : '';
             }).join('');
           }).join('') + '</div></div>';
       }
@@ -1069,8 +1105,8 @@ function printGuestCard(requestId, guest, roomNumber, createdAt) {
   var idBlock = '';
   if (guest.idDocs && guest.idDocs.length > 0) {
     idBlock = guest.idDocs.map(function(dc, i) {
-      var imgs = (dc.front ? '<figure><img src="' + dc.front + '" alt="Front"><figcaption>Front</figcaption></figure>' : '') +
-                 (dc.back ? '<figure><img src="' + dc.back + '" alt="Back"><figcaption>Back</figcaption></figure>' : '');
+      var imgs = (dc.front ? '<figure><img src="' + idUrl(dc.front) + '" alt="Front"><figcaption>Front</figcaption></figure>' : '') +
+                 (dc.back ? '<figure><img src="' + idUrl(dc.back) + '" alt="Back"><figcaption>Back</figcaption></figure>' : '');
       return '<div class="id-doc"><div class="id-type">Adult ' + (i+1) + ': ' + dc.type + '</div>' +
              (imgs ? '<div class="id-imgs">' + imgs + '</div>' : '<div class="id-missing">ID photos not available for this guest</div>') + '</div>';
     }).join('');
@@ -1217,7 +1253,7 @@ function reqRow(r) {
 
 // ── ROOMS ──
 function loadRooms() {
-  fetch('/rooms?hotel_id='+hodData.hotel_id).then(function(r){return r.json();}).then(function(rooms){
+  authFetch('/rooms?hotel_id='+hodData.hotel_id).then(function(r){return r.json();}).then(function(rooms){
     if(!Array.isArray(rooms))return;
     document.getElementById('rooms-count').textContent=rooms.length+' rooms total';
     document.getElementById('rooms-grid').innerHTML=rooms.length===0?'<div class="empty" style="grid-column:1/-1">No rooms yet</div>':rooms.map(function(r){return '<div class="room-card"><div class="room-num">Room '+r.room_number+'</div><div class="room-floor">Floor '+(r.floor||1)+'</div><div><button class="btn-del" onclick="deleteRoom('+r.id+')">✕ Delete</button></div></div>';}).join('');
@@ -1232,11 +1268,11 @@ function addRoom() {
     setTimeout(function(){msg.className='msg-box';},3000); loadRooms();
   });
 }
-function deleteRoom(id){if(!confirm('Delete this room?'))return;fetch('/rooms/'+id,{method:'DELETE'}).then(function(){loadRooms();});}
+function deleteRoom(id){if(!confirm('Delete this room?'))return;authFetch('/rooms/'+id,{method:'DELETE'}).then(function(){loadRooms();});}
 
 // ── STAFF ──
 function loadStaff() {
-  fetch('/staff?hotel_id='+hodData.hotel_id+'&department='+encodeURIComponent(hodData.dept)).then(function(r){return r.json();}).then(function(staff){
+  authFetch('/staff?hotel_id='+hodData.hotel_id+'&department='+encodeURIComponent(hodData.dept)).then(function(r){return r.json();}).then(function(staff){
     if(!Array.isArray(staff))return;
     document.getElementById('staff-list').innerHTML=staff.length===0?'<div class="empty">No staff added yet.</div>':staff.map(function(s){
       var isOn=!!s.is_on_duty; var clockInfo='';
@@ -1316,7 +1352,7 @@ function showTab(name) {
     if (allowed) {
       var loadingEl = document.getElementById('kb-loading');
       if (loadingEl) loadingEl.style.display = 'block';
-      fetch('/hotels').then(function(r){ return r.json(); }).then(function(hotels){
+      authFetch('/hotels?hotel_id='+encodeURIComponent(hodData.hotel_id)).then(function(r){ return r.json(); }).then(function(hotels){
         var hotel = hotels.find(function(h){ return h.hotel_id === hodData.hotel_id; });
         if (hotel) { hodHotelData = hotel; loadHodKbFields(hotel.ai_kb || {}); }
         if (loadingEl) loadingEl.style.display = 'none';
@@ -1636,7 +1672,7 @@ function resetAllHK() {
 
 
 // ── MAINTENANCE ──
-function loadMaintenance(){fetch('/maintenance?hotel_id='+hodData.hotel_id+'&department='+encodeURIComponent(hodData.dept)).then(function(r){return r.json();}).then(function(data){if(!Array.isArray(data))return;renderMaintenance(data);}).catch(function(){document.getElementById('maint-urgent').innerHTML='<div class="empty">Could not load tasks</div>';});}
+function loadMaintenance(){authFetch('/maintenance?hotel_id='+hodData.hotel_id+'&department='+encodeURIComponent(hodData.dept)).then(function(r){return r.json();}).then(function(data){if(!Array.isArray(data))return;renderMaintenance(data);}).catch(function(){document.getElementById('maint-urgent').innerHTML='<div class="empty">Could not load tasks</div>';});}
 function addMaintenanceTask(){
   var title=document.getElementById('maint-title').value.trim(); var desc=document.getElementById('maint-desc').value.trim(); var freq=document.getElementById('maint-freq').value;
   if(!title){alert('Enter a task title!');return;}
@@ -1663,7 +1699,7 @@ function renderMaintenance(tasks){
 // ── ANNOUNCEMENTS ──
 function previewAnn(val){var prev=document.getElementById('ann-preview');if(val.trim()){document.getElementById('ann-preview-text').textContent=val;prev.style.display='flex';}else{prev.style.display='none';}}
 function postAnnouncement(){var msg=document.getElementById('ann-input').value.trim();if(!msg){alert('Please type an announcement first.');return;}authFetch('/announcements',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hotel_id:hodData.hotel_id,message:msg})}).then(function(r){return r.json();}).then(function(data){if(data.error){alert(data.error);return;}document.getElementById('ann-input').value='';document.getElementById('ann-preview').style.display='none';var m=document.getElementById('ann-msg');m.textContent='✅ Posted!';m.className='msg-box msg-success';setTimeout(function(){m.className='msg-box';},4000);loadAnnouncements();});}
-function loadAnnouncements(){fetch('/announcements?hotel_id='+hodData.hotel_id).then(function(r){return r.json();}).then(function(list){var el=document.getElementById('ann-list');if(!Array.isArray(list)||list.length===0){el.innerHTML='<div class="empty">No announcements yet</div>';return;}el.innerHTML=list.map(function(a){var time=new Date(a.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});var isActive=a.is_active;return '<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:12px 0;border-bottom:1px solid #f0f0f0;gap:10px"><div style="flex:1"><div style="font-size:14px;color:#333;line-height:1.5">'+a.message+'</div><div style="font-size:11px;color:#aaa;margin-top:4px">'+(isActive?'<span style="background:#d1fae5;color:#065f46;padding:2px 8px;border-radius:10px;font-size:11px">🟢 Live</span>':'<span style="background:#f0f0f0;color:#999;padding:2px 8px;border-radius:10px;font-size:11px">Off</span>')+' · '+time+'</div></div><div style="display:flex;gap:6px;flex-shrink:0">'+(isActive?'<button onclick="toggleAnn('+a.id+',false)" style="padding:5px 10px;background:#fff3cd;color:#8a6000;border:none;border-radius:6px;font-size:11px;cursor:pointer">Turn Off</button>':'<button onclick="toggleAnn('+a.id+',true)" style="padding:5px 10px;background:#d1fae5;color:#065f46;border:none;border-radius:6px;font-size:11px;cursor:pointer">Turn On</button>')+'<button onclick="deleteAnn('+a.id+')" style="padding:5px 10px;background:#fde8ea;color:#e63946;border:none;border-radius:6px;font-size:11px;cursor:pointer">✕</button></div></div>';}).join('');}).catch(function(){});}
+function loadAnnouncements(){authFetch('/announcements?hotel_id='+hodData.hotel_id).then(function(r){return r.json();}).then(function(list){var el=document.getElementById('ann-list');if(!Array.isArray(list)||list.length===0){el.innerHTML='<div class="empty">No announcements yet</div>';return;}el.innerHTML=list.map(function(a){var time=new Date(a.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});var isActive=a.is_active;return '<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:12px 0;border-bottom:1px solid #f0f0f0;gap:10px"><div style="flex:1"><div style="font-size:14px;color:#333;line-height:1.5">'+a.message+'</div><div style="font-size:11px;color:#aaa;margin-top:4px">'+(isActive?'<span style="background:#d1fae5;color:#065f46;padding:2px 8px;border-radius:10px;font-size:11px">🟢 Live</span>':'<span style="background:#f0f0f0;color:#999;padding:2px 8px;border-radius:10px;font-size:11px">Off</span>')+' · '+time+'</div></div><div style="display:flex;gap:6px;flex-shrink:0">'+(isActive?'<button onclick="toggleAnn('+a.id+',false)" style="padding:5px 10px;background:#fff3cd;color:#8a6000;border:none;border-radius:6px;font-size:11px;cursor:pointer">Turn Off</button>':'<button onclick="toggleAnn('+a.id+',true)" style="padding:5px 10px;background:#d1fae5;color:#065f46;border:none;border-radius:6px;font-size:11px;cursor:pointer">Turn On</button>')+'<button onclick="deleteAnn('+a.id+')" style="padding:5px 10px;background:#fde8ea;color:#e63946;border:none;border-radius:6px;font-size:11px;cursor:pointer">✕</button></div></div>';}).join('');}).catch(function(){});}
 function toggleAnn(id,active){authFetch('/announcements/'+id+'/toggle',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({is_active:active})}).then(function(){loadAnnouncements();});}
 function deleteAnn(id){if(!confirm('Delete?'))return;authFetch('/announcements/'+id,{method:'DELETE'}).then(function(){loadAnnouncements();});}
 
@@ -1672,7 +1708,7 @@ var DEPT_DEFAULT_OPTIONS={'Housekeeping':[{key:'Extra Towels',label:'🛁 Extra 
 var DEFAULT_OPTION_SLA={'Extra Towels':5,'Extra Pillow':5,'Water Bottles':5,'Clean Room':30,'Extra Blanket':5,'Toiletries':10,'Breakfast':20,'Coffee':10,'Tea':10,'Water':5,'Snacks':10,'Ice Bucket':5,'AC Issue':20,'Hot Water':15,'Light Bulb':10,'TV Issue':15,'WiFi Help':10,'Door Lock':10,'Wake Up Call':2,'Luggage Help':5,'Late Checkout Info':5,'Airport Transfer & Local Cab':10,'Room Upgradation Info':5,'Room Decoration Info':30,'Private Dinner Info':10,'Extend Stay Info':5,'Bike Rent Info':5,'Adventure Activities Info':5,'SPA Booking Info':5};
 var currentDeptOptions=[],customDeptOptions=[],optionSlaMap={},fullDeptOptions={};
 
-function loadGuestOptions(){fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){var hotel=hotels.find(function(h){return h.hotel_id===hodData.hotel_id;});fullDeptOptions=(hotel&&hotel.dept_guest_options)?hotel.dept_guest_options:{};var dept=hodData.dept;var saved=fullDeptOptions[dept];var defaults=(DEPT_DEFAULT_OPTIONS[dept]||[]).map(function(o){return o.key;});if(saved){currentDeptOptions=saved.enabled||defaults;customDeptOptions=(saved.custom||[]).map(function(c){return{key:c.key,label:c.label,sla:c.sla||15};});optionSlaMap=saved.slaMap||{};customDeptOptions.forEach(function(c){if(currentDeptOptions.indexOf(c.key)===-1)currentDeptOptions.push(c.key);if(!optionSlaMap[c.key])optionSlaMap[c.key]=c.sla||15;});}else{currentDeptOptions=defaults;customDeptOptions=[];optionSlaMap={};}renderGuestOptionsList();});}
+function loadGuestOptions(){authFetch('/hotels?hotel_id='+encodeURIComponent(hodData.hotel_id)).then(function(r){return r.json();}).then(function(hotels){var hotel=hotels.find(function(h){return h.hotel_id===hodData.hotel_id;});fullDeptOptions=(hotel&&hotel.dept_guest_options)?hotel.dept_guest_options:{};var dept=hodData.dept;var saved=fullDeptOptions[dept];var defaults=(DEPT_DEFAULT_OPTIONS[dept]||[]).map(function(o){return o.key;});if(saved){currentDeptOptions=saved.enabled||defaults;customDeptOptions=(saved.custom||[]).map(function(c){return{key:c.key,label:c.label,sla:c.sla||15};});optionSlaMap=saved.slaMap||{};customDeptOptions.forEach(function(c){if(currentDeptOptions.indexOf(c.key)===-1)currentDeptOptions.push(c.key);if(!optionSlaMap[c.key])optionSlaMap[c.key]=c.sla||15;});}else{currentDeptOptions=defaults;customDeptOptions=[];optionSlaMap={};}renderGuestOptionsList();});}
 function getSla(key){if(optionSlaMap[key]!==undefined)return optionSlaMap[key];return DEFAULT_OPTION_SLA[key]||15;}
 function renderGuestOptionsList(){var dept=hodData.dept;var defaults=DEPT_DEFAULT_OPTIONS[dept]||[];var list=document.getElementById('go-list');var html='<div style="font-size:11px;color:#0a9396;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Default Options</div>';defaults.forEach(function(opt){var isEnabled=currentDeptOptions.indexOf(opt.key)!==-1;html+=optionRowHTML(opt.key,opt.label,isEnabled,false,getSla(opt.key));});if(customDeptOptions.length>0){html+='<div style="font-size:11px;color:#ee9b00;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin:14px 0 8px">Custom Options</div>';customDeptOptions.forEach(function(opt){var isEnabled=currentDeptOptions.indexOf(opt.key)!==-1;html+=optionRowHTML(opt.key,opt.label,isEnabled,true,getSla(opt.key));});}list.innerHTML=html;}
 function optionRowHTML(key,label,isEnabled,isCustom,sla){var safeKey=key.replace(/'/g,"\\'");return '<div style="display:flex;flex-direction:column;gap:8px;padding:10px 12px;background:'+(isEnabled?'#e8f4f4':'#f9f9f9')+';border-radius:10px;border:1.5px solid '+(isEnabled?'#0a9396':'#eee')+';margin-bottom:6px"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:13px;font-weight:'+(isEnabled?'600':'400')+';color:'+(isEnabled?'#005f73':'#888')+';flex:1">'+label+'</span>'+(isCustom?'<button onclick="removeCustomDeptOption(\''+safeKey+'\')" style="background:#fde8ea;color:#e63946;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer">✕</button>':'')+'<label style="position:relative;display:inline-block;width:46px;height:26px;cursor:pointer;flex-shrink:0"><input type="checkbox" '+(isEnabled?'checked':'')+' data-key="'+key+'" onchange="toggleDeptOption(this)" style="opacity:0;width:0;height:0"><span style="position:absolute;inset:0;background:'+(isEnabled?'#0a9396':'#ddd')+';border-radius:26px;transition:0.3s"></span><span style="position:absolute;top:3px;left:'+(isEnabled?'23px':'3px')+';width:20px;height:20px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></span></label></div>'+(isEnabled?'<div style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;color:#0a9396;font-weight:600">⏱ SLA:</span><input type="number" min="1" max="999" value="'+sla+'" data-sla-key="'+key+'" onchange="updateSla(this)" style="width:60px;padding:4px 8px;border:1.5px solid #0a9396;border-radius:6px;font-size:13px;font-weight:700;color:#005f73;text-align:center;outline:none"><span style="font-size:11px;color:#888">minutes</span></div>':'')+'</div>';}
@@ -1684,7 +1720,7 @@ function saveGuestOptions(){var dept=hodData.dept;fullDeptOptions[dept]={enabled
 
 // ── SERVICE HOURS ──
 function updateServiceStatusLabel(){var isOpen=document.getElementById('service-open-toggle').checked;document.getElementById('service-status-label').textContent=isOpen?'🟢 Service is Open':'🔴 Service is Closed';document.getElementById('service-status-sub').textContent=isOpen?'Guests can currently send requests':'Guests will see a closed message';document.getElementById('toggle-bg').style.background=isOpen?'#2ecc71':'#e63946';document.getElementById('toggle-knob').style.left=isOpen?'28px':'4px';}
-function loadServiceHours(){fetch('/hotels').then(function(r){return r.json();}).then(function(hotels){var hotel=hotels.find(function(h){return h.hotel_id===hodData.hotel_id;});if(!hotel||!hotel.dept_guest_options){updateServiceStatusLabel();return;}var saved=hotel.dept_guest_options[hodData.dept];if(!saved||!saved.hours){updateServiceStatusLabel();return;}var h=saved.hours;document.getElementById('service-open-toggle').checked=(h.isOpen!==false);if(h.openTime)document.getElementById('service-open-time').value=h.openTime;if(h.closeTime)document.getElementById('service-close-time').value=h.closeTime;if(h.closedMsg)document.getElementById('service-closed-msg').value=h.closedMsg;updateServiceStatusLabel();});}
+function loadServiceHours(){authFetch('/hotels?hotel_id='+encodeURIComponent(hodData.hotel_id)).then(function(r){return r.json();}).then(function(hotels){var hotel=hotels.find(function(h){return h.hotel_id===hodData.hotel_id;});if(!hotel||!hotel.dept_guest_options){updateServiceStatusLabel();return;}var saved=hotel.dept_guest_options[hodData.dept];if(!saved||!saved.hours){updateServiceStatusLabel();return;}var h=saved.hours;document.getElementById('service-open-toggle').checked=(h.isOpen!==false);if(h.openTime)document.getElementById('service-open-time').value=h.openTime;if(h.closeTime)document.getElementById('service-close-time').value=h.closeTime;if(h.closedMsg)document.getElementById('service-closed-msg').value=h.closedMsg;updateServiceStatusLabel();});}
 function saveServiceHours(){var isOpen=document.getElementById('service-open-toggle').checked;var openTime=document.getElementById('service-open-time').value;var closeTime=document.getElementById('service-close-time').value;var closedMsg=document.getElementById('service-closed-msg').value.trim();var msg=document.getElementById('hours-msg');if(openTime&&closeTime){var op=openTime.split(':'),cl=closeTime.split(':');var openMins=parseInt(op[0])*60+parseInt(op[1]);var closeMins=parseInt(cl[0])*60+parseInt(cl[1]);if(closeMins<=openMins){msg.textContent='⚠️ Close time must be after open time.';msg.className='msg-box msg-success';setTimeout(function(){msg.className='msg-box';},5000);return;}}if(!fullDeptOptions[hodData.dept])fullDeptOptions[hodData.dept]={};fullDeptOptions[hodData.dept].hours={isOpen:isOpen,openTime:openTime,closeTime:closeTime,closedMsg:closedMsg};authFetch('/hotels/'+hodData.hotel_id+'/dept-guest-options',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({dept_guest_options:fullDeptOptions})}).then(function(r){return r.json();}).then(function(){msg.textContent=isOpen?'✅ Service is now OPEN.':'✅ Hours saved.';msg.className='msg-box msg-success';setTimeout(function(){msg.className='msg-box';},4000);});}
 
 // ── AI KB ──

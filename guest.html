@@ -485,7 +485,7 @@ function switchTab(tab){
 async function loadBranding(){
   try{
     if(roomId){try{var rr=await fetch('/qr/'+roomId);var rd=await rr.json();if(rd&&rd.room_number)roomNumber=rd.room_number;}catch(e){}}
-    var res=await fetch('/hotels');var hotels=await res.json();
+    var res=await fetch('/hotels?hotel_id='+encodeURIComponent(hotelId));var hotels=await res.json();
     var hotel=Array.isArray(hotels)?hotels.find(function(h){return h.hotel_id===hotelId;}):null;
     if(!hotel){document.getElementById('hotel-name').textContent='Welco';document.getElementById('room-label').textContent='Room '+roomNumber;document.getElementById('welcome-pill').style.display='inline-flex';return;}
     hotelData=hotel; coHotelName=hotel.name;
@@ -601,7 +601,7 @@ function compressImage(dataUrl,cb){
 async function uploadToStorage(base64,filename){
   for(var attempt=0;attempt<2;attempt++){
     try{
-      var res=await fetch('/upload',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({base64:base64,filename:filename,folder:'guest-ids'})});
+      var res=await fetch('/upload',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({base64:base64,filename:filename,folder:'guest-ids',hotel_id:hotelId})});
       var data=await res.json();
       if(data.success&&data.url)return data.url;
     }catch(e){}
@@ -712,7 +712,7 @@ async function selectCat(btn,cat){
   document.querySelectorAll('.service-cat').forEach(function(b){b.classList.remove('selected');});
   btn.classList.add('selected');selectedCategory=cat;selectedQuicks=[];deptIsClosed=false;
   document.getElementById('dept-closed-box').style.display='none';document.getElementById('services-section').style.display='none';document.getElementById('eta-badge').style.display='none';document.getElementById('submit-btn').disabled=false;
-  try{var hr=await fetch('/hotels');var hs=await hr.json();var lh=hs.find(function(h){return h.hotel_id===hotelId;});if(lh&&lh.dept_guest_options)deptGuestOptions=lh.dept_guest_options;}catch(e){}
+  try{var hr=await fetch('/hotels?hotel_id='+encodeURIComponent(hotelId));var hs=await hr.json();var lh=hs.find(function(h){return h.hotel_id===hotelId;});if(lh&&lh.dept_guest_options)deptGuestOptions=lh.dept_guest_options;}catch(e){}
   var saved=deptGuestOptions[cat];
   if(saved&&saved.hours){var h=saved.hours;var closed=false;if(h.isOpen===true){closed=false;}else if(h.isOpen===false){if(h.openTime&&h.closeTime){var now=new Date();var cur=now.getHours()*60+now.getMinutes();var op=h.openTime.split(':');var cl=h.closeTime.split(':');var om=parseInt(op[0])*60+parseInt(op[1]);var cm=parseInt(cl[0])*60+parseInt(cl[1]);closed=(cm>om)?(cur<om||cur>=cm):true;}else{closed=true;}}if(closed){deptIsClosed=true;showClosedBox(cat,h);document.getElementById('submit-btn').disabled=true;return;}}
   currentCatSlaMap=(saved&&saved.slaMap)?saved.slaMap:{};
@@ -781,7 +781,7 @@ function updateTrackingStatus(status){
 }
 
 async function checkIfDone(){
-  try{var res=await fetch('/requests?hotel_id='+hotelId);var reqs=await res.json();var req=reqs.find(function(r){return r.id===currentRequestId;});if(req){updateTrackingStatus(req.status);if(req.status==='done'&&!req.feedback_rating){clearInterval(pollInterval);setTimeout(function(){document.getElementById('tracking-card').style.display='none';document.getElementById('feedback-card').style.display='block';},2000);}}}catch(e){}
+  try{var res=await fetch('/requests/'+encodeURIComponent(currentRequestId)+'/status');var req=res.ok?await res.json():null;if(req){updateTrackingStatus(req.status);if(req.status==='done'&&!req.feedback_rating){clearInterval(pollInterval);setTimeout(function(){document.getElementById('tracking-card').style.display='none';document.getElementById('feedback-card').style.display='block';},2000);}}}catch(e){}
 }
 
 function newRequest(){

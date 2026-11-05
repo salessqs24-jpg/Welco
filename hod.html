@@ -1084,6 +1084,13 @@ function field(label, val) {
   return '<div class="checkin-field"><div class="checkin-field-label">' + label + '</div><div class="checkin-field-val">' + val + '</div></div>';
 }
 
+function hodComplete(requestId) {
+  if (!confirm('Mark this request as done?')) return;
+  authFetch('/requests/' + requestId + '/complete', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
+    .then(function(r) { if (!r.ok) throw new Error('fail'); loadAll(); })
+    .catch(function() { alert('Could not update. Try again.'); });
+}
+
 function markArrived(requestId) {
   authFetch('/requests/' + requestId + '/complete', {
     method: 'POST',
@@ -1209,7 +1216,7 @@ function checkSLAAlerts(reqs) {
     card.style.display = 'block';
     document.getElementById('overdue-list').innerHTML = overdue.map(function(r) {
       var elapsed = Math.floor((Date.now() - new Date(r.created_at).getTime()) / 60000);
-      return '<div class="request-row"><div class="req-top"><span class="req-room">Room ' + (r.room_number || '?') + '</span><span class="sla-warn">' + elapsed + 'm overdue</span></div><div class="req-msg">' + (r.message || '') + '</div></div>';
+      return '<div class="request-row"><div class="req-top"><span class="req-room">Room ' + (r.room_number || '?') + '</span><span class="sla-warn">' + elapsed + 'm overdue</span></div><div class="req-msg">' + (r.message || '') + '</div><div style="margin-top:8px;display:flex">'+(r.status!=='done'?'<button onclick="hodComplete(\''+String(r.id).replace(/[^0-9A-Za-z-]/g,'')+'\')" style="margin-left:auto;background:#0a9396;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer">✅ Mark Done</button>':'')+'</div></div>';
     }).join('');
   } else { bar.style.display = 'none'; card.style.display = 'none'; }
 }
@@ -1248,7 +1255,7 @@ function reqRow(r) {
   var time=new Date(r.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
   var catColor=deptColors[r.category]||'#005f73';
   var slaHtml=r.status!=='done'?(isOverdue?'<span class="sla-warn">⚠️ '+Math.floor(elapsed)+'m overdue</span>':'<span class="sla-ok">⏱ '+Math.floor(remaining)+'m left</span>'):'';
-  return '<div class="request-row"><div class="req-top"><span class="req-room">Room '+(r.room_number||'?')+'</span><span class="req-cat" style="background:'+catColor+'">'+(r.category||'General')+'</span></div><div class="req-msg">'+(r.message||'No details')+'</div><div class="req-meta"><span class="badge '+bc+'">'+bt+'</span>'+slaHtml+(r.claimed_by?'<span>👷 '+r.claimed_by+'</span>':'')+(r.feedback_rating?'<span>⭐ '+r.feedback_rating+'/5</span>':'')+'<span>'+time+'</span></div></div>';
+  return '<div class="request-row"><div class="req-top"><span class="req-room">Room '+(r.room_number||'?')+'</span><span class="req-cat" style="background:'+catColor+'">'+(r.category||'General')+'</span></div><div class="req-msg">'+(r.message||'No details')+'</div><div class="req-meta"><span class="badge '+bc+'">'+bt+'</span>'+slaHtml+(r.claimed_by?'<span>👷 '+r.claimed_by+'</span>':'')+(r.feedback_rating?'<span>⭐ '+r.feedback_rating+'/5</span>':'')+'<span>'+time+'</span>'+(r.status!=='done'?'<button onclick="hodComplete(\''+String(r.id).replace(/[^0-9A-Za-z-]/g,'')+'\')" style="margin-left:auto;background:#0a9396;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer">✅ Mark Done</button>':'')+'</div></div>';
 }
 
 // ── ROOMS ──
